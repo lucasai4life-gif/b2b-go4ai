@@ -36,7 +36,7 @@
     var core       = qs('#engine-core');
     var coreStatus = core && core.querySelector('.engine-core__status span:last-child');
     var roleCards  = qsa('.engine-card--role');
-    var outCards   = qsa('.engine-card--output');
+    var outCards   = qsa('.engine-card--output:not(#engine-passport)');
     var passport   = qs('#engine-passport');
     var proofItems = qsa('.engine__proof-item strong');
 
