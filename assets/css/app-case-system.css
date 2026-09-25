@@ -30,8 +30,8 @@
   --acs-ease:         cubic-bezier(.22, .61, .36, 1);
   --acs-ease-out:     cubic-bezier(.16, 1, .3, 1);
 
-  --acs-rail-w:       34px;
-  --acs-rail-left:    max(8px, calc((100vw - 85rem) / 2 - 48px));
+  --acs-rail-w:       30px;
+  --acs-rail-left:    max(6px, calc((100vw - 85rem) / 2 - 46px));
 }
 
 /* ── 1. HEADER / NOTICE — DARK SYSTEM SYNC ──────────────────────────────── */
@@ -147,13 +147,13 @@
 }
 .acs-syslabel { color: rgba(52, 211, 153, 0.5); letter-spacing: 0.24em; }
 
-.acs-coord--tl { top: 18px; left: clamp(16px, 3vw, 40px); }
-.acs-coord--tr { top: 18px; right: clamp(16px, 3vw, 40px); }
+.acs-coord--tl { top: 26px; left: clamp(16px, 3vw, 40px); }
+.acs-coord--tr { top: 26px; right: clamp(16px, 3vw, 40px); }
 .acs-coord--bl { bottom: 18px; left: clamp(16px, 3vw, 40px); }
 .acs-coord--br { bottom: 18px; right: clamp(16px, 3vw, 40px); }
 
-.acs-syslabel--tl { top: 40px; left: clamp(16px, 3vw, 40px); }
-.acs-syslabel--tr { top: 40px; right: clamp(16px, 3vw, 40px); }
+.acs-syslabel--tl { top: 48px; left: clamp(16px, 3vw, 40px); }
+.acs-syslabel--tr { top: 48px; right: clamp(16px, 3vw, 40px); }
 .acs-syslabel--bl { bottom: 40px; left: clamp(16px, 3vw, 40px); }
 .acs-syslabel--br { bottom: 40px; right: clamp(16px, 3vw, 40px); }
 
@@ -465,13 +465,13 @@
 .acs-rail__status {
   writing-mode: vertical-rl;
   font-family: var(--font-mono);
-  font-size: 0.5rem;
+  font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   white-space: nowrap;
   color: var(--acs-emerald-dk);
 }
-.acs-rail__status { color: rgba(8, 144, 108, 0.66); }
+.acs-rail__status { color: rgba(8, 144, 108, 0.8); }
 
 /* ============================================================================
    5. CASE LIBRARY — SCENE RHYTHM & DIVIDERS
@@ -1149,7 +1149,8 @@ html.app-motion .cs-case:not(.is--revealed) .cs-auto-flow {
 
 /* Mobile ≤ 640 */
 @media (max-width: 640px) {
-  .app-hero { padding: 44px 0 52px; }
+  /* keep the system micro-labels clear of the eyebrow pill */
+  .app-hero { padding: 70px 0 56px; }
   .app-hero__title { font-size: clamp(1.625rem, 7.6vw, 2.125rem); letter-spacing: -0.028em; }
   .app-hero__desc { font-size: 0.9375rem; line-height: 1.6; }
 
@@ -1187,3 +1188,91 @@ html:not(.has-js) .case-timeline {
 }
 html:not(.has-js) .acs-title-rule { transform: scaleX(1); }
 html:not(.has-js) .acs-corners i { opacity: 1; }
+
+/* ============================================================================
+   16. FAIL-SAFE — STATIC FINAL STATE
+   ----------------------------------------------------------------------------
+   `html.app-motion-fallback` is set by the inline watchdog in <head> (and by
+   app-case-system.js) whenever the motion layer is missing, blocked, errored or
+   simply did not finish. It forces every motion element back to its final,
+   visible form and uses !important so it also beats any inline style a
+   half-finished GSAP timeline may have left behind.
+
+   MOTION FAILURE ≠ PAGE FAILURE — no content element may stay at opacity 0.
+   ========================================================================= */
+
+/* 16a. Background depth layers */
+html.app-motion-fallback .acs-hero-bg__grid,
+html.app-motion-fallback .acs-hero-bg__glow,
+html.app-motion-fallback .acs-hero-bg__beam {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+html.app-motion-fallback .acs-hero-bg__lines { opacity: 0.85 !important; visibility: visible !important; }
+
+/* 16b. Hero sequence + case system chrome + case body blocks
+       (opacity / visibility / transform / filter / clip-path all reset) */
+html.app-motion-fallback .app-hero,
+html.app-motion-fallback .acs-hero-seq,
+html.app-motion-fallback .acs-line__i,
+html.app-motion-fallback .app-hero__desc,
+html.app-motion-fallback .app-flow-bar,
+html.app-motion-fallback .acs-corners i,
+html.app-motion-fallback .acs-case-meta,
+html.app-motion-fallback .acs-title-rule,
+html.app-motion-fallback .cs-case,
+html.app-motion-fallback .cs-case__header,
+html.app-motion-fallback .cs-case__title,
+html.app-motion-fallback .cs-case__media,
+html.app-motion-fallback .cs-case__media > *,
+html.app-motion-fallback .cs-case__num-badge,
+html.app-motion-fallback .case__tag,
+html.app-motion-fallback .case-timeline,
+html.app-motion-fallback .case-timeline__item,
+html.app-motion-fallback .cs-flow-chip,
+html.app-motion-fallback .cs-case__metric-row,
+html.app-motion-fallback .cs-metric-chip,
+html.app-motion-fallback .cs-metric-chip__num,
+html.app-motion-fallback .cs-sales-impact,
+html.app-motion-fallback .cs-sales-metric-card__from,
+html.app-motion-fallback .cs-sales-metric-card__arrow,
+html.app-motion-fallback .cs-sales-metric-card__to,
+html.app-motion-fallback .cs-pipeline-strip,
+html.app-motion-fallback .cs-hub-impact,
+html.app-motion-fallback .cs-hub-impact-box,
+html.app-motion-fallback .cs-sales-sync-badge,
+html.app-motion-fallback .app-case-disclaimer,
+html.app-motion-fallback .cs-auto-flow,
+html.app-motion-fallback .acs-divider,
+html.app-motion-fallback .case__action {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  filter: none !important;
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+}
+
+/* 16c. Pipeline steps — only ever opacity-gated, keep their active lift */
+html.app-motion-fallback .app-flow-step,
+html.app-motion-fallback .app-flow-sep {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 16d. Timeline progress line — show the completed track */
+html.app-motion-fallback .acs-tl-fill {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scaleY(1) !important;
+}
+
+/* 16e. Case index rail — opacity/visibility only.
+       Its translateY(-50%) centring must survive, so no transform reset. */
+html.app-motion-fallback .acs-rail {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+html.app-motion-fallback .acs-rail__list { --acs-rail-fill: 1; }
+html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: visible !important; }

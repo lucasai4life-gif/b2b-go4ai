@@ -614,9 +614,9 @@
 .engine__stage {
   position: relative;
   display: grid;
-  grid-template-columns: 130px 216px 150px;
-  gap: 0;
-  justify-content: space-between;
+  grid-template-columns: 128px 200px 140px;
+  gap: 16px;
+  justify-content: center;
   align-items: center;
   perspective: 1200px;
   z-index: 2;
@@ -634,29 +634,29 @@
   z-index: 1;
 }
 .engine__wire--base {
-  stroke: rgba(52, 211, 153, 0.12);
+  stroke: rgba(52, 211, 153, 0.22);
   stroke-width: 1.5;
   stroke-dasharray: 3 3;
 }
 .engine__wire--active {
-  stroke-width: 2;
+  stroke-width: 2.2;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.6));
-  stroke-dasharray: 8 140;
+  filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.7));
+  stroke-dasharray: 10 90;
   animation: wireDataFlow 2.4s linear infinite;
 }
 @keyframes wireDataFlow {
-  0%   { stroke-dashoffset: 200; opacity: 0.3; }
-  20%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { stroke-dashoffset: -200; opacity: 0.3; }
+  0%   { stroke-dashoffset: 100; opacity: 0.2; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0.2; }
 }
 #wire-sales { animation-delay: 0s; }
-#wire-hr    { animation-delay: 0.8s; }
-#wire-fin   { animation-delay: 1.6s; }
-#wire-prop  { animation-delay: 0.4s; }
-#wire-dash  { animation-delay: 1.2s; }
-#wire-sop   { animation-delay: 2.0s; }
+#wire-hr    { animation-delay: 0.7s; }
+#wire-fin   { animation-delay: 1.4s; }
+#wire-prop  { animation-delay: 0.35s; }
+#wire-dash  { animation-delay: 1.05s; }
+#wire-sop   { animation-delay: 1.75s; }
 
 /* Left Input Role Cards */
 .engine__col {
@@ -675,7 +675,7 @@
 
 .engine-card {
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 11px 11px;
   box-sizing: border-box;
   position: relative;
   cursor: pointer;
@@ -735,7 +735,7 @@
   background: #091310;
   border: 1.5px solid rgba(52, 211, 153, 0.35);
   border-radius: 16px;
-  padding: 16px 14px;
+  padding: 16px 12px;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.6),
     0 0 45px rgba(8, 144, 108, 0.22),
@@ -897,7 +897,7 @@
   flex-direction: column !important;
   gap: 8px !important;
   align-items: stretch !important;
-  width: 150px !important;
+  width: 140px !important;
 }
 
 .engine__col--output .engine-card,
@@ -1046,15 +1046,30 @@
   border-color: #34d399 !important;
   box-shadow: 0 0 25px rgba(52, 211, 153, 0.35) !important;
 }
+.engine__stage.is--highlight-sales #wire-sales,
+.engine__stage.is--highlight-sales #wire-prop {
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.95)) !important;
+}
 .engine__stage.is--highlight-hr .engine-card--role[data-route="hr"],
 .engine__stage.is--highlight-hr .engine-card--output[data-route="hr"] {
   border-color: #34d399 !important;
   box-shadow: 0 0 25px rgba(52, 211, 153, 0.35) !important;
 }
+.engine__stage.is--highlight-hr #wire-hr,
+.engine__stage.is--highlight-hr #wire-dash {
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.95)) !important;
+}
 .engine__stage.is--highlight-fin .engine-card--role[data-route="finance"],
 .engine__stage.is--highlight-fin .engine-card--output[data-route="finance"] {
   border-color: #34d399 !important;
   box-shadow: 0 0 25px rgba(52, 211, 153, 0.35) !important;
+}
+.engine__stage.is--highlight-fin #wire-fin,
+.engine__stage.is--highlight-fin #wire-sop {
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.95)) !important;
 }
 
 /* ── 3. SECTION 2: EXECUTIVE POSITIONING PANEL ─────────────────────────── */
@@ -1903,7 +1918,7 @@ html.motion-impact .impact-section {
           <div class="engine__stage" id="engine-stage">
 
             <!-- SVG Data Connections Layer -->
-            <svg class="engine__connectors" viewBox="0 0 532 320" fill="none" aria-hidden="true">
+            <svg class="engine__connectors" viewBox="0 0 500 340" preserveAspectRatio="none" fill="none" aria-hidden="true">
               <defs>
                 <linearGradient id="streamGrad-sales" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stop-color="#08906c" stop-opacity="0.3"/>
@@ -1939,22 +1954,22 @@ html.motion-impact .impact-section {
               </defs>
 
               <!-- Static Background Wire Tracks -->
-              <path class="engine__wire--base" d="M128,52 C158,52 162,100 188,100" />
-              <path class="engine__wire--base" d="M128,130 C158,130 162,142 188,142" />
-              <path class="engine__wire--base" d="M128,210 C158,210 162,185 188,185" />
+              <path class="engine__wire--base" d="M114,49 C132,49 138,120 156,120" />
+              <path class="engine__wire--base" d="M114,142 C132,142 138,178 156,178" />
+              <path class="engine__wire--base" d="M114,265 C132,265 138,236 156,236" />
 
-              <path class="engine__wire--base" d="M344,100 C368,100 372,52 402,52" />
-              <path class="engine__wire--base" d="M344,142 C368,142 372,130 402,130" />
-              <path class="engine__wire--base" d="M344,185 C368,185 372,208 402,208" />
+              <path class="engine__wire--base" d="M332,120 C350,120 354,62 374,62" />
+              <path class="engine__wire--base" d="M332,178 C350,178 354,141 374,141" />
+              <path class="engine__wire--base" d="M332,236 C350,236 354,221 374,221" />
 
               <!-- Animated Pulse Wires -->
-              <path class="engine__wire--active" id="wire-sales" d="M128,52 C158,52 162,100 188,100" stroke="url(#streamGrad-sales)" />
-              <path class="engine__wire--active" id="wire-hr" d="M128,130 C158,130 162,142 188,142" stroke="url(#streamGrad-hr)" />
-              <path class="engine__wire--active" id="wire-fin" d="M128,210 C158,210 162,185 188,185" stroke="url(#streamGrad-fin)" />
+              <path class="engine__wire--active" id="wire-sales" d="M114,49 C132,49 138,120 156,120" stroke="url(#streamGrad-sales)" />
+              <path class="engine__wire--active" id="wire-hr" d="M114,142 C132,142 138,178 156,178" stroke="url(#streamGrad-hr)" />
+              <path class="engine__wire--active" id="wire-fin" d="M114,265 C132,265 138,236 156,236" stroke="url(#streamGrad-fin)" />
 
-              <path class="engine__wire--active" id="wire-prop" d="M344,100 C368,100 372,52 402,52" stroke="url(#outGrad-prop)" />
-              <path class="engine__wire--active" id="wire-dash" d="M344,142 C368,142 372,130 402,130" stroke="url(#outGrad-dash)" />
-              <path class="engine__wire--active" id="wire-sop" d="M344,185 C368,185 372,208 402,208" stroke="url(#outGrad-sop)" />
+              <path class="engine__wire--active" id="wire-prop" d="M332,120 C350,120 354,62 374,62" stroke="url(#outGrad-prop)" />
+              <path class="engine__wire--active" id="wire-dash" d="M332,178 C350,178 354,141 374,141" stroke="url(#outGrad-dash)" />
+              <path class="engine__wire--active" id="wire-sop" d="M332,236 C350,236 354,221 374,221" stroke="url(#outGrad-sop)" />
             </svg>
 
             <!-- 1. LEFT COLUMN: ROLE CARDS (INPUT) -->
