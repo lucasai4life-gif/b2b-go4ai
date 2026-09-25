@@ -7240,7 +7240,8 @@ body.lucas-page {
 }
 
 .case--light:hover .case-video-embed,
-.cs-case--light:hover .case-video-embed {
+.cs-case--light:hover .case-video-embed,
+.cs-case--pale:hover .case-video-embed {
   border-color: rgba(8, 144, 108, 0.35);
   box-shadow: 0 12px 28px rgba(8, 144, 108, 0.12);
 }
@@ -8091,6 +8092,27 @@ body.lucas-page {
   color: var(--gray-400);
   font-family: var(--font-mono);
   font-size: 0.8125rem;
+}
+
+.cs-pipeline__label {
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--green-700);
+  background: rgba(8, 144, 108, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.cs-pipeline__desc {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  line-height: 1.4;
+  margin-left: 2px;
 }
 
 /* ── Automation flow (Case 06) ──────────────────────────────────────────── */
