@@ -6,6 +6,7 @@
 <title>Bản kết A + B — GO4AI Đào tạo AI cho doanh nghiệp</title>
 <meta name="description" content="Bản kết giữa hai đề xuất trang chủ GO4AI: hero và các khối bằng chứng theo A, phần định vị — vấn đề — cách học — chương trình theo B.">
 <meta name="theme-color" content="#f2f6f5">
+<link rel="icon" href="assets/images/logos/logo-go4ai-life.png" type="image/png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1070,6 +1071,103 @@
 .engine__stage.is--highlight-fin #wire-sop {
   stroke-width: 3px !important;
   filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.95)) !important;
+}
+
+/* ── AI Capability Engine: Auto-Active & Sequential Motion ── */
+.engine-card--role {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s, box-shadow 0.28s, background-color 0.28s !important;
+}
+.engine-card--role.is--active {
+  transform: translateY(-2.5px) scale(1.02);
+  border-color: #34d399 !important;
+  background: rgba(14, 32, 26, 0.95) !important;
+  box-shadow: 0 16px 40px rgba(8, 144, 108, 0.35), 0 0 22px rgba(52, 211, 153, 0.25) !important;
+}
+.engine-card--role.is--active .engine-port {
+  background: #34d399 !important;
+  box-shadow: 0 0 10px #34d399, 0 0 18px #34d399 !important;
+  transform: scale(1.25);
+}
+.engine-card--role.is--active .engine-badge {
+  background: rgba(8, 144, 108, 0.35) !important;
+  border-color: #34d399 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.35) !important;
+}
+
+.engine-state {
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.engine-state.is--active {
+  background: rgba(8, 144, 108, 0.26) !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.35), inset 0 0 12px rgba(52, 211, 153, 0.15) !important;
+  transform: scale(1.025);
+}
+.engine-state.is--active .engine-state__num {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px #34d399;
+}
+.engine-state.is--active .engine-state__label {
+  color: #34d399 !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+}
+.engine-state.is--active .engine-state__tag {
+  background: #34d399 !important;
+  color: #06110e !important;
+  font-weight: 700;
+  box-shadow: 0 0 10px #34d399;
+}
+
+.engine-card--output {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s, box-shadow 0.28s, background-color 0.28s !important;
+}
+.engine-card--output.is--active {
+  transform: translateY(-2px) scale(1.02);
+  border-color: #34d399 !important;
+  background: rgba(14, 32, 26, 0.95) !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45), 0 0 22px rgba(52, 211, 153, 0.3) !important;
+}
+.engine-card--output.is--active .engine-card__out-tag {
+  color: #34d399 !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+.engine-card--output.is--active .engine-check {
+  color: #34d399 !important;
+  text-shadow: 0 0 12px #34d399;
+  transform: scale(1.2);
+}
+
+.engine-passport.is--active {
+  transform: translateY(-2.5px) scale(1.025) !important;
+  border-color: #34d399 !important;
+  background: linear-gradient(135deg, rgba(18, 40, 32, 0.98) 0%, rgba(10, 24, 19, 0.98) 100%) !important;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.5), 0 0 26px rgba(52, 211, 153, 0.38) !important;
+}
+.engine-passport.is--active .engine-passport__shield,
+.engine-passport.is--active .engine-passport__check {
+  color: #34d399 !important;
+  filter: drop-shadow(0 0 10px #34d399);
+}
+
+.engine__wire--active.is--active {
+  stroke-width: 3.2px !important;
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.95)) !important;
+  opacity: 1 !important;
+}
+.engine__wire--base.is--active {
+  stroke: rgba(52, 211, 153, 0.55) !important;
+  stroke-width: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .engine-card--role.is--active,
+  .engine-state.is--active,
+  .engine-card--output.is--active,
+  .engine-passport.is--active {
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* ── 3. SECTION 2: EXECUTIVE POSITIONING PANEL ─────────────────────────── */

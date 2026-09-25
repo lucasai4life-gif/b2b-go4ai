@@ -257,6 +257,161 @@
   }
 
   /* --------------------------------------------------------------------------
+     2c. HERO ENGINE AUTO-LOOP (AI Capability Engine — Auto-Active Sequence)
+     Sequence: INPUT ROLES (Sales -> HR -> Finance)
+            -> AI ENABLEMENT CORE (Real Work -> AI Workflow -> Human Review)
+            -> PROVEN OUTPUTS (Proposal -> Dashboard -> SOP -> AI Passport)
+  -------------------------------------------------------------------------- */
+  function initEngineAutoLoop() {
+    var stage = qs('#engine-stage');
+    if (!stage) return;
+
+    var heroSection = qs('.section.hero') || qs('.hero');
+
+    // 10 Sequential Steps
+    var steps = [
+      // 1. INPUT ROLES
+      { type: 'role', sel: '.engine-card--role[data-route="sales"]', wire: 'wire-sales', route: 'sales' },
+      { type: 'role', sel: '.engine-card--role[data-route="hr"]',    wire: 'wire-hr',    route: 'hr' },
+      { type: 'role', sel: '.engine-card--role[data-route="finance"]', wire: 'wire-fin',   route: 'fin' },
+
+      // 2. AI ENABLEMENT CORE
+      { type: 'core', sel: '.engine-state--work',   wire: null, route: null },
+      { type: 'core', sel: '.engine-state--ai',     wire: null, route: null },
+      { type: 'core', sel: '.engine-state--review', wire: null, route: null },
+
+      // 3. PROVEN OUTPUTS
+      { type: 'output', sel: '.engine-card--output[data-route="sales"]',   wire: 'wire-prop', route: 'sales' },
+      { type: 'output', sel: '.engine-card--output[data-route="finance"]', wire: 'wire-dash', route: 'fin' },
+      { type: 'output', sel: '.engine-card--output[data-route="hr"]',      wire: 'wire-sop',  route: 'hr' },
+      { type: 'output', sel: '#engine-passport',                           wire: null,        route: 'passport' }
+    ];
+
+    // Cache DOM elements
+    steps.forEach(function (step) {
+      step.el = qs(step.sel, stage);
+      step.wireEl = step.wire ? qs('#' + step.wire, stage) : null;
+    });
+
+    var allCards = qsa('.engine-card--role, .engine-state, .engine-card--output', stage);
+    var allWires = qsa('.engine__wire--active, .engine__wire--base', stage);
+    var passport = qs('#engine-passport', stage);
+
+    var currentIdx = 0;
+    var timer = null;
+    var resumeTimer = null;
+    var isHovered = false;
+    var isInViewport = true;
+    var isStarted = false;
+
+    function clearAllActive() {
+      allCards.forEach(function (el) { el.classList.remove('is--active'); });
+      allWires.forEach(function (el) { el.classList.remove('is--active'); });
+      stage.classList.remove('is--highlight-sales', 'is--highlight-hr', 'is--highlight-fin');
+      if (passport) passport.classList.remove('is--highlighted');
+    }
+
+    function activateStep(idx) {
+      if (idx < 0 || idx >= steps.length) idx = 0;
+      currentIdx = idx;
+
+      clearAllActive();
+
+      var step = steps[idx];
+      if (step && step.el) {
+        step.el.classList.add('is--active');
+        if (step.wireEl) {
+          step.wireEl.classList.add('is--active');
+        }
+      }
+    }
+
+    // Prefers-reduced-motion: static display only
+    if (reduce) {
+      return;
+    }
+
+    function nextStep() {
+      if (isHovered || !isInViewport) return;
+
+      var nextIdx = (currentIdx + 1) % steps.length;
+      activateStep(nextIdx);
+
+      // If just finished last step (AI Passport), pause slightly longer before looping
+      var delay = (nextIdx === 0) ? 1250 : 800;
+      timer = setTimeout(nextStep, delay);
+    }
+
+    function startCycle() {
+      if (timer) clearTimeout(timer);
+      if (isHovered || !isInViewport) return;
+      activateStep(currentIdx);
+      timer = setTimeout(nextStep, 800);
+    }
+
+    function pauseCycle() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      if (resumeTimer) { clearTimeout(resumeTimer); resumeTimer = null; }
+    }
+
+    // Start auto-cycle 300–500ms after Hero boot is complete (~3.0s total delay)
+    setTimeout(function () {
+      isStarted = true;
+      if (isInViewport && !isHovered) {
+        startCycle();
+      }
+    }, 3000);
+
+    // Hover management: hover pauses auto-cycle and activates hovered element
+    allCards.forEach(function (card) {
+      card.addEventListener('mouseenter', function () {
+        isHovered = true;
+        pauseCycle();
+        clearAllActive();
+        card.classList.add('is--active');
+
+        // Route highlight for role cards
+        var route = card.getAttribute('data-route');
+        if (route) {
+          var cls = 'is--highlight-' + (route === 'finance' ? 'fin' : route);
+          stage.classList.add(cls);
+          if (passport) passport.classList.add('is--highlighted');
+        }
+      });
+    });
+
+    stage.addEventListener('mouseleave', function () {
+      isHovered = false;
+      clearAllActive();
+
+      // Advance to next logical step and resume after 500ms
+      currentIdx = (currentIdx + 1) % steps.length;
+      if (isStarted && isInViewport) {
+        resumeTimer = setTimeout(function () {
+          startCycle();
+        }, 500);
+      }
+    });
+
+    // Viewport IntersectionObserver
+    if ('IntersectionObserver' in window && heroSection) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          isInViewport = entry.isIntersecting;
+          if (isInViewport) {
+            if (isStarted && !isHovered && !timer) {
+              startCycle();
+            }
+          } else {
+            pauseCycle();
+          }
+        });
+      }, { threshold: 0.15 });
+      io.observe(heroSection);
+    }
+  }
+
+  /* --------------------------------------------------------------------------
      3. HERO PARALLAX DEPTH (Desktop Cursor-Reactive)
   -------------------------------------------------------------------------- */
   function initHeroParallax() {
@@ -875,6 +1030,7 @@
     initHeaderHeroSync();
     initHeroBoot();
     initPipelineAutoLoop();
+    initEngineAutoLoop();
     initHeroParallax();
     initSectionIndexParallax();
     initKineticTypography();
