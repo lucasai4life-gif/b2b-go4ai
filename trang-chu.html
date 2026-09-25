@@ -150,16 +150,112 @@
   box-shadow: 0 0 20px rgba(52, 211, 153, 0.25);
 }
 
-.hero__pipeline-tag {
-  color: var(--sys-emerald-lt);
+.hero__pipeline {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: rgba(5, 18, 14, 0.8) !important;
+  border: 1px solid rgba(52, 211, 153, 0.25) !important;
+  border-radius: 10px !important;
+  padding: 6px 12px 6px 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
-.hero__trust li span {
-  color: rgba(232, 245, 240, 0.78);
-  background: rgba(8, 144, 108, 0.1);
-  border: 1px solid rgba(8, 144, 108, 0.24);
+.hero__pipeline-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: #34d399 !important;
+  background: rgba(8, 144, 108, 0.24) !important;
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+.hero__trust {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+.hero__trust li:not(.hero__trust-sep) {
+  display: inline-flex !important;
+  cursor: pointer !important;
+}
+.hero__trust li:not(.hero__trust-sep) span {
+  display: inline-flex !important;
+  align-items: center !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  white-space: nowrap !important;
+  padding: 4px 9px !important;
+  border-radius: 6px !important;
+  color: rgba(232, 245, 240, 0.9) !important;
+  background: rgba(8, 144, 108, 0.14) !important;
+  border: 1px solid rgba(52, 211, 153, 0.25) !important;
+  opacity: 1 !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: none !important;
+  transform: translateY(0) !important;
+}
+.hero__trust li.is--active span,
+.hero__trust li:not(.hero__trust-sep):hover span {
+  color: #ffffff !important;
+  background: rgba(8, 144, 108, 0.36) !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.42), inset 0 0 8px rgba(52, 211, 153, 0.22) !important;
+  transform: translateY(-1.5px) !important;
 }
 .hero__trust-sep {
-  color: rgba(52, 211, 153, 0.5);
+  display: inline-flex !important;
+  align-items: center !important;
+  color: rgba(52, 211, 153, 0.45) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.6875rem !important;
+  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease !important;
+  user-select: none !important;
+}
+.hero__trust-sep.is--pulse {
+  color: #34d399 !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.85) !important;
+  transform: scale(1.22) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__trust li:not(.hero__trust-sep) span {
+    transform: none !important;
+    transition: none !important;
+  }
+  .hero__trust-sep {
+    transform: none !important;
+    text-shadow: none !important;
+  }
+}
+@media (max-width: 991px) {
+  .hero__pipeline {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .hero__trust {
+    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
 }
 
 /* Header Dark Mode Integration when on Hero */
@@ -604,12 +700,38 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
 }
 .engine__proof-item strong {
   color: #ffffff !important;
   font-family: var(--font-mono);
   font-size: 1.25rem !important;
   font-weight: 700;
+  display: inline-block;
+  transform-origin: center;
+  will-change: transform, color;
+}
+@keyframes proofDonePulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.05); color: #34d399 !important; text-shadow: 0 0 10px rgba(52, 211, 153, 0.7); }
+  100% { transform: scale(1); color: #ffffff !important; text-shadow: none; }
+}
+.engine__proof-item strong.is--done {
+  animation: proofDonePulse 0.45s ease-out forwards;
+}
+.engine__proof-item.is--done::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.35), transparent);
+  animation: proofScanline 0.65s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes proofScanline {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 .engine__proof-item span {
   color: rgba(232, 245, 240, 0.72) !important;
@@ -932,7 +1054,7 @@
   width: 100%;
 }
 html.motion-impact .impact-animation-track {
-  height: 180vh;
+  height: 250vh;
 }
 html.motion-impact .impact-section {
   position: sticky;
@@ -1173,13 +1295,43 @@ html.motion-impact .impact-section {
 }
 
 /* ── 8. SECTION 7 & 8: CASE STUDY SHOWCASE ─────────────────────────────── */
-.case__media-col {
-  will-change: clip-path, transform;
-  overflow: hidden;
+#case,
+#case.section--with-index {
+  overflow: visible !important;
 }
-.case__body {
-  will-change: clip-path, transform;
-  overflow: hidden;
+
+@media (min-width: 992px) {
+  .case {
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.45fr) minmax(0, 0.55fr) !important;
+    gap: var(--s-48) !important;
+    align-items: start !important;
+    overflow: visible !important;
+  }
+  .case.is--in {
+    transform: none !important;
+  }
+  .case__media-col {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: calc(var(--header-h, 75px) + 24px) !important;
+    align-self: start !important;
+    z-index: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+  .case__body {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .case__media-col {
+    position: static !important;
+    width: 100% !important;
+  }
 }
 .cs-metric-chip, .case-metric {
   position: relative;
@@ -1254,7 +1406,7 @@ html.motion-impact .impact-section {
 .section-bg-index {
   position: absolute;
   top: -0.15em;
-  right: -0.05em;
+  right: 0;
   font-family: 'Archivo', sans-serif;
   font-weight: 700;
   font-size: clamp(8rem, 18vw, 16rem);

@@ -1,12 +1,17 @@
 /* ============================================================================
-   Bằng chứng / Evidence — Cinematic Dark Evidence Motion System
-   b2b.go4ai.org — v2.0.0
+   Bằng chứng / Evidence — Scroll-driven Assemble Motion System
+   b2b.go4ai.org — v2.1.0
    
-   FIX DỨT ĐIỂM (theo Spec J1 - J7):
-   - KHÔNG bao giờ animate opacity của .impact-content hay labels xuống < 1
-   - Final state luôn là: scale 1, opacity 1, filter none
-   - 4 circles scale .72 -> 1, opacity 0 -> 1 khi vào viewport
-   - Scroll backward hoặc refresh giữa trang: Text & số luôn đọc rõ 100%
+   Task 3 Spec:
+   - Các circle KHÔNG đứng sẵn 2x2 từ đầu
+   - Các circle di chuyển theo scroll
+   - Từng circle vào vị trí (scale/position thay đổi mượt)
+   - Cuối sequence assemble thành composition hoàn chỉnh (lưới 2x2)
+   - Center accent xuất hiện đúng timing ở giao điểm trung tâm
+   - Scroll ngược thì animation reverse đúng
+   - Giữ nguyên 4 màu tương phản hiện tại (Circle 01: nền tối; Circle 02: emerald;
+     Circle 03: mint sáng + chữ tối; Circle 04: nền tối + viền/glow ~70% emerald)
+   - Text & số luôn luôn sắc nét và đọc rõ 100% (opacity: 1)
    ============================================================================ */
 (function () {
   'use strict';
@@ -26,7 +31,7 @@
   var list  = document.querySelector('[data-impact-list]') || document.querySelector('.impact-list');
   if (!track || !list) return;
 
-  var items   = list.querySelectorAll('.impact-item');
+  var items   = Array.from(list.querySelectorAll('.impact-item'));
   var labels  = list.querySelectorAll('.impact-content, .impact-item__content');
   var accent  = list.querySelector('.impact-item-accent, .impact-accent');
   var accentText = accent && (accent.querySelector('.impact-item-accent-text') || accent.querySelector('p'));
@@ -35,10 +40,19 @@
   gsap.registerPlugin(ScrollTrigger);
   api.mode = 'gsap';
 
+  // Vector offset for each circle when entering (top-left, top-right, bottom-left, bottom-right)
+  // They start displaced outward and glide into (0, 0)
+  var DIRS = [
+    [-38, -38], // 01 top-left
+    [ 38, -38], // 02 top-right
+    [-38,  38], // 03 bottom-left
+    [ 38,  38]  // 04 bottom-right
+  ];
+
   var mm = gsap.matchMedia();
 
   /* Desktop Viewport with smooth scroll scrub */
-  mm.add('(min-width: 992px) and (min-height: 650px) and (prefers-reduced-motion: no-preference)', function () {
+  mm.add('(min-width: 992px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)', function () {
     root.classList.add('motion-impact');
 
     var pinEl = document.querySelector('.impact-section');
@@ -52,18 +66,26 @@
     syncHeaderH();
     ScrollTrigger.addEventListener('refreshInit', syncHeaderH);
 
-    // Initial state: circles enter scale .72 -> 1, labels 100% opaque
-    gsap.set(items, { scale: 0.72, opacity: 0, xPercent: 0, yPercent: 0 });
+    // Initial state: circles enter offset, scale 0.82, opacity 0.25, labels 100% visible
+    items.forEach(function (item, i) {
+      gsap.set(item, {
+        xPercent: DIRS[i][0],
+        yPercent: DIRS[i][1],
+        scale: 0.82,
+        opacity: 0.25
+      });
+    });
     gsap.set(labels, { opacity: 1, filter: 'none' });
     if (accent) gsap.set(accent, { scale: 0, opacity: 0 });
-    if (accentText) gsap.set(accentText, { opacity: 1 });
+    if (accentText) gsap.set(accentText, { opacity: 0 });
 
     var tl = gsap.timeline({
+      defaults: { ease: 'power2.out' },
       scrollTrigger: {
         trigger: track,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 0.6,
+        scrub: 0.8,
         invalidateOnRefresh: true,
         onUpdate: function (self) {
           list.classList.toggle('is--scrubbing', self.progress > 0.05);
@@ -71,44 +93,48 @@
       },
     });
 
-    // 1. Circles scale in .72 -> 1, opacity 0 -> 1 (kf 0 -> 0.35)
-    tl.to(items, {
-      scale: 1,
-      opacity: 1,
-      duration: 0.35,
-      stagger: 0.05,
-      ease: 'power2.out',
-    }, 0);
+    // 1. Circles glide into their exact 2x2 positions (kf 0 -> 0.60) with smooth stagger
+    items.forEach(function (item, i) {
+      var startT = i * 0.08;
+      tl.to(item, {
+        xPercent: 0,
+        yPercent: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 0.44,
+        ease: 'power2.out'
+      }, startT);
+    });
 
-    // 2. Labels ALWAYS stay at opacity: 1 (explicitly guaranteed)
-    tl.to(labels, {
-      opacity: 1,
-      duration: 0.01,
-      ease: 'none',
-    }, 0.35);
+    // Labels guaranteed 100% sharp throughout
+    tl.to(labels, { opacity: 1, duration: 0.01 }, 0);
 
-    // 3. Center accent badge reveals at center intersection (kf 0.35 -> 0.60)
-    // Sits in the center gap without covering text
+    // 2. Center accent pops in at center intersection as composition assembles (kf 0.55 -> 0.78)
     if (accent) {
       tl.to(accent, {
         scale: 1,
         opacity: 1,
-        duration: 0.25,
-        ease: 'back.out(1.4)',
-      }, 0.35);
+        duration: 0.22,
+        ease: 'back.out(1.5)'
+      }, 0.55);
+    }
+    if (accentText) {
+      tl.to(accentText, {
+        opacity: 1,
+        duration: 0.15,
+        ease: 'power1.out'
+      }, 0.65);
     }
 
-    // 4. Hold showcase state: All 4 circles stay at scale 1, opacity 1, 100% legible
+    // 3. Showcase hold: All 4 circles and center accent held in perfect assembled composition (kf 0.78 -> 1.0)
     tl.to(items, {
-      duration: 0.40,
+      xPercent: 0,
+      yPercent: 0,
       scale: 1,
       opacity: 1,
-    }, 0.60);
-
-    // Ensure final state is 100% visible
-    tl.set(items, { scale: 1, opacity: 1 });
-    tl.set(labels, { opacity: 1, filter: 'none' });
-    if (accent) tl.set(accent, { scale: 1, opacity: 1 });
+      duration: 0.22,
+      ease: 'none'
+    }, 0.78);
 
     api.timeline = tl;
     api.trigger = tl.scrollTrigger;
@@ -128,6 +154,7 @@
       gsap.set(items, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0 });
       gsap.set(labels, { opacity: 1, filter: 'none' });
       if (accent) gsap.set(accent, { scale: 1, opacity: 1 });
+      if (accentText) gsap.set(accentText, { opacity: 1 });
     };
   });
 
@@ -137,6 +164,7 @@
     gsap.set(items, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0 });
     gsap.set(labels, { opacity: 1, filter: 'none' });
     if (accent) gsap.set(accent, { scale: 1, opacity: 1 });
+    if (accentText) gsap.set(accentText, { opacity: 1 });
   });
 
 })();

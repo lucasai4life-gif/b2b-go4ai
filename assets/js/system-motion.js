@@ -26,8 +26,6 @@
      2. HERO BOOT SEQUENCE (Section C: 0.0s → 2.5s Cinematic Sequence)
   -------------------------------------------------------------------------- */
   function initHeroBoot() {
-    if (reduce) return;
-
     var heroEnv    = qs('.hero-env');
     var chips      = qs('.hero .chips');
     var titleEl    = qs('.hero__title');
@@ -43,6 +41,26 @@
     var proofItems = qsa('.engine__proof-item strong');
 
     if (!titleEl) return;
+
+    if (reduce) {
+      proofItems.forEach(function (el) {
+        var target = parseFloat(el.getAttribute('data-count'));
+        var suffix = el.getAttribute('data-suffix') || '';
+        if (!isNaN(target)) {
+          var formatted = target.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          el.textContent = formatted + suffix;
+        }
+        el.setAttribute('data-counted', 'hero');
+      });
+      return;
+    }
+
+    // Task 2: Initialize proof metrics to 0+ so they count up from 0 on page boot
+    proofItems.forEach(function (el) {
+      var suffix = el.getAttribute('data-suffix') || '';
+      el.textContent = '0' + suffix;
+      el.setAttribute('data-counted', 'hero');
+    });
 
     // Initial states: elements hidden before boot
     gsap.set([chips, titleEl, sub, ctas, pipe].filter(Boolean), { autoAlpha: 0, y: 35 });
@@ -127,7 +145,7 @@
       }, null, 2.45);
     }
 
-    // 2.5s: Proof metrics count-up
+    // Task 2: Proof metrics count-up (runs right after AI Passport verify at ~2.5s)
     if (proofItems.length) {
       tl.call(function () {
         proofItems.forEach(function (el, i) {
@@ -135,24 +153,108 @@
             var target = parseFloat(el.getAttribute('data-count'));
             var suffix = el.getAttribute('data-suffix') || '';
             if (isNaN(target)) return;
+
             var start = performance.now();
-            var dur = 1400;
-            (function tick(now) {
-              var t = Math.min((now - start) / dur, 1);
-              var eased = t < 0.6 ? (t / 0.6) * 0.82 : 0.82 + ((t - 0.6) / 0.4) * 0.18;
+            var dur = 1500; // 1.4–1.7s duration
+
+            function tick(now) {
+              var progress = Math.min((now - start) / dur, 1);
+              // power2.out easing: 1 - (1 - progress)^2
+              var eased = 1 - (1 - progress) * (1 - progress);
               var val = Math.round(target * eased);
-              var formatted = val >= 1000 ? val.toLocaleString('vi-VN') : val;
+              var formatted = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
               el.textContent = formatted + suffix;
-              if (t < 1) requestAnimationFrame(tick);
-              else {
-                el.textContent = (target >= 1000 ? target.toLocaleString('vi-VN') : target) + suffix;
+
+              if (progress < 1) {
+                requestAnimationFrame(tick);
+              } else {
+                var finalFormatted = target.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                el.textContent = finalFormatted + suffix;
                 el.setAttribute('data-counted', 'hero');
+
+                // Finish pulse & scanline
+                el.classList.add('is--done');
+                var parentItem = el.closest('.engine__proof-item');
+                if (parentItem) parentItem.classList.add('is--done');
               }
-            })(start);
-          }, i * 180);
+            }
+            requestAnimationFrame(tick);
+          }, i * 130); // 100–150ms stagger
         });
       }, null, 2.5);
     }
+  }
+
+  /* --------------------------------------------------------------------------
+     2b. HERO PIPELINE AUTO-LOOP (Khung năng lực — Task 1)
+  -------------------------------------------------------------------------- */
+  function initPipelineAutoLoop() {
+    var pipeline = qs('.hero__pipeline');
+    var trust = qs('.hero__trust');
+    if (!pipeline || !trust) return;
+
+    var pills = qsa('li:not(.hero__trust-sep)', trust);
+    var seps  = qsa('.hero__trust-sep', trust);
+    if (!pills.length) return;
+
+    var currentIndex = 0;
+    var timer = null;
+    var isHovered = false;
+
+    function activatePill(idx) {
+      if (idx < 0 || idx >= pills.length) idx = 0;
+      currentIndex = idx;
+
+      pills.forEach(function (p, i) {
+        p.classList.toggle('is--active', i === idx);
+      });
+
+      // Pulse connecting arrow between previous and current
+      var prevSepIdx = idx > 0 ? idx - 1 : seps.length - 1;
+      seps.forEach(function (s, i) {
+        if (i === prevSepIdx && idx > 0) {
+          s.classList.add('is--pulse');
+          setTimeout(function () { s.classList.remove('is--pulse'); }, 400);
+        } else {
+          s.classList.remove('is--pulse');
+        }
+      });
+    }
+
+    // Prefers-reduced-motion: static visible pills with first pill active
+    if (reduce) {
+      activatePill(0);
+      return;
+    }
+
+    activatePill(0);
+
+    function nextPill() {
+      if (isHovered) return;
+      var nextIdx = (currentIndex + 1) % pills.length;
+      activatePill(nextIdx);
+    }
+
+    function startCycle() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(nextPill, 1000); // 900–1100ms
+    }
+
+    // Desktop hover: pause & activate hovered pill
+    pills.forEach(function (pill, idx) {
+      pill.addEventListener('mouseenter', function () {
+        isHovered = true;
+        if (timer) { clearInterval(timer); timer = null; }
+        activatePill(idx);
+      });
+    });
+
+    trust.addEventListener('mouseleave', function () {
+      isHovered = false;
+      startCycle();
+    });
+
+    startCycle();
   }
 
   /* --------------------------------------------------------------------------
@@ -550,13 +652,20 @@
       tl.to(mediaCol, {
         clipPath: 'inset(0 0% 0 0)',
         duration: 0.7,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        onComplete: function () {
+          // Task 4: Clear clipPath & transform so CSS position: sticky works unobstructed on desktop
+          gsap.set(mediaCol, { clearProps: 'clipPath,transform' });
+        }
       }, 0);
 
       tl.to(bodyCol, {
         clipPath: 'inset(0 0 0 0%)',
         duration: 0.65,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        onComplete: function () {
+          gsap.set(bodyCol, { clearProps: 'clipPath,transform' });
+        }
       }, 0.1);
 
       if (timeline) {
@@ -576,21 +685,7 @@
       }
     });
 
-    qsa('.case__media-col .case-video-embed').forEach(function (el) {
-      gsap.fromTo(el,
-        { y: 12 },
-        {
-          y: -12,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.2,
-          }
-        }
-      );
-    });
+    // NOTE for Task 4: Removed parallax scrub on .case-video-embed because it breaks CSS sticky scroll on desktop
   }
 
   /* --------------------------------------------------------------------------
@@ -687,6 +782,7 @@
   function boot() {
     initHeaderHeroSync();
     initHeroBoot();
+    initPipelineAutoLoop();
     initHeroParallax();
     initSectionIndexParallax();
     initKineticTypography();
