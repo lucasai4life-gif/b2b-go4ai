@@ -1,16 +1,9 @@
 /* ============================================================================
-   system-motion.js — High-Tech Enterprise AI System
-   GO4AI / b2b-go4ai — v1.0.0
+   system-motion.js — High-Tech Enterprise AI System & Cinematic Experience
+   GO4AI / b2b-go4ai — v2.1.0
 
    Motion language: BOOT → PROCESS → OUTPUT → VERIFY
    Requires: GSAP 3.15+ + ScrollTrigger (already loaded before this file)
-   Does NOT conflict with: motion-impact.js (bang-chung section only)
-                           proposal.js (initCounters via data-count, initReveal)
-
-   TRÁNH "rẻ tiền":
-   - Không neon tím, không particle bay, không glitch nhấp nháy
-   - Chỉ emerald (#08906c / #34d399) và neutral grays
-   - Opacity và transform thôi — không text shadow quá mạnh
    ============================================================================ */
 (function () {
   'use strict';
@@ -24,37 +17,25 @@
   gsap.registerPlugin(ScrollTrigger);
 
   /* --------------------------------------------------------------------------
-     1. UTILITY
+     1. UTILITIES
   -------------------------------------------------------------------------- */
   function qs(sel, ctx) { return (ctx || document).querySelector(sel); }
   function qsa(sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); }
 
   /* --------------------------------------------------------------------------
-     2. HERO BOOT SEQUENCE  (BOOT phase)
-        Runs once on page load, ~1.4 s total, triggers via DOMContentLoaded.
-        Elements:
-          .hero__content .chips            → system status label
-          .hero__title                     → headline reveal (mask + sweep)
-          .text--grad                      → emerald light sweep
-          .hero__sub                       → body text fade
-          .hero__ctas, .hero__pipeline     → CTA + pipeline
-          .hero__visual.hero-engine        → engine already has CSS animations,
-                                             we just add a sequential "boot" class
+     2. HERO BOOT SEQUENCE (Section C: 0.0s → 2.5s Cinematic Sequence)
   -------------------------------------------------------------------------- */
-  
   function initHeroBoot() {
     if (reduce) return;
 
-    var chips    = qs('.hero .chips');
-    var titleEl  = qs('.hero__title');
-    var grad     = titleEl && titleEl.querySelector('.text--grad');
-    var line1    = titleEl; // we treat the whole h1 but split visually via CSS
-    var sub      = qs('.hero__sub');
-    var ctas     = qs('.hero__ctas');
-    var pipe     = qs('.hero__pipeline');
-    var heroEnv  = qs('.hero-env');
-    var engine   = qs('.hero__visual.hero-engine');
-    var core     = qs('#engine-core');
+    var heroEnv    = qs('.hero-env');
+    var chips      = qs('.hero .chips');
+    var titleEl    = qs('.hero__title');
+    var grad       = titleEl && titleEl.querySelector('.text--grad');
+    var sub        = qs('.hero__sub');
+    var ctas       = qs('.hero__ctas');
+    var pipe       = qs('.hero__pipeline');
+    var core       = qs('#engine-core');
     var coreStatus = core && core.querySelector('.engine-core__status span:last-child');
     var roleCards  = qsa('.engine-card--role');
     var outCards   = qsa('.engine-card--output');
@@ -63,75 +44,94 @@
 
     if (!titleEl) return;
 
-    // Initial hidden states
-    gsap.set([chips, titleEl, sub, ctas, pipe].filter(Boolean), { autoAlpha: 0, y: 20 });
+    // Initial states: elements hidden before boot
+    gsap.set([chips, titleEl, sub, ctas, pipe].filter(Boolean), { autoAlpha: 0, y: 35 });
     if (chips) gsap.set(chips, { y: 0 });
     if (heroEnv) gsap.set(heroEnv, { autoAlpha: 0 });
-    gsap.set(roleCards, { autoAlpha: 0, x: -16 });
-    gsap.set(outCards,  { autoAlpha: 0, x: 16 });
-    if (passport) gsap.set(passport, { autoAlpha: 0, scale: 0.9 });
+    gsap.set(roleCards, { autoAlpha: 0, x: -24 });
+    gsap.set(outCards,  { autoAlpha: 0, x: 24 });
+    if (passport) gsap.set(passport, { autoAlpha: 0, scale: 0.88 });
 
-    var tl = gsap.timeline({ delay: 0.1 });
+    var tl = gsap.timeline({ delay: 0.05 });
 
-    // T=0: hero environment grid fades in
-    if (heroEnv) tl.to(heroEnv, { autoAlpha: 1, duration: 0.7, ease: 'power2.out' }, 0);
-
-    // T=0.25: eyebrow status label
-    if (chips) tl.to(chips, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, 0.25);
-
-    // T=0.5: headline line 1 reveals
-    tl.to(titleEl, { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.5);
-
-    // T=0.85: emerald phrase scan
-    if (grad) {
-      tl.call(function() {
-        grad.classList.add('hero-grad--sweep');
-      }, null, 0.85);
+    // 0.0s: technical environment appears
+    if (heroEnv) {
+      tl.to(heroEnv, { autoAlpha: 1, duration: 0.65, ease: 'power2.out' }, 0);
     }
 
-    // T=0.9: Core status changes to INITIALIZING
+    // 0.2s: system status eyebrow appears
+    if (chips) {
+      tl.to(chips, { autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, 0.2);
+    }
+
+    // 0.4s: headline line 1 mask reveal
+    tl.to(titleEl, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.4);
+
+    // 0.7s: green phrase scan & sweep
+    if (grad) {
+      tl.call(function () {
+        grad.classList.add('hero-grad--sweep');
+      }, null, 0.7);
+    }
+
+    // 1.0s: AI Core boot sequence starts
     if (core && coreStatus) {
-      tl.call(function() {
+      tl.call(function () {
         core.classList.add('engine-core--booting');
         coreStatus.textContent = 'SYSTEM INITIALIZING…';
-      }, null, 0.9);
+      }, null, 1.0);
     }
 
-    // T=1.1: Role cards slide in
-    tl.to(roleCards, { autoAlpha: 1, x: 0, duration: 0.4, stagger: 0.1, ease: 'power2.out' }, 1.1);
+    // 1.3s: Role cards appear (Sales -> HR -> Finance)
+    tl.to(roleCards, {
+      autoAlpha: 1,
+      x: 0,
+      duration: 0.45,
+      stagger: 0.12,
+      ease: 'power2.out'
+    }, 1.3);
 
-    // T=1.6: Sub text
-    if (sub) tl.to(sub, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.6);
+    // Subtext & CTAs
+    if (sub) tl.to(sub, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 1.5);
+    if (ctas) tl.to(ctas, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.6);
+    if (pipe) tl.to(pipe, { autoAlpha: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 1.7);
 
-    // T=1.8: Core becomes ACTIVE
+    // 1.6s - 1.8s: Core switches to ACTIVE
     if (core && coreStatus) {
-      tl.call(function() {
+      tl.call(function () {
         core.classList.remove('engine-core--booting');
         core.classList.add('engine-core--live');
         coreStatus.textContent = 'AI ENABLEMENT ACTIVE';
       }, null, 1.8);
     }
 
-    // T=2.0: Output cards blink on
-    tl.to(outCards, { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.12, ease: 'power2.out' }, 2.0);
+    // 1.9s: Output cards activate (Proposal -> Dashboard -> SOP)
+    tl.to(outCards, {
+      autoAlpha: 1,
+      x: 0,
+      duration: 0.4,
+      stagger: 0.12,
+      ease: 'power2.out'
+    }, 1.9);
 
-    // T=2.5: AI Passport verify
+    // 2.3s: AI Passport VERIFIED
     if (passport) {
-      tl.to(passport, { autoAlpha: 1, scale: 1, duration: 0.4, ease: 'back.out(1.4)' }, 2.5);
-      tl.call(function() {
+      tl.to(passport, {
+        autoAlpha: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: 'back.out(1.4)'
+      }, 2.3);
+      tl.call(function () {
         passport.classList.add('engine-passport--verified');
-      }, null, 2.8);
+      }, null, 2.45);
     }
 
-    // T=2.6: CTAs + pipeline
-    if (ctas) tl.to(ctas, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 2.6);
-    if (pipe) tl.to(pipe, { autoAlpha: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 2.75);
-
-    // T=3.0: Proof metrics count up
-    if (!reduce && proofItems.length) {
-      tl.call(function() {
-        proofItems.forEach(function(el, i) {
-          setTimeout(function() {
+    // 2.5s: Proof metrics count-up
+    if (proofItems.length) {
+      tl.call(function () {
+        proofItems.forEach(function (el, i) {
+          setTimeout(function () {
             var target = parseFloat(el.getAttribute('data-count'));
             var suffix = el.getAttribute('data-suffix') || '';
             if (isNaN(target)) return;
@@ -139,7 +139,7 @@
             var dur = 1400;
             (function tick(now) {
               var t = Math.min((now - start) / dur, 1);
-              var eased = t < 0.6 ? (t / 0.6) * 0.8 : 0.8 + ((t - 0.6) / 0.4) * 0.2;
+              var eased = t < 0.6 ? (t / 0.6) * 0.82 : 0.82 + ((t - 0.6) / 0.4) * 0.18;
               var val = Math.round(target * eased);
               var formatted = val >= 1000 ? val.toLocaleString('vi-VN') : val;
               el.textContent = formatted + suffix;
@@ -149,12 +149,15 @@
                 el.setAttribute('data-counted', 'hero');
               }
             })(start);
-          }, i * 200);
+          }, i * 180);
         });
-      }, null, 3.0);
+      }, null, 2.5);
     }
   }
 
+  /* --------------------------------------------------------------------------
+     3. HERO PARALLAX DEPTH (Desktop Cursor-Reactive)
+  -------------------------------------------------------------------------- */
   function initHeroParallax() {
     if (reduce) return;
     if (window.matchMedia('(max-width: 991px)').matches) return;
@@ -171,40 +174,39 @@
     var tx = 0, ty = 0;
     var raf = null;
 
-    heroSection.addEventListener('mousemove', function(e) {
+    heroSection.addEventListener('mousemove', function (e) {
       var rect = heroSection.getBoundingClientRect();
       mx = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
       my = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
     }, { passive: true });
 
-    heroSection.addEventListener('mouseleave', function() {
+    heroSection.addEventListener('mouseleave', function () {
       mx = 0; my = 0;
     });
 
     function lerp(a, b, t) { return a + (b - a) * t; }
 
     function tick() {
-      tx = lerp(tx, mx, 0.06);
-      ty = lerp(ty, my, 0.06);
+      tx = lerp(tx, mx, 0.05);
+      ty = lerp(ty, my, 0.05);
 
       if (heroEnvGrid) {
-        heroEnvGrid.style.transform = 'perspective(600px) rotateX(20deg) translate(' +
-          (tx * 4) + 'px, ' + (ty * 2) + 'px)';
+        heroEnvGrid.style.transform = 'perspective(600px) rotateX(20deg) translate(' + (tx * 4) + 'px, ' + (ty * 2) + 'px)';
       }
       if (roleCol) {
-        roleCol.style.transform = 'translate(' + (tx * 5) + 'px, ' + (ty * 3) + 'px)';
+        roleCol.style.transform = 'translate(' + (tx * 6) + 'px, ' + (ty * 3) + 'px)';
       }
       if (core) {
-        core.style.transform = 'translate(' + (tx * 2) + 'px, ' + (ty * 2) + 'px)';
+        core.style.transform = 'translate(' + (tx * 2.5) + 'px, ' + (ty * 2.5) + 'px)';
       }
       if (outputCol) {
-        outputCol.style.transform = 'translate(' + (-tx * 4) + 'px, ' + (-ty * 2.5) + 'px)';
+        outputCol.style.transform = 'translate(' + (-tx * 5) + 'px, ' + (-ty * 3) + 'px)';
       }
       raf = requestAnimationFrame(tick);
     }
 
-    var io = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
         if (e.isIntersecting) { raf = requestAnimationFrame(tick); }
         else { cancelAnimationFrame(raf); }
       });
@@ -212,12 +214,15 @@
     io.observe(heroSection);
   }
 
+  /* --------------------------------------------------------------------------
+     4. OVERSIZED SECTION INDEX PARALLAX (Section G)
+  -------------------------------------------------------------------------- */
   function initSectionIndexParallax() {
     if (reduce) return;
     var indices = qsa('.section-bg-index');
-    indices.forEach(function(el) {
+    indices.forEach(function (el) {
       gsap.to(el, {
-        yPercent: -20,
+        yPercent: -22,
         ease: 'none',
         scrollTrigger: {
           trigger: el.closest('section'),
@@ -229,40 +234,32 @@
     });
   }
 
-
   /* --------------------------------------------------------------------------
-     3. KINETIC TYPOGRAPHY — SECTION HEADINGS  (BOOT → PROCESS on scroll)
-        Targets every section's .head__title / .title--l inside [data-reveal]
-        Supplement the existing fade-in with mask+blur entrance and
-        .text--grad gradient sweep.
+     5. KINETIC TYPOGRAPHY (Section G)
   -------------------------------------------------------------------------- */
   function initKineticTypography() {
     if (reduce) return;
 
-    /* Heading pairs: eyebrow (.chips) + title (.title--l or .head__title) */
-    var headSections = qsa('[data-reveal] .title--l, [data-reveal] .head__title, .impact-section .title--l');
+    var headSections = qsa('[data-reveal] .title--l, [data-reveal] .head__title');
 
-    headSections.forEach(function(title) {
-      /* Skip hero (handled by boot sequence) */
+    headSections.forEach(function (title) {
       if (title.closest('.hero')) return;
 
       var grad = title.querySelector('.text--grad');
 
       ScrollTrigger.create({
         trigger: title,
-        start: 'top 82%',
+        start: 'top 85%',
         once: true,
-        onEnter: function() {
-          /* Title reveal: from below + blur → sharp */
+        onEnter: function () {
           gsap.fromTo(title,
-            { autoAlpha: 0, y: 28, filter: 'blur(6px)' },
-            { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.72, ease: 'power3.out' }
+            { autoAlpha: 0, y: 30, filter: 'blur(5px)' },
+            { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'power3.out' }
           );
-          /* Gradient sweep for .text--grad — add class 200ms after heading visible */
           if (grad) {
-            setTimeout(function() {
+            setTimeout(function () {
               grad.classList.add('heading-grad--sweep');
-            }, 200);
+            }, 250);
           }
         }
       });
@@ -270,47 +267,40 @@
   }
 
   /* --------------------------------------------------------------------------
-     4. DATA COUNTER UPGRADE  (OUTPUT phase)
-        Replaces proposal.js initCounters behavior with:
-        - digital counter easing (fast start, slow end)
-        - emerald pulse when counter hits final value
-        - scanline effect on metric boxes
-        Works by hijacking data-count nodes BEFORE proposal.js fires,
-        OR by deferring to after DOMContentLoaded.
+     6. METRIC COUNTERS (Section E)
   -------------------------------------------------------------------------- */
   function initSystemCounters() {
-    /* We augment, not replace — add class to trigger CSS scanline effect */
     var nodes = qsa('[data-count]');
     if (!nodes.length) return;
 
-    nodes.forEach(function(el) {
-      /* Mark as system-counter for CSS styling */
+    nodes.forEach(function (el) {
+      // Skip if handled by hero boot
+      if (el.getAttribute('data-counted') === 'hero') return;
       el.classList.add('sys-counter');
 
       var observed = false;
-      var io = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
           if (!entry.isIntersecting || observed) return;
           observed = true;
           io.disconnect();
+
+          if (el.getAttribute('data-counted')) return;
+          el.setAttribute('data-counted', 'sys');
 
           var target = parseFloat(el.getAttribute('data-count'));
           if (isNaN(target)) return;
 
           var prefix = el.getAttribute('data-prefix') || '';
           var suffix = el.getAttribute('data-suffix') || '';
-          var dur = target >= 1000 ? 1500 : 1100;
+          var dur = target >= 1000 ? 1600 : 1200;
           var start = performance.now();
-
-          /* Cancel proposal.js counter by marking done early */
-          el.setAttribute('data-counted', 'sys');
 
           function tick(now) {
             var t = Math.min((now - start) / dur, 1);
-            /* Custom easing: fast then slow — matches digital counter feel */
-            var eased = t < 0.7
-              ? (t / 0.7) * 0.85                  /* fast segment */
-              : 0.85 + ((t - 0.7) / 0.3) * 0.15;  /* slow finish */
+            var eased = t < 0.65
+              ? (t / 0.65) * 0.82
+              : 0.82 + ((t - 0.65) / 0.35) * 0.18;
             var val = Math.round(target * eased);
             var formatted = val >= 1000 ? val.toLocaleString('vi-VN') : val;
             el.textContent = prefix + formatted + suffix;
@@ -322,13 +312,11 @@
               el.textContent = prefix + finalVal + suffix;
 
               if (!reduce) {
-                /* Emerald pulse when done */
                 el.classList.add('sys-counter--done');
-                /* Scanline pass on nearest metric box */
-                var box = el.closest('.sys-metric-box, .impact-content');
+                var box = el.closest('.sys-metric-box, .impact-content, .cs-metric-chip');
                 if (box) {
                   box.classList.add('sys-metric--scan');
-                  setTimeout(function() { box.classList.remove('sys-metric--scan'); }, 900);
+                  setTimeout(function () { box.classList.remove('sys-metric--scan'); }, 900);
                 }
               }
             }
@@ -336,28 +324,24 @@
 
           requestAnimationFrame(tick);
         });
-      }, { threshold: 0.5 });
+      }, { threshold: 0.35 });
 
       io.observe(el);
     });
   }
 
   /* --------------------------------------------------------------------------
-     5. CIRCUIT / DATA-LINE WORKFLOW ANIMATIONS  (PROCESS phase)
-        Targets .cs-case__workflow chips — draws a "data pulse" between steps.
-        Also targets .journey-track__rail (dark panel journey pipeline).
+     7. CIRCUIT WORKFLOW & JOURNEY ANIMATIONS
   -------------------------------------------------------------------------- */
   function initCircuitAnimations() {
     if (reduce) return;
 
-    /* 5.1 Case workflow chips — sequential step reveal */
     var workflows = qsa('.cs-case__workflow, .case-flow');
-    workflows.forEach(function(wf) {
+    workflows.forEach(function (wf) {
       var steps = qsa('.cs-case__workflow-chip, .case-flow__pill', wf);
       var seps  = qsa('.cs-case__workflow-sep, .case-flow__sep', wf);
       if (!steps.length) return;
 
-      /* Initially hide all except first */
       gsap.set(steps, { autoAlpha: 0, x: -8 });
       gsap.set(seps,  { autoAlpha: 0 });
 
@@ -365,26 +349,25 @@
         trigger: wf,
         start: 'top 85%',
         once: true,
-        onEnter: function() {
+        onEnter: function () {
           var tl = gsap.timeline();
-          steps.forEach(function(step, i) {
-            tl.to(step, { autoAlpha: 1, x: 0, duration: 0.28, ease: 'power2.out' }, i * 0.12);
+          steps.forEach(function (step, i) {
+            tl.to(step, { autoAlpha: 1, x: 0, duration: 0.28, ease: 'power2.out' }, i * 0.1);
             if (seps[i]) {
-              tl.to(seps[i], { autoAlpha: 1, duration: 0.18, ease: 'none' }, i * 0.12 + 0.14);
+              tl.to(seps[i], { autoAlpha: 1, duration: 0.18, ease: 'none' }, i * 0.1 + 0.12);
             }
           });
         }
       });
     });
 
-    /* 5.2 Journey pipeline rail draw — add CSS class to trigger rail-fill animation */
     var journeyTrack = qs('.journey-track');
     if (journeyTrack) {
       ScrollTrigger.create({
         trigger: journeyTrack,
         start: 'top 80%',
         once: true,
-        onEnter: function() {
+        onEnter: function () {
           journeyTrack.classList.add('journey-track--boot');
         }
       });
@@ -392,19 +375,18 @@
   }
 
   /* --------------------------------------------------------------------------
-     6. SECTION TRANSITION LINES  (VERIFY phase)
-        Thin horizontal emerald rule between sections as they enter viewport.
+     8. SECTION TRANSITION LINES
   -------------------------------------------------------------------------- */
   function initSectionTransitions() {
     if (reduce) return;
 
     var sections = qsa('section[id]:not(#hero)');
-    sections.forEach(function(sec) {
+    sections.forEach(function (sec) {
       ScrollTrigger.create({
         trigger: sec,
         start: 'top 96%',
         once: true,
-        onEnter: function() {
+        onEnter: function () {
           sec.classList.add('section--in');
         }
       });
@@ -412,42 +394,33 @@
   }
 
   /* --------------------------------------------------------------------------
-     7. CARDS — INTELLIGENT MODULE reveal  (PROCESS phase)
-        .bento__item, .module__item, .benefits__item, .cs-card → lift in
+     9. CARDS REVEAL (Problem, Benefits, Module)
   -------------------------------------------------------------------------- */
   function initCardReveals() {
     if (reduce) return;
 
     var cardGroups = qsa(
-      '.bento__grid .bento__item, .benefits-grid .benefits__item, ' +
-      '.module__row .module__item, .case-study-list .cs-card'
+      '.problem-grid .problem-card, .benefits-grid .benefits__item, ' +
+      '.timeline__dept-grid .timeline__dept-item'
     );
 
-    cardGroups.forEach(function(card, i) {
+    cardGroups.forEach(function (card) {
       ScrollTrigger.create({
         trigger: card,
-        start: 'top 88%',
+        start: 'top 90%',
         once: true,
-        onEnter: function() {
+        onEnter: function () {
           gsap.fromTo(card,
-            { autoAlpha: 0, y: 24 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.5,
-              ease: 'power2.out',
-              delay: 0
-            }
+            { autoAlpha: 0, y: 22 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }
           );
-          card.classList.add('card--booted');
         }
       });
     });
   }
 
   /* --------------------------------------------------------------------------
-     8. DARK PANEL — system grid overlay + number lift
-        Section #sau-dao-tao (.dark-panel)
+     10. DARK PANEL (Section 9)
   -------------------------------------------------------------------------- */
   function initDarkPanel() {
     if (reduce) return;
@@ -455,31 +428,28 @@
     var panel = qs('#sau-dao-tao.dark-panel, .dark-panel');
     if (!panel) return;
 
-    /* Add a high-tech grid overlay class */
     panel.classList.add('dark-panel--sys');
 
     ScrollTrigger.create({
       trigger: panel,
       start: 'top 75%',
       once: true,
-      onEnter: function() {
+      onEnter: function () {
         panel.classList.add('dark-panel--active');
 
-        /* Reveal diag cards with stagger */
-        var diagCards = qsa('.diag-card, .diag-grid__card', panel);
+        var diagCards = qsa('.diag-card', panel);
         if (diagCards.length) {
           gsap.fromTo(diagCards,
-            { autoAlpha: 0, y: 20 },
-            { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.07, ease: 'power2.out', delay: 0.15 }
+            { autoAlpha: 0, y: 18 },
+            { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.06, ease: 'power2.out', delay: 0.1 }
           );
         }
 
-        /* Reveal journey nodes */
         var journeyNodes = qsa('.journey-node', panel);
         if (journeyNodes.length) {
           gsap.fromTo(journeyNodes,
             { autoAlpha: 0, scale: 0.92 },
-            { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.1, ease: 'back.out(1.3)', delay: 0.3 }
+            { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.08, ease: 'back.out(1.3)', delay: 0.25 }
           );
         }
       }
@@ -487,80 +457,85 @@
   }
 
   /* --------------------------------------------------------------------------
-     9. CHIPS / EYEBROW LABELS — fade + tracking expand
+     11. DIAGNOSTIC AUTO-ACTIVE LOOP (Section K: 01 → 02 → 03 → 04 → 05 → 06)
   -------------------------------------------------------------------------- */
-  function initEyebrowAnimations() {
-    if (reduce) return;
+  function initDiagnosticAutoLoop() {
+    var section = qs('#sau-dao-tao');
+    if (!section) return;
+    var diagGrid = qs('.diag-grid, .diag-system', section);
+    if (!diagGrid) return;
+    var cards = qsa('.diag-card', diagGrid);
+    if (!cards.length) return;
 
-    var eyebrows = qsa('section:not(.hero) .chips');
-    eyebrows.forEach(function(el) {
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 88%',
-        once: true,
-        onEnter: function() {
-          gsap.fromTo(el,
-            { autoAlpha: 0, letterSpacing: '-0.02em' },
-            { autoAlpha: 1, letterSpacing: '0.04em', duration: 0.55, ease: 'power2.out' }
-          );
-        }
+    var currentIndex = 0;
+    var timer = null;
+    var isPaused = false;
+    var inView = false;
+
+    function activateCard(index) {
+      if (index < 0 || index >= cards.length) index = 0;
+      currentIndex = index;
+      cards.forEach(function (c, i) {
+        c.classList.toggle('is--active', i === index);
+      });
+      diagGrid.classList.add('has--active-card');
+    }
+
+    function nextCard() {
+      if (isPaused || !inView || reduce) return;
+      var nextIdx = (currentIndex + 1) % cards.length;
+      activateCard(nextIdx);
+    }
+
+    function startTimer() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(nextCard, 2600);
+    }
+
+    diagGrid.addEventListener('mouseenter', function () { isPaused = true; });
+    diagGrid.addEventListener('mouseleave', function () { isPaused = false; });
+    diagGrid.addEventListener('focusin', function () { isPaused = true; });
+    diagGrid.addEventListener('focusout', function () { isPaused = false; });
+
+    cards.forEach(function (card, idx) {
+      card.addEventListener('click', function () {
+        activateCard(idx);
+        startTimer();
       });
     });
-  }
 
-  /* --------------------------------------------------------------------------
-     10. POSITIONING PANEL  (BOOT phase for section 2)
-  -------------------------------------------------------------------------- */
-  function initPositioningPanel() {
-    if (reduce) return;
-
-    var panel = qs('.positioning-panel');
-    if (!panel) return;
-
-    var lead    = qs('.positioning-panel__lead', panel);
-    var content = qs('.positioning-panel__content', panel);
-    var callout = qs('.positioning-panel__callout', panel);
-
-    if (lead) {
-      ScrollTrigger.create({
-        trigger: panel,
-        start: 'top 80%',
-        once: true,
-        onEnter: function() {
-          if (lead) gsap.fromTo(lead,
-            { autoAlpha: 0, x: -24 },
-            { autoAlpha: 1, x: 0, duration: 0.6, ease: 'power3.out' }
-          );
-          if (content) gsap.fromTo(content,
-            { autoAlpha: 0, x: 24 },
-            { autoAlpha: 1, x: 0, duration: 0.6, delay: 0.1, ease: 'power3.out' }
-          );
-          if (callout) gsap.fromTo(callout,
-            { autoAlpha: 0, y: 12 },
-            { autoAlpha: 1, y: 0, duration: 0.4, delay: 0.4, ease: 'power2.out' }
-          );
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        inView = entry.isIntersecting;
+        if (inView && !timer) {
+          startTimer();
+        } else if (!inView && timer) {
+          clearInterval(timer);
+          timer = null;
         }
       });
-    }
+    }, { threshold: 0.15 });
+
+    io.observe(section);
+    activateCard(0);
+    startTimer();
   }
 
   /* --------------------------------------------------------------------------
-     PHASE 2 — CASE CINEMATIC REVEAL  (FLOW + VERIFY phase)
+     12. CASE CINEMATIC REVEAL (Section L)
   -------------------------------------------------------------------------- */
   function initCaseReveal() {
     if (reduce) return;
 
     var cases = qsa('.case');
-    cases.forEach(function(caseEl) {
+    cases.forEach(function (caseEl) {
       var mediaCol  = qs('.case__media-col', caseEl);
       var bodyCol   = qs('.case__body', caseEl);
       var timeline  = qs('.case-timeline', caseEl);
       var metrics   = qsa('.cs-metric-chip, .case-metric', caseEl);
-      var mediaWrap = qs('.case-video-embed, .cs-case__media-wrapper', caseEl);
 
       if (!mediaCol || !bodyCol) return;
 
-      /* Initial state — media clips from right edge, body from left edge */
       gsap.set(mediaCol, { clipPath: 'inset(0 100% 0 0)' });
       gsap.set(bodyCol,  { clipPath: 'inset(0 0 0 100%)' });
 
@@ -572,41 +547,36 @@
         }
       });
 
-      /* Media wipe reveal */
       tl.to(mediaCol, {
         clipPath: 'inset(0 0% 0 0)',
         duration: 0.7,
         ease: 'power3.out'
       }, 0);
 
-      /* Body reveal from opposite direction */
       tl.to(bodyCol, {
         clipPath: 'inset(0 0 0 0%)',
         duration: 0.65,
         ease: 'power3.out'
       }, 0.1);
 
-      /* Timeline draw */
       if (timeline) {
-        tl.call(function() {
+        tl.call(function () {
           timeline.classList.add('timeline--drawn');
-        }, null, 0.5);
+        }, null, 0.45);
       }
 
-      /* Metric chips scan — stagger */
       if (metrics.length) {
-        tl.call(function() {
-          metrics.forEach(function(chip, i) {
-            setTimeout(function() {
+        tl.call(function () {
+          metrics.forEach(function (chip, i) {
+            setTimeout(function () {
               chip.classList.add('chip--revealed');
-            }, i * 120);
+            }, i * 110);
           });
-        }, null, 0.75);
+        }, null, 0.7);
       }
     });
 
-    /* Subtle media parallax as user scrolls */
-    qsa('.case__media-col .case-video-embed, .case__media-col .cs-case__media-wrapper').forEach(function(el) {
+    qsa('.case__media-col .case-video-embed').forEach(function (el) {
       gsap.fromTo(el,
         { y: 12 },
         {
@@ -624,7 +594,7 @@
   }
 
   /* --------------------------------------------------------------------------
-     PHASE 2 — BENTO "SYSTEM MODULES" STAGGER DOCK  (PROCESS phase)
+     13. BENTO SYSTEM MAP ASSEMBLE (Section I)
   -------------------------------------------------------------------------- */
   function initBentoDock() {
     if (reduce) return;
@@ -635,26 +605,24 @@
     var cards = qsa('.bcard', bento);
     if (!cards.length) return;
 
-    /* Initial state — all cards slightly below and invisible */
-    gsap.set(cards, { autoAlpha: 0, y: 28, scale: 0.97 });
+    gsap.set(cards, { autoAlpha: 0, y: 26, scale: 0.98 });
 
     ScrollTrigger.create({
       trigger: bento,
       start: 'top 80%',
       once: true,
-      onEnter: function() {
-        /* Cards "dock" in staggered sequence — wide card first, then modules */
-        var wideCards  = cards.filter(function(c) { return c.classList.contains('bcard--wide'); });
-        var normCards  = cards.filter(function(c) { return !c.classList.contains('bcard--wide'); });
-        var ordered    = [].concat(wideCards.slice(0,1), normCards, wideCards.slice(1));
+      onEnter: function () {
+        var wideCards  = cards.filter(function (c) { return c.classList.contains('bcard--wide'); });
+        var normCards  = cards.filter(function (c) { return !c.classList.contains('bcard--wide'); });
+        var ordered    = [].concat(wideCards.slice(0, 1), normCards, wideCards.slice(1));
 
         var tl = gsap.timeline();
-        ordered.forEach(function(card, i) {
+        ordered.forEach(function (card, i) {
           tl.to(card, {
             autoAlpha: 1,
             y: 0,
             scale: 1,
-            duration: 0.5,
+            duration: 0.48,
             ease: 'power2.out'
           }, i * 0.08);
         });
@@ -663,42 +631,78 @@
   }
 
   /* --------------------------------------------------------------------------
-     PHASE 2 — TYPE A HEADINGS  (apply class to key sections)
+     14. HEADING TYPES
   -------------------------------------------------------------------------- */
   function initHeadingTypes() {
-    /* TYPE A — kinetic scale headings */
     var typeA = ['#van-de', '#nhan-duoc', '#case'];
-    typeA.forEach(function(sel) {
+    typeA.forEach(function (sel) {
       var head = qs(sel + ' .head');
       if (head) head.classList.add('head--type-a');
     });
   }
 
   /* --------------------------------------------------------------------------
+     15. POSITIONING PANEL
+  -------------------------------------------------------------------------- */
+  function initPositioningPanel() {
+    if (reduce) return;
+
+    var panel = qs('.positioning-panel');
+    if (!panel) return;
+
+    var lead    = qs('.positioning-panel__lead', panel);
+    var content = qs('.positioning-panel__content', panel);
+    var callout = qs('.positioning-panel__callout', panel);
+
+    if (lead) {
+      ScrollTrigger.create({
+        trigger: panel,
+        start: 'top 80%',
+        once: true,
+        onEnter: function () {
+          if (lead) gsap.fromTo(lead, { autoAlpha: 0, x: -22 }, { autoAlpha: 1, x: 0, duration: 0.6, ease: 'power3.out' });
+          if (content) gsap.fromTo(content, { autoAlpha: 0, x: 22 }, { autoAlpha: 1, x: 0, duration: 0.6, delay: 0.1, ease: 'power3.out' });
+          if (callout) gsap.fromTo(callout, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.4, delay: 0.35, ease: 'power2.out' });
+        }
+      });
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     16. HEADER DARK SYNC WITH HERO
+  -------------------------------------------------------------------------- */
+  function initHeaderHeroSync() {
+    var header = qs('.site-header');
+    if (!header) return;
+    function update() {
+      header.classList.toggle('is--hero-top', window.scrollY < 120);
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+
+  /* --------------------------------------------------------------------------
      BOOT — run after DOM ready
   -------------------------------------------------------------------------- */
   function boot() {
+    initHeaderHeroSync();
     initHeroBoot();
     initHeroParallax();
     initSectionIndexParallax();
-
-    initEyebrowAnimations();
     initKineticTypography();
     initSystemCounters();
     initCircuitAnimations();
     initCardReveals();
     initDarkPanel();
+    initDiagnosticAutoLoop();
     initSectionTransitions();
     initPositioningPanel();
-
-    /* Phase 2 */
     initCaseReveal();
     initBentoDock();
     initHeadingTypes();
 
-    /* Refresh ScrollTrigger after fonts load */
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function() {
+      document.fonts.ready.then(function () {
         ScrollTrigger.refresh();
       });
     }

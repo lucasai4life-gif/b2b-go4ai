@@ -187,6 +187,7 @@
         if (!entry.isIntersecting) return;
         var el = entry.target;
         io.unobserve(el);
+        if (el.getAttribute('data-counted')) return;
 
         var raw = el.getAttribute('data-count');
         var prefix = el.getAttribute('data-prefix') || '';
