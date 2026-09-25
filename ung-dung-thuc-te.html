@@ -5,12 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ứng dụng thực tế — GO4AI Đào tạo &amp; Triển khai AI Doanh nghiệp</title>
 <meta name="description" content="Các case study ứng dụng AI thực tế tại GO4AI: Workforce Enablement, AI Sales Agent, HR, AI Enterprise Hub, Data &amp; Decision Intelligence và Workflow Automation — kết quả đo lường được.">
-<meta name="theme-color" content="#f2f6f5">
+<meta name="theme-color" content="#06110e">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Azeret+Mono:wght@400;500;600;700&display=swap">
-<script>var d=document.documentElement;d.classList.add("has-js");if(location.protocol==="file:")d.classList.add("is-file-protocol");</script>
+<script>
+/* has-js: nội dung chỉ bị ẩn khi JS chạy được.
+   app-motion: cổng chuyển động cho trang Ứng dụng thực tế. Mọi trạng thái
+   "ẩn ban đầu" đều nằm trong lớp này, và lớp sẽ bị gỡ ngay khi thiếu GSAP,
+   khi người dùng bật prefers-reduced-motion, hoặc khi chuỗi boot lỗi —
+   nên nội dung không bao giờ bị kẹt ở trạng thái ẩn. */
+(function () {
+  var d = document.documentElement;
+  d.classList.add("has-js");
+  if (location.protocol === "file:") d.classList.add("is-file-protocol");
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    d.classList.add("app-motion");
+  }
+})();
+</script>
 <link rel="stylesheet" href="assets/css/go4ai.css">
 <style>
 /* ── Video Sticky Scroll & Layout Balance ──────────────────────────── */
@@ -288,6 +302,7 @@
   margin: 0 !important;
 }
 </style>
+<link rel="stylesheet" href="assets/css/app-case-system.css">
 </head>
 
 <body>
@@ -324,7 +339,8 @@
       </nav>
 
       <div class="site-header__actions">
-        <a class="button button--primary button--s" href="index.html#lien-he">Tư vấn chương trình</a>
+        <a class="header-cta--green" href="ung-dung-thuc-te.html">Xem case thực tế</a>
+        <a class="header-cta--orange" href="index.html#lien-he">Contact us</a>
         <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-nav">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path d="M3 6h18M3 12h18M3 18h18"/>
@@ -344,7 +360,8 @@
           <li><a class="mobile-nav__link" href="tin-tuc-chia-se.html">Tin tức &amp; chia sẻ</a></li>
         </ul>
         <div class="mobile-nav__cta">
-          <a class="button button--primary" href="index.html#lien-he">Tư vấn chương trình</a>
+          <a class="header-cta--green" href="ung-dung-thuc-te.html">Xem case thực tế</a>
+          <a class="header-cta--orange" href="index.html#lien-he">Contact us</a>
         </div>
       </div>
     </div>
@@ -353,22 +370,54 @@
 
 <main id="main">
 
-  <!-- ==================== HERO ==================== -->
+  <!-- ==================== HERO — DARK CINEMATIC AI SYSTEM ==================== -->
   <section class="app-hero" id="hero" aria-labelledby="app-hero-title">
+
+    <!-- depth layers: technical grid · radial glow · data lines · system marks -->
+    <div class="acs-hero-bg" aria-hidden="true">
+      <div class="acs-hero-bg__grid"></div>
+      <div class="acs-hero-bg__glow"></div>
+
+      <svg class="acs-hero-bg__lines" viewBox="0 0 1440 760" preserveAspectRatio="none" aria-hidden="true">
+        <path class="acs-dataline acs-dataline--solid" d="M0 152 H1440"/>
+        <path class="acs-dataline acs-dataline--solid" d="M0 608 H1440"/>
+        <path class="acs-dataline" d="M132 152 V608"/>
+        <path class="acs-dataline" d="M1308 152 V608"/>
+        <path class="acs-dataline" d="M132 152 H392 L442 202 H1002 L1052 152 H1308"/>
+        <path class="acs-dataline" d="M132 608 H392 L442 558 H1002 L1052 608 H1308"/>
+        <circle class="acs-dataline__node" cx="442" cy="202" r="2.6"/>
+        <circle class="acs-dataline__node" cx="1002" cy="202" r="2.6"/>
+        <circle class="acs-dataline__node" cx="442" cy="558" r="2.6"/>
+      </svg>
+
+      <div class="acs-hero-bg__beam"></div>
+      <div class="acs-hero-bg__vignette"></div>
+      <div class="acs-hero-bg__brackets"><span></span><span></span><span></span><span></span></div>
+
+      <span class="acs-coord acs-coord--tl">[ 10.7769 / 106.7009 ]</span>
+      <span class="acs-coord acs-coord--tr">[ SYS &middot; 6 / 6 ]</span>
+      <span class="acs-coord acs-coord--bl">[ NODE &middot; GO4AI ]</span>
+      <span class="acs-coord acs-coord--br">[ REV &middot; 2026 ]</span>
+
+      <span class="acs-syslabel acs-syslabel--tl">AI / DEPLOYMENT SYSTEM</span>
+      <span class="acs-syslabel acs-syslabel--tr">REAL-WORLD OUTPUT</span>
+      <span class="acs-syslabel acs-syslabel--br">STATUS: ACTIVE</span>
+    </div>
+
     <div class="padding-global">
       <div class="container">
-        <div class="app-hero__inner" data-reveal>
-          <div class="app-hero__eyebrow">
+        <div class="app-hero__inner">
+          <div class="app-hero__eyebrow acs-hero-seq">
             <span class="app-hero__dot"></span>
             <span>ỨNG DỤNG THỰC TẾ</span>
           </div>
 
           <h1 class="app-hero__title" id="app-hero-title">
-            Đừng chỉ nhìn AI có thể làm gì.<br>
-            <span class="text--grad">Hãy nhìn đầu ra thực tế.</span>
+            <span class="acs-line acs-line--1"><span class="acs-line__i">Đừng chỉ nhìn AI có thể làm gì.</span></span>
+            <span class="acs-line acs-line--grad acs-line--2"><span class="acs-line__i">Hãy nhìn đầu ra thực tế.</span></span>
           </h1>
 
-          <p class="app-hero__desc">
+          <p class="app-hero__desc acs-hero-seq">
             Mỗi chương trình đào tạo và giải pháp AI tại GO4AI đều xuất phát từ bài toán vận hành thật của doanh nghiệp, chuẩn hóa thành quy trình tác nghiệp và đo lường bằng kết quả kiểm chứng được.
           </p>
 
@@ -409,6 +458,24 @@
   </section>
 
 
+  <!-- ==================== CASE INDEX RAIL (desktop) ==================== -->
+  <nav class="acs-rail" id="acs-rail" aria-label="Chỉ mục case study" aria-hidden="true">
+    <ol class="acs-rail__list">
+            <li><a class="acs-rail__item" href="#case-01" data-rail-index="0" aria-label="Case 01">01</a></li>
+            <li><a class="acs-rail__item" href="#case-02" data-rail-index="1" aria-label="Case 02">02</a></li>
+            <li><a class="acs-rail__item" href="#case-03" data-rail-index="2" aria-label="Case 03">03</a></li>
+            <li><a class="acs-rail__item" href="#case-04" data-rail-index="3" aria-label="Case 04">04</a></li>
+            <li><a class="acs-rail__item" href="#case-05" data-rail-index="4" aria-label="Case 05">05</a></li>
+            <li><a class="acs-rail__item" href="#case-06" data-rail-index="5" aria-label="Case 06">06</a></li>
+            <li><a class="acs-rail__item" href="#case-07" data-rail-index="6" aria-label="Case 07">07</a></li>
+    </ol>
+    <div class="acs-rail__meta" aria-hidden="true">
+      <span class="acs-rail__dot"></span>
+      <span class="acs-rail__count">CASE 01 / 07</span>
+      <span class="acs-rail__status">STATUS / ACTIVE</span>
+    </div>
+  </nav>
+
   <!-- ==================== CASE STUDY LIBRARY ==================== -->
   <section class="cs-library" id="cases" aria-label="Danh sách 7 case study thực tế">
     <div class="padding-global">
@@ -419,7 +486,13 @@
         CASE 01 — AI ENABLEMENT   |   Tone: White / Light
         ══════════════════════════════════════════════════════════
         -->
-        <article class="cs-case cs-case--light" data-reveal aria-labelledby="cs-01-title">
+        <article class="cs-case cs-case--light" id="case-01" aria-labelledby="cs-01-title">
+          <div class="acs-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="acs-case-meta" aria-hidden="true">
+            <span class="acs-case-meta__idx">CASE / 01</span>
+            <span class="acs-case-meta__sep"></span>
+            <span class="acs-case-meta__status">DEPLOYMENT STATUS: VERIFIED</span>
+          </div>
           <div class="cs-case__num-badge" aria-hidden="true">01</div>
           <div class="cs-case__grid">
 
@@ -461,8 +534,10 @@
               <div class="cs-case__header">
                 <span class="case__tag">Workforce Enablement</span>
                 <h2 class="cs-case__title" id="cs-01-title">AI Enablement — Phát triển năng lực AI trong công việc</h2>
+                <span class="acs-title-rule" aria-hidden="true"></span>
               </div>
               <div class="case-timeline">
+                <span class="acs-tl-fill" aria-hidden="true"></span>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
@@ -513,15 +588,15 @@
               </div>
               <div class="cs-case__metric-row">
                 <div class="cs-metric-chip">
-                  <span class="cs-metric-chip__num">3.000+</span>
+                  <span class="cs-metric-chip__num" data-acs-count="3000" data-acs-suffix="+">3.000+</span>
                   <span class="cs-metric-chip__label">Người học đã tiếp cận</span>
                 </div>
                 <div class="cs-metric-chip">
-                  <span class="cs-metric-chip__num">14+</span>
+                  <span class="cs-metric-chip__num" data-acs-count="14" data-acs-suffix="+">14+</span>
                   <span class="cs-metric-chip__label">Đơn vị giáo dục đã phối hợp</span>
                 </div>
                 <div class="cs-metric-chip">
-                  <span class="cs-metric-chip__num">10+</span>
+                  <span class="cs-metric-chip__num" data-acs-count="10" data-acs-suffix="+">10+</span>
                   <span class="cs-metric-chip__label">Doanh nghiệp đã triển khai</span>
                 </div>
               </div>
@@ -536,13 +611,21 @@
           </div>
         </article>
 
+        <div class="acs-divider" aria-hidden="true"><span></span></div>
+
 
         <!--
         ══════════════════════════════════════════════════════════
         CASE 02 — AI PASSPORT   |   Tone: Pale Green
         ══════════════════════════════════════════════════════════
         -->
-        <article class="cs-case cs-case--pale" data-reveal aria-labelledby="cs-02-title">
+        <article class="cs-case cs-case--pale" id="case-02" aria-labelledby="cs-02-title">
+          <div class="acs-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="acs-case-meta" aria-hidden="true">
+            <span class="acs-case-meta__idx">CASE / 02</span>
+            <span class="acs-case-meta__sep"></span>
+            <span class="acs-case-meta__status">DEPLOYMENT STATUS: VERIFIED</span>
+          </div>
           <div class="cs-case__num-badge" aria-hidden="true">02</div>
           <div class="cs-case__grid">
 
@@ -584,8 +667,10 @@
               <div class="cs-case__header">
                 <span class="case__tag">AI Capability Verification · Workforce Enablement</span>
                 <h2 class="cs-case__title" id="cs-02-title">AI Passport — Xác thực năng lực AI thực tế cho tổ chức</h2>
+                <span class="acs-title-rule" aria-hidden="true"></span>
               </div>
               <div class="case-timeline">
+                <span class="acs-tl-fill" aria-hidden="true"></span>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
@@ -647,13 +732,21 @@
           </div>
         </article>
 
+        <div class="acs-divider" aria-hidden="true"><span></span></div>
+
 
         <!--
         ══════════════════════════════════════════════════════════
         CASE 03 — AI SALES AGENT   |   Tone: Dark Emerald
         ══════════════════════════════════════════════════════════
         -->
-        <article class="cs-case cs-case--dark" data-reveal aria-labelledby="cs-03-title">
+        <article class="cs-case cs-case--dark" id="case-03" aria-labelledby="cs-03-title">
+          <div class="acs-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="acs-case-meta" aria-hidden="true">
+            <span class="acs-case-meta__idx">CASE / 03</span>
+            <span class="acs-case-meta__sep"></span>
+            <span class="acs-case-meta__status">DEPLOYMENT STATUS: VERIFIED</span>
+          </div>
           <div class="cs-case__num-badge" aria-hidden="true">03</div>
           <div class="cs-case__grid">
 
@@ -695,8 +788,10 @@
               <div class="cs-case__header">
                 <span class="case__tag case__tag--dark">AI Sales Agent · Sales Automation</span>
                 <h2 class="cs-case__title" id="cs-03-title">AI Sales Agent cho tập đoàn sản xuất quy mô lớn</h2>
+                <span class="acs-title-rule" aria-hidden="true"></span>
               </div>
               <div class="case-timeline case-timeline--dark">
+                <span class="acs-tl-fill" aria-hidden="true"></span>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
@@ -785,13 +880,21 @@
           </div>
         </article>
 
+        <div class="acs-divider" aria-hidden="true"><span></span></div>
+
 
         <!--
         ══════════════════════════════════════════════════════════
         CASE 04 — AI CHO HR & TUYỂN DỤNG   |   Tone: Pale Green
         ══════════════════════════════════════════════════════════
         -->
-        <article class="cs-case cs-case--pale" data-reveal aria-labelledby="cs-04-title">
+        <article class="cs-case cs-case--pale" id="case-04" aria-labelledby="cs-04-title">
+          <div class="acs-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="acs-case-meta" aria-hidden="true">
+            <span class="acs-case-meta__idx">CASE / 04</span>
+            <span class="acs-case-meta__sep"></span>
+            <span class="acs-case-meta__status">DEPLOYMENT STATUS: VERIFIED</span>
+          </div>
           <div class="cs-case__num-badge" aria-hidden="true">04</div>
           <div class="cs-case__grid">
 
@@ -843,8 +946,10 @@
               <div class="cs-case__header">
                 <span class="case__tag">HR &amp; Tuyển dụng</span>
                 <h2 class="cs-case__title" id="cs-04-title">AI cho HR &amp; Tuyển dụng</h2>
+                <span class="acs-title-rule" aria-hidden="true"></span>
               </div>
               <div class="case-timeline">
+                <span class="acs-tl-fill" aria-hidden="true"></span>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
@@ -891,13 +996,21 @@
           </div>
         </article>
 
+        <div class="acs-divider" aria-hidden="true"><span></span></div>
+
 
         <!--
         ══════════════════════════════════════════════════════════
         CASE 05 — AI ENTERPRISE HUB   |   Tone: White
         ══════════════════════════════════════════════════════════
         -->
-        <article class="cs-case cs-case--light" data-reveal aria-labelledby="cs-05-title">
+        <article class="cs-case cs-case--light" id="case-05" aria-labelledby="cs-05-title">
+          <div class="acs-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="acs-case-meta" aria-hidden="true">
+            <span class="acs-case-meta__idx">CASE / 05</span>
+            <span class="acs-case-meta__sep"></span>
+            <span class="acs-case-meta__status">DEPLOYMENT STATUS: VERIFIED</span>
+          </div>
           <div class="cs-case__num-badge" aria-hidden="true">05</div>
           <div class="cs-case__grid">
 
@@ -939,8 +1052,10 @@
               <div class="cs-case__header">
                 <span class="case__tag">Enterprise AI · Integrated Operations</span>
                 <h2 class="cs-case__title" id="cs-05-title">AI Enterprise Hub — Nền tảng điều phối vận hành doanh nghiệp</h2>
+                <span class="acs-title-rule" aria-hidden="true"></span>
               </div>
               <div class="case-timeline">
+                <span class="acs-tl-fill" aria-hidden="true"></span>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
@@ -1027,13 +1142,21 @@
           </div>
         </article>
 
+        <div class="acs-divider" aria-hidden="true"><span></span></div>
+
 
         <!--
         ══════════════════════════════════════════════════════════
         CASE 06 — DATA & DECISION INTELLIGENCE   |   Tone: Pale Green Gradient
         ══════════════════════════════════════════════════════════
         -->
-        <article class="cs-case cs-case--pale" data-reveal aria-labelledby="cs-06-title">
+        <article class="cs-case cs-case--pale" id="case-06" aria-labelledby="cs-06-title">
+          <div class="acs-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="acs-case-meta" aria-hidden="true">
+            <span class="acs-case-meta__idx">CASE / 06</span>
+            <span class="acs-case-meta__sep"></span>
+            <span class="acs-case-meta__status">DEPLOYMENT STATUS: VERIFIED</span>
+          </div>
           <div class="cs-case__num-badge" aria-hidden="true">06</div>
           <div class="cs-case__grid">
 
@@ -1075,8 +1198,10 @@
               <div class="cs-case__header">
                 <span class="case__tag">Data &amp; Decision Intelligence · AI Agent</span>
                 <h2 class="cs-case__title" id="cs-06-title">AI Agent hỗ trợ xử lý dữ liệu &amp; ra quyết định</h2>
+                <span class="acs-title-rule" aria-hidden="true"></span>
               </div>
               <div class="case-timeline">
+                <span class="acs-tl-fill" aria-hidden="true"></span>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
@@ -1136,13 +1261,21 @@
           </div>
         </article>
 
+        <div class="acs-divider" aria-hidden="true"><span></span></div>
+
 
         <!--
         ══════════════════════════════════════════════════════════
         CASE 07 — AI WORKFLOW & AUTOMATION   |   Tone: Dark Near-Black
         ══════════════════════════════════════════════════════════
         -->
-        <article class="cs-case cs-case--dark-close" data-reveal aria-labelledby="cs-07-title">
+        <article class="cs-case cs-case--dark-close" id="case-07" aria-labelledby="cs-07-title">
+          <div class="acs-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="acs-case-meta" aria-hidden="true">
+            <span class="acs-case-meta__idx">CASE / 07</span>
+            <span class="acs-case-meta__sep"></span>
+            <span class="acs-case-meta__status">DEPLOYMENT STATUS: VERIFIED</span>
+          </div>
           <div class="cs-case__num-badge" aria-hidden="true">07</div>
           <div class="cs-case__grid">
 
@@ -1201,8 +1334,10 @@
               <div class="cs-case__header">
                 <span class="case__tag case__tag--dark">Workflow &amp; Automation</span>
                 <h2 class="cs-case__title" id="cs-07-title">AI Workflow &amp; Automation</h2>
+                <span class="acs-title-rule" aria-hidden="true"></span>
               </div>
               <div class="case-timeline case-timeline--dark">
+                <span class="acs-tl-fill" aria-hidden="true"></span>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
@@ -1401,88 +1536,10 @@
   </div>
 </footer>
 
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/js/proposal.js"></script>
-<script>
-(function () {
-
-  /* ── VIDEO CARD INTERACTION ────────────────────────────────────────── */
-  document.querySelectorAll('[data-video-card]').forEach(card => {
-    const video   = card.querySelector('video');
-    const poster  = card.querySelector('.case-video-card__poster');
-    const playBtn = card.querySelector('.case-video-card__play-btn');
-    if (!video || !poster || !playBtn) return;
-
-    playBtn.addEventListener('click', () => {
-      const hasSource = video.currentSrc || video.querySelector('source') || video.src;
-      if (hasSource) {
-        poster.style.opacity = '0';
-        setTimeout(() => { poster.style.display = 'none'; }, 300);
-        video.play().catch(() => {});
-      } else {
-        playBtn.style.transform = 'scale(0.93)';
-        setTimeout(() => { playBtn.style.transform = ''; }, 150);
-        const badge = card.querySelector('.case-video-card__badge span:last-child');
-        if (badge) {
-          const orig = badge.textContent;
-          badge.textContent = 'CHỜ NGUỒN VIDEO';
-          setTimeout(() => { badge.textContent = orig; }, 2000);
-        }
-      }
-    });
-  });
-
-  /* ── SCROLL REVEAL ────────────────────────────────────────────────── */
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-revealed');
-
-      entry.target.querySelectorAll('.case-timeline__item').forEach((item, i) => {
-        setTimeout(() => {
-          item.style.opacity = '1';
-          item.style.transform = 'translateY(0)';
-        }, i * 90);
-      });
-
-      entry.target.querySelectorAll('.cs-pipeline__node, .cs-auto-flow__node, .cs-flow-chip').forEach((node, i) => {
-        setTimeout(() => {
-          node.style.opacity = '1';
-          node.style.transform = 'translateY(0)';
-        }, 200 + i * 80);
-      });
-
-      obs.unobserve(entry.target);
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.cs-case').forEach(el => {
-    el.querySelectorAll('.case-timeline__item, .cs-pipeline__node, .cs-auto-flow__node, .cs-flow-chip').forEach(item => {
-      item.style.opacity = '0';
-      item.style.transform = 'translateY(10px)';
-      item.style.transition = 'opacity 0.4s cubic-bezier(.22,.61,.36,1), transform 0.4s cubic-bezier(.22,.61,.36,1)';
-    });
-    obs.observe(el);
-  });
-
-  /* ── METRIC NUM REVEAL ────────────────────────────────────────────── */
-  const numObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'translateY(0) scale(1)';
-      numObs.unobserve(e.target);
-    });
-  }, { threshold: 0.5 });
-
-  document.querySelectorAll('.app-case-metric__num').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(8px) scale(0.95)';
-    el.style.transition = 'opacity 0.5s cubic-bezier(.22,.61,.36,1), transform 0.5s cubic-bezier(.22,.61,.36,1)';
-    numObs.observe(el);
-  });
-
-}());
-</script>
+<script src="assets/js/app-case-system.js"></script>
 
 </body>
 </html>
