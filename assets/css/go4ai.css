@@ -7961,6 +7961,7 @@ body.lucas-page {
 .cs-case__media {
   position: relative;
   width: 100%;
+  min-width: 0;
 }
 
 @media (min-width: 992px) {
@@ -7975,6 +7976,7 @@ body.lucas-page {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 .cs-case__header {
@@ -8145,6 +8147,62 @@ body.lucas-page {
   margin-left: 2px;
 }
 
+/* ── Hub Workflow & Impact (Case 05) ─────────────────────────────────── */
+.cs-hub-impact {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cs-hub-flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  background: rgba(8, 144, 108, 0.04);
+  border: 1px solid rgba(8, 144, 108, 0.14);
+  border-radius: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.cs-hub-impact-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 18px;
+  background: rgba(8, 144, 108, 0.05);
+  border: 1px solid rgba(8, 144, 108, 0.18);
+  border-left: 3.5px solid var(--green-700);
+  border-radius: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.cs-hub-impact-box__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cs-hub-impact-box__title {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--green-800);
+}
+
+.cs-hub-impact-box__desc {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  line-height: 1.45;
+  margin: 0;
+}
+
 /* ── Automation flow (Case 06) ──────────────────────────────────────────── */
 .cs-auto-flow {
   display: flex;
@@ -8227,7 +8285,7 @@ body.lucas-page {
 
   /* Unified grid: 1 column, video top / content bottom */
   .cs-case__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     padding: 32px 24px;
   }
@@ -8276,7 +8334,8 @@ body.lucas-page {
     padding: 12px;
   }
 
-  .cs-pipeline-strip {
+  .cs-pipeline-strip,
+  .cs-hub-flow {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
