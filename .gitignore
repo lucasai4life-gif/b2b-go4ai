@@ -41,3 +41,6 @@ yarn-error.log*
 
 # Antigravity internal tools (không deploy lên Cloudflare Pages)
 .antigravity-push.sh
+
+# Local agent workspace (memory, per-project notes) — never deploy
+.workbuddy-ai/
