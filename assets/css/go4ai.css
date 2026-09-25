@@ -553,6 +553,23 @@ dl, dd, dt { margin: 0; }
   box-shadow: 0 6px 16px rgba(201, 59, 43, 0.38) !important;
 }
 
+/* ─── MOBILE NAV BASE STATE ───────────────────────────────────────────────
+   Must be hidden at ALL sizes by default.
+   JS adds .is--open — but only show that inside the mobile breakpoint.
+   The desktop override (below) prevents .is--open from leaking to desktop.
+   ───────────────────────────────────────────────────────────────────────── */
+.mobile-nav {
+  display: none !important;
+}
+
+/* Desktop belt-and-suspenders: block .is--open on desktop no matter what */
+@media (min-width: 992px) {
+  .mobile-nav,
+  .mobile-nav.is--open {
+    display: none !important;
+  }
+}
+
 /* Mobile & Tablet (< 992px) */
 @media (max-width: 991px) {
   .site-header__inner {
