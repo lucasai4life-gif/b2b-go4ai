@@ -7691,6 +7691,34 @@ body.lucas-page {
   user-select: none;
 }
 
+/* Flow Chips on Light / Pale cases */
+.cs-case--light .cs-flow-chip,
+.cs-case--pale .cs-flow-chip {
+  background: rgba(8, 144, 108, 0.06);
+  border-color: rgba(8, 144, 108, 0.2);
+  color: var(--green-800);
+}
+
+.cs-case--light .cs-flow-chip:hover,
+.cs-case--pale .cs-flow-chip:hover {
+  background: rgba(8, 144, 108, 0.12);
+  border-color: rgba(8, 144, 108, 0.35);
+}
+
+.cs-case--light .cs-flow-chip--accent,
+.cs-case--pale .cs-flow-chip--accent {
+  background: var(--green-700);
+  border-color: var(--green-700);
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(8, 144, 108, 0.25);
+}
+
+.cs-case--light .cs-flow-arrow,
+.cs-case--pale .cs-flow-arrow {
+  color: var(--gray-400);
+}
+
+
 /* Impact & 2 Metric Cards */
 .cs-sales-impact {
   display: flex;
