@@ -301,6 +301,755 @@
     font-size: 0.6875rem;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AI CAPABILITY ENGINE — HERO VISUAL REDESIGN
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.hero__visual.hero-engine {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  aspect-ratio: auto;
+  border-radius: 20px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(85% 65% at 50% 30%, rgba(8, 144, 108, 0.08) 0%, rgba(8, 144, 108, 0) 70%),
+    radial-gradient(40% 40% at 85% 85%, rgba(52, 211, 153, 0.05) 0%, rgba(52, 211, 153, 0) 60%),
+    #ffffff;
+  border: 1px solid rgba(8, 144, 108, 0.16);
+  box-shadow:
+    0 24px 56px -12px rgba(21, 23, 26, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset,
+    0 16px 40px -10px rgba(8, 144, 108, 0.1);
+  padding: 24px 22px 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 1141px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) 580px;
+    gap: clamp(40px, 3.5vw, 64px);
+  }
+}
+
+@media (max-width: 1140px) {
+  .hero__grid {
+    grid-template-columns: 1fr;
+    gap: var(--s-40);
+  }
+  .hero__visual.hero-engine {
+    max-width: 580px;
+    margin: 0 auto;
+  }
+}
+
+/* Ambient Canvas Grid */
+.engine__ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.engine__grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(8, 144, 108, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(8, 144, 108, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(circle at 50% 45%, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, black 40%, transparent 80%);
+}
+
+.engine__glow--emerald {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 240px;
+  background: radial-gradient(ellipse at center, rgba(52, 211, 153, 0.18) 0%, rgba(8, 144, 108, 0.06) 50%, transparent 75%);
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+/* ── Engine Stage (2.5D Layout) ────────────────────────────────────────── */
+.engine__stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 128px 198px 146px;
+  gap: 30px;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  perspective: 1000px;
+}
+
+/* SVG Connectors Canvas */
+.engine__connectors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.engine__wire--base {
+  stroke: rgba(8, 144, 108, 0.15);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.engine__wire--active {
+  stroke-width: 2;
+  stroke-linecap: round;
+  fill: none;
+  stroke-dasharray: 6 6;
+  animation: engineStream 18s linear infinite;
+  opacity: 0.85;
+  transition: opacity 0.3s ease, stroke-width 0.3s ease;
+}
+
+@keyframes engineStream {
+  from { stroke-dashoffset: 240; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Columns Common ────────────────────────────────────────────────────── */
+.engine__col {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.engine__col-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--green-700);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.engine__col-label::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green-700);
+}
+
+/* ── 1. Left Input Cards ───────────────────────────────────────────────── */
+.engine__col--input {
+  align-self: center;
+}
+
+.engine-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(8, 144, 108, 0.16);
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 12px rgba(21, 23, 26, 0.03), 0 1px 2px rgba(21, 23, 26, 0.02);
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.24s ease,
+              box-shadow 0.24s ease,
+              opacity 0.24s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.engine-card:hover,
+.engine-card:focus-visible,
+.engine-card.is--selected {
+  transform: translateX(3px) scale(1.02);
+  border-color: rgba(8, 144, 108, 0.45);
+  box-shadow: 0 8px 20px rgba(8, 144, 108, 0.12), 0 2px 6px rgba(21, 23, 26, 0.04);
+  outline: none;
+}
+
+.engine-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.engine-badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.engine-badge--sales {
+  background: rgba(8, 144, 108, 0.1);
+  color: #06694f;
+  border: 1px solid rgba(8, 144, 108, 0.25);
+}
+
+.engine-badge--hr {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0369a1;
+  border: 1px solid rgba(14, 165, 233, 0.25);
+}
+
+.engine-badge--fin {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.engine-port {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.8);
+}
+
+.engine-card__task {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #15171a;
+  line-height: 1.25;
+}
+
+.engine-card__sub {
+  font-size: 0.5625rem;
+  color: #73817e;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+/* ── 2. Center AI Core Module (Focal Point) ────────────────────────────── */
+.engine__col--core {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.engine-core {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(168deg, #0e1614 0%, #06110e 100%);
+  border: 1.5px solid rgba(52, 211, 153, 0.35);
+  border-radius: 14px;
+  padding: 14px 12px 12px;
+  box-shadow:
+    0 20px 42px rgba(0, 0, 0, 0.25),
+    0 0 32px rgba(8, 144, 108, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  box-sizing: border-box;
+  animation: coreBreathing 6s ease-in-out infinite;
+}
+
+@keyframes coreBreathing {
+  0%, 100% {
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.25), 0 0 28px rgba(8, 144, 108, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border-color: rgba(52, 211, 153, 0.35);
+  }
+  50% {
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3), 0 0 40px rgba(52, 211, 153, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(52, 211, 153, 0.55);
+  }
+}
+
+.engine-core__head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.engine-core__brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.engine-core__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: radarDot 2s ease-in-out infinite;
+}
+
+@keyframes radarDot {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+.engine-core__sys {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #34d399;
+  text-transform: uppercase;
+}
+
+.engine-core__title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+/* 3 States inside Core */
+.engine-core__states {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.engine-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  transition: all 0.2s ease;
+}
+
+.engine-state--ai {
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.45);
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.15);
+}
+
+.engine-state__num {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  min-width: 14px;
+}
+
+.engine-state--ai .engine-state__num {
+  color: #34d399;
+}
+
+.engine-state__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.engine-state__label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.engine-state--ai .engine-state__label {
+  color: #ffffff;
+}
+
+.engine-state__desc {
+  font-size: 0.5625rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.2;
+  margin-top: 1px;
+}
+
+.engine-state--ai .engine-state__desc {
+  color: #a7f3d0;
+}
+
+.engine-state__tag {
+  font-size: 0.5rem;
+  font-weight: 700;
+  background: rgba(52, 211, 153, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 4px;
+  padding: 1px 4px;
+  letter-spacing: 0.04em;
+}
+
+/* Connectors inside core */
+.engine-core__sep {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 8px;
+  position: relative;
+}
+
+.engine-core__sep-line {
+  width: 1.5px;
+  height: 100%;
+  background: rgba(52, 211, 153, 0.35);
+}
+
+/* Core Foot Status */
+.engine-core__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(52, 211, 153, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 8px;
+  margin-top: 10px;
+}
+
+.engine-core__status-indicator {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+}
+
+/* ── 3. Right Output Cards ─────────────────────────────────────────────── */
+.engine__col--output {
+  align-self: center;
+}
+
+.engine-card--output {
+  padding: 7px 10px;
+}
+
+.engine-card__out-tag {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--green-800);
+  background: rgba(8, 144, 108, 0.08);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+
+.engine-check {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: var(--green-700);
+}
+
+/* ── Pinnacle Module: AI PASSPORT ──────────────────────────────────────── */
+.engine-passport {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(145deg, #032118 0%, #06382b 100%);
+  border: 1.5px solid rgba(52, 211, 153, 0.45);
+  border-radius: 10px;
+  padding: 9px 11px;
+  box-shadow: 0 8px 20px rgba(3, 33, 24, 0.24), 0 0 16px rgba(52, 211, 153, 0.15);
+  color: #ffffff;
+  margin-top: 4px;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.engine-passport:hover,
+.engine-passport.is--highlighted {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(3, 33, 24, 0.35), 0 0 24px rgba(52, 211, 153, 0.3);
+  border-color: rgba(52, 211, 153, 0.7);
+}
+
+.engine-passport__shield {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+.engine-passport__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.engine-passport__title {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+}
+
+.engine-passport__status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #34d399;
+  letter-spacing: 0.02em;
+}
+
+.engine-passport__check {
+  font-weight: 900;
+  color: #34d399;
+}
+
+.engine-passport__chips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ── 4. Proof Metrics Strip (Subordinate Proof Layer) ──────────────────── */
+.engine__proof-strip {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr auto 1fr !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 16px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(8, 144, 108, 0.14) !important;
+  box-shadow: 0 4px 16px rgba(21, 23, 26, 0.04) !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+.engine__proof-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: center;
+}
+
+.engine__proof-item strong {
+  font-family: var(--font-mono);
+  font-size: 1.125rem !important;
+  font-weight: 800 !important;
+  color: var(--green-800) !important;
+  line-height: 1.15;
+}
+
+.engine__proof-item span {
+  font-size: 0.6875rem !important;
+  font-weight: 500;
+  color: var(--gray-600);
+  line-height: 1.25;
+}
+
+.engine__proof-sep {
+  width: 1px;
+  height: 24px;
+  background: rgba(8, 144, 108, 0.15);
+}
+
+/* ── 5. Hover & Focus Highlighting States ──────────────────────────────── */
+.engine__stage.is--highlight-sales .engine-card--role[data-route="sales"],
+.engine__stage.is--highlight-sales .engine-card--output[data-route="sales"],
+.engine__stage.is--highlight-hr .engine-card--role[data-route="hr"],
+.engine__stage.is--highlight-hr .engine-card--output[data-route="hr"],
+.engine__stage.is--highlight-fin .engine-card--role[data-route="finance"],
+.engine__stage.is--highlight-fin .engine-card--output[data-route="finance"] {
+  border-color: #08906c !important;
+  box-shadow: 0 8px 24px rgba(8, 144, 108, 0.18) !important;
+  transform: scale(1.03) !important;
+}
+
+.engine__stage.is--highlight-sales #wire-sales,
+.engine__stage.is--highlight-sales #wire-prop,
+.engine__stage.is--highlight-hr #wire-hr,
+.engine__stage.is--highlight-hr #wire-sop,
+.engine__stage.is--highlight-fin #wire-fin,
+.engine__stage.is--highlight-fin #wire-dash {
+  stroke-width: 3 !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.8));
+}
+
+.engine__stage.is--highlight-sales .engine-card--role:not([data-route="sales"]),
+.engine__stage.is--highlight-sales .engine-card--output:not([data-route="sales"]),
+.engine__stage.is--highlight-hr .engine-card--role:not([data-route="hr"]),
+.engine__stage.is--highlight-hr .engine-card--output:not([data-route="hr"]),
+.engine__stage.is--highlight-fin .engine-card--role:not([data-route="finance"]),
+.engine__stage.is--highlight-fin .engine-card--output:not([data-route="finance"]) {
+  opacity: 0.55;
+}
+
+/* ── 6. Responsive Breakdown ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hero__visual.hero-engine {
+    padding: 16px 12px 14px;
+    gap: 14px;
+  }
+
+  .engine__stage {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .engine__connectors {
+    display: none;
+  }
+
+  .engine__col-label {
+    grid-column: 1 / -1;
+    margin-bottom: 2px;
+  }
+
+  .engine__col--input {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .engine-card {
+    padding: 6px 6px;
+    border-radius: 8px;
+  }
+
+  .engine-badge {
+    font-size: 0.5rem;
+    padding: 1px 4px;
+  }
+
+  .engine-port {
+    width: 5px;
+    height: 5px;
+  }
+
+  .engine-card__task {
+    font-size: 0.625rem;
+    line-height: 1.25;
+    margin-top: 2px;
+  }
+
+  .engine-card__sub {
+    display: none;
+  }
+
+  .engine-core {
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+
+  .engine-core__title {
+    font-size: 0.8125rem;
+  }
+
+  .engine-state {
+    padding: 5px 6px;
+  }
+
+  .engine-state__label {
+    font-size: 0.625rem;
+  }
+
+  .engine-state__desc {
+    font-size: 0.5rem;
+  }
+
+  .engine__col--output {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .engine-card--output {
+    padding: 6px 6px;
+  }
+
+  .engine-card__out-tag {
+    font-size: 0.5rem;
+    padding: 1px 3px;
+  }
+
+  .engine-check {
+    font-size: 0.5625rem;
+  }
+
+  .engine-passport {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+    padding: 8px 10px;
+  }
+
+  .engine-passport__shield {
+    width: 24px;
+    height: 24px;
+  }
+
+  .engine-passport__title {
+    font-size: 0.625rem;
+  }
+
+  .engine-passport__status {
+    font-size: 0.5625rem;
+  }
+
+  .engine-passport__chips {
+    font-size: 0.4375rem;
+  }
+
+  .engine__proof-strip {
+    gap: 6px !important;
+    padding: 8px 10px !important;
+  }
+
+  .engine__proof-item strong {
+    font-size: 0.9375rem !important;
+  }
+
+  .engine__proof-item span {
+    font-size: 0.625rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .engine__wire--active,
+  .engine-core,
+  .engine-core__dot {
+    animation: none !important;
+  }
+}
 </style>
 </head>
 
@@ -417,74 +1166,242 @@
           </div>
         </div>
 
-        <div class="hero__visual" role="img" aria-label="Sơ đồ: từ bài toán công việc đến đầu ra có bằng chứng">
-          <svg viewBox="0 0 520 520" fill="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#08906c"/>
-                <stop offset="100%" stop-color="#34bf99"/>
-              </linearGradient>
-            </defs>
+        <div class="hero__visual hero-engine" role="region" aria-label="Bộ máy năng lực AI — AI Capability Engine: Từ vai trò nhân sự đến xác thực năng lực">
+          <!-- Ambient background glow & grid canvas -->
+          <div class="engine__ambient" aria-hidden="true">
+            <div class="engine__glow engine__glow--emerald"></div>
+            <div class="engine__grid-pattern"></div>
+          </div>
 
-            <!-- guide grid -->
-            <g stroke="#d9dfde" stroke-width="1">
-              <path d="M40 130h440M40 260h440M40 390h440"/>
-              <path d="M130 40v440M260 40v440M390 40v440"/>
-            </g>
+          <!-- Main 2.5D Engine Stage -->
+          <div class="engine__stage" id="engine-stage">
 
-            <!-- concentric capability rings -->
-            <g stroke="url(#ringGrad)" stroke-width="1.2" opacity=".85">
-              <circle class="hero-svg__ring" cx="260" cy="260" r="70"/>
-              <circle class="hero-svg__ring" cx="260" cy="260" r="130"/>
-              <circle class="hero-svg__ring" cx="260" cy="260" r="190"/>
-            </g>
+            <!-- SVG Data Connections Layer -->
+            <svg class="engine__connectors" viewBox="0 0 532 320" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="streamGrad-sales" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#08906c" stop-opacity="0.3"/>
+                  <stop offset="60%" stop-color="#34d399" stop-opacity="0.8"/>
+                  <stop offset="100%" stop-color="#34d399" stop-opacity="1"/>
+                </linearGradient>
+                <linearGradient id="streamGrad-hr" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#08906c" stop-opacity="0.3"/>
+                  <stop offset="60%" stop-color="#34d399" stop-opacity="0.8"/>
+                  <stop offset="100%" stop-color="#34d399" stop-opacity="1"/>
+                </linearGradient>
+                <linearGradient id="streamGrad-fin" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#08906c" stop-opacity="0.3"/>
+                  <stop offset="60%" stop-color="#34d399" stop-opacity="0.8"/>
+                  <stop offset="100%" stop-color="#34d399" stop-opacity="1"/>
+                </linearGradient>
 
-            <!-- workflow polyline: task -> AI -> output -> evidence -->
-            <g stroke="#15171a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path class="hero-svg__path" d="M96 396 L170 396 L170 300 L260 300"/>
-              <path class="hero-svg__path" d="M260 300 L260 220 L356 220"/>
-              <path class="hero-svg__path" d="M356 220 L356 150 L438 150"/>
-              <path class="hero-svg__path" d="M356 220 L356 300 L300 300"/>
-            </g>
+                <linearGradient id="outGrad-prop" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#34d399" stop-opacity="1"/>
+                  <stop offset="60%" stop-color="#08906c" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#08906c" stop-opacity="0.3"/>
+                </linearGradient>
+                <linearGradient id="outGrad-dash" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#34d399" stop-opacity="1"/>
+                  <stop offset="60%" stop-color="#08906c" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#08906c" stop-opacity="0.3"/>
+                </linearGradient>
+                <linearGradient id="outGrad-sop" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#34d399" stop-opacity="1"/>
+                  <stop offset="60%" stop-color="#08906c" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#08906c" stop-opacity="0.3"/>
+                </linearGradient>
+              </defs>
 
-            <!-- nodes -->
-            <g fill="#15171a">
-              <circle cx="96" cy="396" r="6"/>
-              <circle cx="438" cy="150" r="6"/>
-              <circle cx="300" cy="300" r="6"/>
-            </g>
-            <g fill="#08906c">
-              <circle class="hero-svg__node-green" cx="170" cy="396" r="7"/>
-              <circle class="hero-svg__node-green" cx="260" cy="300" r="7"/>
-              <circle class="hero-svg__node-green" cx="356" cy="220" r="7"/>
-            </g>
+              <!-- Static Background Wire Tracks -->
+              <path class="engine__wire--base" d="M128,52 C158,52 162,100 188,100" />
+              <path class="engine__wire--base" d="M128,130 C158,130 162,142 188,142" />
+              <path class="engine__wire--base" d="M128,210 C158,210 162,185 188,185" />
 
-            <!-- core -->
-            <circle cx="260" cy="260" r="34" fill="#15171a"/>
-            <text x="260" y="256" text-anchor="middle" fill="#ffffff" font-family="Archivo, Arial, sans-serif" font-size="13" font-weight="500">Công việc</text>
-            <text x="260" y="274" text-anchor="middle" fill="#60c7ac" font-family="Archivo, Arial, sans-serif" font-size="13" font-weight="500">thật</text>
+              <path class="engine__wire--base" d="M344,100 C368,100 372,52 402,52" />
+              <path class="engine__wire--base" d="M344,142 C368,142 372,130 402,130" />
+              <path class="engine__wire--base" d="M344,185 C368,185 372,208 402,208" />
 
-            <!-- mono labels -->
-            <g fill="#73817e" font-family="'Azeret Mono', monospace" font-size="10">
-              <text x="40" y="118">01 · BÀI TOÁN</text>
-              <text x="356" y="128">04 · BẰNG CHỨNG</text>
-              <text x="40" y="472">02 · THỰC HÀNH</text>
-              <text x="330" y="472">03 · ĐẦU RA</text>
-            </g>
-          </svg>
+              <!-- Animated Pulse Wires -->
+              <path class="engine__wire--active" id="wire-sales" d="M128,52 C158,52 162,100 188,100" stroke="url(#streamGrad-sales)" />
+              <path class="engine__wire--active" id="wire-hr" d="M128,130 C158,130 162,142 188,142" stroke="url(#streamGrad-hr)" />
+              <path class="engine__wire--active" id="wire-fin" d="M128,210 C158,210 162,185 188,185" stroke="url(#streamGrad-fin)" />
 
-          <div class="hero__stat-float">
-            <div>
-              <strong data-count="1000" data-suffix="+">1.000+</strong>
-              <span>Người tham gia chương trình AI ứng dụng</span>
+              <path class="engine__wire--active" id="wire-prop" d="M344,100 C368,100 372,52 402,52" stroke="url(#outGrad-prop)" />
+              <path class="engine__wire--active" id="wire-dash" d="M344,142 C368,142 372,130 402,130" stroke="url(#outGrad-dash)" />
+              <path class="engine__wire--active" id="wire-sop" d="M344,185 C368,185 372,208 402,208" stroke="url(#outGrad-sop)" />
+            </svg>
+
+            <!-- 1. LEFT COLUMN: ROLE CARDS (INPUT) -->
+            <div class="engine__col engine__col--input">
+              <div class="engine__col-label text--mono">INPUT ROLES</div>
+
+              <!-- Card 1: SALES -->
+              <div class="engine-card engine-card--role" data-route="sales" tabindex="0" role="button" aria-label="Vai trò Sales: Chuẩn bị báo giá">
+                <div class="engine-card__header">
+                  <span class="engine-badge engine-badge--sales">SALES</span>
+                  <span class="engine-port" aria-hidden="true"></span>
+                </div>
+                <div class="engine-card__task">Prepare Proposal</div>
+                <div class="engine-card__sub text--mono">Real Work Input</div>
+              </div>
+
+              <!-- Card 2: HR -->
+              <div class="engine-card engine-card--role" data-route="hr" tabindex="0" role="button" aria-label="Vai trò HR: Lọc hồ sơ ứng viên">
+                <div class="engine-card__header">
+                  <span class="engine-badge engine-badge--hr">HR</span>
+                  <span class="engine-port" aria-hidden="true"></span>
+                </div>
+                <div class="engine-card__task">Screen Candidates</div>
+                <div class="engine-card__sub text--mono">JD &amp; Rubric Setup</div>
+              </div>
+
+              <!-- Card 3: FINANCE -->
+              <div class="engine-card engine-card--role" data-route="finance" tabindex="0" role="button" aria-label="Vai trò Finance: Phân tích báo cáo">
+                <div class="engine-card__header">
+                  <span class="engine-badge engine-badge--fin">FINANCE</span>
+                  <span class="engine-port" aria-hidden="true"></span>
+                </div>
+                <div class="engine-card__task">Analyze Report</div>
+                <div class="engine-card__sub text--mono">Anomaly Detection</div>
+              </div>
             </div>
-            <div>
-              <strong data-count="20">20</strong>
-              <span>Trường và đơn vị giáo dục phối hợp</span>
+
+            <!-- 2. CENTER COLUMN: AI CORE (FOCAL POINT) -->
+            <div class="engine__col engine__col--core">
+              <div class="engine-core" id="engine-core">
+                <div class="engine-core__head">
+                  <div class="engine-core__brand">
+                    <span class="engine-core__dot"></span>
+                    <span class="engine-core__sys text--mono">GO4AI SYSTEM</span>
+                  </div>
+                  <div class="engine-core__title">AI ENABLEMENT</div>
+                </div>
+
+                <!-- 3 States Flow -->
+                <div class="engine-core__states">
+                  <!-- State 1 -->
+                  <div class="engine-state engine-state--work">
+                    <div class="engine-state__num text--mono">01</div>
+                    <div class="engine-state__body">
+                      <span class="engine-state__label">REAL WORK</span>
+                      <span class="engine-state__desc">Bài toán công việc thật</span>
+                    </div>
+                  </div>
+
+                  <!-- Down Pulse 1 -->
+                  <div class="engine-core__sep" aria-hidden="true">
+                    <span class="engine-core__sep-line"></span>
+                  </div>
+
+                  <!-- State 2 (Active Core Processor) -->
+                  <div class="engine-state engine-state--ai">
+                    <div class="engine-state__num text--mono">02</div>
+                    <div class="engine-state__body">
+                      <span class="engine-state__label">AI WORKFLOW</span>
+                      <span class="engine-state__desc">Tác nghiệp tự động</span>
+                    </div>
+                    <span class="engine-state__tag text--mono">ENGINE</span>
+                  </div>
+
+                  <!-- Down Pulse 2 -->
+                  <div class="engine-core__sep" aria-hidden="true">
+                    <span class="engine-core__sep-line"></span>
+                  </div>
+
+                  <!-- State 3 -->
+                  <div class="engine-state engine-state--review">
+                    <div class="engine-state__num text--mono">03</div>
+                    <div class="engine-state__body">
+                      <span class="engine-state__label">HUMAN REVIEW</span>
+                      <span class="engine-state__desc">Đánh giá &amp; Tinh chỉnh</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Core Foot Status -->
+                <div class="engine-core__status text--mono">
+                  <span class="engine-core__status-indicator"></span>
+                  <span>CAPABILITY VERIFICATION</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <strong data-count="10">10</strong>
-              <span>Doanh nghiệp dùng portfolio đầu ra</span>
+
+            <!-- 3. RIGHT COLUMN: OUTPUTS & AI PASSPORT -->
+            <div class="engine__col engine__col--output">
+              <div class="engine__col-label text--mono">PROVEN OUTPUTS</div>
+
+              <!-- Output 1: PROPOSAL -->
+              <div class="engine-card engine-card--output" data-route="sales">
+                <div class="engine-card__header">
+                  <span class="engine-card__out-tag text--mono">PROPOSAL</span>
+                  <span class="engine-check" aria-label="Ready to use">✓</span>
+                </div>
+                <div class="engine-card__task">Ready to use</div>
+                <div class="engine-card__sub text--mono">&lt;60s Quote Gen</div>
+              </div>
+
+              <!-- Output 2: DASHBOARD -->
+              <div class="engine-card engine-card--output" data-route="finance">
+                <div class="engine-card__header">
+                  <span class="engine-card__out-tag text--mono">DASHBOARD</span>
+                  <span class="engine-check" aria-label="Updated">✓</span>
+                </div>
+                <div class="engine-card__task">Updated &amp; Alerted</div>
+                <div class="engine-card__sub text--mono">Automated KPI</div>
+              </div>
+
+              <!-- Output 3: SOP -->
+              <div class="engine-card engine-card--output" data-route="hr">
+                <div class="engine-card__header">
+                  <span class="engine-card__out-tag text--mono">SOP &amp; KIT</span>
+                  <span class="engine-check" aria-label="Standardized">✓</span>
+                </div>
+                <div class="engine-card__task">Standardized</div>
+                <div class="engine-card__sub text--mono">Structured Workflow</div>
+              </div>
+
+              <!-- PINNACLE MODULE: AI PASSPORT -->
+              <div class="engine-passport" id="engine-passport">
+                <div class="engine-passport__shield" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
+                </div>
+                <div class="engine-passport__body">
+                  <div class="engine-passport__title text--mono">AI PASSPORT</div>
+                  <div class="engine-passport__status">
+                    <span>EVIDENCE VERIFIED</span>
+                    <span class="engine-passport__check">✓</span>
+                  </div>
+                  <div class="engine-passport__chips text--mono">
+                    <span>Evidence</span>
+                    <span>·</span>
+                    <span>KPI</span>
+                    <span>·</span>
+                    <span>Verified</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Proof Metrics Strip (Subordinate Proof Layer) -->
+          <div class="hero__stat-float engine__proof-strip">
+            <div class="engine__proof-item">
+              <strong data-count="3000" data-suffix="+">3.000+</strong>
+              <span>Người học tiếp cận</span>
+            </div>
+            <div class="engine__proof-sep" aria-hidden="true"></div>
+            <div class="engine__proof-item">
+              <strong data-count="14" data-suffix="+">14+</strong>
+              <span>Đơn vị giáo dục</span>
+            </div>
+            <div class="engine__proof-sep" aria-hidden="true"></div>
+            <div class="engine__proof-item">
+              <strong data-count="10" data-suffix="+">10+</strong>
+              <span>Doanh nghiệp ứng dụng</span>
             </div>
           </div>
         </div>
@@ -2320,5 +3237,42 @@
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/js/motion-impact.js"></script>
 <script src="assets/js/proposal.js"></script>
+<script>
+// AI Capability Engine: Interactive route hover & focus binding
+(function() {
+  function initEngine() {
+    var stage = document.getElementById('engine-stage');
+    var roleCards = document.querySelectorAll('.engine-card--role');
+    var passport = document.getElementById('engine-passport');
+    if (!stage || !roleCards.length) return;
+
+    roleCards.forEach(function(card) {
+      var route = card.getAttribute('data-route');
+      var cls = 'is--highlight-' + (route === 'finance' ? 'fin' : route);
+
+      function activate() {
+        stage.classList.remove('is--highlight-sales', 'is--highlight-hr', 'is--highlight-fin');
+        stage.classList.add(cls);
+        if (passport) passport.classList.add('is--highlighted');
+      }
+
+      function deactivate() {
+        stage.classList.remove('is--highlight-sales', 'is--highlight-hr', 'is--highlight-fin');
+        if (passport) passport.classList.remove('is--highlighted');
+      }
+
+      card.addEventListener('mouseenter', activate);
+      card.addEventListener('mouseleave', deactivate);
+      card.addEventListener('focus', activate);
+      card.addEventListener('blur', deactivate);
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEngine);
+  } else {
+    initEngine();
+  }
+})();
+</script>
 </body>
 </html>
