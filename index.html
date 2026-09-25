@@ -1131,12 +1131,7 @@ html.motion-impact .impact-section {
 }
 
 .impact-bg {
-  position: absolute !important;
-  inset: 0 !important;
-  border-radius: 50% !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  transform: none !important;
+  display: none !important;
 }
 
 .impact-content,
@@ -1249,8 +1244,10 @@ html.motion-impact .impact-section {
   position: absolute !important;
   inset: 0 !important;
   margin: auto !important;
-  width: 34% !important;
-  height: 34% !important;
+  width: 74% !important;
+  height: 74% !important;
+  max-width: 28.125rem !important;
+  max-height: 28.125rem !important;
   border-radius: 50% !important;
   background: radial-gradient(circle, #08906c 0%, #055a43 100%) !important;
   border: 2px solid rgba(52, 211, 153, 0.45) !important;
@@ -1259,20 +1256,20 @@ html.motion-impact .impact-section {
   align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
-  padding: 8% !important;
-  z-index: 3 !important;
-  box-shadow: 0 0 35px rgba(8, 144, 108, 0.45) !important;
+  padding: 2.5rem !important;
+  z-index: 5 !important;
+  box-shadow: 0 0 50px rgba(8, 144, 108, 0.45), 0 20px 40px rgba(0, 0, 0, 0.5) !important;
   pointer-events: none !important;
   will-change: transform, opacity !important;
 }
 .impact-item-accent-text {
-  opacity: 1 !important;
+  transition: opacity 0.3s ease;
 }
 .impact-item-accent-text p {
   color: #ffffff !important;
-  font-size: clamp(0.75rem, 0.95vw, 0.9375rem) !important;
+  font-size: clamp(0.95rem, 1.25vw, 1.25rem) !important;
   font-weight: 600 !important;
-  line-height: 1.35 !important;
+  line-height: 1.4 !important;
   margin: 0 !important;
 }
 
@@ -2329,7 +2326,7 @@ html.motion-impact .impact-section {
           <div class="impact-list" data-impact-list>
             <div class="impact-item is--01">
               <div class="impact-content">
-                <span class="text--number" data-count="1000" data-suffix="+">1.000+</span>
+                <span class="text--number">3.000+</span>
                 <span class="impact-item__label">Người tham gia các chương trình AI ứng dụng</span>
               </div>
               <div class="impact-bg" aria-hidden="true"></div>
@@ -2337,16 +2334,16 @@ html.motion-impact .impact-section {
 
             <div class="impact-item is--02">
               <div class="impact-content">
-                <span class="text--number" data-count="20">20</span>
-                <span class="impact-item__label">Trường và đơn vị giáo dục đã phối hợp</span>
+                <span class="text--number">14+</span>
+                <span class="impact-item__label">Đơn vị giáo dục đã phối hợp</span>
               </div>
               <div class="impact-bg" aria-hidden="true"></div>
             </div>
 
             <div class="impact-item is--03">
               <div class="impact-content">
-                <span class="text--number" data-count="10">10</span>
-                <span class="impact-item__label">Doanh nghiệp sử dụng portfolio đầu ra cho đào tạo, tuyển dụng hoặc dịch vụ nhân sự AI</span>
+                <span class="text--number">10+</span>
+                <span class="impact-item__label">Doanh nghiệp đã triển khai</span>
               </div>
               <div class="impact-bg" aria-hidden="true"></div>
             </div>

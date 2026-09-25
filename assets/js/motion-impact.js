@@ -1,17 +1,21 @@
 /* ============================================================================
    Bằng chứng / Evidence — Scroll-driven Assemble Motion System
-   b2b.go4ai.org — v2.1.0
+   b2b.go4ai.org — v2.2.0
+   Cloned directly from source: lucasgo4ai.life (Webflow interaction a-17 / e-58)
    
-   Task 3 Spec:
-   - Các circle KHÔNG đứng sẵn 2x2 từ đầu
-   - Các circle di chuyển theo scroll
-   - Từng circle vào vị trí (scale/position thay đổi mượt)
-   - Cuối sequence assemble thành composition hoàn chỉnh (lưới 2x2)
-   - Center accent xuất hiện đúng timing ở giao điểm trung tâm
-   - Scroll ngược thì animation reverse đúng
-   - Giữ nguyên 4 màu tương phản hiện tại (Circle 01: nền tối; Circle 02: emerald;
-     Circle 03: mint sáng + chữ tối; Circle 04: nền tối + viền/glow ~70% emerald)
-   - Text & số luôn luôn sắc nét và đọc rõ 100% (opacity: 1)
+   Behavior:
+   1. Initial state: 4 circles rest in 2x2 grid (x: 0, y: 0), 100% visible & legible.
+   2. Pinned sticky sequence:
+      - 0.00 -> 0.20: Hold initial 2x2 grid position.
+      - 0.20 -> 0.65: Circles converge into exact center intersection:
+        · .is--01: (0%, 0%) -> (+50%, +50%)
+        · .is--02: (0%, 0%) -> (-50%, +50%)
+        · .is--03: (0%, 0%) -> (+50%, -50%)
+        · .is--04: (0%, 0%) -> (-50%, -50%)
+      - 0.65 -> 0.80: Center accent circle scales from 0 to 1, accent text fades to 1.
+      - 0.80 -> 1.00: Hold final converged composition.
+   3. Reverse scroll: Reverses smoothly frame-for-frame.
+   4. Text & numbers: Always sharp, opaque, no blur, high contrast.
    ============================================================================ */
 (function () {
   'use strict';
@@ -31,28 +35,35 @@
   var list  = document.querySelector('[data-impact-list]') || document.querySelector('.impact-list');
   if (!track || !list) return;
 
-  var items   = Array.from(list.querySelectorAll('.impact-item'));
-  var labels  = list.querySelectorAll('.impact-content, .impact-item__content');
-  var accent  = list.querySelector('.impact-item-accent, .impact-accent');
+  var item1 = list.querySelector('.impact-item.is--01');
+  var item2 = list.querySelector('.impact-item.is--02');
+  var item3 = list.querySelector('.impact-item.is--03');
+  var item4 = list.querySelector('.impact-item.is--04');
+  var items = [item1, item2, item3, item4].filter(Boolean);
+  var labels = list.querySelectorAll('.impact-content, .impact-item__content');
+  var accent = list.querySelector('.impact-item-accent, .impact-accent');
   var accentText = accent && (accent.querySelector('.impact-item-accent-text') || accent.querySelector('p'));
   if (items.length !== 4) return;
 
   gsap.registerPlugin(ScrollTrigger);
   api.mode = 'gsap';
 
-  // Vector offset for each circle when entering (top-left, top-right, bottom-left, bottom-right)
-  // They start displaced outward and glide into (0, 0)
-  var DIRS = [
-    [-38, -38], // 01 top-left
-    [ 38, -38], // 02 top-right
-    [-38,  38], // 03 bottom-left
-    [ 38,  38]  // 04 bottom-right
+  // Exact Webflow convergence vectors from source a-17:
+  // Item 01 (top-left) moves down-right (+50%, +50%)
+  // Item 02 (top-right) moves down-left (-50%, +50%)
+  // Item 03 (bottom-left) moves up-right (+50%, -50%)
+  // Item 04 (bottom-right) moves up-left (-50%, -50%)
+  var CONVERGE = [
+    { x:  50, y:  50 },
+    { x: -50, y:  50 },
+    { x:  50, y: -50 },
+    { x: -50, y: -50 }
   ];
 
   var mm = gsap.matchMedia();
 
-  /* Desktop Viewport with smooth scroll scrub */
-  mm.add('(min-width: 992px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)', function () {
+  /* Desktop Viewport (>= 992px) */
+  mm.add('(min-width: 992px) and (prefers-reduced-motion: no-preference)', function () {
     root.classList.add('motion-impact');
 
     var pinEl = document.querySelector('.impact-section');
@@ -66,75 +77,85 @@
     syncHeaderH();
     ScrollTrigger.addEventListener('refreshInit', syncHeaderH);
 
-    // Initial state: circles enter offset, scale 0.82, opacity 0.25, labels 100% visible
-    items.forEach(function (item, i) {
+    // Initial state:
+    // Circles are in their natural 2x2 grid positions (x: 0, y: 0), scale: 1, opacity: 1
+    items.forEach(function (item) {
       gsap.set(item, {
-        xPercent: DIRS[i][0],
-        yPercent: DIRS[i][1],
-        scale: 0.82,
-        opacity: 0.25
-      });
-    });
-    gsap.set(labels, { opacity: 1, filter: 'none' });
-    if (accent) gsap.set(accent, { scale: 0, opacity: 0 });
-    if (accentText) gsap.set(accentText, { opacity: 0 });
-
-    var tl = gsap.timeline({
-      defaults: { ease: 'power2.out' },
-      scrollTrigger: {
-        trigger: track,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 0.8,
-        invalidateOnRefresh: true,
-        onUpdate: function (self) {
-          list.classList.toggle('is--scrubbing', self.progress > 0.05);
-        },
-      },
-    });
-
-    // 1. Circles glide into their exact 2x2 positions (kf 0 -> 0.60) with smooth stagger
-    items.forEach(function (item, i) {
-      var startT = i * 0.08;
-      tl.to(item, {
         xPercent: 0,
         yPercent: 0,
         scale: 1,
         opacity: 1,
-        duration: 0.44,
-        ease: 'power2.out'
-      }, startT);
+        pointerEvents: ''
+      });
+    });
+    // Labels 100% visible, crisp and readable at all times
+    gsap.set(labels, { opacity: 1, filter: 'none' });
+    // Center accent starts at scale 0
+    if (accent) gsap.set(accent, { scale: 0, opacity: 1, transformOrigin: '50% 50%' });
+    if (accentText) gsap.set(accentText, { opacity: 0 });
+
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: track,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.8, // Matches Webflow smoothing: 80
+        invalidateOnRefresh: true,
+        onUpdate: function (self) {
+          list.classList.toggle('is--scrubbing', self.progress > 0.05);
+          var moving = self.progress > 0.15 && self.progress < 0.75;
+          items.forEach(function (item) {
+            item.style.pointerEvents = moving ? 'none' : '';
+          });
+        },
+      },
     });
 
-    // Labels guaranteed 100% sharp throughout
+    // Timeline duration 1.0 (normalized scroll progress):
+    // Phase 1: Hold initial 2x2 state (0.00 -> 0.18)
+    tl.to(items, {
+      xPercent: 0,
+      yPercent: 0,
+      duration: 0.18,
+      ease: 'none'
+    }, 0);
+
+    // Phase 2: Converge towards center (0.18 -> 0.64) - Webflow kf 30 -> 60
+    items.forEach(function (item, i) {
+      tl.to(item, {
+        xPercent: CONVERGE[i].x,
+        yPercent: CONVERGE[i].y,
+        duration: 0.46,
+        ease: 'power1.inOut'
+      }, 0.18);
+    });
+
+    // Content stays 100% visible & sharp
     tl.to(labels, { opacity: 1, duration: 0.01 }, 0);
 
-    // 2. Center accent pops in at center intersection as composition assembles (kf 0.55 -> 0.78)
+    // Phase 3: Center accent scales up (0.64 -> 0.80) - Webflow kf 70 -> 80
     if (accent) {
       tl.to(accent, {
         scale: 1,
-        opacity: 1,
-        duration: 0.22,
-        ease: 'back.out(1.5)'
-      }, 0.55);
+        duration: 0.16,
+        ease: 'power2.out'
+      }, 0.64);
     }
     if (accentText) {
       tl.to(accentText, {
         opacity: 1,
-        duration: 0.15,
+        duration: 0.12,
         ease: 'power1.out'
-      }, 0.65);
+      }, 0.68);
     }
 
-    // 3. Showcase hold: All 4 circles and center accent held in perfect assembled composition (kf 0.78 -> 1.0)
+    // Phase 4: Hold final composition (0.80 -> 1.00)
     tl.to(items, {
-      xPercent: 0,
-      yPercent: 0,
-      scale: 1,
-      opacity: 1,
-      duration: 0.22,
+      xPercent: function (i) { return CONVERGE[i].x; },
+      yPercent: function (i) { return CONVERGE[i].y; },
+      duration: 0.20,
       ease: 'none'
-    }, 0.78);
+    }, 0.80);
 
     api.timeline = tl;
     api.trigger = tl.scrollTrigger;
@@ -150,8 +171,10 @@
       api.build = 'reverted';
       list.classList.remove('is--scrubbing');
       ScrollTrigger.removeEventListener('refreshInit', syncHeaderH);
-      // Guarantee fallback state is 100% visible
-      gsap.set(items, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0 });
+      items.forEach(function (item) {
+        item.style.pointerEvents = '';
+        gsap.set(item, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0 });
+      });
       gsap.set(labels, { opacity: 1, filter: 'none' });
       if (accent) gsap.set(accent, { scale: 1, opacity: 1 });
       if (accentText) gsap.set(accentText, { opacity: 1 });
@@ -161,7 +184,10 @@
   /* Mobile / Tablet / Reduced Motion: Instant 100% visibility */
   mm.add('(max-width: 991px), (prefers-reduced-motion: reduce)', function () {
     root.classList.remove('motion-impact');
-    gsap.set(items, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0 });
+    items.forEach(function (item) {
+      item.style.pointerEvents = '';
+      gsap.set(item, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0 });
+    });
     gsap.set(labels, { opacity: 1, filter: 'none' });
     if (accent) gsap.set(accent, { scale: 1, opacity: 1 });
     if (accentText) gsap.set(accentText, { opacity: 1 });
