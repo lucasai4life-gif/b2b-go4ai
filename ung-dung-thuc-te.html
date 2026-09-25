@@ -18,35 +18,7 @@
   overflow: visible !important;
 }
 
-.cs-case__grid {
-  align-items: start;
-}
-
-@media (min-width: 992px) {
-  .cs-case__media {
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    top: calc(var(--header-h, 75px) + 24px) !important;
-    z-index: 2;
-    align-self: start;
-  }
-}
-
-@media (max-width: 991px) {
-  .cs-case__media {
-    position: static !important;
-    top: auto !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cs-case__media {
-    position: static !important;
-    top: auto !important;
-  }
-}
-
-/* Đảm bảo flex/grid child không blow-out và wrap mượt */
+/* Base grid setup: prevent overflow blow-out */
 .cs-case__grid > * {
   min-width: 0;
 }
@@ -57,20 +29,92 @@
   min-width: 0;
 }
 
-.case-timeline__text {
-  word-break: break-word;
-  overflow-wrap: break-word;
+/* ── Desktop Viewport (>= 992px) ─────────────────────────────────── */
+@media (min-width: 992px) {
+  .cs-case__grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 46.5fr) minmax(0, 53.5fr) !important;
+    gap: 48px !important;
+    padding: 48px 56px 48px 48px !important;
+    align-items: start !important;
+  }
+
+  .cs-case__media {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: calc(var(--header-h, 75px) + 24px) !important;
+    z-index: 2;
+    align-self: start;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cs-case__body {
+    max-width: 580px !important;
+    width: 100% !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
+    gap: 18px !important;
+  }
 }
 
-.cs-flow-chips,
-.cs-hub-flow,
-.cs-pipeline-strip {
-  max-width: 100%;
+/* ── Tablet Viewport (641px - 991px) ─────────────────────────────── */
+@media (min-width: 641px) and (max-width: 991px) {
+  .cs-case__grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 28px !important;
+    padding: 32px 32px !important;
+  }
+
+  .cs-case__media {
+    position: static !important;
+    top: auto !important;
+    width: 100%;
+  }
+
+  .cs-case__body {
+    max-width: 100% !important;
+    padding-right: 0 !important;
+    gap: 16px !important;
+  }
 }
 
-/* Khoảng cách nhịp điệu corporate B2B */
-.cs-case__body {
-  gap: 16px;
+/* ── Mobile Viewport (<= 640px) ──────────────────────────────────── */
+@media (max-width: 640px) {
+  .cs-case__grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 22px !important;
+    padding: 24px 20px !important;
+  }
+
+  .cs-case__media {
+    position: static !important;
+    top: auto !important;
+    width: 100%;
+  }
+
+  .cs-case__body {
+    max-width: 100% !important;
+    padding-right: 0 !important;
+    gap: 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-case__media {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+/* ── Typography & Line Length Control ────────────────────────────── */
+.cs-case__title {
+  max-width: 540px;
+  font-size: clamp(1.3125rem, 1.75vw, 1.625rem) !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.02em;
+  margin: 0;
+  word-wrap: break-word;
 }
 
 .case-timeline {
@@ -79,6 +123,169 @@
 
 .case-timeline__item {
   gap: 12px;
+}
+
+.case-timeline__content {
+  max-width: 580px;
+}
+
+.case-timeline__text {
+  max-width: 580px;
+  font-size: 0.9375rem !important;
+  line-height: 1.6 !important;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ── Workflow Chips ──────────────────────────────────────────────── */
+.cs-flow-chips {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px 8px !important;
+  margin-top: 6px !important;
+  max-width: 580px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.cs-flow-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 4px 10px !important;
+  background: rgba(8, 144, 108, 0.06) !important;
+  border: 1px solid rgba(8, 144, 108, 0.2) !important;
+  border-radius: 6px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  color: var(--green-800) !important;
+  white-space: nowrap !important;
+  letter-spacing: 0.01em !important;
+  line-height: 1.3 !important;
+}
+
+.cs-flow-chip--accent {
+  background: rgba(8, 144, 108, 0.14) !important;
+  border-color: rgba(8, 144, 108, 0.35) !important;
+  color: var(--green-900) !important;
+  font-weight: 600 !important;
+}
+
+.cs-flow-arrow {
+  font-family: var(--font-mono) !important;
+  font-size: 0.75rem !important;
+  color: var(--gray-400) !important;
+  user-select: none !important;
+  flex-shrink: 0 !important;
+}
+
+/* Dark theme cases */
+.cs-case--dark .cs-flow-chip,
+.cs-case--dark-close .cs-flow-chip {
+  background: rgba(52, 211, 153, 0.08) !important;
+  border-color: rgba(52, 211, 153, 0.22) !important;
+  color: #a7f3d0 !important;
+}
+
+.cs-case--dark .cs-flow-chip--accent,
+.cs-case--dark-close .cs-flow-chip--accent {
+  background: rgba(52, 211, 153, 0.2) !important;
+  border-color: rgba(52, 211, 153, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.cs-case--dark .cs-flow-arrow,
+.cs-case--dark-close .cs-flow-arrow {
+  color: rgba(52, 211, 153, 0.5) !important;
+}
+
+/* ── Impact & Metric Box Alignment (Bound to 580px Content Column) ── */
+.cs-case__metric-row,
+.cs-pipeline-strip,
+.cs-hub-impact,
+.cs-hub-flow,
+.cs-hub-impact-box,
+.cs-sales-impact,
+.cs-auto-flow {
+  max-width: 580px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Case 01 Metric Row */
+.cs-case__metric-row {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+@media (max-width: 640px) {
+  .cs-case__metric-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+.cs-metric-chip {
+  min-width: 0 !important;
+  padding: 12px 14px !important;
+}
+
+/* Case 02 & Case 06 Pipeline Strip */
+.cs-pipeline-strip {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px 10px !important;
+  padding: 14px 18px !important;
+  border-radius: 10px !important;
+}
+
+.cs-pipeline__desc {
+  flex: 1 1 100% !important;
+  margin-top: 4px !important;
+  margin-left: 0 !important;
+  font-size: 0.8125rem !important;
+  color: var(--gray-600) !important;
+  line-height: 1.45 !important;
+}
+
+/* Case 05 Hub Flow & Impact Box */
+.cs-hub-flow {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px 8px !important;
+  padding: 12px 16px !important;
+  border-radius: 10px !important;
+}
+
+.cs-hub-flow .cs-pipeline__node {
+  padding: 4px 10px !important;
+  font-size: 0.75rem !important;
+  border-radius: 6px !important;
+}
+
+.cs-hub-flow .cs-pipeline__arrow {
+  font-size: 0.75rem !important;
+}
+
+.cs-hub-impact-box {
+  padding: 14px 18px !important;
+  border-radius: 10px !important;
+}
+
+.cs-hub-impact-box__title {
+  font-size: 0.8125rem !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.4 !important;
+}
+
+.cs-hub-impact-box__desc {
+  font-size: 0.8125rem !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
 }
 </style>
 </head>
@@ -752,7 +959,20 @@
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Cách triển khai</div>
-                    <p class="case-timeline__text">Đặt AI làm trung tâm điều phối, liên kết các phân hệ: <strong>Chiến lược → Dự án → Quy trình → Nhân sự → Sales → Tri thức</strong> để dự báo KPI, tạo workflow và phê duyệt tự động.</p>
+                    <div class="cs-flow-chips" role="list" aria-label="Quy trình liên kết đa phân hệ">
+                      <span class="cs-flow-chip">Chiến lược</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Dự án</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Quy trình</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Nhân sự</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Sales</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip cs-flow-chip--accent">Tri thức</span>
+                    </div>
+                    <p class="case-timeline__text" style="margin-top: 6px;">AI làm trung tâm điều phối đa phân hệ, tự động hóa workflow và dự báo KPI theo thời gian thực.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
