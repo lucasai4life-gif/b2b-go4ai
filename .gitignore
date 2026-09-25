@@ -1,0 +1,39 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# QA & test files (internal only)
+_qa/
+
+# WordPress/PHP theme source (not needed for static deploy)
+b2b-go4ai-theme/
+b2b-go4ai-theme.zip
+
+# Temp / cache
+*.cache
+*.tmp
+*.log
+.cache/
+
+# Secret / credentials (never commit)
+.env
+.env.*
+*.key
+*.pem
+secrets.*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if used in future)
+node_modules/
+npm-debug.log*
+yarn-error.log*
