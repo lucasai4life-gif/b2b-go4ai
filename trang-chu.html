@@ -1050,6 +1050,394 @@
     animation: none !important;
   }
 }
+
+/* ============================================================
+   SYSTEM MOTION — HIGH-TECH ENTERPRISE AI SYSTEM
+   v1.0 — b2b-go4ai
+   All rules namespaced to avoid touching global go4ai.css
+   ============================================================ */
+
+/* ── 0. CUSTOM PROPERTIES ────────────────────────────── */
+:root {
+  --sys-emerald:      #08906c;
+  --sys-emerald-lt:   #34d399;
+  --sys-emerald-dk:   #06694f;
+  --sys-grid-color:   rgba(8, 144, 108, 0.06);
+  --sys-grid-size:    44px;
+  --sys-noise-opacity: 0.018;
+  --sys-dark-bg:      #0d1513;
+  --sys-dark-alt:     #111a18;
+  --sys-border:       rgba(8, 144, 108, 0.18);
+  --sys-border-lt:    rgba(8, 144, 108, 0.08);
+}
+
+/* ── 1. HIGH-TECH BACKGROUND — subtle technical grid ─── */
+/* Applied to all light sections via pseudo-element on body */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--sys-grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--sys-grid-color) 1px, transparent 1px);
+  background-size: var(--sys-grid-size) var(--sys-grid-size);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+/* Radial data glow behind hero */
+.section.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(8,144,108,0.07) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── 2. HERO BOOT SEQUENCE ──────────────────────────── */
+
+/* Emerald gradient sweep on .text--grad in hero — triggered by JS */
+.hero .text--grad {
+  position: relative;
+  overflow: visible;
+}
+@keyframes heroGradSweep {
+  0%   { background-position: 200% center; }
+  100% { background-position: -100% center; }
+}
+.hero-grad--sweep {
+  background-size: 200% auto;
+  animation: heroGradSweep 1.1s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+/* Engine boot states — controlled by JS class additions */
+.hero-engine.engine--booting .engine-card--role {
+  animation: cardBoot 0.4s ease-out both;
+}
+.hero-engine.engine--booting .engine-card--role:nth-child(1) { animation-delay: 0s; }
+.hero-engine.engine--booting .engine-card--role:nth-child(2) { animation-delay: 0.12s; }
+.hero-engine.engine--booting .engine-card--role:nth-child(3) { animation-delay: 0.24s; }
+
+@keyframes cardBoot {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Output card active state after boot */
+.hero-engine.engine--active .engine-card--output {
+  animation: outputBoot 0.4s ease-out both;
+}
+.hero-engine.engine--active .engine-card--output:nth-child(1) { animation-delay: 0s; }
+.hero-engine.engine--active .engine-card--output:nth-child(2) { animation-delay: 0.1s; }
+.hero-engine.engine--active .engine-card--output:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes outputBoot {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* AI PASSPORT verification pulse at end of boot */
+.engine-passport--verified .engine-passport__label::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 1.5px solid var(--sys-emerald-lt);
+  animation: passportVerify 0.6s ease-out forwards;
+}
+@keyframes passportVerify {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+/* Emerald data-underline below hero headline — 1s then fades */
+.hero__title::after {
+  content: '';
+  display: block;
+  height: 2px;
+  width: 0;
+  background: var(--sys-emerald);
+  margin-top: 6px;
+  border-radius: 1px;
+  animation: titleUnderline 0.9s 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes titleUnderline {
+  0%   { width: 0; opacity: 1; }
+  65%  { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+/* ── 3. KINETIC TYPOGRAPHY ──────────────────────────── */
+
+/* Gradient sweep for section headings — triggered by JS */
+@keyframes headingGradSweep {
+  0%   { background-position: 200% center; }
+  100% { background-position: -50% center; }
+}
+.heading-grad--sweep {
+  background-size: 200% auto;
+  animation: headingGradSweep 1.3s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+/* Micro system labels beside section headings */
+.head::before {
+  content: attr(data-sys-label);
+  display: block;
+  font-family: 'Azeret Mono', 'Courier New', monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--sys-emerald);
+  opacity: 0.6;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* ── 4. DATA COUNTER STYLES ─────────────────────────── */
+
+/* Emerald pulse on counter finish */
+.sys-counter--done {
+  color: var(--sys-emerald) !important;
+  transition: color 0.4s ease;
+}
+/* After a short delay, let color revert to normal */
+.sys-counter--done.sys-counter--done {
+  animation: counterPulse 0.6s ease-out forwards;
+}
+@keyframes counterPulse {
+  0%   { color: var(--sys-emerald); text-shadow: 0 0 20px rgba(52,211,153,0.3); }
+  100% { color: inherit; text-shadow: none; }
+}
+
+/* Scan line on metric box */
+@keyframes metricScan {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(400%); }
+}
+.sys-metric--scan {
+  position: relative;
+  overflow: hidden;
+}
+.sys-metric--scan::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 25%;
+  background: linear-gradient(transparent, rgba(52,211,153,0.08), transparent);
+  animation: metricScan 0.7s ease-out;
+  pointer-events: none;
+}
+
+/* ── 5. CARDS — INTELLIGENT MODULE ──────────────────── */
+
+/* Corner accent marks on bento items */
+.bento__item,
+.benefits__item,
+.module__item {
+  position: relative;
+}
+.bento__item::before,
+.benefits__item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-top: 1.5px solid var(--sys-emerald);
+  border-left: 1.5px solid var(--sys-emerald);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 1;
+}
+.bento__item::after,
+.benefits__item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  border-bottom: 1.5px solid var(--sys-emerald);
+  border-right: 1.5px solid var(--sys-emerald);
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Card border trace on hover */
+.bento__item,
+.positioning-panel,
+.module__item {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.bento__item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(8,144,108,0.1), 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ── 6. CIRCUIT WORKFLOW ANIMATIONS ─────────────────── */
+
+/* Workflow chips — starting state handled by JS */
+.cs-case__workflow-chip {
+  position: relative;
+}
+/* Data pulse indicator dot on active chip */
+.cs-case__workflow-chip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--sys-emerald);
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.cs-case__workflow-chip:last-child::after { opacity: 1; }
+
+/* ── 7. SECTION TRANSITION — fade-in class ──────────── */
+section[id] {
+  transition: opacity 0.01s; /* minimal — actual animation done by GSAP */
+}
+/* The section--in class just marks entry — no CSS animation needed (GSAP handles it) */
+
+/* ── 8. DARK PANEL SYSTEM UPGRADE ───────────────────── */
+
+/* Grid overlay for dark panel */
+.dark-panel--sys {
+  position: relative;
+  overflow: hidden;
+}
+.dark-panel--sys::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(8,144,108,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8,144,108,0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Emerald data line decorations on dark panel */
+.dark-panel--sys .dark-panel__head {
+  position: relative;
+  z-index: 1;
+}
+
+/* System status line at top of dark panel */
+.dark-panel::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sys-emerald), transparent);
+  opacity: 0.4;
+  margin-bottom: 0;
+}
+
+/* ── 9. MICRO SYSTEM LABELS ─────────────────────────── */
+
+/* Reusable class for .text--mono system labels */
+.sys-label {
+  font-family: 'Azeret Mono', 'Courier New', monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sys-emerald);
+  opacity: 0.7;
+}
+
+/* Status dot — LIVE indicator */
+.sys-live::before {
+  content: '● ';
+  font-size: 0.5rem;
+  color: var(--sys-emerald-lt);
+  animation: sysBlink 2s ease-in-out infinite;
+}
+@keyframes sysBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── 10. BUTTON UPGRADE ─────────────────────────────── */
+
+/* Primary button — arrow slide + sweep highlight on hover */
+.button:not(.button--outline) {
+  position: relative;
+  overflow: hidden;
+}
+.button:not(.button--outline)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: rgba(255,255,255,0.1);
+  transform: skewX(-20deg);
+  transition: left 0.4s ease;
+  pointer-events: none;
+}
+.button:not(.button--outline):hover::after {
+  left: 120%;
+}
+.button:not(.button--outline):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+/* Secondary / outline button — border trace emerald on hover */
+.button--outline {
+  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+.button--outline:hover {
+  border-color: var(--sys-emerald) !important;
+  color: var(--sys-emerald) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px rgba(8,144,108,0.15);
+}
+
+/* ── 11. CHIPS / EYEBROW — initial hide for JS animation ── */
+/* JS will reveal these with animation; we keep static fallback if JS disabled */
+section:not(.hero) .chips {
+  will-change: opacity, letter-spacing;
+}
+
+/* ── 12. IMPACT NUMBERS — proof strip hero ──────────── */
+/* Already handled by engine CSS; ensure consistency */
+.engine__proof-item .text--number.sys-counter--done {
+  color: var(--sys-emerald-lt) !important;
+  animation: counterPulse 0.8s ease-out forwards;
+}
+
+/* ── 13. POSITIONING PANEL — hide for JS anim ─────── */
+/* Fallback: if JS fails, still visible */
+.positioning-panel__lead,
+.positioning-panel__content {
+  will-change: opacity, transform;
+}
+
+/* ── REDUCED MOTION OVERRIDES ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+  .section.hero::before { display: none; }
+  .hero__title::after { animation: none; display: none; }
+  .hero-grad--sweep,
+  .heading-grad--sweep { animation: none; }
+  .bento__item:hover { transform: none; }
+  .button:not(.button--outline):hover { transform: none; }
+  .button--outline:hover { transform: none; }
+  .sys-live::before { animation: none; }
+  .dark-panel::before { display: none; }
+  .dark-panel--sys::after { display: none; }
+}
 </style>
 </head>
 
@@ -1455,7 +1843,7 @@
     <div class="padding-global">
       <div class="container">
 
-        <div class="head" data-reveal>
+        <div class="head" data-reveal data-sys-label="01 · VẤNDE">
           <p class="chips">
             <svg class="chips__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path d="M12 3v18M3 12h18"/>
@@ -1554,7 +1942,7 @@
     <div class="padding-global">
       <div class="container">
 
-        <div class="head" data-reveal>
+        <div class="head" data-reveal data-sys-label="02 · PHƯƠNG PHÁP">
           <p class="chips">
             <svg class="chips__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path d="M4 6h16M4 12h16M4 18h10"/>
@@ -1741,7 +2129,7 @@
     <div class="padding-global">
       <div class="container">
 
-        <div class="head" data-reveal>
+        <div class="head" data-reveal data-sys-label="03 · CHƯƠNG TRÌNH">
           <p class="chips">
             <svg class="chips__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path d="M4 7h16M4 12h10M4 17h13"/>
@@ -1943,7 +2331,7 @@
     <div class="padding-global">
       <div class="container">
 
-        <div class="head" data-reveal>
+        <div class="head" data-reveal data-sys-label="04 · CASE">
           <p class="chips">
             <svg class="chips__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/>
@@ -2206,7 +2594,7 @@
     <div class="padding-global">
       <div class="container">
 
-        <div class="head" data-reveal>
+        <div class="head" data-reveal data-sys-label="05 · OUTPUT">
           <p class="chips">
             <svg class="chips__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/>
@@ -3236,6 +3624,7 @@
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/js/motion-impact.js"></script>
+<script src="assets/js/system-motion.js"></script>
 <script src="assets/js/proposal.js"></script>
 <script>
 // AI Capability Engine: Interactive route hover & focus binding
