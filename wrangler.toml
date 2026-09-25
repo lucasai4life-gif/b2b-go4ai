@@ -1,0 +1,6 @@
+# Cloudflare Pages project config
+# Dùng cho fallback deploy via CLI (wrangler pages deploy)
+# GitHub integration tự động qua dashboard là method chính.
+
+name = "b2b-go4ai"
+pages_build_output_dir = "."
