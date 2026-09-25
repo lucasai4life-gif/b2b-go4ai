@@ -553,17 +553,17 @@
   z-index: 1;
 }
 
-@media (min-width: 1220px) {
+@media (min-width: 992px) {
   .hero__grid {
     grid-template-columns: minmax(0, 1fr) 490px;
-    gap: clamp(24px, 2.8vw, 56px);
+    gap: clamp(20px, 2.5vw, 48px);
     align-items: center;
   }
 }
-@media (max-width: 1219px) {
+@media (max-width: 991px) {
   .hero__grid {
     grid-template-columns: 1fr;
-    gap: var(--s-40);
+    gap: var(--s-32);
   }
   .hero__visual.hero-engine {
     max-width: 540px;
@@ -1174,6 +1174,308 @@
   .engine-passport.is--active {
     transform: none !important;
     transition: none !important;
+  }
+}
+
+/* ── RESPONSIVE HERO: LAPTOP / LOW VIEWPORT HEIGHT (<=900px) ───────── */
+@media (min-width: 992px) and (max-height: 900px) {
+  .section.hero {
+    min-height: auto !important;
+    align-items: flex-start !important;
+    padding-top: calc(var(--header-h, 75px) + 16px) !important;
+    padding-bottom: 24px !important;
+  }
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.08fr) 490px !important;
+    gap: clamp(20px, 2.2vw, 36px) !important;
+    align-items: flex-start !important;
+  }
+  .hero__content > .chips {
+    margin-bottom: 12px !important;
+  }
+  .hero__title {
+    margin: 0.25rem 0 0.75rem !important;
+    font-size: clamp(2.35rem, 3.6vw, 3.5rem) !important;
+    line-height: 1.1 !important;
+  }
+  .hero__sub {
+    margin: 0 0 16px !important;
+    font-size: clamp(0.9375rem, 1.1vw, 1.0625rem) !important;
+    line-height: 1.5 !important;
+  }
+  .hero__ctas {
+    margin: 0 0 16px !important;
+    gap: 10px !important;
+  }
+  .hero__ctas .button {
+    min-height: 38px !important;
+    padding: 0.5rem 1.125rem !important;
+  }
+  .hero__visual.hero-engine {
+    padding: 0 !important;
+    gap: 12px !important;
+  }
+}
+
+@media (min-width: 992px) and (max-height: 768px) {
+  .section.hero {
+    padding-top: calc(var(--header-h, 75px) + 10px) !important;
+    padding-bottom: 16px !important;
+  }
+  .hero__title {
+    font-size: clamp(2.1rem, 3.2vw, 2.85rem) !important;
+  }
+  .hero__sub {
+    margin: 0 0 12px !important;
+    font-size: 0.9375rem !important;
+  }
+  .hero__ctas {
+    margin: 0 0 12px !important;
+  }
+  .engine__stage {
+    transform: scale(0.92);
+    transform-origin: top center;
+    margin-bottom: -22px;
+  }
+}
+
+/* ── RESPONSIVE HERO: MOBILE HERO & ENGINE FIXES (<=767px) ─────────── */
+@media (max-width: 767px) {
+  /* 1. Mobile Pipeline — 2 deliberate clean rows */
+  .hero__pipeline {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 7px 10px !important;
+    gap: 4px 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .hero__pipeline > .hero__trust-sep {
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 0.5625rem !important;
+    margin: 0 !important;
+    opacity: 0.7 !important;
+  }
+  .hero__pipeline .hero__trust {
+    display: contents !important;
+  }
+  .hero__pipeline .hero__trust > li {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+  }
+  .hero__pipeline .hero__trust > li.hero__trust-sep {
+    font-size: 0.5625rem !important;
+  }
+  .hero__pipeline .hero__trust > li span {
+    font-size: 0.625rem !important;
+    padding: 2px 5px !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.02em !important;
+  }
+  .hero__pipeline .hero__pipeline-tag {
+    font-size: 0.625rem !important;
+    padding: 2px 6px !important;
+    white-space: nowrap !important;
+    letter-spacing: 0.02em !important;
+  }
+  /* Break to Row 2 right after Step 3 (Bài toán thật) */
+  .hero__trust > li:nth-child(4) {
+    display: block !important;
+    flex-basis: 100% !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    opacity: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* 2. Mobile AI Capability Engine — Vertical Flow */
+  .hero__visual.hero-engine {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    gap: 12px !important;
+  }
+  .engine__connectors {
+    display: none !important;
+  }
+  .engine__stage {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 10px !important;
+    perspective: none !important;
+    align-items: stretch !important;
+  }
+  .engine__col {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .engine__col-label {
+    text-align: center !important;
+    font-size: 0.625rem !important;
+    letter-spacing: 0.12em !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* Vertical flow indicators between sections */
+  .engine__col--input::after,
+  .engine__col--core::after {
+    content: '↓';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #34d399;
+    opacity: 0.75;
+    line-height: 1;
+    padding: 2px 0 0;
+  }
+
+  /* Input role cards: compact, legible horizontal strips */
+  .engine-card--role {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .engine-card--role .engine-card__header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .engine-card--role .engine-card__task {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0 !important;
+    flex-grow: 1 !important;
+    text-align: left !important;
+    padding-left: 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .engine-card--role .engine-card__sub {
+    font-size: 0.59375rem !important;
+    flex-shrink: 0 !important;
+    opacity: 0.7 !important;
+    white-space: nowrap !important;
+  }
+
+  /* AI Core: centered & full-width */
+  .engine__col--core {
+    width: 100% !important;
+  }
+  .engine-core {
+    max-width: 100% !important;
+    padding: 14px 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Output cards: sleek uniform rows */
+  .engine__col--output {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .engine__col--output .engine-card,
+  .engine__col--output .engine-passport {
+    width: 100% !important;
+    padding: 8px 12px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+  }
+  .engine__col--output .engine-card__header {
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .engine__col--output .engine-card__task {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0 !important;
+    flex-grow: 1 !important;
+    text-align: left !important;
+    padding-left: 6px !important;
+    white-space: nowrap !important;
+  }
+  .engine__col--output .engine-card__sub {
+    display: none !important;
+  }
+
+  /* 3. Mobile Proof Metrics Strip — 3 equal columns on 1 horizontal row */
+  .hero__stat-float.engine__proof-strip {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr auto 1fr !important;
+    align-items: start !important;
+    justify-content: space-between !important;
+    padding: 12px 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-top: 14px !important;
+  }
+  .hero__stat-float.engine__proof-strip .engine__proof-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 0 2px !important;
+    min-width: 0 !important;
+  }
+  .hero__stat-float.engine__proof-strip .engine__proof-item strong {
+    font-family: var(--font-mono) !important;
+    font-size: clamp(1.4rem, 5.2vw, 1.875rem) !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.02em !important;
+    color: #ffffff !important;
+  }
+  .hero__stat-float.engine__proof-strip .engine__proof-item span {
+    font-size: clamp(0.6875rem, 2.4vw, 0.75rem) !important;
+    line-height: 1.25 !important;
+    color: rgba(232, 245, 240, 0.72) !important;
+    margin-top: 4px !important;
+    text-align: center !important;
+    max-width: 90px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .hero__stat-float.engine__proof-strip .engine__proof-sep {
+    display: block !important;
+    width: 1px !important;
+    height: 38px !important;
+    background: rgba(52, 211, 153, 0.22) !important;
+    margin: 0 !important;
+    align-self: center !important;
   }
 }
 
