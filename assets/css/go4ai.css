@@ -8056,11 +8056,12 @@ body.lucas-page {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 14px 20px;
+  padding: 14px 18px;
   background: rgba(8, 144, 108, 0.05);
   border: 1px solid rgba(8, 144, 108, 0.18);
   border-radius: 10px;
   min-width: 110px;
+  flex: 1 1 130px;
 }
 
 .cs-metric-chip__num {
@@ -8074,8 +8075,9 @@ body.lucas-page {
 .cs-metric-chip__label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--gray-500);
-  letter-spacing: 0.02em;
+  color: var(--gray-600);
+  letter-spacing: 0.01em;
+  line-height: 1.35;
 }
 
 /* ── Pipeline strip (Case 05) ───────────────────────────────────────────── */
