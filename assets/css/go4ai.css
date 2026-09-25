@@ -7625,6 +7625,189 @@ body.lucas-page {
   font-style: italic;
 }
 
+/* ── CASE 02: AI Sales Agent Specific Refinements ────────────────────────── */
+.cs-case--dark .cs-case__body {
+  max-width: 540px;
+  gap: 18px;
+}
+
+.cs-case--dark .case-timeline__item {
+  padding-bottom: 16px;
+  gap: 5px;
+}
+
+.cs-case--dark .case-timeline__text {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: rgba(240, 245, 243, 0.88);
+  margin: 0;
+}
+
+/* Workflow Chips for Cách triển khai */
+.cs-flow-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin-top: 4px;
+}
+
+.cs-flow-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #a7f3d0;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cs-flow-chip:hover {
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+.cs-flow-chip--accent {
+  background: rgba(52, 211, 153, 0.18);
+  border-color: rgba(52, 211, 153, 0.48);
+  color: #ecfdf5;
+  font-weight: 600;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.15);
+}
+
+.cs-flow-arrow {
+  color: #34d399;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  opacity: 0.75;
+  user-select: none;
+}
+
+/* Impact & 2 Metric Cards */
+.cs-sales-impact {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.cs-sales-impact__header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cs-sales-impact__tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #6ee7b7;
+  text-transform: uppercase;
+}
+
+.cs-sales-impact__lead {
+  font-size: 0.84375rem;
+  font-weight: 500;
+  color: rgba(240, 245, 243, 0.75);
+  margin: 0;
+}
+
+.cs-sales-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.cs-sales-metric-card {
+  background: rgba(3, 26, 20, 0.75);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.cs-sales-metric-card:hover {
+  border-color: rgba(52, 211, 153, 0.48);
+  transform: translateY(-1px);
+}
+
+.cs-sales-metric-card__val {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  font-family: var(--font-mono);
+  line-height: 1.15;
+}
+
+.cs-sales-metric-card__from {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(240, 245, 243, 0.55);
+}
+
+.cs-sales-metric-card__arrow {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.cs-sales-metric-card__to {
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  font-weight: 800;
+  color: #34d399;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
+}
+
+.cs-sales-metric-card__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+
+/* Supporting line / badge */
+.cs-sales-sync-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 6px;
+  font-size: 0.78125rem;
+  color: #a7f3d0;
+  line-height: 1.35;
+  width: fit-content;
+}
+
+.cs-sales-sync-badge__icon {
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+@media (max-width: 540px) {
+  .cs-sales-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 /* Bottom CTA Band */
 .app-cta-band {
   background: #0d1412;
