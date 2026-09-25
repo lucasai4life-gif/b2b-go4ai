@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude không chỉ để hỏi — Hội thảo trực tuyến 90 phút · Go4ai</title>
+<link rel="icon" href="assets/go4ai-badge.png" type="image/png">
+<meta name="description" content="6 cấp độ ứng dụng Claude trong doanh nghiệp: từ một cửa sổ chat đến hệ điều hành AI vận hành tuyển dụng, nhân sự và quản trị doanh nghiệp. Hội thảo trực tuyến miễn phí 90 phút cùng Lucas Đặng & Go4ai.">
+<style>@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Medium.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Bold.woff2") format("woff2");font-style:normal;font-weight:600 700;font-display:swap}</style>
+<style>
+  :root{
+    /* Bảng màu thương hiệu Go4ai */
+    --white:#ffffff;
+    --gray-50:#f4f7f8;
+    --gray-100:#dbe7ea;
+    --gray-200:#bec9c6;
+    --gray-400:#8b9a96;
+    --gray-500:#5a666e;
+    --black:#0a1620;
+    --green-500:#08906c;
+    --green-700:#06694f;
+    --green-100:#c4ece1;
+    --coral-500:#9F161D; /* Đỏ Claude & Go4ai Accent */
+    --coral-600:#7E1217;
+    --coral-100:#f8d7da;
+    --coral-50:#fdf2f3;
+    --blue-700:#1e3545;
+    --blue-500:#2b4d60;
+    --blue-300:#628ba3;
+    --blue-100:#d8ebf4;
+    --blue-50:#f1f7fa;
+    /* Cấp 05 (AI App) — ⛔ ĐÍNH CHÍNH 2026-09-21: bản cũ dùng tím `#38a0b8`,
+       nằm NGOÀI bảng màu nhận diện Go4ai (teal/ink/cyan/teal-l/soft/gray).
+       Tím xuất hiện 4 chỗ (token + markup noscript + khối 3D) và lọt vào ảnh chụp
+       cấp 5 của bản đồ năng lực. Nay thay bằng teal sáng `--gem-teal-l #38a0b8`,
+       vẫn phân biệt được với 4 cấp còn lại mà không phá bảng màu. */
+    --lv5:#38a0b8;
+
+    --bg:var(--white);
+    --panel:var(--white);
+    --line:var(--gray-100);
+    --text:var(--black);
+    --muted:var(--gray-500);
+    --accent:var(--coral-500); --accent2:#C82A33;
+  }
+  *{box-sizing:border-box}
+  /* overflow-x:clip (KHÔNG dùng hidden) — hidden sẽ tạo scroll container
+     và làm hỏng toàn bộ position:sticky của các section bên dưới */
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:Archivo,Arial,sans-serif;overflow-x:clip;letter-spacing:-.01em}
+
+  /* ---------------- NAVBAR ---------------- */
+  .navbar{
+    position:fixed;top:18px;left:50%;transform:translateX(-50%);
+    z-index:60;display:flex;align-items:center;gap:28px;
+    padding:9px 9px 9px 20px;border-radius:5rem;
+    background:rgba(255,255,255,.82);border:1px solid var(--line);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    box-shadow:0 6px 24px rgba(21,23,26,.08);
+    max-width:calc(100vw - 32px);
+  }
+  .navbar .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;color:var(--text);text-decoration:none;flex-shrink:0}
+  .navbar .brand-logo{height:25px;width:auto;display:block}
+  .navbar .brand .badge-tag{font-size:11px;font-weight:700;color:var(--coral-500);background:var(--coral-50);padding:3px 8px;border-radius:4px;border:1px solid var(--coral-100);white-space:nowrap}
+  .navbar .brand .dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--green-500),var(--coral-500))}
+  .navbar nav{display:flex;gap:20px}
+  .navbar nav a{color:var(--gray-500);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;transition:color .2s ease}
+  .navbar nav a:hover{color:var(--text)}
+  .navbar .nav-cta{background:linear-gradient(135deg,var(--coral-500),var(--coral-600));color:#fff;font-weight:600;font-size:13.5px;padding:9px 18px;border-radius:5rem;border:none;cursor:pointer;white-space:nowrap;text-decoration:none;box-shadow:0 4px 14px rgba(159,22,29,.25)}
+  @media (max-width:760px){ .navbar nav{display:none} }
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    min-height:100vh;
+    display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;
+    padding:90px 6vw 40px;position:relative;background:var(--white);
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(circle at 18% 28%, rgba(8,144,108,.07), transparent 52%),
+      radial-gradient(circle at 82% 72%, rgba(206,60,43,.06), transparent 52%);
+  }
+  .hero-left{position:relative;z-index:2}
+  .eyebrow{color:var(--green-500);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+  .headline{font-size:clamp(30px,4.2vw,58px);font-weight:700;margin:0 0 16px;line-height:1.08;letter-spacing:-.03em}
+  .headline .accent{color:var(--coral-500)}
+  .sub{color:var(--gray-500);font-size:17px;line-height:1.5;max-width:440px;margin:0 0 28px}
+  .cta-btn{display:inline-flex;align-items:center;gap:8px;
+    background:var(--green-500);color:#fff;font-weight:600;font-size:15px;
+    padding:14px 26px;border-radius:5rem;border:none;cursor:pointer;
+    box-shadow:0 8px 20px rgba(8,144,108,.22);transition:transform .2s ease, box-shadow .2s ease}
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(8,144,108,.3)}
+
+  .hero-right{position:relative;z-index:1;perspective:1600px}
+  /* khớp tỉ lệ với viewBox 920x660 để khối tam giác lấp đầy khung, không bị letterbox */
+  .machine-wrap{
+    position:relative;width:100%;aspect-ratio:920/660;
+    transform-style:preserve-3d;transition:transform .2s ease-out;cursor:pointer;
+  }
+  .machine-illustration{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .machine-illustration svg, .space-canvas svg{width:100%;height:100%;overflow:visible}
+
+  .machine-reflection{
+    position:absolute;left:0;right:0;top:100%;height:52%;overflow:hidden;pointer-events:none;
+    -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.3), transparent 80%);
+    mask-image:linear-gradient(to bottom, rgba(0,0,0,.3), transparent 80%);
+  }
+  .machine-reflection .flip{position:absolute;inset:0;transform:scaleY(-1);opacity:.32;filter:blur(1.5px)}
+  .water-shimmer{
+    position:absolute;left:0;right:0;top:100%;height:52%;pointer-events:none;
+    background:linear-gradient(115deg, transparent 32%, rgba(8,144,108,.07) 46%, transparent 60%);
+    background-size:250% 100%;animation:shimmer 6s ease-in-out infinite;
+  }
+  @keyframes shimmer{0%{background-position:120% 0}100%{background-position:-20% 0}}
+
+  .dive-cta{
+    position:absolute;left:50%;bottom:-62px;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    background:var(--white);border:1px solid var(--line);
+    color:var(--text);font-size:12.5px;font-weight:600;
+    text-align:center;line-height:1.3;padding:10px 18px;border-radius:14px;cursor:pointer;z-index:4;
+    box-shadow:0 6px 18px rgba(21,23,26,.08);
+    animation:dive-float 2.8s ease-in-out infinite;
+  }
+  .dive-cta svg{width:14px;height:14px;color:var(--green-500);animation:dive-arrow 1.6s ease-in-out infinite}
+  @keyframes dive-float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+  @keyframes dive-arrow{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(4px);opacity:1}}
+
+  .cta-explore{
+    position:absolute;top:-5%;left:50%;transform:translateX(-50%);
+    background:var(--black);border:1px solid var(--black);
+    color:#fff;font-size:12px;font-weight:600;letter-spacing:.04em;
+    padding:8px 15px;border-radius:5rem;display:flex;align-items:center;gap:6px;
+    animation:floaty 2.6s ease-in-out infinite;pointer-events:none;z-index:3;
+    box-shadow:0 8px 20px rgba(21,23,26,.18);
+  }
+  .cta-explore svg{width:12px;height:12px}
+  @keyframes floaty{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;text-align:center;padding:84px 6vw 40px;gap:28px}
+    .sub{margin-left:auto;margin-right:auto;font-size:15.5px}
+    .dive-cta{bottom:-46px}
+  }
+
+  /* ---------------- FISH ----------------
+     ✅ KHÔI PHỤC BẢN GỐC — nguồn: https://b2b.go4ai.org/gemglobal/
+        (theme triển khai: LucasGo4ai-theme / tai-nguyen/gemglobal-landing).
+        Đo lại 2026-09-21 bằng CDP trên chính b2b.go4ai.org:
+          fish rect = 190×119, display:block, opacity:1, có `transform` đổi theo cuộn.
+
+     ⛔ ĐÍNH CHÍNH chẩn đoán SAI của phiên trước: tôi từng kết luận "bản gốc hỏng
+        vì `#levels` rỗng nên `.lv` không tồn tại". Đo lại: KHÔNG đúng.
+        `assets/js/levels-engine-hr.js` CÓ dựng `.lv`, `.lv-left`, `.lv-diagram`
+        (đo được 6 × `.lv`, 7 × `section.sec`, 1 × `section.final` trên trang này).
+        Lý do cá chết trong bản port trước là hai thứ KHÁC:
+          1. khối reduced-motion của tôi có `.fish{display:none}` ⇒ Chrome headless
+             báo `prefers-reduced-motion: reduce` ⇒ cá bị ẩn;
+          2. tôi đọc `reduce` từ matchMedia(), còn bản gốc hard-code `var reduce = false`.
+        ⇒ Bản gốc CHẠY ĐÚNG. Việc đúng là khôi phục nó, không thiết kế lại.
+
+     Hộp 190×119 kèm `margin:-59px -95px` ⇒ gốc toạ độ của `translate(x,y)` nằm
+     đúng TÂM thân cá; JS ghi toạ độ tâm nên không cần trừ nửa kích thước.
+     Chủ sở hữu duy nhất: `#fish` — chỉ JS ghi `transform`; CSS chỉ vẽ. */
+  .fish{
+    position:fixed;left:0;top:0;width:190px;height:119px;margin:-59px -95px;
+    z-index:30;pointer-events:none;will-change:transform;
+  }
+  .fish-bank{width:100%;height:100%;will-change:transform;position:relative}
+  .fish-svg{width:100%;height:100%;overflow:visible;display:block;
+    filter:drop-shadow(0 12px 22px rgba(43,77,96,.18)) drop-shadow(0 0 8px rgba(159,22,29,.22))}
+
+  /* Bản gốc: khi cá quay đầu sang trái, huy hiệu phải lật lại cho không bị soi
+     gương — cần bọc `<g class="f-badge-inner">` quanh nội dung huy hiệu. */
+  .is-facing-left .f-badge-inner{transform-box:fill-box;transform-origin:center;transform:scaleX(-1)}
+
+  .f-body-group{transform-box:fill-box;transform-origin:center;animation:body-undulate 1.5s ease-in-out infinite}
+  @keyframes body-undulate{0%,100%{transform:scaleY(1) rotate(0deg)}50%{transform:scaleY(1.04) rotate(-1.2deg)}}
+
+  .f-tail{transform-box:fill-box;transform-origin:right center;animation:tail-swish 1.05s ease-in-out infinite}
+  @keyframes tail-swish{0%,100%{transform:rotate(-15deg) scaleX(.94)}50%{transform:rotate(15deg) scaleX(1)}}
+
+  .f-fin-top{transform-box:fill-box;transform-origin:50% 100%;animation:fin-flutter 1.7s ease-in-out infinite}
+  .f-fin-bottom{transform-box:fill-box;transform-origin:50% 0%;animation:fin-flutter 1.7s ease-in-out infinite;animation-delay:.35s}
+  @keyframes fin-flutter{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(6deg)}}
+
+  .f-pect{transform-box:fill-box;transform-origin:50% 0%;animation:pect-paddle .85s ease-in-out infinite}
+  @keyframes pect-paddle{0%,100%{transform:rotate(-14deg) scaleY(.9)}50%{transform:rotate(12deg) scaleY(1)}}
+
+  .f-badge{transform-box:fill-box;transform-origin:center;animation:badge-breathe 3s ease-in-out infinite}
+  .is-facing-left .f-badge-inner{transform-box:fill-box;transform-origin:center;transform:scaleX(-1)}
+  @keyframes badge-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+  .f-glow{transform-box:fill-box;transform-origin:center;animation:f-glow 3s ease-in-out infinite}
+  @keyframes f-glow{0%,100%{opacity:.3}50%{opacity:.6}}
+
+  .bubble-trail{
+    position:fixed;border-radius:50%;
+    background:rgba(71,143,184,.25);border:1px solid rgba(71,143,184,.35);
+    pointer-events:none;z-index:29;animation:bubble-rise 1.6s ease-out forwards;
+  }
+  @keyframes bubble-rise{
+    0%{transform:translateY(0) scale(1);opacity:.7}
+    100%{transform:translateY(-46px) scale(.25);opacity:0}
+  }
+
+  /* ---------------- 5 khối 3D ---------------- */
+  .mod-float{transform-box:fill-box;transform-origin:center;animation:mod-bob 3.8s ease-in-out infinite}
+  @keyframes mod-bob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-7px) rotate(1.5deg)}}
+
+  .mod-ring{transform-box:fill-box;transform-origin:center;animation:mod-spin 10s linear infinite}
+  .mod-ring.rev{animation-direction:reverse;animation-duration:14s}
+  .mod-ring.fast{animation-duration:5s}
+  @keyframes mod-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+  .mod-core{transform-box:fill-box;transform-origin:center;animation:mod-pulse 2.4s ease-in-out infinite}
+  @keyframes mod-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+  .mod-ping{transform-box:fill-box;transform-origin:center;animation:mod-ping 2.6s cubic-bezier(.2,.6,.3,1) infinite;opacity:0}
+  @keyframes mod-ping{0%{transform:scale(.6);opacity:.5}100%{transform:scale(2);opacity:0}}
+
+  .module{transition:filter .3s ease, opacity .3s ease}
+  .space-canvas.dimmed .module{opacity:.25;filter:saturate(.25)}
+  .space-canvas.dimmed .module.is-active{opacity:1;filter:drop-shadow(0 6px 14px rgba(21,23,26,.22))}
+  .module:hover{filter:brightness(1.06)}
+  .module.awake{filter:drop-shadow(0 4px 16px currentColor) brightness(1.04)}
+
+  .bubble-dot{transform-box:fill-box;transform-origin:center;animation:dot-bounce 1.4s ease-in-out infinite}
+  @keyframes dot-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+  .card{transform-box:fill-box;transform-origin:center;animation:card-riffle 3.2s ease-in-out infinite}
+  @keyframes card-riffle{0%,100%{transform:translateX(0) rotate(0deg)}50%{transform:translateX(3px) rotate(1.5deg)}}
+
+  .orbit{transform-box:fill-box;transform-origin:center;animation:mod-spin linear infinite}
+  .link-line{stroke-dasharray:4 4;animation:dash-run 1.2s linear infinite}
+  @keyframes dash-run{to{stroke-dashoffset:-16}}
+
+  .gear-body{transform-box:fill-box;transform-origin:center;animation:mod-spin 6s linear infinite}
+  .loop-arrow{transform-box:fill-box;transform-origin:center;animation:mod-spin 3s linear infinite}
+
+  .rise-particle{transform-box:fill-box;transform-origin:center;animation:rise 2.4s ease-in infinite;opacity:0}
+  @keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-46px);opacity:0}}
+  .screen-glow{animation:mod-pulse 2s ease-in-out infinite}
+  .bars rect{animation:bar-grow 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
+  .bars rect:nth-child(1){animation-delay:0s}
+  .bars rect:nth-child(2){animation-delay:.25s}
+  .bars rect:nth-child(3){animation-delay:.5s}
+  @keyframes bar-grow{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+
+  /* ---------------- OVERLAY ---------------- */
+  .space-overlay{
+    position:fixed;inset:0;z-index:100;
+    background:radial-gradient(circle at 50% 42%, #ffffff 0%, var(--gray-50) 72%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    opacity:0;visibility:hidden;transform:scale(.92);
+    transition:opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1), visibility 0s linear .5s;
+  }
+  .space-overlay.open{opacity:1;visibility:visible;transform:scale(1);transition:opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1)}
+  .space-close{
+    position:absolute;top:24px;right:28px;background:var(--white);
+    border:1px solid var(--line);color:var(--text);width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;
+    box-shadow:0 4px 12px rgba(21,23,26,.08);
+  }
+  .space-title{color:var(--green-500);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;z-index:1}
+  .space-heading{font-size:clamp(22px,3vw,34px);font-weight:700;margin:0 0 36px;z-index:1;text-align:center;letter-spacing:-.02em}
+  .space-canvas{position:relative;width:min(960px,88vw);aspect-ratio:16/10;z-index:1}
+
+  .hotspot{
+    position:absolute;width:76px;height:76px;border-radius:50%;cursor:pointer;
+    transform:translate(-50%,-50%) scale(0);display:flex;align-items:center;justify-content:center;
+    transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .space-overlay.open .hotspot{transform:translate(-50%,-50%) scale(1)}
+  .hotspot:nth-child(1){transition-delay:.15s}
+  .hotspot:nth-child(2){transition-delay:.22s}
+  .hotspot:nth-child(3){transition-delay:.29s}
+  .hotspot:nth-child(4){transition-delay:.36s}
+  .hotspot:nth-child(5){transition-delay:.43s}
+  .hotspot .ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--gray-200);background:rgba(255,255,255,.5);transition:all .25s ease}
+  .hotspot .dot{width:10px;height:10px;border-radius:50%;background:var(--green-500);box-shadow:0 0 0 4px rgba(8,144,108,.14);transition:all .25s ease}
+  .hotspot .lbl{
+    position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+    font-size:12px;font-weight:500;white-space:nowrap;color:var(--text);
+    background:var(--white);border:1px solid var(--line);padding:5px 10px;border-radius:6px;
+    opacity:0;transition:opacity .2s ease,transform .2s ease;pointer-events:none;
+    box-shadow:0 4px 12px rgba(21,23,26,.08);
+  }
+  .hotspot:hover .lbl{opacity:1;transform:translateX(-50%) translateY(-2px)}
+  .hotspot:hover .ring{border-color:var(--green-500);box-shadow:0 0 0 6px rgba(8,144,108,.1);transform:scale(1.12)}
+  .hotspot:hover .dot{background:var(--coral-500);transform:scale(1.35)}
+  .space-hint{margin-top:28px;font-size:13px;color:var(--gray-500);z-index:1}
+
+  .zoom-flash{
+    position:fixed;inset:0;background:var(--white);
+    opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:200;
+  }
+  .zoom-flash.on{opacity:1;transition:opacity .1s ease}
+
+  /* ---------------- PROGRESS RAIL ---------------- */
+  .rail{
+    position:fixed;left:26px;top:50%;transform:translateY(-50%);z-index:45;
+    display:flex;flex-direction:column;gap:2px;
+    opacity:0;pointer-events:none;transition:opacity .4s ease;
+  }
+  .rail.is-visible{opacity:1;pointer-events:auto}
+  .rail-item{
+    display:flex;align-items:center;gap:10px;text-decoration:none;
+    padding:7px 10px 7px 0;position:relative;
+  }
+  .rail-item::before{
+    content:"";position:absolute;left:5.5px;top:0;bottom:0;width:1.5px;background:var(--gray-100);
+  }
+  .rail-item:first-child::before{top:50%}
+  .rail-item:last-child::before{bottom:50%}
+  .rail-dot{
+    width:13px;height:13px;border-radius:50%;background:var(--white);
+    border:2px solid var(--gray-200);flex:0 0 auto;z-index:1;transition:all .3s ease;
+  }
+  .rail-num{font-size:11px;font-weight:700;color:var(--gray-400);transition:color .3s ease}
+  .rail-label{font-size:11.5px;font-weight:600;letter-spacing:.06em;color:var(--gray-400);
+    text-transform:uppercase;opacity:0;max-width:0;overflow:hidden;white-space:nowrap;
+    transition:opacity .3s ease, max-width .3s ease, color .3s ease}
+  .rail-item:hover .rail-label,.rail-item.is-active .rail-label{opacity:1;max-width:120px}
+  .rail-item.is-active .rail-dot{border-color:var(--green-500);background:var(--green-500);
+    box-shadow:0 0 0 5px rgba(8,144,108,.13)}
+  .rail-item.is-active .rail-num,.rail-item.is-active .rail-label{color:var(--black)}
+  @media (max-width:1180px){ .rail{display:none} }
+
+  /* ---------------- LEVEL SECTIONS (kiểu UiPath) ---------------- */
+  .lv{position:relative;background:var(--white)}
+  .lv:nth-child(even){background:var(--gray-50)}
+  .lv-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
+  /* padding-right 132px = "làn bơi" chừa riêng cho cá ở mép phải,
+     để chặng đi xuống của chu trình không bao giờ đè lên sơ đồ */
+  /* gap 92px = "rãnh bơi" giữa cột chữ và sơ đồ — chặng đi xuống của cá
+     chạy trong rãnh này nên không chạm vào cột nào cả */
+  .lv-grid{
+    width:100%;max-width:1680px;margin:0 auto;padding:0 clamp(36px,4vw,72px);
+    display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+    gap:clamp(48px,4.5vw,88px);align-items:center;
+  }
+
+  /* ⛔⛔ LỖI THẬT — ĐO ĐƯỢC (diag-f8.mjs 2026-09-17): .lv-num ở top:-64px với
+     font-size:104px ⇒ hộp 104px tràn XUỐNG nội dung. Đo tại 1440px khi đang ghim:
+       .lv-num   y 135→239
+       .lv-eyebrow y 199→211   ⇒ numOverEyebrow = true
+       .lv-title   y 223→275   ⇒ numOverTitle  = true
+     Số ma chồng lên chính tiêu đề của nó. Sửa: CHỪA SẴN một dải phía trên bằng
+     padding-top, rồi đặt số nằm gọn trong dải đó (không âm, không tràn xuống). */
+  .lv-left{position:relative;min-width:0;padding-top:104px}
+  .lv-num{
+    position:absolute;left:-6px;top:0;font-size:104px;font-weight:700;line-height:1;
+    color:var(--gray-100);letter-spacing:-.05em;user-select:none;
+  }
+  .lv-eyebrow{
+    position:relative;display:block;font-size:11.5px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--lc);margin-bottom:12px;
+  }
+  .lv-title{position:relative;font-size:clamp(30px,3.6vw,50px);font-weight:700;
+    letter-spacing:-.035em;line-height:1.04;margin:0 0 6px}
+  .lv-lead{position:relative;font-size:17px;font-weight:600;color:var(--lc);margin:0 0 14px}
+  .lv-desc{position:relative;font-size:16px;line-height:1.55;color:var(--gray-500);
+    margin:0 0 26px;max-width:560px}
+
+  .lv-blurbs{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:2px}
+  .lv-blurb{
+    position:relative;padding:11px 0 11px 17px;border-left:2px solid var(--gray-100);
+    opacity:.32;transition:opacity .45s ease, border-color .45s ease, transform .45s ease;
+    transform:translateX(-3px);
+  }
+  .lv-blurb.is-revealed{opacity:.55;transform:none}
+  .lv-blurb.is-current{opacity:1;border-left-color:var(--lc)}
+  .lv-blurb-t{display:block;font-size:14.5px;font-weight:600;color:var(--black);margin-bottom:2px}
+  .lv-blurb-d{display:block;font-size:13.5px;line-height:1.45;color:var(--gray-500)}
+
+  .lv-bridge{
+    position:relative;margin:0;padding:13px 16px;border-radius:11px;
+    background:var(--coral-50);border:1px solid var(--coral-100);
+    font-size:13.5px;font-weight:600;color:var(--coral-500);line-height:1.45;max-width:560px;
+  }
+
+  .lv-right{min-width:0;display:flex;align-items:center;justify-content:center}
+  .lv-diagram{width:100%;max-height:86vh}
+  .pstage{width:100%;height:100%;max-height:86vh;overflow:visible;display:block}
+  .pgrid{color:var(--gray-300)}
+
+  /* node */
+  .pnode{opacity:0;transition:opacity .55s ease}
+  .pnode.is-revealed{opacity:1}
+  .pn-glow{fill:var(--lc);opacity:0;transition:opacity .45s ease}
+  .pnode.is-active .pn-glow{opacity:.13}
+  .pn-frame{fill:var(--white);stroke:var(--gray-100);stroke-width:1.5;transition:stroke .4s ease, stroke-width .4s ease}
+  .pnode.is-active .pn-frame{stroke:var(--lc);stroke-width:2.2}
+  .pnode.is-complete .pn-frame{stroke:var(--gray-200)}
+  .pn-tile{fill:var(--gray-50);transition:fill .4s ease}
+  .pnode.is-active .pn-tile{fill:var(--lc)}
+  .pnode.is-complete .pn-tile{fill:var(--gray-100)}
+  .pn-icon{color:var(--gray-400);transition:color .4s ease}
+  .pnode.is-active .pn-icon{color:#fff}
+  .pnode.is-complete .pn-icon{color:var(--gray-500)}
+  .pn-cat{fill:var(--gray-400);font-size:8.6px;font-weight:700;letter-spacing:.09em;
+    font-family:Archivo,sans-serif;transition:fill .4s ease}
+  .pnode.is-active .pn-cat{fill:var(--lc)}
+  .pn-title{fill:var(--black);font-size:13.5px;font-weight:600;font-family:Archivo,sans-serif}
+  .pn-title-sm{font-size:11.8px}
+  .pn-title-lg{font-size:17px;font-weight:700;letter-spacing:-.02em}
+  .pn-sub{fill:var(--gray-500);font-size:10.4px;font-family:Archivo,sans-serif}
+  .pn-chip{opacity:0;transition:opacity .4s ease}
+  .pnode.is-active .pn-chip{opacity:1}
+  .pn-chip rect{fill:var(--white);stroke:var(--lc);stroke-width:1.2}
+  .pn-chip circle{fill:var(--lc)}
+  .pn-chip text{fill:var(--lc);font-size:8.4px;font-weight:700;letter-spacing:.07em;font-family:Archivo,sans-serif}
+
+  /* edge */
+  .pe-base{fill:none;stroke:var(--gray-200);stroke-width:1.4;stroke-dasharray:3 5;opacity:.75}
+  .pe-grow{fill:none;stroke:var(--lc);stroke-width:2;stroke-linecap:round;
+    transition:stroke-dashoffset .85s cubic-bezier(.4,0,.2,1)}
+  .pedge.is-on .pe-grow{stroke-dashoffset:0 !important}
+
+  .lv.flash .lv-diagram{animation:lv-pop .9s cubic-bezier(.16,1,.3,1)}
+  @keyframes lv-pop{0%{transform:scale(.96);opacity:.5}100%{transform:none;opacity:1}}
+
+  
+  /* Responsive cho Laptop chiều cao <= 820px */
+  @media (max-height: 820px) and (min-width: 901px){
+    .lv-left{padding-top:clamp(20px, 3.5vh, 48px)}
+    .lv-num{font-size:clamp(54px, 5.5vw, 76px)}
+    .lv-title{font-size:clamp(24px, 2.6vw, 36px);margin-bottom:4px}
+    .lv-lead{font-size:15px;margin-bottom:8px}
+    .lv-desc{font-size:14px;line-height:1.45;margin-bottom:12px}
+    .lv-blurbs{gap:2px;margin-bottom:12px}
+    .lv-blurb{padding:6px 0 6px 14px}
+    .lv-blurb-t{font-size:13.5px}
+    .lv-blurb-d{font-size:12.5px;line-height:1.35}
+    .lv-bridge{padding:9px 13px;font-size:12.5px;line-height:1.4}
+    .lv-diagram{max-height:76vh}
+    .pstage{max-height:76vh}
+  }
+
+
+  @media (max-width:900px){
+    .lv-sticky{position:sticky;top:0;height:100svh;padding:70px 0 12px;align-items:stretch}
+    .lv-grid{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:12px;padding:0 5vw}
+    .lv-left{padding-top:0}
+    .lv-num{position:absolute;left:auto;right:0;top:0;font-size:48px;opacity:.55}
+    .lv-eyebrow{max-width:calc(100% - 70px);margin-bottom:5px}
+    .lv-title{font-size:clamp(25px,6vw,34px);margin-bottom:3px}
+    .lv-lead{font-size:14px;margin-bottom:6px}
+    .lv-desc{font-size:13px;line-height:1.38;margin-bottom:8px}
+    .lv-blurbs{margin:0 0 8px;min-height:65px}
+    .lv-blurb{display:none;padding:5px 0 5px 10px;transform:none}
+    .lv-blurb.is-current{display:block}
+    .lv-blurb-t{font-size:13px}
+    .lv-blurb-d{font-size:12px;line-height:1.3}
+    .lv-bridge{font-size:11.5px;line-height:1.35;padding:7px 10px}
+    .lv-desc,.lv-bridge{max-width:none}
+    .lv-right{min-height:0;align-items:stretch}
+    .lv-diagram{
+      width:100%;
+      height:100%;max-height:none;
+      overflow-x:auto;
+      overflow-y:hidden;
+      -webkit-overflow-scrolling:touch;
+      border-radius:14px;
+      background:var(--white);
+      border:1px solid var(--line);
+      padding:14px 8px 16px;
+      box-shadow:0 4px 16px rgba(21,23,26,.04);
+    }
+    .pstage{
+      min-width:580px;
+      width:100%;
+      height:100%;max-height:none;
+    }
+  }
+
+  @media (max-width:520px){
+    .navbar{top:10px;width:calc(100% - 20px);padding:6px 10px 6px 12px;gap:8px}
+    .navbar .brand{font-size:12.5px;gap:6px;min-width:0}
+    .navbar .brand-logo{height:20px;width:auto;flex-shrink:0}
+    .navbar .brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .navbar .brand .badge-tag{font-size:9.5px;padding:2px 5px;flex-shrink:0}
+    .navbar .nav-cta{padding:7px 13px;font-size:12px;flex-shrink:0}
+    .headline{font-size:clamp(24px,6.5vw,34px);line-height:1.2;text-wrap:balance}
+    .field input,.field select{font-size:16px !important}
+  }
+
+  @media (max-width:370px){
+    .navbar .brand .badge-tag{display:none}
+    .navbar .nav-cta{padding:6px 10px;font-size:11.5px}
+  }
+
+
+  .hint{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+    font-size:12.5px;color:var(--gray-500);z-index:50;background:rgba(255,255,255,.9);
+    padding:7px 14px;border-radius:5rem;border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(21,23,26,.06);backdrop-filter:blur(8px);max-width:92vw;text-align:center}
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SỬA LỖI ĐO ĐƯỢC — bản gốc của Claude để #levels và #rail RỖNG trong HTML,
+     toàn bộ nội dung do levels-engine.js đổ vào bằng innerHTML.
+     ⇒ JS chết (404, lỗi cú pháp, bị chặn) thì trang chỉ còn hero + khoảng trắng.
+     Vi phạm brain/03 §4 ràng buộc #6: "không để trạng thái 'from' ẩn nội dung
+     nếu JS chết". Đo: grep noscript = 0, try/catch trong engine = 0.
+
+     Vá bằng 3 lớp:
+       ① <noscript> chứa 6 cấp dạng văn bản tĩnh — đọc được, không cần JS
+       ② engine bọc try/catch, lỗi thì hiện khối .engine-fail thay vì im lặng
+       ③ :root giữ nguyên, nhưng mọi lớp trang trí nằm sau @supports/JS-gate
+     ═══════════════════════════════════════════════════════════════════════ */
+  #levels:empty{min-height:52vh}
+  #levels:empty::after{
+    content:"Đang dựng bản đồ 6 cấp độ…";
+    display:block;padding:120px 6vw;text-align:center;
+    color:var(--gray-400);font-size:14px;
+  }
+  .js-on #levels:empty::after{display:none}
+  .engine-fail{
+    margin:0 6vw 80px;padding:22px 26px;border-radius:14px;
+    background:var(--coral-50);border:1px solid var(--coral-100);
+    color:var(--coral-500);font-size:14px;line-height:1.6;
+  }
+
+  /* Fallback tĩnh — chỉ hiện khi KHÔNG có JS */
+  .nojs-levels{display:none}
+  .nojs-levels .nl-wrap{max-width:1240px;margin:0 auto;padding:60px 5vw}
+  .nojs-levels .nl-item{padding:26px 0;border-bottom:1px solid var(--gray-100)}
+  .nojs-levels .nl-num{font-size:86px;font-weight:700;line-height:1;color:var(--gray-100);letter-spacing:-.05em}
+  .nojs-levels .nl-eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin:8px 0 10px}
+  .nojs-levels h3{font-size:26px;font-weight:700;margin:0 0 6px;letter-spacing:-.03em}
+  .nojs-levels .nl-lead{font-size:16px;font-weight:600;margin:0 0 10px}
+  .nojs-levels .nl-desc{font-size:15px;line-height:1.6;color:var(--gray-500);max-width:620px;margin:0 0 14px}
+  .nojs-levels .nl-bridge{padding:12px 15px;border-radius:11px;background:var(--coral-50);
+    border:1px solid var(--coral-100);color:var(--coral-500);font-size:13.5px;font-weight:600;max-width:620px}
+
+  /* ------------- CÁC KHỐI CÒN LẠI CỦA TRANG ------------- */
+  .sec{padding:96px 0;position:relative}
+  .sec--alt{background:var(--gray-50)}
+  .sec--tight{padding:64px 0}
+  .wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 5vw}
+  .wrap--narrow{max-width:800px}
+  .sec-eyebrow{color:var(--green-500);font-size:12px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;margin:0 0 10px}
+  .sec h2{font-size:clamp(26px,3.4vw,42px);font-weight:700;letter-spacing:-.035em;
+    line-height:1.1;margin:0 0 14px}
+  .sec .lede{font-size:17px;line-height:1.55;color:var(--gray-500);max-width:620px;margin:0 0 34px}
+
+  /* vấn đề trước / sau */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .two__col{border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--white)}
+  .two__col h3{font-size:16px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  .two__col h3 .mark{width:22px;height:22px;border-radius:50%;display:inline-flex;
+    align-items:center;justify-content:center;font-size:12px;flex:0 0 auto}
+  .two__col--old h3 .mark{background:var(--coral-50);color:var(--coral-500);border:1px solid var(--coral-100)}
+  .two__col--new h3 .mark{background:#e6f4ef;color:var(--green-500);border:1px solid var(--green-100)}
+  .two__col ul{margin:0;padding-left:18px;color:var(--gray-500);font-size:14.5px;line-height:1.7}
+  .two__col li{margin-bottom:7px}
+
+  /* thẻ chương trình */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card3{border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--white);
+    transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease}
+  .card3:hover{transform:translateY(-3px);border-color:var(--green-100);
+    box-shadow:0 10px 26px rgba(21,23,26,.07)}
+  .card3__n{font-size:11.5px;font-weight:700;letter-spacing:.12em;color:var(--green-500);margin-bottom:9px}
+  .card3__t{font-size:18px;font-weight:700;margin:0 0 8px;letter-spacing:-.02em}
+  .card3__d{font-size:14.5px;line-height:1.6;color:var(--gray-500);margin:0}
+
+  /* bạn nhận được gì */
+  .kit{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .kit__i{border:1px solid var(--line);border-radius:14px;padding:20px;background:var(--white);
+    display:flex;gap:14px;align-items:flex-start}
+  .kit__ic{width:38px;height:38px;border-radius:11px;background:var(--gray-50);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:var(--green-500)}
+  .kit__ic svg{width:19px;height:19px}
+  .kit__t{font-size:15.5px;font-weight:600;margin:0 0 5px}
+  .kit__d{font-size:14px;line-height:1.55;color:var(--gray-500);margin:0}
+
+  /* diễn giả */
+  .speaker{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;
+    border:1px solid var(--line);border-radius:18px;padding:28px;background:var(--white)}
+  .speaker__ph{width:104px;height:104px;border-radius:50%;background:var(--gray-50);
+    border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+    color:var(--gray-400);flex:0 0 auto}
+  .speaker__ph svg{width:40px;height:40px}
+  .speaker__n{font-size:20px;font-weight:700;margin:0 0 6px;letter-spacing:-.02em}
+  .speaker__d{font-size:14.5px;line-height:1.6;color:var(--gray-500);margin:0}
+
+  /* FAQ */
+  .faq{border-top:1px solid var(--gray-100)}
+  .faq details{border-bottom:1px solid var(--gray-100)}
+  .faq summary{padding:19px 0;font-size:16px;font-weight:600;cursor:pointer;
+    list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-size:21px;font-weight:400;color:var(--gray-400);
+    flex:0 0 auto;transition:transform .2s ease}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  .faq .faq__a{padding:0 0 20px;font-size:15px;line-height:1.65;color:var(--gray-500);max-width:680px}
+
+  /* form đăng ký */
+  .reg{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+  .reg__info h2{margin-bottom:16px}
+  .reg__meta{list-style:none;padding:0;margin:0 0 22px}
+  .reg__meta li{display:flex;gap:11px;align-items:flex-start;font-size:15px;
+    color:var(--gray-500);padding:9px 0;line-height:1.5}
+  .reg__meta svg{width:17px;height:17px;color:var(--green-500);flex:0 0 auto;margin-top:3px}
+  .reg__form{border:1px solid var(--line);border-radius:18px;padding:28px;background:var(--white);
+    box-shadow:0 10px 34px rgba(21,23,26,.06)}
+  .field{margin-bottom:17px}
+  .field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px}
+  .field .req{color:var(--coral-500)}
+  .field input,.field select{width:100%;font-family:inherit;font-size:15px;color:var(--black);
+    background:var(--white);border:1px solid var(--gray-100);border-radius:11px;
+    padding:12px 14px;transition:border-color .18s ease, box-shadow .18s ease}
+  .field input::placeholder{color:var(--gray-400)}
+  /* ⛔⛔ LỖI THẬT — ĐO ĐƯỢC (verify-f.mjs 2026-09-17): 4 ô input/select MẤT VÒNG FOCUS.
+     Nguyên nhân: `.field input:focus{outline:none}` áp cho MỌI lần focus, kể cả focus
+     bằng bàn phím. Nó thắng `:focus-visible` vì cùng specificity nhưng khai sau.
+     ⇒ Người dùng bàn phím không biết mình đang ở ô nào. Vi phạm brain/02 §12 + WCAG 2.4.7.
+     Vá: `outline:none` chỉ áp khi chuột (:focus:not(:focus-visible));
+     còn `:focus-visible` giữ nguyên vòng 3px của quy tắc chung bên dưới. */
+  .field input:focus:not(:focus-visible),
+  .field select:focus:not(:focus-visible){outline:none}
+  .field input:focus,.field select:focus{border-color:var(--green-500);
+    box-shadow:0 0 0 3px rgba(8,144,108,.13)}
+  .field .hintx{font-size:12.5px;color:var(--gray-400);margin:6px 0 0;line-height:1.5}
+  .field .err{display:none;font-size:12.5px;color:var(--coral-600);
+    margin:6px 0 0;line-height:1.5;font-weight:500}
+  .field.has-err input,.field.has-err select{border-color:var(--coral-500);
+    box-shadow:0 0 0 3px rgba(206,60,43,.11)}
+  .field.has-err .err{display:block}
+  .field.has-err label{color:var(--coral-600)}
+
+  .submit{width:100%;justify-content:center;margin-top:6px}
+  .submit[disabled]{opacity:.62;cursor:not-allowed;transform:none !important;box-shadow:none}
+  .submit .spin{width:15px;height:15px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.4);border-top-color:#fff;
+    animation:spin .7s linear infinite;display:none}
+  .submit.is-loading .spin{display:block}
+  .submit.is-loading .submit__t{opacity:.85}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .form-note{font-size:12.5px;color:var(--gray-400);margin:13px 0 0;line-height:1.55;text-align:center}
+
+  /* success — phân biệt được BẰNG MẮT, không chỉ đổi màu chữ */
+  .form-ok{display:none;text-align:center;padding:14px 4px}
+  .form-ok.on{display:block}
+  .form-ok__ic{width:60px;height:60px;border-radius:50%;background:#e6f4ef;
+    border:2px solid var(--green-500);color:var(--green-500);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .form-ok__ic svg{width:28px;height:28px}
+  .form-ok__t{font-size:20px;font-weight:700;margin:0 0 9px;letter-spacing:-.02em}
+  .form-ok__d{font-size:14.5px;line-height:1.6;color:var(--gray-500);margin:0 auto;max-width:360px}
+  .form-ok__badge{display:inline-flex;align-items:center;gap:7px;margin-top:18px;
+    font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--green-500);
+    background:#e6f4ef;border:1px solid var(--green-100);padding:7px 14px;border-radius:5rem}
+  .form-fail{display:none;margin-bottom:16px;padding:13px 15px;border-radius:11px;
+    background:var(--coral-50);border:1px solid var(--coral-100);
+    color:var(--coral-600);font-size:13.5px;line-height:1.55;font-weight:500}
+  .form-fail.on{display:block}
+
+  /* chốt + footer */
+  .final{text-align:center;padding:110px 0}
+  .final h2{font-size:clamp(28px,4vw,52px);letter-spacing:-.04em;line-height:1.06;margin:0 auto 20px;max-width:840px}
+  .final p{font-size:17px;color:var(--gray-500);max-width:560px;margin:0 auto 30px;line-height:1.6}
+  .foot{border-top:1px solid var(--gray-100);padding:30px 0;font-size:13.5px;color:var(--gray-400)}
+  .foot__in{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+
+  /* a11y — chỉ hiện khi focus bàn phím */
+  a:focus-visible,button:focus-visible,summary:focus-visible,
+  input:focus-visible,select:focus-visible,[tabindex]:focus-visible{
+    outline:3px solid var(--green-500);outline-offset:3px;border-radius:6px}
+  .skip{position:absolute;left:-9999px;top:0;background:var(--black);color:#fff;
+    padding:11px 18px;border-radius:0 0 10px 0;z-index:200;font-size:14px}
+  .skip:focus{left:0}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  /* ══════════════════════════════════════════════════════════════════════
+     HAI ĐƯỜNG THAM GIA — online (primary) + offline (qualified secondary)
+     Nguồn số liệu: docs/GO4AI-WORK-LAB-CAMPAIGN-2026-09-14.md
+     Profile: design/profiles/campaigns.yaml
+     Motion: M0 — §motion.prohibited_patterns cấm "animation che form đăng ký".
+     ══════════════════════════════════════════════════════════════════════ */
+  .paths{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:30px;align-items:stretch}
+
+  /* thẻ chọn đường — <button> vì nó ĐỔI TRẠNG THÁI, không phải <a> điều hướng */
+  .path{position:relative;text-align:left;display:flex;flex-direction:column;
+    font-family:inherit;cursor:pointer;background:var(--white);
+    border:1.5px solid var(--line);border-radius:20px;padding:26px;
+    transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease}
+  .path:hover{border-color:var(--gray-200);transform:translateY(-2px);
+    box-shadow:0 12px 30px rgba(21,23,26,.07)}
+  .path[aria-pressed="true"]{border-color:var(--green-500);background:var(--white);
+    box-shadow:0 0 0 3px rgba(8,144,108,.13), 0 12px 30px rgba(21,23,26,.07)}
+  /* ⛔⛔ LỖI THẬT ĐÃ ĐO (diag-d2.mjs 2026-09-17): hai thẻ có CÙNG opacity:1 và
+     CÙNG background trắng; khác biệt DUY NHẤT là màu viền
+     #d9dfde (217,223,222) vs #08906c (8,144,108).
+     brain/02 §13: "states must not be conveyed by colour alone" ⇒ vi phạm.
+     Sửa: thẻ KHÔNG chọn bị ĐẨY XUỐNG bằng cả (a) nền xám nhạt, (b) viền nét đứt,
+     (c) nhãn chữ đổi thành "Chọn cách này" — ba tín hiệu phi-màu, đọc được cả khi
+     in đen trắng. Thẻ đang chọn thành nền trắng + viền liền + bóng ⇒ nổi lên. */
+  .path:not([aria-pressed="true"]){background:var(--gray-50);border-style:dashed;
+    border-color:var(--gray-200)}
+  .path:not([aria-pressed="true"]):hover{background:var(--white);border-style:solid}
+  .path[aria-pressed="true"] .path__pick{border-color:var(--green-500);background:var(--green-500)}
+  /* chữ trạng thái bên trong thẻ — tín hiệu KHÔNG phải màu */
+  .path__state{display:inline-flex;align-items:center;gap:6px;margin:14px 0 0;
+    font-size:12.5px;font-weight:700;letter-spacing:.02em}
+  .path[aria-pressed="true"] .path__state{color:var(--green-700)}
+  .path:not([aria-pressed="true"]) .path__state{color:var(--gray-500)}
+  /* trạng thái CHỌN phải nhận ra bằng MẮT, và có cả CHỮ (không chỉ màu) */
+  .path__pick{position:absolute;top:22px;right:22px;width:22px;height:22px;border-radius:50%;
+    border:1.5px solid var(--gray-200);display:flex;align-items:center;justify-content:center;
+    transition:background .18s ease,border-color .18s ease}
+  .path__pick svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .18s ease}
+  .path[aria-pressed="true"] .path__pick{background:var(--green-500);border-color:var(--green-500)}
+  .path[aria-pressed="true"] .path__pick svg{opacity:1}
+
+  .path__tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--gray-500);margin:0 0 12px}
+  .path__tag b{font-weight:700;color:var(--green-500)}
+  .path__tag--soon{color:var(--coral-600)}
+  .path__tag--soon b{color:var(--coral-600)}
+  .path h3{font-size:22px;font-weight:700;letter-spacing:-.03em;margin:0 0 4px;line-height:1.2}
+  .path__when{font-size:14px;color:var(--gray-500);margin:0 0 16px;line-height:1.55}
+  .path__price{font-size:26px;font-weight:700;letter-spacing:-.03em;margin:0 0 3px}
+  .path__price small{font-size:13px;font-weight:500;color:var(--gray-400);
+    letter-spacing:0;display:block;margin-top:3px}
+  .path__gets{list-style:none;padding:0;margin:16px 0 0;border-top:1px solid var(--gray-100);padding-top:14px}
+  .path__gets li{position:relative;font-size:13.5px;line-height:1.55;color:var(--gray-500);
+    padding-left:20px;margin-bottom:8px}
+  .path__gets li:last-child{margin-bottom:0}
+  /* ⛔⛔ LỖI THẬT ĐÃ ĐO (diag-d2.mjs 2026-09-17): bản đầu phân biệt "có trong gói"
+     với "thêm" CHỈ bằng màu chấm — green-500 (#08906c) vs green-100 (#d3ece4).
+     brain/02 §13: "states must not be conveyed by colour alone".
+     Người không phân biệt được xanh đậm/nhạt thấy 7 chấm giống hệt nhau.
+     Sửa: KHÁC HÌNH DẠNG thật — chấm ĐẶC cho mục chính, VÒNG RỖNG cho mục phụ.
+     Vẫn giữ màu để nhấn, nhưng màu chỉ là lớp thứ hai, không phải tín hiệu duy nhất. */
+  .path__gets li::before{content:"";position:absolute;left:0;top:7px;width:9px;height:9px;
+    border-radius:50%;background:transparent;border:1.5px solid var(--green-500);box-sizing:border-box}
+  .path__gets li.is-star::before{background:var(--green-500);border-color:var(--green-500)}
+  /* chú thích cho trình đọc màn hình: chấm rỗng nghĩa là gì */
+  .path__gets li:not(.is-star)::after{content:" (thêm)";position:absolute;width:1px;height:1px;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  .path__seats{display:inline-flex;align-items:center;gap:7px;margin-top:14px;
+    font-size:12.5px;font-weight:600;color:var(--coral-600);
+    background:var(--coral-50);border:1px solid var(--coral-100);
+    border-radius:99px;padding:6px 13px}
+  .path__seats svg{width:13px;height:13px;flex:0 0 auto}
+
+  /* khối chứa form đã chọn */
+  .path-form{display:none}
+  .path-form.on{display:block}
+  .path-form__head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    padding-bottom:16px;margin-bottom:22px;border-bottom:1px solid var(--gray-100)}
+  .path-form__head h3{font-size:19px;font-weight:700;letter-spacing:-.02em;margin:0}
+  .path-form__head p{font-size:13px;color:var(--gray-400);margin:0}
+
+  .field textarea{width:100%;font-family:inherit;font-size:15px;color:var(--black);
+    background:var(--white);border:1.5px solid var(--gray-100);border-radius:11px;
+    padding:13px 14px;resize:vertical;min-height:96px;line-height:1.55;transition:border-color .18s ease}
+  .field textarea:focus:not(:focus-visible){outline:none}
+  .field textarea:focus{border-color:var(--green-500);box-shadow:0 0 0 3px rgba(8,144,108,.13)}
+  .field.has-err textarea{border-color:var(--coral-500);box-shadow:0 0 0 3px rgba(206,60,43,.11)}
+
+  /* quy trình offline — 4 bước, biện minh cho 2.000.000đ */
+  .steps{list-style:none;padding:0;margin:20px 0 0;counter-reset:st}
+  .steps li{position:relative;padding-left:34px;margin-bottom:15px;font-size:13.5px;
+    line-height:1.55;color:var(--gray-500)}
+  .steps li:last-child{margin-bottom:0}
+  .steps li::before{counter-increment:st;content:counter(st);
+    position:absolute;left:0;top:-1px;width:22px;height:22px;border-radius:50%;
+    background:var(--gray-50);border:1px solid var(--gray-100);color:var(--gray-500);
+    font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .steps li.is-now::before{background:var(--green-500);border-color:var(--green-500);color:#fff}
+  .steps li b{color:var(--black);font-weight:600}
+  .steps li.is-now b{color:var(--green-700)}
+
+  /* trạng thái theo THỜI GIAN — chọn bằng hằng số, không rải ngày khắp markup */
+  .gate{display:none}
+  .gate.on{display:block}
+  .gate__box{padding:20px 22px;border-radius:14px;background:var(--gray-50);
+    border:1px solid var(--gray-100);font-size:14px;line-height:1.6;color:var(--gray-500)}
+  .gate__box strong{color:var(--black);display:block;margin-bottom:5px;font-size:15px}
+
+  /* dòng nhắc hạn — NGÀY CỤ THỂ, không đếm ngược (proof_prohibited) */
+  .deadline{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
+    color:var(--black);background:var(--blue-50);border:1px solid #d3e6ef;
+    border-radius:10px;padding:10px 14px;margin-top:16px}
+  .deadline svg{width:14px;height:14px;color:var(--blue-500);flex:0 0 auto}
+
+  @media (max-width:900px){
+    .two,.cards3,.kit,.reg,.paths{grid-template-columns:1fr}
+    .speaker{grid-template-columns:1fr;text-align:center;justify-items:center}
+    .sec{padding:70px 0}
+    .final{padding:80px 0}
+    .path{padding:22px}
+  }
+  @media (max-width:520px){
+    .reg__form{padding:20px}
+    .hint{display:none}
+  }
+
+  /* ═══ REDUCED MOTION — tôn trọng a11y không can thiệp layout 2 cột hay ẩn cá ═══
+     2026-09-23: KHÔI PHỤC ĐÚNG BẢN GỐC (LucasGo4ai tai-nguyen/trang/gemglobal.html).
+     Bản trước đổi bố cục 6 cấp độ sang 1 cột tĩnh khi máy bật "giảm chuyển động"
+     ⇒ trên máy owner (Windows tắt animation) 6 cấp độ KHÔNG chuyển động, lệch bản gốc. */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto !important}
+  }
+</style>
+</head>
+<body>
+
+<div class="zoom-flash" id="flash"></div>
+
+<div class="navbar">
+  <a href="https://b2b.go4ai.org" class="brand"><img src="assets/go4ai-badge.png" alt="Go4ai" class="brand-logo" style="height:26px;width:auto;"><span>Go4ai</span></a>
+  <nav>
+    <a href="#chuong-trinh" style="color:var(--coral-500);font-weight:600;">Nội dung hội thảo</a>
+    <a href="#level-1">Hành trình 6 cấp độ</a>
+    <a href="#level-3">AI làm việc</a>
+    <a href="#level-5">Ứng dụng AI</a>
+  </nav>
+  <a class="nav-cta" href="#tham-gia" style="text-decoration:none;">Đăng ký</a>
+</div>
+
+<div class="hint">Cuộn chuột — Biểu tượng Go4ai di chuyển qua 6 cấp độ để mở ra hành trình ứng dụng Claude</div>
+
+<!-- Biểu tượng cá Go4ai — accent bơi theo scroll.
+     ✅ Hộp hiển thị ĐÚNG BẰNG viewBox 190×119 của bản gốc ⇒ nét và chi tiết
+     tương quan y hệt b2b.go4ai.org/gemglobal/. Không co nhỏ lại (bản port trước
+     co còn 92×58 và làm mất độ đọc của huy hiệu).
+     Màu theo nhận diện: đỏ đô, đỏ sáng và trắng.
+     aria-hidden: đây là trang trí, không mang thông tin. -->
+<div class="fish" id="fish" aria-hidden="true">
+  <div class="fish-bank" id="fishBank">
+    <svg class="fish-svg" viewBox="0 0 190 119" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"   stop-color="#fff8f8"/>
+          <stop offset="45%"  stop-color="#f5c9cc"/>
+          <stop offset="100%" stop-color="#c82a33"/>
+        </linearGradient>
+        <linearGradient id="finGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"   stop-color="#c82a33"/>
+          <stop offset="100%" stop-color="#7e1217"/>
+        </linearGradient>
+        <linearGradient id="tailGrad" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#d9474e"/>
+          <stop offset="50%"  stop-color="#9f161d"/>
+          <stop offset="100%" stop-color="#7e1217"/>
+        </linearGradient>
+        <radialGradient id="glowGrad">
+          <stop offset="0%"   stop-color="#9f161d" stop-opacity=".28"/>
+          <stop offset="100%" stop-color="#9f161d" stop-opacity="0"/>
+        </radialGradient>
+        <clipPath id="bodyClip">
+          <path d="M176,59 C173,40 152,26 121,24 C88,21 55,30 44,59 C55,88 88,97 121,94 C152,92 173,78 176,59 Z"/>
+        </clipPath>
+        <clipPath id="badgeClip">
+          <circle cx="112" cy="59" r="21"/>
+        </clipPath>
+      </defs>
+
+      <ellipse class="f-glow" cx="105" cy="59" rx="92" ry="54" fill="url(#glowGrad)"/>
+
+      <path class="f-tail" d="M48,59 L8,26 L23,59 L8,92 Z" fill="url(#tailGrad)" opacity=".9"/>
+
+      <g class="f-body-group">
+        <path class="f-fin-top" d="M86,27 C94,6 120,3 138,16 C121,20 101,24 86,27 Z" fill="url(#finGrad)" opacity=".85"/>
+        <path class="f-fin-bottom" d="M88,92 C96,113 120,116 136,103 C119,99 101,95 88,92 Z" fill="url(#finGrad)" opacity=".8"/>
+
+        <path d="M176,59 C173,40 152,26 121,24 C88,21 55,30 44,59 C55,88 88,97 121,94 C152,92 173,78 176,59 Z"
+              fill="url(#bodyGrad)" stroke="#9F161D" stroke-width="2.5" stroke-opacity=".85"/>
+
+        <g clip-path="url(#bodyClip)">
+          <path d="M84,20 C78,40 78,78 85,98 L71,95 C65,76 65,42 71,22 Z" fill="#9f161d" opacity=".8"/>
+          <path d="M156,30 C150,44 150,74 157,88 L145,83 C139,68 139,50 145,35 Z" fill="#d9474e" opacity=".55"/>
+          <path d="M44,59 C55,30 88,21 121,24 C96,30 66,42 44,59 Z" fill="#ffffff" opacity=".5"/>
+        </g>
+
+        <!-- Huy hiệu tròn Go4ai giữ chiều đọc khi cá quay đầu. -->
+        <g class="f-badge">
+          <g class="f-badge-inner">
+            <circle cx="112" cy="59" r="22.5" fill="#ffffff" opacity=".94"/>
+            <image href="assets/go4ai-badge.png" x="93" y="41" width="38" height="36"
+                   preserveAspectRatio="xMidYMid meet" clip-path="url(#badgeClip)"/>
+            <circle cx="112" cy="59" r="21.6" fill="none" stroke="#9F161D" stroke-width="1.8" stroke-opacity=".7"/>
+          </g>
+        </g>
+
+        <path class="f-pect" d="M140,62 C147,76 140,89 127,86 C130,77 135,68 140,62 Z" fill="url(#finGrad)" opacity=".7"/>
+
+        <circle cx="163" cy="50" r="7.5" fill="#ffffff" stroke="#0a1620" stroke-width="1" stroke-opacity=".3"/>
+        <circle cx="164.5" cy="50" r="4" fill="#0a1620"/>
+        <circle cx="166" cy="48" r="1.5" fill="#ffffff"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">Workshop Online 90 phút · Go4ai</div>
+    <h1 class="headline">Hành trình ứng dụng <span class="accent">Claude</span> trong doanh nghiệp</h1>
+    <p class="sub">Từ một cửa sổ chat đến một hệ điều hành AI vận hành tuyển dụng, nhân sự và quản trị doanh nghiệp — 6 cấp độ, 1 hành trình liền mạch.</p>
+    <p class="sub" style="font-weight:600;">Trực tuyến miễn phí · 20:00 Thứ Sáu 30/10/2026 · cùng Lucas Đặng, Nhà sáng lập Go4ai</p>
+    <button class="cta-btn" id="ctaBtn">Khám phá hành trình →</button>
+  </div>
+
+  <div class="hero-right">
+    <div class="machine-wrap" id="machineWrap">
+      <div class="cta-explore">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        BẤM ĐỂ KHÁM PHÁ
+      </div>
+      <div class="machine-illustration" id="heroCanvas"></div>
+      <div class="machine-reflection"><div class="flip" id="heroReflection"></div></div>
+      <div class="water-shimmer"></div>
+      <div class="dive-cta" id="diveCta">
+        <span>Cuộn xuống<br/>khám phá</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="space-overlay" id="spaceOverlay">
+  <button class="space-close" id="spaceClose" aria-label="Đóng">✕</button>
+  <div class="space-title">Bên trong hành trình</div>
+  <h2 class="space-heading">Chọn một bước trong hành trình để xem chi tiết</h2>
+  <div class="space-canvas" id="spaceCanvas"></div>
+  <p class="space-hint">Chọn 1 khối — trang sẽ tự cuộn xuống đúng phần tương ứng</p>
+</div>
+
+<nav class="rail" id="rail"></nav>
+
+<div id="levels"></div>
+
+<!-- ⛔ ĐÍNH CHÍNH 2026-09-21: bản cũ đặt `style="display:block"` NGAY TRONG thẻ này.
+     Inline style thắng `.nojs-levels{display:none}` ⇒ khối fallback hiện với MỌI
+     người dùng, kể cả khi JavaScript chạy bình thường — toàn bộ nội dung 6 cấp độ
+     bị lặp hai lần trên trang (một lần bằng bản đồ tương tác, một lần bằng văn bản).
+     Fallback chỉ có nghĩa trong <noscript>, nơi CSS `.nojs-levels{display:none}`
+     không bao giờ được áp dụng… ngoại trừ inline style đang đè nó. Bỏ inline style:
+     có JS ⇒ ẩn; không có JS ⇒ hiện. Đúng như thiết kế ban đầu. -->
+<noscript>
+<div class="nojs-levels">
+  <div class="nl-wrap">
+    <p class="sec-eyebrow">Sáu cấp độ</p>
+    <h2 style="font-size:clamp(26px,3.4vw,42px);font-weight:700;letter-spacing:-.035em;margin:0 0 30px">
+      Hành trình ứng dụng Claude trong doanh nghiệp</h2>
+
+    <div class="nl-item">
+      <div class="nl-num">01</div>
+      <p class="nl-eyebrow" style="color:#478fb8">HỎI · PHÂN TÍCH · TẠO RA</p>
+      <h3>Hỏi đáp</h3>
+      <p class="nl-lead" style="color:#478fb8">AI làm từng tác vụ</p>
+      <p class="nl-desc">Chỉ riêng một cửa sổ chat đã có thể thay đổi rất nhiều việc của phòng Nhân sự —
+      nếu bạn biết hỏi đúng. Tra quy định, đọc CV, đọc số liệu nhân sự, so sánh ứng viên,
+      soạn JD, bộ câu hỏi phỏng vấn, email mời ứng viên, và kết thúc bằng một file bàn giao thật. Dùng khi: việc làm một lần, cần câu trả lời hoặc bản nháp nhanh.</p>
+      <p class="nl-bridge">NHƯNG — mỗi lần chat mới, bạn vẫn phải giải thích lại từ đầu.</p>
+    </div>
+
+    <div class="nl-item">
+      <div class="nl-num">02</div>
+      <p class="nl-eyebrow" style="color:#08906c">TỪ AI CHUNG → AI CỦA BẠN</p>
+      <h3>Trợ lý riêng</h3>
+      <p class="nl-lead" style="color:#08906c">AI hiểu cách bạn làm việc</p>
+      <p class="nl-desc">Claude không chỉ biết thế giới. Claude bắt đầu biết tổ chức của bạn: cơ cấu,
+      chính sách, văn hoá, và cách phòng Nhân sự nói chuyện với nhân viên. Sơ đồ tổ chức, chức danh, khung lương,
+      chính sách, khung năng lực, biểu mẫu và những đợt tuyển dụng đã làm tốt trước đây trở thành ngữ cảnh dùng chung. Dùng khi: cùng một loại việc lặp lại và cần AI nói đúng giọng, đúng dữ liệu doanh nghiệp.</p>
+      <p class="nl-bridge">Nhưng Claude vẫn chỉ đưa nội dung — bạn vẫn tự thao tác trên từng hệ thống.</p>
+    </div>
+
+    <div class="nl-item">
+      <div class="nl-num">03</div>
+      <p class="nl-eyebrow" style="color:#ce3c2b">TỪ TRẢ LỜI → LÀM VIỆC</p>
+      <h3>Giao việc</h3>
+      <p class="nl-lead" style="color:#ce3c2b">AI thao tác trên công việc thật</p>
+      <p class="nl-desc">Không còn là tạo nội dung để bạn copy-paste. Claude đọc file thật, mở trình duyệt thật,
+      cập nhật hệ thống thật: đọc CV và JD, tra hồ sơ công khai, đối chiếu và phát hiện thông tin còn thiếu,
+      mở hệ thống tuyển dụng, nhập ghi chú, chuyển vòng ứng viên. Người tuyển dụng vẫn giữ quyền quyết cuối cùng. Dùng khi: việc phải thao tác trên file, trình duyệt hoặc hệ thống — và vẫn cần người duyệt.</p>
+      <p class="nl-bridge">Nhưng tháng nào bạn cũng phải giao lại đúng việc đó.</p>
+    </div>
+
+    <div class="nl-item">
+      <div class="nl-num">04</div>
+      <p class="nl-eyebrow" style="color:#2b4d60">TỪ LÀM → TỰ CHẠY</p>
+      <h3>Tự động hóa</h3>
+      <p class="nl-lead" style="color:#2b4d60">Quy trình tự chạy</p>
+      <p class="nl-desc">Nếu tháng nào cũng làm cùng một việc, tại sao tháng nào cũng phải làm lại?
+      Hệ thống phát hiện file chấm công mới trên Drive, tự làm sạch dữ liệu, tính chỉ số nhân sự, bắt số liệu bất thường,
+      để Claude viết nhận xét, cập nhật bảng theo dõi, sinh báo cáo nhân sự tháng và gửi đúng trưởng bộ phận — không ai bấm nút. Dùng khi: việc lặp lại theo lịch hoặc theo sự kiện, quy trình đã ổn định.</p>
+      <p class="nl-bridge">Nhưng kinh nghiệm vẫn nằm rải rác trong từng quy trình riêng lẻ.</p>
+    </div>
+
+    <div class="nl-item">
+      <div class="nl-num">05</div>
+      <p class="nl-eyebrow" style="color:#38a0b8">TỪ QUY TRÌNH → SẢN PHẨM</p>
+      <h3>Ứng dụng AI</h3>
+      <p class="nl-lead" style="color:#38a0b8">Biến kinh nghiệm thành phần mềm</p>
+      <p class="nl-desc">Nếu đã dạy AI cách nghiên cứu, phân tích, chấm điểm và khuyến nghị —
+      tại sao người phỏng vấn vẫn phải chat từng câu? Đóng gói nó thành ứng dụng Candidate Fit:
+      nhập CV, JD và khung năng lực, engine chạy một quy trình cố định, ra bản đồ năng lực và scorecard
+      để mọi ứng viên được chấm cùng một thước đo — người phỏng vấn vẫn là người quyết. Dùng khi: kinh nghiệm đã chuẩn hóa và nhiều người cần dùng cùng một quy trình.</p>
+      <p class="nl-bridge">Một app đã mạnh. Nhưng doanh nghiệp không chỉ có một bài toán.</p>
+    </div>
+
+    <div class="nl-item" style="border-bottom:0">
+      <div class="nl-num">06</div>
+      <p class="nl-eyebrow" style="color:#15171a">TỪ ỨNG DỤNG → HỆ ĐIỀU HÀNH AI</p>
+      <h3>Hệ điều hành AI</h3>
+      <p class="nl-lead" style="color:#15171a">Nhiều AI cùng vận hành doanh nghiệp</p>
+      <p class="nl-desc">Khi 1 người dùng, câu lệnh là đủ. Khi 10 người, Trợ lý riêng cần chuẩn hoá.
+      Khi 100 người — phải có dữ liệu, quyền, quy trình và quản trị. Mỗi mảng nhân sự — tuyển dụng, hội nhập,
+      đào tạo, C&amp;B, hỏi đáp nhân viên — có AI riêng nhưng cùng chạy trên một nền tảng: shared knowledge, quyền truy cập, phê duyệt, KPI và audit. Dùng khi: nhiều phòng ban cùng dùng AI và cần chung dữ liệu, quyền, phê duyệt, KPI.</p>
+      <p class="nl-bridge">Đây là lúc AI trở thành NĂNG LỰC VẬN HÀNH của doanh nghiệp.</p>
+    </div>
+
+    <p style="font-size:13.5px;color:#8b9a96;margin-top:30px">
+      Hành trình tương tác cần JavaScript. Nội dung đầy đủ vẫn đọc được ở trên.</p>
+  </div>
+</div>
+</noscript>
+
+<!-- ══════════ VẤN ĐỀ — TRƯỚC / SAU ══════════ -->
+<section class="sec sec--alt" id="van-de"><div class="wrap">
+  <p class="sec-eyebrow">Vấn đề</p>
+  <h2>Ai cũng đã thử AI. Gần như không ai dùng được nó cho công việc thật.</h2>
+  <p class="lede">Khoảng cách không nằm ở công cụ. Nó nằm ở chỗ AI chưa được nối vào cách doanh nghiệp
+  làm việc: chưa có ngữ cảnh, chưa có quyền truy cập, chưa có quy trình, chưa ai kiểm tra kết quả.</p>
+  <div class="two">
+    <div class="two__col two__col--old">
+      <h3><span class="mark">✕</span> Cách đang làm</h3>
+      <ul>
+        <li>Mỗi người mở một cửa sổ chat riêng, hỏi theo một kiểu riêng</li>
+        <li>Không ai biết đồng nghiệp đã dạy AI những gì</li>
+        <li>Nội dung AI tạo ra phải chép tay sang chỗ khác</li>
+        <li>Việc lặp lại tháng nào cũng làm tay từ đầu</li>
+        <li>Không có gì chạy khi bạn ngủ</li>
+        <li>Không ai đo được AI đang tạo ra bao nhiêu giá trị</li>
+      </ul>
+    </div>
+    <div class="two__col two__col--new">
+      <h3><span class="mark">✓</span> Sau 6 cấp độ</h3>
+      <ul>
+        <li>Một nguồn ngữ cảnh dùng chung cho cả đội</li>
+        <li>Quy trình chuẩn: ai chạy cũng ra cùng chất lượng</li>
+        <li>AI thao tác trực tiếp trên hệ thống, không phải chép tay</li>
+        <li>Việc lặp lại do hệ thống tự chạy, có dấu vết để kiểm tra</li>
+        <li>Kinh nghiệm được đóng gói thành công cụ dùng lại được</li>
+        <li>Có điểm số để đo và cải thiện theo thời gian</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══════════ CHƯƠNG TRÌNH ══════════ -->
+<section class="sec" id="chuong-trinh"><div class="wrap">
+  <p class="sec-eyebrow">Chương trình</p>
+  <h2>90 phút, ba phần, một hành trình liền mạch</h2>
+  <p class="lede">Không phải buổi giới thiệu tính năng. Đây là buổi trình diễn chạy thật theo đúng thứ tự
+  mà một doanh nghiệp sẽ đi qua — và dừng ở đúng chỗ cần ra quyết định.</p>
+  <div class="cards3">
+    <div class="card3">
+      <div class="card3__n">PHẦN 1 · 25 PHÚT · CẤP ĐỘ 01–02</div>
+      <h3 class="card3__t">Từ Hỏi đáp đến Trợ lý riêng</h3>
+      <p class="card3__d">Sự khác biệt giữa hỏi và giao việc. Cách nạp ngữ cảnh doanh nghiệp
+      để AI thôi trả lời chung chung.</p>
+    </div>
+    <div class="card3">
+      <div class="card3__n">PHẦN 2 · 35 PHÚT · CẤP ĐỘ 03–04</div>
+      <h3 class="card3__t">Từ Giao việc đến Tự động hóa</h3>
+      <p class="card3__d">AI đọc file, mở trình duyệt, cập nhật phần mềm quản lý khách hàng. Rồi biến chính việc đó
+      thành quy trình tự chạy theo lịch.</p>
+    </div>
+    <div class="card3">
+      <div class="card3__n">PHẦN 3 · 30 PHÚT · CẤP ĐỘ 05–06</div>
+      <h3 class="card3__t">Từ Ứng dụng AI đến Hệ điều hành AI</h3>
+      <p class="card3__d">Đóng gói kinh nghiệm thành ứng dụng. Rồi câu hỏi lớn nhất: làm sao nhân rộng
+      từ một người sang toàn tổ chức.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══════════ BẠN NHẬN ĐƯỢC GÌ ══════════ -->
+<section class="sec sec--alt" id="nhan-duoc"><div class="wrap">
+  <p class="sec-eyebrow">Bạn nhận được gì</p>
+  <h2>Sau buổi hội thảo, bạn mang về</h2>
+  <div class="kit">
+    <div class="kit__i">
+      <div class="kit__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/>
+        <line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+      <div><p class="kit__t">Bản đồ hành trình 6 bước ứng dụng Claude</p>
+      <p class="kit__d">Biết mỗi việc nên dùng Hỏi đáp, Trợ lý riêng, Giao việc, Tự động hóa, Ứng dụng AI hay Hệ điều hành AI.</p></div>
+    </div>
+    <div class="kit__i">
+      <div class="kit__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/></svg></div>
+      <div><p class="kit__t">Bộ mẫu ngữ cảnh</p>
+      <p class="kit__d">Khung hồ sơ doanh nghiệp, bảng giá, chính sách và giọng điệu thương hiệu để nạp vào AI.</p></div>
+    </div>
+    <div class="kit__i">
+      <div class="kit__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div><p class="kit__t">Một quy trình mẫu chạy được</p>
+      <p class="kit__d">Bản trình diễn Tự động hóa đã chạy thật — bạn xem và áp cho việc của mình.</p></div>
+    </div>
+    <div class="kit__i">
+      <div class="kit__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+      <div><p class="kit__t">Danh sách kiểm tra 6 câu hỏi quản trị</p>
+      <p class="kit__d">Dữ liệu nào AI được dùng, ai được làm gì, kết quả nào phải duyệt.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══════════ SAU 90 PHÚT: 3 PHẦN DEMO = 3 CHẶNG TRIỂN KHAI (2026-09-24) ══════════
+     Câu chuyện thống nhất: inc/story-data.php. 3 phần của buổi demo trùng đúng 3 năng lực
+     của Giám đốc AI / 3 tầng chương trình GEM ⇒ người xem thấy "đi tiếp thế nào". -->
+<section class="sec" id="di-tiep"><div class="wrap">
+  <p class="sec-eyebrow">Sau 90 phút</p>
+  <h2>Ba chặng ứng dụng AI cùng Go4ai</h2>
+  <p class="lede">Buổi trực tuyến cho bạn thấy AI làm được gì ở từng cấp độ. Đưa nó vào việc thật của
+  doanh nghiệp là ba chặng khác nhau — mỗi quy trình đi theo phương pháp PROVE: chọn việc thật và đo hiện trạng,
+  chia việc cho AI và người, chạy trên dữ liệu thật, rà soát theo bộ tiêu chí, rồi mới nhân rộng.</p>
+  <div class="cards3">
+    <div class="card3"><div class="card3__n">CHẶNG 01 · HIỂU VIỆC</div>
+      <h3 class="card3__t">Chọn đúng việc để bắt đầu</h3>
+      <p class="card3__d">Xác định một tác vụ lặp lại, dữ liệu đầu vào, người chịu trách nhiệm và cách đo kết quả hiện tại.</p></div>
+    <div class="card3"><div class="card3__n">CHẶNG 02 · CHẠY THỬ</div>
+      <h3 class="card3__t">Giao việc cho AI trong phạm vi rõ ràng</h3>
+      <p class="card3__d">Thử trên một quy trình cụ thể, kiểm tra đầu ra và giữ người phụ trách ở các điểm cần quyết định.</p></div>
+    <div class="card3"><div class="card3__n">CHẶNG 03 · MỞ RỘNG</div>
+      <h3 class="card3__t">Đưa cách làm tốt vào vận hành</h3>
+      <p class="card3__d">Chuẩn hóa hướng dẫn, phân quyền và theo dõi chất lượng trước khi áp dụng cho nhiều người hoặc nhiều việc.</p></div>
+  </div>
+  <p class="lede" style="font-size:13.5px;margin-top:18px">Tên công cụ AI thay đổi rất nhanh (cấp độ 03 từng được gọi theo tên sản phẩm “Cowork”).
+  Vì vậy buổi hội thảo gọi các cấp độ theo năng lực, không theo tên sản phẩm.</p>
+</div></section>
+
+<!-- ══════════ DIỄN GIẢ ══════════ -->
+<section class="sec" id="dien-gia"><div class="wrap wrap--narrow">
+  <p class="sec-eyebrow">Diễn giả</p>
+  <div class="speaker">
+    <div class="speaker__ph">
+      <img src="assets/lucas-dang.jpg" alt="Lucas Đặng — Nhà sáng lập Go4ai"
+        style="width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy">
+    </div>
+    <div>
+      <p class="speaker__n">Lucas Đặng — Nhà sáng lập Go4ai</p>
+      <p class="speaker__d">Nhà sáng lập Go4ai; Thiết kế các chương trình đào tạo &amp; ứng dụng AI cho doanh nghiệp và chương trình riêng theo bài toán từng doanh nghiệp. Trực tiếp triển khai AI vào quy trình nghiệp vụ của doanh nghiệp: AI Passport,
+      tự động hóa quy trình nghiệp vụ và tối ưu hóa vận hành. Buổi hội thảo dùng chính những hệ thống đang chạy
+      trong thực tế làm ví dụ — trực quan, ứng dụng thực tế và gắn liền với bài toán vận hành.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══════════ FAQ ══════════ -->
+<section class="sec sec--alt" id="faq"><div class="wrap wrap--narrow">
+  <p class="sec-eyebrow">Câu hỏi thường gặp</p>
+  <h2 style="margin-bottom:30px">Những điều hay được hỏi trước khi đăng ký</h2>
+  <div class="faq">
+    <details>
+      <summary>Tôi chưa dùng AI bao giờ — có theo được không?</summary>
+      <p class="faq__a">Được. Cấp độ 1 bắt đầu từ thao tác quen thuộc nhất là gõ câu hỏi vào cửa sổ chat.
+      Sáu cấp độ được thiết kế để đi liền mạch, nên bạn không cần nền tảng kỹ thuật trước.</p>
+    </details>
+    <details>
+      <summary>Buổi trình diễn có phải là slide không?</summary>
+      <p class="faq__a">Không. Phần lớn thời lượng là quay màn hình thật và chạy trực tiếp trên hệ thống
+      đang vận hành. Chỗ nào chưa chạy thật được, chúng tôi nói rõ là chưa.</p>
+    </details>
+    <details>
+      <summary>Cấp độ 4 và 5 có cần lập trình không?</summary>
+      <p class="faq__a">Không cần tự viết code. Ở cấp độ 4, AI tự viết đoạn lệnh và bạn chỉ việc bấm chạy.
+      Ở cấp độ 5, sản phẩm đã được đóng gói thành ứng dụng — bạn nhập dữ liệu vào và dùng.</p>
+    </details>
+    <details>
+      <summary>Sau hội thảo tôi tự triển khai được không?</summary>
+      <p class="faq__a">Cấp độ 1 và 2 bạn làm được ngay trong ngày. Cấp độ 3 trở lên cần thiết kế
+      quyền truy cập và quy trình duyệt — đây cũng chính là nội dung phần 3 của buổi hội thảo. Khi cần triển khai cho cả đội ngũ: Đào tạo tại doanh nghiệp 1–2 ngày (học, khám phá bài toán ứng dụng, bản chạy thử) hoặc Đồng hành triển khai AI tại doanh nghiệp 30–60 ngày (build, deploy, đo kết quả).</p>
+    </details>
+    <details>
+      <summary>Hội thảo có ghi lại để xem lại không?</summary>
+      <p class="faq__a">Có. Bản ghi và mẫu sẽ được gửi cho người đã đăng ký sau buổi học.</p>
+    </details>
+  </div>
+</div></section>
+
+<!-- ══════════ HAI ĐƯỜNG THAM GIA ══════════
+     Online = primary (miễn phí, không rào). Offline = qualified secondary
+     (2.000.000đ, 20–24 chỗ, phải ứng tuyển). Hai đường KHÔNG ngang hàng.
+     Số liệu: docs/GO4AI-WORK-LAB-CAMPAIGN-2026-09-14.md — không suy đoán. -->
+<section class="sec" id="tham-gia"><div class="wrap">
+  <p class="sec-eyebrow">Tham gia</p>
+  <h2>Hai cách tham gia — chọn cách phù hợp với bạn</h2>
+  <p class="lede" style="max-width:720px;margin-bottom:34px">
+    Buổi trực tuyến miễn phí để bạn xem việc thật chạy và tự chọn việc của mình.
+    Buổi trực tiếp là một ngày làm việc cùng nhau, có giới hạn chỗ.
+  </p>
+
+  <div class="paths" role="group" aria-label="Chọn cách tham gia">
+
+    <!-- ── ONLINE — primary ── -->
+    <button type="button" class="path" id="path-online" data-path="online"
+            aria-pressed="true" aria-controls="form-online">
+      <span class="path__pick" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"
+          stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span>
+      <p class="path__tag"><b>●</b> Đang mở đăng ký</p>
+      <h3>Hội thảo trực tuyến</h3>
+      <p class="path__when">Thứ Sáu 30/10/2026 · 20:00–21:30 · 90 phút<br>Học trực tuyến, có bản ghi</p>
+      <p class="path__price">Miễn phí
+        <small>Không cần thẻ, không cần duyệt hồ sơ</small></p>
+      <ul class="path__gets">
+        <li class="is-star">Xem <b>3 việc thật</b> chạy xong, có đồng hồ bấm giờ</li>
+        <li>Nhận <b>Quy trình phiếu thực hành</b> để tự chọn việc của bạn</li>
+        <li>Bản ghi buổi học sau khi kết thúc</li>
+      </ul>
+    </button>
+
+    <!-- ── OFFLINE — qualified secondary ── -->
+    <button type="button" class="path" id="path-offline" data-path="offline"
+            aria-pressed="false" aria-controls="form-offline">
+      <span class="path__pick" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"
+          stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span>
+      <p class="path__tag path__tag--soon" id="offTag"><b>●</b> Mở sau buổi trực tuyến</p>
+      <h3>Buổi thực hành trực tiếp</h3>
+      <p class="path__when">Lịch công bố trong buổi trực tuyến 30/10 · 8:30–17:00<br>Một ngày, làm việc trên việc thật của bạn</p>
+      <p class="path__price">2.000.000đ
+        <small>Một ngày, có người cùng làm cho xong</small></p>
+      <ul class="path__gets">
+        <li class="is-star"><b>Quy trình đã chạy</b> trên chính việc của bạn</li>
+        <li>Câu lệnh + mô tả kết quả cần đạt · Danh sách kiểm tra kết quả</li>
+        <li>Quy trình 1 trang để người khác trong nhóm làm lại</li>
+        <li>Bộ tài liệu đề xuất — mẫu 1 trang để trình bày với cấp trên</li>
+      </ul>
+      <span class="path__seats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        20–24 chỗ — mỗi người được rà soát kết quả trực tiếp
+      </span>
+    </button>
+  </div>
+
+  <!-- ══ FORM ONLINE (mặc định hiện) ══ -->
+  <div class="path-form on" id="form-online">
+    <div class="reg">
+      <div class="reg__info">
+        <div class="path-form__head">
+          <h3>Đăng ký hội thảo trực tuyến</h3>
+          <p>Miễn phí · 90 phút · Thứ Sáu 30/10/2026, 20:00–21:30</p>
+        </div>
+        <ul class="reg__meta">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Thứ Sáu 30/10/2026, bắt đầu 20:00</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Ba việc thật chạy xong, có đồng hồ bấm giờ — không dùng slide minh hoạ</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/></svg>
+            <span>Nhận bản ghi và Quy trình phiếu thực hành sau buổi</span></li>
+        </ul>
+        <p class="hintx" style="font-size:13.5px;line-height:1.65;color:var(--gray-500);margin:0">
+          Chương trình tập trung 100% vào nội dung thực hành và giải quyết bài toán chuyên môn.
+        </p>
+      </div>
+
+      <div class="reg__form">
+        <form id="form" novalidate>
+          <div class="form-fail" id="formFail" role="alert">
+            Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.
+          </div>
+
+          <div class="field" id="f-name">
+            <label for="name">Họ và tên <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="name" name="name" autocomplete="name"
+                   aria-describedby="e-name" required>
+            <p class="hintx" id="e-name"></p>
+            <p class="err" id="err-name" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-email">
+            <label for="email">Email công việc <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="email" name="email" autocomplete="email"
+                   inputmode="email" aria-describedby="e-email" required>
+            <p class="hintx" id="e-email"></p>
+            <p class="err" id="err-email" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-company">
+            <label for="company">Doanh nghiệp <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="company" name="company" autocomplete="organization"
+                   aria-describedby="e-company" required>
+            <p class="hintx" id="e-company"></p>
+            <p class="err" id="err-company" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-phone">
+            <label for="phone">Điện thoại</label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel">
+          </div>
+
+          <div class="field" id="f-role">
+            <label for="role">Vai trò</label>
+            <select id="role" name="role">
+              <option value="">— Chọn vai trò —</option>
+              <option>Chủ doanh nghiệp / Ban giám đốc</option>
+              <option>Quản lý phòng ban / trưởng nhóm</option>
+              <option>Chuyên viên / nhân viên</option>
+              <option>Nhân sự / Đào tạo nội bộ</option>
+              <option>Khác</option>
+            </select>
+          </div>
+
+          <div class="field" id="f-level">
+            <label for="level">Mức độ dùng AI hiện tại</label>
+            <select id="level" name="level" aria-describedby="e-level">
+              <option value="">Chưa rõ — nhờ tư vấn</option>
+              <option value="1">1 · Hỏi đáp — tôi hỏi, AI trả lời</option>
+              <option value="2">2 · Trợ lý riêng — AI đã hiểu doanh nghiệp tôi</option>
+              <option value="3">3 · Giao việc — AI thao tác trên hệ thống</option>
+              <option value="4">4 · Tự động hóa — có quy trình tự chạy</option>
+              <option value="5">5 · Ứng dụng AI — đã có công cụ AI riêng</option>
+              <option value="6">6 · Hệ điều hành AI — nhiều AI cùng vận hành</option>
+            </select>
+            <p class="hintx" id="e-level">Trường có cấu trúc — để việc phân loại dựa trên lựa chọn,
+            không dựa trên suy đoán từ văn bản tự do.</p>
+            <p class="err" id="err-level" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-want">
+            <label for="want">Điều bạn muốn xem nhất</label>
+            <select id="want" name="want">
+              <option value="">— Chọn một —</option>
+              <option>Hỏi đáp → Trợ lý riêng: AI hiểu tài liệu doanh nghiệp</option>
+              <option>Giao việc: AI thao tác trên file / hệ thống</option>
+              <option>Tự động hóa: quy trình tự chạy</option>
+              <option>Ứng dụng AI: đóng gói thành công cụ cho nhóm</option>
+              <option>Hệ điều hành AI: nhiều AI cùng vận hành</option>
+              <option>Cách đo hiệu quả trước–sau</option>
+            </select>
+          </div>
+
+          <button type="submit" class="cta-btn submit" id="submit">
+            <span class="spin" aria-hidden="true"></span>
+            <span class="submit__t">Đăng ký tham gia</span>
+          </button>
+
+          <p class="form-note">Chúng tôi chỉ dùng thông tin này để liên hệ về buổi hội thảo.
+          Không chia sẻ cho bên thứ ba.</p>
+        </form>
+
+        <div class="form-ok" id="formOk" role="status" aria-live="polite">
+          <div class="form-ok__ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p class="form-ok__t">Đã ghi nhận đăng ký</p>
+          <p class="form-ok__d">Chúng tôi sẽ gửi thông tin buổi hội thảo và đường dẫn tham gia
+          qua email bạn vừa để lại.</p>
+          <span class="form-ok__badge">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+              stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/></svg>
+            ĐÃ ĐĂNG KÝ · TRỰC TUYẾN 30/10
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FORM OFFLINE ══ -->
+  <div class="path-form" id="form-offline">
+    <div class="reg">
+      <div class="reg__info">
+        <div class="path-form__head">
+          <h3>Ứng tuyển Buổi thực hành trực tiếp</h3>
+          <p>2.000.000đ · một ngày · 8:30–17:00 · lịch công bố trong buổi trực tuyến 30/10</p>
+        </div>
+
+        <!-- trạng thái MỞ: chỉ hiện sau 21:30 ngày 30/10 -->
+        <div class="gate" id="offOpen">
+          <ol class="steps">
+            <li class="is-now"><b>Bạn đang ở đây.</b> Điền việc lặp lại bạn muốn làm xong.</li>
+            <li>Chúng tôi xem hồ sơ và xác nhận còn chỗ <b>trong 24 giờ</b>.</li>
+            <li>Thanh toán để giữ chỗ. <b>20–24 chỗ</b>, xếp theo thứ tự xác nhận.</li>
+            <li>Ngày Buổi thực hành: bạn ra về với <b>quy trình đã chạy trên việc của chính bạn</b>.</li>
+          </ol>
+          <span class="deadline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/></svg>
+            Hạn ứng tuyển: công bố cùng lịch Buổi thực hành
+          </span>
+          <p class="hintx" style="font-size:13px;line-height:1.65;color:var(--gray-400);margin:14px 0 0">
+            Hạn này là thật: bạn cần 3–5 ngày để mang việc thật và quyền truy cập dữ liệu.
+            Chúng tôi không mở thêm sau hạn.
+          </p>
+        </div>
+
+        <!-- trạng thái CHƯA MỞ -->
+        <div class="gate" id="offBefore">
+          <div class="gate__box">
+            <strong>Chưa mở ứng tuyển</strong>
+            Chúng tôi mở phiếu ứng tuyển <b>sau buổi trực tuyến ngày 30/10</b>, khi bạn đã có
+            Quy trình phiếu thực hành trong tay. Đăng ký trực tuyến trước — chúng tôi sẽ gửi bạn đường dẫn
+            ứng tuyển ngay sau buổi.
+          </div>
+          <span class="deadline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/></svg>
+            Hạn ứng tuyển: công bố cùng lịch Buổi thực hành
+          </span>
+        </div>
+
+        <!-- trạng thái ĐÃ ĐÓNG -->
+        <div class="gate" id="offClosed">
+          <div class="gate__box">
+            <strong>Đã đóng ứng tuyển</strong>
+            Đợt Buổi thực hành này đã đóng nhận hồ sơ.
+            Để lại email để nhận thông báo buổi tiếp theo.
+          </div>
+        </div>
+      </div>
+
+      <div class="reg__form">
+        <form id="formOff" novalidate>
+          <div class="form-fail" id="formOffFail" role="alert">
+            Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.
+          </div>
+
+          <div class="field" id="f-ona">
+            <label for="ona">Họ và tên <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="ona" name="ona" autocomplete="name"
+                   aria-describedby="e-ona" required>
+            <p class="hintx" id="e-ona"></p>
+            <p class="err" id="err-ona" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-oem">
+            <label for="oem">Email công việc <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="oem" name="oem" autocomplete="email"
+                   inputmode="email" aria-describedby="e-oem" required>
+            <p class="hintx" id="e-oem"></p>
+            <p class="err" id="err-oem" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-ocom">
+            <label for="ocom">Doanh nghiệp <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="ocom" name="ocom" autocomplete="organization"
+                   aria-describedby="e-ocom" required>
+            <p class="hintx" id="e-ocom"></p>
+            <p class="err" id="err-ocom" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-task">
+            <label for="task">Việc lặp lại bạn muốn làm xong <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="task" name="task" aria-describedby="e-task" required
+              placeholder="Ví dụ: mỗi thứ Hai tôi tổng hợp báo cáo tuần từ 4 file của nhóm, mất khoảng 3 giờ"></textarea>
+            <p class="hintx" id="e-task">Đây là điều kiện quan trọng nhất. Việc càng cụ thể,
+            buổi thực hành càng chắc có kết quả. Mô tả giúp chúng tôi biết bạn có việc thật để làm.</p>
+            <p class="err" id="err-task" role="alert"></p>
+          </div>
+
+          <div class="field" id="f-freq">
+            <label for="freq">Việc đó lặp lại bao lâu một lần? <span class="req" aria-hidden="true">*</span></label>
+            <select id="freq" name="freq" aria-describedby="e-freq" required>
+              <option value="">— Chọn tần suất —</option>
+              <option value="daily">Hằng ngày</option>
+              <option value="weekly">Hằng tuần</option>
+              <option value="monthly">Hằng tháng</option>
+              <option value="quarterly">Hằng quý</option>
+            </select>
+            <p class="hintx" id="e-freq">Việc lặp càng thường xuyên, thời gian tiết kiệm được càng rõ.</p>
+            <p class="err" id="err-freq" role="alert"></p>
+          </div>
+
+          <button type="submit" class="cta-btn submit" id="submitOff">
+            <span class="spin" aria-hidden="true"></span>
+            <span class="submit__t">Gửi hồ sơ ứng tuyển</span>
+          </button>
+
+          <p class="form-note">Gửi hồ sơ chưa phải là đã có chỗ. Chúng tôi xác nhận từng hồ sơ
+          trong 24 giờ, và chỉ nhận 20–24 người để mỗi người được rà soát trực tiếp.</p>
+        </form>
+
+        <div class="form-ok" id="formOffOk" role="status" aria-live="polite">
+          <div class="form-ok__ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p class="form-ok__t">Đã nhận hồ sơ ứng tuyển</p>
+          <p class="form-ok__d">Chúng tôi xem hồ sơ và trả lời trong vòng 24 giờ, gửi tới email
+          bạn vừa để lại. Nếu còn chỗ, bạn sẽ nhận hướng dẫn thanh toán để giữ chỗ.</p>
+          <span class="form-ok__badge">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+              stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/></svg>
+            ĐÃ GỬI · BUỔI THỰC HÀNH TRỰC TIẾP
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══════════ ĐĂNG KÝ (giữ lại cho liên kết cũ #dang-ky) ══════════ -->
+<section class="sec" id="dang-ky" hidden aria-hidden="true"><div class="wrap"></div></section>
+
+<!-- ══════════ CHỐT ══════════ -->
+<section class="final"><div class="wrap wrap--narrow">
+  <h2>Đừng chỉ hỏi AI có thể làm gì.</h2>
+  <p>Hãy xem AI có thể làm gì với chính công việc của doanh nghiệp bạn.</p>
+  <a class="cta-btn" href="#tham-gia">Đăng ký tham gia</a>
+</div></section>
+
+<footer class="foot"><div class="wrap"><div class="foot__in">
+  <span>© 2026 Go4ai — Đào tạo AI cho doanh nghiệp</span>
+  <span>Hội thảo trực tuyến 90 phút · Claude trong doanh nghiệp</span>
+  <span>Thông tin lịch học và cách tham gia được gửi qua kênh đăng ký của chương trình.</span>
+</div></div></footer>
+
+<script>
+(function(){
+  /* ============ 5 KHỐI 3D — màu theo palette theme ============ */
+  /* 6 khối xếp thành KHỐI TAM GIÁC:
+       - Đỉnh (trọng tâm, lớn nhất): 03 COWORK — nơi AI bắt đầu thật sự làm việc
+       - Hai sườn: 02 Copilot (trái) · 04 Automation (phải)
+       - Đáy: 01 Chatbot (góc trái) · 06 AI OS (giữa đáy = nền tảng) · 05 AI App (góc phải)
+     Đường nối 1→2→3→4→5→6→(Z) vẽ đúng đường viền tam giác. */
+  var MODULES = [
+    {n:1, cx:190, cy:566, s:0.86, color:'#87bbd9', type:'bubble', label:'01 · Hỏi đáp'},
+    {n:2, cx:326, cy:350, s:0.94, color:'#478fb8', type:'stack',  label:'02 · Trợ lý riêng'},
+    {n:3, cx:462, cy:134, s:1.26, color:'#ce3c2b', type:'hub',    label:'03 · Giao việc'},
+    {n:4, cx:598, cy:350, s:0.94, color:'#2b4d60', type:'gear',   label:'04 · Tự động hóa'},
+    {n:5, cx:734, cy:566, s:0.86, color:'var(--lv5)', type:'tower',  label:'05 · Ứng dụng AI'},
+    {n:6, cx:462, cy:566, s:1.00, color:'#15171a', type:'os',     label:'06 · Hệ điều hành AI'}
+  ];
+  var VB_W = 920, VB_H = 660;
+
+  function railPath(){
+    var pts = MODULES.map(function(m){return m.cx+','+m.cy;}).join(' L');
+    return '<path d="M'+pts+' Z" fill="none" stroke="#d9dfde" stroke-width="3" stroke-dasharray="6 8"/>';
+  }
+
+  function drawBubble(m){
+    var cx=m.cx, cy=m.cy, s=m.s, c=m.color;
+    var w=42*s, h=30*s;
+    var body = '<path d="M'+(cx-w)+' '+(cy-h)+' q0 -10 10 -10 h'+(2*w-20)+' q10 0 10 10 v'+(1.5*h)+' q0 10 -10 10 h-'+(w-14)+' l-10 14 l2 -14 h-'+(w-16)+' q-10 0 -10 -10 Z" '
+      + 'fill="'+c+'22" stroke="'+c+'" stroke-width="2"/>';
+    var dots = [-1,0,1].map(function(i){
+      return '<circle class="bubble-dot" style="animation-delay:'+(i*0.15)+'s" cx="'+(cx+i*10*s)+'" cy="'+(cy-h*0.25)+'" r="'+(3.4*s)+'" fill="'+c+'"/>';
+    }).join('');
+    var orbitQ = '<g class="mod-ring fast">'
+      + '<text x="'+(cx+w+6*s)+'" y="'+(cy-h)+'" font-size="'+(16*s)+'" font-weight="700" fill="'+c+'" font-family="Archivo,sans-serif">?</text></g>';
+    return '<g class="mod-core">'+body+dots+'</g>' + orbitQ;
+  }
+
+  function drawStack(m){
+    var cx=m.cx, cy=m.cy, s=m.s, c=m.color, out='';
+    for(var i=3;i>=0;i--){
+      var yy = cy - i*11*s, op = 0.3 + i*0.18, rx = 40*s, ry = 15*s;
+      out += '<path class="card" style="animation-delay:'+(i*0.12)+'s" d="M'+(cx-rx)+' '+yy+' L'+cx+' '+(yy-ry)+' L'+(cx+rx)+' '+yy+' L'+cx+' '+(yy+ry)+' Z" '
+        + 'fill="'+c+'" opacity="'+op.toFixed(2)+'" stroke="'+c+'" stroke-width="1.3"/>';
+    }
+    var tag = '<rect x="'+(cx-9*s)+'" y="'+(cy-11*3*s-20*s)+'" width="'+(18*s)+'" height="'+(11*s)+'" rx="'+(3*s)+'" fill="'+c+'" opacity=".9"/>';
+    return '<g class="mod-core">'+out+tag+'</g>';
+  }
+
+  function drawHub(m){
+    var cx=m.cx, cy=m.cy, s=m.s, c=m.color, R = 22*s;
+    var sats = [{a:-40, r:62*s},{a:70, r:66*s},{a:190, r:60*s}];
+    var lines = sats.map(function(sat){
+      var rad = sat.a*Math.PI/180;
+      var sx = cx+Math.cos(rad)*sat.r, sy = cy+Math.sin(rad)*sat.r*0.55;
+      return '<line class="link-line" x1="'+cx+'" y1="'+cy+'" x2="'+sx.toFixed(1)+'" y2="'+sy.toFixed(1)+'" stroke="'+c+'" stroke-width="1.6" opacity=".65"/>';
+    }).join('');
+    var satMarks = sats.map(function(sat,idx){
+      var rad = sat.a*Math.PI/180;
+      var sx = cx+Math.cos(rad)*sat.r, sy = cy+Math.sin(rad)*sat.r*0.55;
+      var box = '<rect x="'+(sx-7*s)+'" y="'+(sy-7*s)+'" width="'+(14*s)+'" height="'+(14*s)+'" rx="'+(3*s)+'" fill="'+m.color+'" opacity=".9"/>';
+      return '<g class="orbit" style="animation-duration:'+(7+idx*2)+'s">'+box+'</g>';
+    }).join('');
+    var sphere = '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+c+'22" stroke="'+c+'" stroke-width="2.2"/>'
+      + '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+R+'" ry="'+(R*0.4)+'" fill="none" stroke="'+c+'" stroke-width="1.1" opacity=".55"/>'
+      + '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(R*0.4)+'" ry="'+R+'" fill="none" stroke="'+c+'" stroke-width="1.1" opacity=".55"/>'
+      + '<circle cx="'+cx+'" cy="'+cy+'" r="'+(6*s)+'" fill="'+c+'"/>';
+    var ping = '<circle class="mod-ping" cx="'+cx+'" cy="'+cy+'" r="'+(R+6*s)+'" fill="none" stroke="'+c+'" stroke-width="1.5"/>'
+      + '<circle class="mod-ping" cx="'+cx+'" cy="'+cy+'" r="'+(R+6*s)+'" fill="none" stroke="'+c+'" stroke-width="1.5" style="animation-delay:1.3s"/>';
+    return lines + '<g class="mod-core">'+sphere+'</g>' + satMarks + ping;
+  }
+
+  function drawGear(m){
+    var cx=m.cx, cy=m.cy, s=m.s, c=m.color, R=24*s, teeth=8, out='';
+    for(var i=0;i<teeth;i++){
+      var ang = i*(360/teeth);
+      out += '<rect x="'+(cx-4*s)+'" y="'+(cy-R-9*s)+'" width="'+(8*s)+'" height="'+(12*s)+'" rx="1.5" fill="'+c+'" transform="rotate('+ang+' '+cx+' '+cy+')"/>';
+    }
+    var body = '<g class="gear-body">'+out
+      + '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+c+'22" stroke="'+c+'" stroke-width="2.2"/>'
+      + '<circle cx="'+cx+'" cy="'+cy+'" r="'+(9*s)+'" fill="#ffffff" stroke="'+c+'" stroke-width="1.8"/></g>';
+    var loop = '<g class="loop-arrow">'
+      + '<path d="M'+(cx-R-16*s)+' '+cy+' a'+(R+16*s)+' '+(R+16*s)*0.9+' 0 1 1 0 2" fill="none" stroke="'+c+'" stroke-width="1.8" stroke-dasharray="4 5" opacity=".6"/>'
+      + '<path d="M'+(cx-R-16*s)+' '+(cy-6*s)+' l6 6 l-6 6" fill="none" stroke="'+c+'" stroke-width="1.8"/></g>';
+    return body + loop;
+  }
+
+  function drawTower(m){
+    var cx=m.cx, cy=m.cy, s=m.s, c=m.color;
+    var steps=[ {w:60*s,h:12*s,dy:0}, {w:42*s,h:12*s,dy:-12*s}, {w:26*s,h:12*s,dy:-24*s} ], out='';
+    steps.forEach(function(st, i){
+      out += '<rect x="'+(cx-st.w/2)+'" y="'+(cy+st.dy)+'" width="'+st.w+'" height="'+st.h+'" rx="2" fill="'+c+'" opacity="'+(0.55+i*0.15)+'" stroke="'+c+'" stroke-width="1.2"/>';
+    });
+    var screenY = cy-24*s-30*s;
+    var screen = '<g class="screen-glow">'
+      + '<rect x="'+(cx-18*s)+'" y="'+screenY+'" width="'+(36*s)+'" height="'+(26*s)+'" rx="'+(3*s)+'" fill="#ffffff" stroke="'+c+'" stroke-width="2"/>'
+      + '<g class="bars">'
+        + '<rect x="'+(cx-11*s)+'" y="'+(screenY+16*s)+'" width="'+(5*s)+'" height="'+(6*s)+'" fill="'+c+'"/>'
+        + '<rect x="'+(cx-3*s)+'" y="'+(screenY+10*s)+'" width="'+(5*s)+'" height="'+(12*s)+'" fill="'+c+'"/>'
+        + '<rect x="'+(cx+5*s)+'" y="'+(screenY+13*s)+'" width="'+(5*s)+'" height="'+(9*s)+'" fill="'+c+'"/>'
+      + '</g></g>';
+    var particles = [0,1,2].map(function(i){
+      return '<circle class="rise-particle" style="animation-delay:'+(i*0.8)+'s" cx="'+(cx-14*s+i*14*s)+'" cy="'+(cy+8*s)+'" r="'+(2.6*s)+'" fill="'+c+'"/>';
+    }).join('');
+    return '<g class="mod-core">'+out+screen+'</g>'+particles;
+  }
+
+  /* Khối 6 — AI OPERATING SYSTEM: khung nền tảng chứa nhiều AI chạy song song */
+  function drawOS(m){
+    var cx=m.cx, cy=m.cy, s=m.s, c=m.color, out='';
+    var w=76*s, h=54*s;
+    // chassis
+    out += '<rect x="'+(cx-w/2)+'" y="'+(cy-h/2)+'" width="'+w+'" height="'+h+'" rx="'+(9*s)+'" '
+      + 'fill="'+c+'12" stroke="'+c+'" stroke-width="2.2"/>';
+    // 6 chip bên trong, nhấp nháy lệch pha — nhiều AI cùng chạy
+    for(var r=0;r<2;r++){
+      for(var i=0;i<3;i++){
+        var chx = cx - w/2 + 12*s + i*22*s, chy = cy - h/2 + 13*s + r*22*s;
+        out += '<rect class="mod-core" style="animation-delay:'+((r*3+i)*0.22)+'s" '
+          + 'x="'+chx+'" y="'+chy+'" width="'+(14*s)+'" height="'+(12*s)+'" rx="'+(2.5*s)+'" fill="'+c+'" opacity="'+(0.45+i*0.18)+'"/>';
+      }
+    }
+    // vòng nền tảng bao quanh
+    out += '<g class="mod-ring rev"><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(62*s)+'" ry="'+(20*s)+'" '
+      + 'fill="none" stroke="'+c+'" stroke-width="1.5" stroke-dasharray="5 6" opacity=".5"/></g>';
+    // 4 cổng governance ở 4 góc
+    [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p, i){
+      out += '<circle class="mod-ping" style="animation-delay:'+(i*0.65)+'s" '
+        + 'cx="'+(cx+p[0]*(w/2+8*s))+'" cy="'+(cy+p[1]*(h/2+6*s))+'" r="'+(4*s)+'" fill="'+c+'" opacity=".8"/>';
+    });
+    return out;
+  }
+
+  var DRAW = {bubble:drawBubble, stack:drawStack, hub:drawHub, gear:drawGear, tower:drawTower, os:drawOS};
+
+  function moduleSVG(m, idPrefix){
+    return '<g class="module" id="'+idPrefix+'-'+m.n+'" style="color:'+m.color+'">'
+      + '<ellipse cx="'+m.cx+'" cy="'+(m.cy+34*m.s)+'" rx="'+(44*m.s)+'" ry="'+(8*m.s)+'" fill="#2b4d60" opacity=".12"/>'
+      + '<g class="mod-float">' + DRAW[m.type](m) + '</g></g>';
+  }
+
+  function buildSVG(idPrefix, withHotspots){
+    var inner = railPath() + MODULES.map(function(m){return moduleSVG(m, idPrefix);}).join('');
+    var html = '<svg viewBox="0 0 '+VB_W+' '+VB_H+'">' + inner + '</svg>';
+    if(withHotspots){
+      html += MODULES.map(function(m){
+        var leftPct = (m.cx/VB_W*100).toFixed(1);
+        var topPct = ((m.cy-42*m.s)/VB_H*100).toFixed(1);
+        return '<div class="hotspot" data-level="'+m.n+'" style="left:'+leftPct+'%; top:'+topPct+'%">'
+          + '<span class="ring"></span><span class="dot"></span><span class="lbl">'+m.label+'</span></div>';
+      }).join('');
+    }
+    return html;
+  }
+
+  document.getElementById('heroCanvas').innerHTML = buildSVG('hpart', false);
+  document.getElementById('spaceCanvas').innerHTML = buildSVG('part', true);
+  document.getElementById('heroReflection').innerHTML = buildSVG('rpart', false);
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     CÁ — KHÔI PHỤC NGUYÊN BẢN từ https://b2b.go4ai.org/gemglobal/
+     Nguồn: theme `LucasGo4ai-theme` → `tai-nguyen/gemglobal-landing` (đo 2026-09-21).
+     ──────────────────────────────────────────────────────────────────────────
+     Cơ chế bản gốc (giữ nguyên, không thiết kế lại):
+       1. HERO — đường bơi dàn dựng sẵn qua hệ waypoint (WP_DESKTOP / WP_MOBILE),
+          nội suy Catmull-Rom, trải đúng 1 viewport cuộn đầu (p = 0 → 0.30).
+       2. SAU HERO — mỗi section là một VÒNG KHÉP KÍN, điểm kết thúc trùng điểm
+          xuất phát của section kế tiếp ⇒ đường bơi liền mạch, không có cú nhảy.
+            · section CẤP ĐỘ (`.lv`)  → "chu trình chữ Z" trong rãnh giữa hai cột
+            · section thường (`.sec`/`.final`) → men lề trái rồi vòng về
+          Toạ độ lấy từ `safeBands()` / `plainCycle()` ĐO TỪ LAYOUT THẬT mỗi
+          khung hình, nên cá không bao giờ tràn ra ngoài dải trống.
+       3. KHÔNG có offscreen-teleport (bản gốc đã bỏ, ghi chú ngay trong code).
+       4. Dao động nền (wander) luôn chạy; khi `reduce` thì tắt dao động nhưng
+          CÁ VẪN HIỆN — không có `display:none` nào cả.
+
+     ⛔ ĐÍNH CHÍNH chẩn đoán SAI của phiên trước. Tôi từng kết luận bản gốc hỏng
+        vì "`#levels` rỗng ⇒ `.lv` không tồn tại ⇒ `levelTarget()` trả null".
+        Đo lại: KHÔNG đúng. `assets/js/levels-engine-hr.js` CÓ dựng `.lv`,
+        `.lv-left`, `.lv-diagram`; trang này có 6 × `.lv` + 7 × `section.sec`
+        + 1 × `section.final`. Cá chết trong bản port trước vì hai lý do KHÁC:
+          (a) khối reduced-motion của tôi có `.fish{display:none}` — Chrome
+              headless báo `prefers-reduced-motion: reduce` nên cá bị ẩn;
+          (b) tôi đọc `reduce` từ matchMedia() còn bản gốc hard-code `false`.
+        ⇒ Bản gốc CHẠY ĐÚNG. Việc đúng là khôi phục, không phải thay thế.
+     ══════════════════════════════════════════════════════════════════════════ */
+  var fish = document.getElementById('fish');
+  var fishBank = document.getElementById('fishBank');
+
+  /* 2026-09-23: KHÔI PHỤC ĐÚNG BẢN GỐC — `var reduce = false` như gemglobal.html.
+     Owner chốt: 6 cấp độ phải hiển thị ĐỦ chuyển động như bản gốc, kể cả trên máy
+     bật "giảm chuyển động" (máy owner báo prefers-reduced-motion: reduce). */
+  var reduce = false;
+
+  // Waypoint p 0.00–0.30 = màn hero (lái bằng 1 viewport cuộn đầu tiên)
+  // p 0.30–1.00 = bàn giao cho chu trình từng cấp độ
+  var WP_DESKTOP = [
+    {p:0.00, x:88, y:22, s:1.10},
+    {p:0.02, x:90, y:30, s:1.00},
+    {p:0.05, x:93, y:42, s:1.00},
+    {p:0.08, x:72, y:46, s:1.00},
+    {p:0.11, x:58, y:54, s:1.00},
+    {p:0.14, x:74, y:50, s:1.00},
+    {p:0.17, x:86, y:44, s:1.00},
+    {p:0.21, x:76, y:62, s:0.98},
+    {p:0.26, x:52, y:92, s:0.88},
+    // kết thúc hero: bơi lượn mượt về vạch xuất phát dải trên của cấp độ 1 (x:6%, y:topY)
+    {p:0.30, x:6,  y:16, s:0.42}
+  ];
+
+  // MOBILE: hero xếp dọc — chữ chiếm nửa TRÊN, khối 3D nửa DƯỚI.
+  // Cá xuất hiện ở đáy màn hình, tuyệt đối không che chữ.
+  var WP_MOBILE = [
+    {p:0.00, x:80, y:93, s:0.50},
+    {p:0.04, x:58, y:88, s:0.52},
+    {p:0.09, x:26, y:80, s:0.55},
+    {p:0.14, x:56, y:70, s:0.55},
+    {p:0.19, x:80, y:64, s:0.55},
+    {p:0.24, x:44, y:74, s:0.55},
+    // kết thúc hero: về vạch xuất phát của chu trình mobile (x:8%, y:8%)
+    {p:0.30, x:8,  y:8,  s:0.30}
+  ];
+
+  var mqMobile = window.matchMedia('(max-width: 860px)');
+  function activeWaypoints(){ return mqMobile.matches ? WP_MOBILE : WP_DESKTOP; }
+
+  function catmull(p0,p1,p2,p3,t){
+    var t2=t*t, t3=t2*t;
+    return 0.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t2+(-p0+3*p1-3*p2+p3)*t3);
+  }
+
+  function sampleWaypoints(p){
+    var WP = activeWaypoints();
+    p = Math.max(0, Math.min(1, p));
+    var i = 0;
+    while(i < WP.length-2 && p > WP[i+1].p) i++;
+    var w1 = WP[i], w2 = WP[i+1];
+    var w0 = WP[i-1] || w1, w3 = WP[i+2] || w2;
+    var span = (w2.p - w1.p) || 1;
+    var t = Math.max(0, Math.min(1, (p - w1.p) / span));
+    return {
+      x: catmull(w0.x, w1.x, w2.x, w3.x, t),
+      y: catmull(w0.y, w1.y, w2.y, w3.y, t),
+      s: w1.s + (w2.s - w1.s) * t
+    };
+  }
+
+  var smoothP = 0, targetP = 0;
+  var prevX = 0, prevY = 0, bank = 0, facing = 1, initialized = false;
+  var lastBubble = 0;
+
+  function spawnBubble(px, py, dir, scale){
+    if(reduce) return;
+    var b = document.createElement('div');
+    b.className = 'bubble-trail';
+    var size = 3 + Math.random()*5;
+    b.style.width = size+'px'; b.style.height = size+'px';
+    b.style.left = (px + dir*72*scale + (Math.random()*10-5))+'px';
+    b.style.top  = (py - 8*scale + (Math.random()*10-5))+'px';
+    document.body.appendChild(b);
+    b.addEventListener('animationend', function(){ b.remove(); });
+  }
+
+  function wakeNearbyModule(px, py){
+    var heroCanvas = document.getElementById('heroCanvas');
+    if(!heroCanvas) return;
+    var svg = heroCanvas.querySelector('svg');
+    if(!svg) return;
+    var r = svg.getBoundingClientRect();
+    if(r.width === 0) return;
+    MODULES.forEach(function(m){
+      var mx = r.left + (m.cx/VB_W)*r.width;
+      var my = r.top  + (m.cy/VB_H)*r.height;
+      var el = document.getElementById('hpart-'+m.n);
+      if(!el) return;
+      if(Math.hypot(px-mx, py-my) < 110) el.classList.add('awake');
+      else el.classList.remove('awake');
+    });
+  }
+
+  var fishOpacity = 1, fishOpacityTarget = 1;
+  var curX = null, curY = null, curS = 1;
+
+  /* ════════════════════════════════════════════════════════════════════
+     ĐƯỜNG BƠI SAU HERO — một quy luật chung cho MỌI section.
+     Mỗi section là một vòng khép kín, điểm kết thúc TRÙNG điểm xuất phát
+     của section kế tiếp nên đường bơi liền mạch, không có cú nhảy nào.
+
+       Section CẤP ĐỘ (.lv):
+         trái → giữa (dải trên) → đổ xuống trong RÃNH GIỮA hai cột
+              → sang phải tới góc dưới → xéo nhanh về vạch xuất phát
+
+       Section CÒN LẠI (.sec, .final):
+         đi xuống dọc lề trái → sang phải ở cuối section
+              → xéo nhanh về đầu section kế tiếp
+     ════════════════════════════════════════════════════════════════════ */
+
+  var _stations = null;
+  function stations(){
+    if(!_stations){
+      _stations = [].slice.call(document.querySelectorAll('.lv, section.sec, section.final'))
+        .filter(function(el){ return !el.hasAttribute('hidden') && el.offsetHeight > 0; });
+    }
+    return _stations;
+  }
+
+  function lerpKeys(K, p){
+    var i = 0;
+    while(i < K.length-2 && p > K[i+1].p) i++;
+    var a = K[i], c = K[i+1];
+    var t = Math.max(0, Math.min(1, (p - a.p) / ((c.p - a.p) || 1)));
+    var e = t*t*(3-2*t);                        // ease vào/ra mỗi khúc cua
+    return {x: a.x + (c.x-a.x)*e, y: a.y + (c.y-a.y)*e};
+  }
+
+  /* Dải trống của section cấp độ, ĐO TỪ LAYOUT THẬT mỗi khung hình:
+       dải trên  = giữa đáy navbar và đỉnh nội dung
+       dải đáy   = giữa chân nội dung và đáy màn hình
+       rãnh giữa = khe giữa cột chữ và cột sơ đồ
+     Cỡ cá co theo chỗ hẹp nhất nên không tràn ra ngoài dải. */
+  function safeBands(sec, vh, vw){
+    var L = sec.querySelector('.lv-left'), D = sec.querySelector('.lv-diagram');
+    if(!L || !D) return null;
+    var lb = L.getBoundingClientRect(), db = D.getBoundingClientRect();
+    var navEl = document.querySelector('.navbar');
+    var navB = navEl ? navEl.getBoundingClientRect().bottom : 72;
+
+    var cTop = Math.min(lb.top, db.top);
+    var cBot = Math.max(lb.bottom, db.bottom);
+    var gutterW = db.left - lb.right;
+
+    var gapTop = cTop - navB;
+    var gapBot = vh - cBot;
+    var gutterX = ((lb.right + db.left)/2) / vw * 100;
+    var sGutter = Math.max(0.22, Math.min(0.42, gutterW * 0.85 / 190));
+
+    // màn hình thấp: không còn dải trên/dưới → bỏ chặng quét ngang phía trên
+    if(gapTop < 60 || gapBot < 60){
+      return {tight:true, gutterX:gutterX, topY:6, botY:90, s:sGutter};
+    }
+    var fitBand = Math.min(gapTop, gapBot) * 0.72 / 119;
+    return {
+      tight:false,
+      gutterX: gutterX,
+      topY: ((navB + cTop)/2) / vh * 100,
+      botY: ((cBot + vh)/2)   / vh * 100,
+      s: Math.max(0.22, Math.min(0.42, Math.min(fitBand, sGutter)))
+    };
+  }
+
+  function levelCycle(p, sec, vh, vw){
+    var b = safeBands(sec, vh, vw);
+    if(!b) return {x:50, y: 8 + p*84, s:0.38};
+    var span = b.botY - b.topY;
+    var K = b.tight ? [
+      // không có dải trên → vào thẳng rãnh giữa rồi đi xuống
+      {p:0.00, x:b.gutterX, y:b.topY},
+      {p:0.68, x:b.gutterX, y:b.botY},
+      {p:0.86, x:94,        y:b.botY},
+      {p:1.00, x:b.gutterX, y:b.topY}
+    ] : [
+      {p:0.00, x:6,         y:b.topY},                 // vạch xuất phát: trái, dải trên
+      {p:0.22, x:b.gutterX, y:b.topY},                 // trái → giữa
+      {p:0.30, x:b.gutterX, y:b.topY + span*0.15},     // bẻ lái xuống
+      {p:0.68, x:b.gutterX, y:b.botY},                 // đổ xuống tới gần cuối section
+      {p:0.86, x:94,        y:b.botY},                 // sang phải tới góc dưới
+      {p:1.00, x:6,         y:b.topY}                  // xéo nhanh về vạch xuất phát
+    ];
+    var pt = lerpKeys(K, p);
+    pt.s = b.s;
+    return pt;
+  }
+
+  /* Section thường: lề trái/phải đo từ .wrap; nếu lề quá hẹp thì men sát mép. */
+  function plainCycle(p, sec, vh, vw){
+    var w = sec.querySelector('.wrap');
+    var leftX = 3, rightX = 97, s = 0.26;
+    if(w){
+      var wb = w.getBoundingClientRect();
+      var gL = wb.left, gR = vw - wb.right;
+      // Có lề đủ rộng → chạy giữa lề. Không đủ → nép sát mép màn hình
+      // (một phần thân cá nằm ngoài khung nhìn) và thu nhỏ lại.
+      var roomy = Math.min(gL, gR) > 74;
+      s = roomy ? Math.max(0.28, Math.min(0.40, Math.min(gL, gR) * 0.82 / 190)) : 0.26;
+      leftX  = gL > 74 ? (gL/2) / vw * 100 : 3;
+      rightX = gR > 74 ? ((wb.right + vw)/2) / vw * 100 : 97;
+    }
+    var K = [
+      {p:0.00, x:leftX,  y: 8},    // đầu section
+      {p:0.62, x:leftX,  y:88},    // đi xuống dọc lề trái
+      {p:0.84, x:rightX, y:91},    // sang phải ở cuối section
+      {p:1.00, x:leftX,  y: 8}     // xéo nhanh về đầu section kế tiếp
+    ];
+    var pt = lerpKeys(K, p);
+    pt.s = s;
+    return pt;
+  }
+
+  /* MOBILE — men theo hai lề, hình con rắn đi xuống, dùng cho mọi section */
+  var MOBILE_CYCLE = [
+    {p:0.00, x: 8, y: 8},
+    {p:0.34, x: 8, y:56},
+    {p:0.50, x:92, y:64},
+    {p:0.76, x:92, y:90},
+    {p:0.95, x: 8, y:94},
+    {p:1.00, x: 8, y: 8}
+  ];
+
+  function levelTarget(vh, vw){
+    var list = stations();
+    for(var i = 0; i < list.length; i++){
+      var el = list[i], r = el.getBoundingClientRect();
+      if(r.top > vh*0.5 || r.bottom <= vh*0.5) continue;
+
+      var isLv = el.classList.contains('lv');
+      var p;
+      if(isLv){
+        var total = el.offsetHeight - vh;              // section được pin
+        p = total > 0 ? Math.max(0, Math.min(1, (-r.top)/total)) : 0;
+      } else {
+        p = Math.max(0, Math.min(1, (vh - r.top) / (r.height + vh)));
+      }
+
+      if(mqMobile.matches){
+        var mp = lerpKeys(MOBILE_CYCLE, p);
+        mp.s = 0.30;
+        return mp;
+      }
+      return isLv ? levelCycle(p, el, vh, vw) : plainCycle(p, el, vh, vw);
+    }
+    return null;
+  }
+
+  function frame(ts){
+    var vh = window.innerHeight, vw = window.innerWidth, sy = window.scrollY;
+    var t = ts/1000;
+    var mobile = mqMobile.matches;
+    var pastHero = sy > vh * 0.92;
+    var tgtX, tgtY, tgtS;
+
+    if(!pastHero){
+      // ---- HERO: đường bơi dàn dựng sẵn, trải đúng 1 viewport cuộn đầu ----
+      targetP = Math.min(1, sy/vh) * 0.30;
+      smoothP += (targetP - smoothP) * 0.10;
+      var wp = sampleWaypoints(smoothP);
+      tgtX = wp.x; tgtY = wp.y; tgtS = wp.s;
+    } else {
+      // ---- CÁC CẤP ĐỘ & SECTION TIẾP THEO: chu trình liền mạch khép kín ----
+      var lt = levelTarget(vh, vw);
+      tgtX = lt ? lt.x : 92;
+      tgtY = lt ? lt.y : 50;
+      tgtS = lt ? lt.s : (mobile ? 0.32 : 0.42);
+    }
+
+    // mobile men theo lề nên có lúc lướt qua nội dung → để nhạt hơn
+    fishOpacityTarget = !pastHero ? 1 : (mobile ? 0.4 : 0.85);
+    fishOpacity += (fishOpacityTarget - fishOpacity) * 0.08;
+    fish.style.opacity = fishOpacity.toFixed(3);
+
+    // dao động nền luôn chạy — biên độ nhỏ lại để đường chữ Z vẫn đọc rõ
+    var amp = (pastHero ? 0.4 : 1) * (mobile ? 0.55 : 1);
+    var wanderX = (Math.sin(t*0.62)*2.2 + Math.sin(t*0.27+1.7)*1.4) * amp;
+    var wanderY = (Math.sin(t*0.83+0.6)*2.0 + Math.sin(t*0.41+2.3)*1.2) * amp;
+
+    var px = (tgtX + (reduce?0:wanderX)) / 100 * vw;
+    var py = (tgtY + (reduce?0:wanderY)) / 100 * vh;
+
+    if(curX === null){ curX = px; curY = py; curS = tgtS; }
+
+    // ⛔ ĐÃ BỎ DỊCH CHUYỂN NGOÀI MÀN HÌNH (offscreen teleport).
+    // Cá luôn bơi mượt mà không bao giờ bị giật hay nhảy vị trí.
+    var prevPX = curX, prevPY = curY;
+    curX += (px - curX) * 0.07;
+    curY += (py - curY) * 0.07;
+    curS += (tgtS - curS) * 0.06;
+
+    var dx = curX - prevPX, dy = curY - prevPY;
+    if(Math.abs(dx) > 0.25) facing = dx > 0 ? 1 : -1;
+
+    // đi xuống thì chúi mũi rõ hơn để thấy hướng bơi
+    var targetBank = Math.max(-34, Math.min(34, dy * 3.2 * facing)) + Math.sin(t*0.9)*4;
+    bank += (targetBank - bank) * 0.07;
+
+    fish.style.transform = 'translate('+curX.toFixed(1)+'px,'+curY.toFixed(1)+'px)';
+    fishBank.style.transform = 'scaleX('+facing+') rotate('+bank.toFixed(2)+'deg) scale('+curS.toFixed(3)+')';
+    if(facing === -1) fish.classList.add('is-facing-left');
+    else fish.classList.remove('is-facing-left');
+
+    if(ts - lastBubble > 300 && fishOpacity > 0.3 && curY > 0 && curY < vh){
+      lastBubble = ts; spawnBubble(curX, curY, facing, curS);
+    }
+    if(!pastHero) wakeNearbyModule(curX, curY);
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.addEventListener('resize', function(){ _stations = null; });
+
+  /* ============ tương tác ============ */
+  var wrap = document.getElementById('machineWrap');
+  var overlay = document.getElementById('spaceOverlay');
+  var canvas = document.getElementById('spaceCanvas');
+  var closeBtn = document.getElementById('spaceClose');
+  var ctaBtn = document.getElementById('ctaBtn');
+  var flash = document.getElementById('flash');
+
+  if(!reduce){
+    wrap.addEventListener('mousemove', function(e){
+      var r = wrap.getBoundingClientRect();
+      var cx = r.left + r.width/2, cy = r.top + r.height/2;
+      var dx = (e.clientX - cx) / (r.width/2);
+      var dy = (e.clientY - cy) / (r.height/2);
+      wrap.style.transform = 'rotateY(' + (dx*10) + 'deg) rotateX(' + (-dy*10) + 'deg)';
+    });
+    wrap.addEventListener('mouseleave', function(){
+      wrap.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+  }
+
+  function openSpace(){ overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeSpace(){ overlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+  wrap.addEventListener('click', openSpace);
+  ctaBtn.addEventListener('click', openSpace);
+  document.getElementById('diveCta').addEventListener('click', function(e){
+    e.stopPropagation();
+    document.getElementById('level-1').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
+  });
+  closeBtn.addEventListener('click', closeSpace);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closeSpace(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSpace(); });
+
+  canvas.addEventListener('mouseover', function(e){
+    var h = e.target.closest('.hotspot'); if(!h) return;
+    canvas.classList.add('dimmed');
+    var el = document.getElementById('part-'+h.getAttribute('data-level'));
+    if(el) el.classList.add('is-active');
+  });
+  canvas.addEventListener('mouseout', function(e){
+    var h = e.target.closest('.hotspot'); if(!h) return;
+    canvas.classList.remove('dimmed');
+    var el = document.getElementById('part-'+h.getAttribute('data-level'));
+    if(el) el.classList.remove('is-active');
+  });
+  canvas.addEventListener('click', function(e){
+    var h = e.target.closest('.hotspot'); if(!h) return;
+    var lvl = h.getAttribute('data-level');
+    flash.classList.add('on');
+    setTimeout(function(){ flash.classList.remove('on'); }, 180);
+    closeSpace();
+    var target = document.getElementById('level-'+lvl);
+    setTimeout(function(){
+      target.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
+      target.classList.add('flash');
+      setTimeout(function(){ target.classList.remove('flash'); }, 1200);
+    }, reduce ? 0 : 200);
+  });
+})();
+</script>
+
+<script src="assets/levels-data.js"></script>
+<script src="assets/levels-engine.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   LỚP VÁ — chạy SAU engine, không sửa engine (giữ nguyên bản của Claude)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var d = document;
+
+  /* ① JS SỐNG ⇒ gắn .js-on lên <html> để CSS bỏ khối "đang dựng…" */
+  d.documentElement.classList.add('js-on');
+
+  /* ② ENGINE CHẾT ⇒ hiện khối báo lỗi thay vì im lặng.
+     Bản gốc: engine không có try/catch, #levels rỗng ⇒ trang trắng khoảng trắng. */
+  var host = d.getElementById('levels');
+  if(host && host.children.length === 0){
+    var fail = d.createElement('div');
+    fail.className = 'engine-fail';
+    fail.setAttribute('role','alert');
+    fail.innerHTML = '<strong>Không dựng được bản đồ 6 cấp độ.</strong><br>' +
+      'Phần nội dung dạng văn bản vẫn đọc được ở trên. Bạn tải lại trang để thử lại.';
+    host.parentNode.insertBefore(fail, host);
+  }
+
+  /* Gửi lead thật tới handler chung của theme (functions.php →
+     gemglobal_handle_lead_submission → CPT gem_lead). gemConfig do
+     gemglobal_static_pages() chèn vào <head>. */
+  function sendLead(payload){
+    var cfg = window.gemConfig || {};
+    if(cfg.ajaxUrl) {
+      payload.source_url = window.location.href;
+      var body = new FormData();
+      body.append('action','gemglobal_lead_submit');
+      body.append('nonce', cfg.nonce || '');
+      body.append('payload', JSON.stringify(payload));
+      return fetch(cfg.ajaxUrl, {method:'POST', body:body, credentials:'same-origin'})
+        .then(function(r){ return r.json(); })
+        .then(function(res){ if(!res || !res.success) throw new Error('rejected'); return res; });
+    }
+    // Standalone fallback: log and persist
+    console.info('[Go4ai Lead] Received payload:', payload);
+    try {
+      var leads = JSON.parse(localStorage.getItem('go4ai_workshop_leads') || '[]');
+      leads.push({ payload: payload, submitted_at: new Date().toISOString() });
+      localStorage.setItem('go4ai_workshop_leads', JSON.stringify(leads));
+    } catch(e){}
+    return new Promise(function(resolve){ setTimeout(resolve, 600); });
+  }
+  window.gemSendLead = sendLead;
+
+  /* ③ FORM — 6 trạng thái bắt buộc của brain/02 §12:
+     loading · empty · error · success · disabled · partial */
+  var form = d.getElementById('form'),
+      okBox = d.getElementById('formOk'),
+      failBox = d.getElementById('formFail'),
+      btn = d.getElementById('submit');
+
+  if(!form) return;
+
+  var RULES = {
+    name:    {el:'#name',    f:'#f-name',
+              test:function(v){ return v.trim().length >= 2; },
+              msg:'Bạn nhập họ tên để chúng tôi biết đang liên hệ với ai.'},
+    email:   {el:'#email',   f:'#f-email',
+              test:function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); },
+              /* lỗi phải NÓI ĐƯỢC LÀM GÌ TIẾP, không chỉ báo sai */
+              msg:'Email chưa đúng định dạng. Ví dụ: ten@congty.vn'},
+    company: {el:'#company', f:'#f-company',
+              test:function(v){ return v.trim().length >= 2; },
+              msg:'Bạn nhập tên doanh nghiệp — chúng tôi dùng để xếp nhóm phù hợp.'}
+  };
+
+  function setErr(key, on){
+    var r = RULES[key];
+    var field = d.querySelector(r.f);
+    var err = d.getElementById('err-' + key);
+    if(on){
+      field.classList.add('has-err');
+      err.textContent = r.msg;
+      d.querySelector(r.el).setAttribute('aria-invalid','true');
+    } else {
+      field.classList.remove('has-err');
+      err.textContent = '';
+      d.querySelector(r.el).removeAttribute('aria-invalid');
+    }
+  }
+
+  /* xoá lỗi ngay khi người dùng sửa — không bắt họ bấm lại mới biết đã đúng */
+  Object.keys(RULES).forEach(function(k){
+    var el = d.querySelector(RULES[k].el);
+    el.addEventListener('input', function(){ setErr(k, false); });
+    el.addEventListener('blur', function(){
+      if(el.value.trim() !== '') setErr(k, !RULES[k].test(el.value));
+    });
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    failBox.classList.remove('on');
+
+    /* empty + error: kiểm hết rồi mới báo, không dừng ở lỗi đầu tiên */
+    var bad = [];
+    Object.keys(RULES).forEach(function(k){
+      var el = d.querySelector(RULES[k].el);
+      var ok = RULES[k].test(el.value);
+      setErr(k, !ok);
+      if(!ok) bad.push(k);
+    });
+
+    if(bad.length){
+      /* focus vào ô sai ĐẦU TIÊN — bàn phím và screen reader phải tới được */
+      var first = d.querySelector(RULES[bad[0]].el);
+      first.focus();
+      return;
+    }
+
+    /* loading */
+    btn.disabled = true;                    /* disabled */
+    btn.classList.add('is-loading');
+    btn.querySelector('.submit__t').textContent = 'Đang gửi đăng ký…';
+    form.setAttribute('aria-busy','true');
+
+    var lv = d.getElementById('level'), wt = d.getElementById('want');
+    sendLead({
+      full_name: d.getElementById('name').value.trim(),
+      email: d.getElementById('email').value.trim(),
+      phone: d.getElementById('phone').value.trim(),
+      company: d.getElementById('company').value.trim(),
+      job_title: d.getElementById('role').value,
+      program: 'claude_workshop',
+      intent: 'Workshop Claude online 90 phút — 30/10/2026',
+      message: 'Mức độ dùng AI: ' + (lv.value ? lv.options[lv.selectedIndex].text : 'Chưa rõ') +
+               '\nMuốn xem nhất: ' + (wt.value || 'Chưa chọn')
+    }).then(function(){
+      form.style.display = 'none';
+      okBox.classList.add('on');
+      /* đưa tiêu điểm tới thông báo thành công — không để người dùng bàn phím bị mắc */
+      okBox.setAttribute('tabindex','-1');
+      okBox.focus();
+    }).catch(function(error){
+      /* error: giữ nguyên dữ liệu đã nhập, cho phép gửi lại */
+      failBox.textContent = error && error.message === 'no-endpoint'
+        ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
+        : 'Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
+      failBox.classList.add('on');
+      btn.disabled = false;
+      btn.classList.remove('is-loading');
+      btn.querySelector('.submit__t').textContent = 'Đăng ký tham gia';
+      form.removeAttribute('aria-busy');
+    });
+  });
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   HAI ĐƯỜNG THAM GIA — chuyển form + cổng thời gian + form ứng tuyển offline
+   Nguồn mốc thời gian: docs/GO4AI-WORK-LAB-CAMPAIGN-2026-09-14.md §4.1
+   ⛔ Mốc ngày nằm ở ĐÚNG MỘT chỗ. Không rải ngày khắp markup — sửa một nơi.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var d = document;
+
+  /* ── MỐC THỜI GIAN (giờ VN = UTC+7) ─────────────────────────────────────
+     (2026-09-24: dời sang 30/10 — ngày hiển thị khớp gemglobal_event_claude())
+     Online:  Thứ Sáu 30/10/2026, 20:00 → 21:30 (90 phút)
+     Offline mở ứng tuyển: 21:30 ngày 30/10 (ngay sau buổi online)
+     Hạn ứng tuyển + ngày Work Lab: CHƯA CHỐT ⇒ offlineClose = null (không tự đóng).
+     Khi chốt: đặt offlineClose + sửa chữ "Hạn ứng tuyển" và "lịch công bố" trong markup.
+     Dạng chuỗi có offset +07:00 để KHÔNG phụ thuộc múi giờ máy người xem. */
+  var T = {
+    offlineOpen : new Date('2026-10-30T21:30:00+07:00'),
+    offlineClose: null
+  };
+
+  /* Cho phép ép trạng thái khi QA/thử: ?gate=before|open|closed */
+  var forced = (location.search.match(/[?&]gate=(before|open|closed)/) || [])[1] || null;
+  function gateState(){
+    if(forced) return forced;
+    var now = new Date();
+    if(now < T.offlineOpen)  return 'before';
+    if(T.offlineClose && now > T.offlineClose) return 'closed';
+    return 'open';
+  }
+
+  /* ── ① CỔNG THỜI GIAN: chỉ MỘT khối .gate mang .on ── */
+  var st = gateState();
+  var gates = {
+    before: d.getElementById('offBefore'),
+    open  : d.getElementById('offOpen'),
+    closed: d.getElementById('offClosed')
+  };
+  Object.keys(gates).forEach(function(k){
+    if(gates[k]) gates[k].classList.toggle('on', k === st);
+  });
+
+  /* Nhãn trên thẻ offline phải nói ĐÚNG trạng thái — không hứa "đang mở" khi chưa mở */
+  var offTag = d.getElementById('offTag');
+  var TAG = {
+    before: '● Mở sau buổi online',
+    open  : '● Đang nhận ứng tuyển',
+    closed: '● Đã đóng ứng tuyển'
+  };
+  if(offTag){
+    offTag.innerHTML = '<b>' + TAG[st].slice(0,1) + '</b>' + TAG[st].slice(1);
+    if(st !== 'open') offTag.classList.add('path__tag--soon');
+    else offTag.classList.remove('path__tag--soon');
+  }
+
+  /* ── ② CHUYỂN ĐƯỜNG: chọn thẻ ⇒ hiện form tương ứng ── */
+  var cards = d.querySelectorAll('.path');
+  var panes = { online: d.getElementById('form-online'), offline: d.getElementById('form-offline') };
+
+  function selectPath(which, moveFocus){
+    [].forEach.call(cards, function(c){
+      c.setAttribute('aria-pressed', c.getAttribute('data-path') === which ? 'true' : 'false');
+    });
+    Object.keys(panes).forEach(function(k){
+      if(panes[k]) panes[k].classList.toggle('on', k === which);
+    });
+    /* ⛔ brain/02 §13: trạng thái không chỉ truyền đạt bằng MÀU.
+       aria-pressed + đổi form hiển thị là hai tín hiệu phi-màu. */
+    if(moveFocus && panes[which]){
+      var first = panes[which].querySelector('input,select,textarea');
+      if(first) first.focus();
+    }
+  }
+
+  [].forEach.call(cards, function(c){
+    c.addEventListener('click', function(){
+      selectPath(c.getAttribute('data-path'), false);
+    });
+    /* hỗ trợ bàn phím trên thẻ dạng button là mặc định của trình duyệt,
+       nhưng Enter/Space phải KHÔNG cuộn trang — button đã lo, không cần chặn thêm */
+  });
+
+  /* Nếu offline CHƯA mở: bấm thẻ offline vẫn xem được thông tin (hạn, quy trình)
+     nhưng KHÔNG cho gửi. Đây là "disabled" của brain/02 §12 — phải NÓI VÌ SAO.
+     ⛔⛔ LỖI THẬT ĐÃ ĐO (diag-gate.mjs): bản đầu chỉ khoá NÚT GỬI, còn 5 trường
+     vẫn nhập được ⇒ người dùng điền cả hồ sơ rồi mới biết không gửi được.
+     Đo được ở cả 3 cổng: interactive=5 · disabledAttr=0. Sửa: khi khoá thì
+     VÔ HIỆU HOÁ toàn bộ trường và ẨN form, chỉ để lại khối giải thích. */
+  var offForm = d.getElementById('formOff');
+  var offBtn  = d.getElementById('submitOff');
+  function syncOffDisabled(){
+    if(!offForm || !offBtn) return;
+    var locked = (st !== 'open');
+
+    /* vô hiệu hoá MỌI trường — không để người ta điền rồi mất */
+    [].forEach.call(offForm.querySelectorAll('input,select,textarea'), function(el){
+      el.disabled = locked;
+      if(locked) el.setAttribute('tabindex','-1');
+      else el.removeAttribute('tabindex');
+    });
+
+    /* ẩn hẳn form khi khoá: khối .gate bên trái đã giải thích lý do rồi.
+       Giữ form trống bên cạnh chỉ tạo cảm giác "điền được" — sai. */
+    offForm.style.display = locked ? 'none' : '';
+    offForm.setAttribute('aria-hidden', locked ? 'true' : 'false');
+
+    offBtn.disabled = locked;
+    offForm.setAttribute('aria-disabled', locked ? 'true' : 'false');
+    var t = offBtn.querySelector('.submit__t');
+    if(t){
+      t.textContent = locked
+        ? (st === 'before' ? 'Chưa mở — xem thông tin bên cạnh'
+                           : 'Đã đóng ứng tuyển')
+        : 'Gửi hồ sơ ứng tuyển';
+    }
+    /* disabled phải nói được MỞ KHOÁ BẰNG CÁCH NÀO */
+    offBtn.setAttribute('title', locked
+      ? (st === 'before' ? 'Mở sau buổi online ngày 30/10/2026'
+                         : 'Đợt Work Lab này đã đóng nhận hồ sơ')
+      : '');
+  }
+
+  /* ── ③ FORM OFFLINE — cùng hợp đồng 6 trạng thái như form online ── */
+  if(offForm){
+    var okOff   = d.getElementById('formOffOk');
+    var failOff = d.getElementById('formOffFail');
+
+    var R2 = {
+      ona : {el:'#ona',  f:'#f-ona',
+             test:function(v){ return v.trim().length >= 2; },
+             msg:'Bạn nhập họ tên để chúng tôi biết đang xét hồ sơ của ai.'},
+      oem : {el:'#oem',  f:'#f-oem',
+             test:function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); },
+             msg:'Email chưa đúng định dạng. Ví dụ: ten@congty.vn'},
+      ocom: {el:'#ocom', f:'#f-ocom',
+             test:function(v){ return v.trim().length >= 2; },
+             msg:'Bạn nhập tên doanh nghiệp.'},
+      task: {el:'#task', f:'#f-task',
+             /* ⛔ Ngưỡng 40 ký tự là CHỦ Ý: điều kiện ứng tuyển là "một việc lặp lại
+                CỤ THỂ" (doc §579). "báo cáo" không phải một việc tả được. */
+             test:function(v){ return v.trim().length >= 40; },
+             msg:'Bạn mô tả cụ thể hơn một chút — việc gì, mất bao lâu, dữ liệu lấy từ đâu. Khoảng 2 câu.'},
+      freq: {el:'#freq', f:'#f-freq',
+             test:function(v){ return v.trim() !== ''; },
+             msg:'Bạn chọn tần suất để chúng tôi biết mức độ lặp lại.'}
+    };
+
+    function setErr2(key, on){
+      var r = R2[key];
+      var field = d.querySelector(r.f);
+      var err = d.getElementById('err-' + key);
+      if(on){
+        field.classList.add('has-err');
+        err.textContent = r.msg;
+        d.querySelector(r.el).setAttribute('aria-invalid','true');
+      } else {
+        field.classList.remove('has-err');
+        err.textContent = '';
+        d.querySelector(r.el).removeAttribute('aria-invalid');
+      }
+    }
+
+    Object.keys(R2).forEach(function(k){
+      var el = d.querySelector(R2[k].el);
+      el.addEventListener('input',  function(){ setErr2(k, false); });
+      el.addEventListener('change', function(){ setErr2(k, false); });
+      el.addEventListener('blur',   function(){
+        if(el.value.trim() !== '') setErr2(k, !R2[k].test(el.value));
+      });
+    });
+
+    offForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      failOff.classList.remove('on');
+
+      /* Nếu cổng đang khoá: không xử lý, chỉ nhắc lý do */
+      if(st !== 'open'){ syncOffDisabled(); return; }
+
+      var bad = [];
+      Object.keys(R2).forEach(function(k){
+        var ok = R2[k].test(d.querySelector(R2[k].el).value);
+        setErr2(k, !ok);
+        if(!ok) bad.push(k);
+      });
+
+      if(bad.length){
+        var first = d.querySelector(R2[bad[0]].el);
+        first.focus();
+        return;
+      }
+
+      offBtn.disabled = true;
+      offBtn.classList.add('is-loading');
+      offBtn.querySelector('.submit__t').textContent = 'Đang gửi hồ sơ…';
+      offForm.setAttribute('aria-busy','true');
+
+      var fq = d.getElementById('freq');
+      (window.gemSendLead ? window.gemSendLead({
+        full_name: d.getElementById('ona').value.trim(),
+        email: d.getElementById('oem').value.trim(),
+        company: d.getElementById('ocom').value.trim(),
+        program: 'ai_work_lab',
+        intent: 'AI Work Lab offline — sau workshop 30/10/2026',
+        message: 'Việc lặp lại muốn giải: ' + d.getElementById('task').value.trim() +
+                 '\nTần suất: ' + (fq.value ? fq.options[fq.selectedIndex].text : '')
+      }) : Promise.reject()).then(function(){
+        offForm.style.display = 'none';
+        okOff.classList.add('on');
+        okOff.setAttribute('tabindex','-1');
+        okOff.focus();
+      }).catch(function(error){
+        failOff.textContent = error && error.message === 'no-endpoint'
+          ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
+          : 'Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
+        failOff.classList.add('on');
+        offBtn.disabled = false;
+        offBtn.classList.remove('is-loading');
+        offBtn.querySelector('.submit__t').textContent = 'Gửi lại hồ sơ';
+        offForm.removeAttribute('aria-busy');
+      });
+    });
+  }
+
+  syncOffDisabled();
+
+  /* Cho QA đọc được trạng thái đã chọn mà không phải đoán */
+  d.documentElement.setAttribute('data-gate', st);
+})();
+</script>
+
+</body>
+</html>
