@@ -1601,6 +1601,146 @@ section:not(.hero) .chips {
   will-change: transform;
 }
 
+/* ============================================================
+   PHASE 2 — CINEMATIC CASE / BENTO / RHYTHM / HEADLINE
+   ============================================================ */
+
+/* ── P2.1 CASE CINEMATIC REVEAL (JS-driven, CSS sets initial + target) ── */
+.case__media-col {
+  will-change: clip-path, transform;
+  overflow: hidden;
+}
+.case__body {
+  will-change: clip-path, transform;
+  overflow: hidden;
+}
+
+/* Scan reveal on metric chips (JS adds .chip--revealed) */
+.cs-metric-chip, .case-metric {
+  position: relative;
+  overflow: hidden;
+}
+.cs-metric-chip.chip--revealed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(8,144,108,0.12), transparent);
+  animation: chipScan 0.5s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes chipScan {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+/* Timeline draw animation — JS adds .timeline--drawn */
+.case-timeline.timeline--drawn::before {
+  animation: timelineDraw 0.8s ease-out forwards;
+}
+@keyframes timelineDraw {
+  from { height: 0; }
+  to   { height: calc(100% - 1.5rem); }
+}
+
+/* ── P2.2 BENTO — SYSTEM MODULE HOVER ───────────────────── */
+.bcard {
+  transition: transform 0.3s cubic-bezier(0.34,1.3,0.64,1),
+              box-shadow 0.3s ease,
+              border-color 0.25s ease;
+}
+/* Status label in top-right corner */
+.bcard::before {
+  content: attr(data-status);
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #08906c;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+.bcard:hover::before { opacity: 1; }
+
+/* Default neutral bcard hover */
+.bcard:not(.bcard--accent-red):not(.bcard--accent-green):not(.bcard--accent-blue):not(.bcard--passport):hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(8,144,108,0.11), 0 2px 8px rgba(0,0,0,0.05);
+  border-color: rgba(8,144,108,0.22);
+}
+/* Passport card — final module state */
+.bcard--passport {
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.3s ease;
+}
+.bcard--passport:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(28,68,134,0.18), 0 0 0 1.5px rgba(52,211,153,0.25);
+  border-color: rgba(52,211,153,0.3);
+}
+.bcard--passport:hover::before { color: #34d399; }
+
+/* ── P2.3 HERO HEADLINE — SCAN STREAK + DEPTH ───────────── */
+.hero__title .text--grad {
+  position: relative;
+  text-shadow: 0 0 40px rgba(52,211,153,0.18);
+}
+.hero__title .text--grad::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.18) 50%, transparent 80%);
+  transform: translateX(-150%);
+  pointer-events: none;
+}
+.hero__title .text--grad.hero-grad--sweep::after {
+  animation: headlineScan 0.85s 0.35s ease-out forwards;
+}
+@keyframes headlineScan {
+  0%   { transform: translateX(-150%); }
+  100% { transform: translateX(150%); }
+}
+
+/* ── P2.4 SECTION HEADING TYPE A — KINETIC SCALE ────────── */
+/* Applied via JS to .head elements in key sections */
+.head--type-a .head__title {
+  font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+}
+
+/* ── P2.5 LIGHT / DARK RHYTHM — SCENE EDGES ─────────────── */
+/* Thin emerald indicator line top of key sections */
+#van-de > .padding-global {
+  position: relative;
+}
+#van-de > .padding-global::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(8,144,108,0.2) 40%, rgba(8,144,108,0.2) 60%, transparent);
+  margin-bottom: 0;
+}
+
+/* ── P2.6 JOURNEY NODES — motion readiness ──────────────── */
+.journey-node {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.journey-node.is--active { transform: scale(1.04); }
+.journey-node.is--past   { opacity: 0.5; }
+
+/* ── REDUCED MOTION ADDITIONS ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .case__media-col, .case__body { clip-path: none !important; }
+  .case-timeline.timeline--drawn::before { animation: none; }
+  .bcard { transition: none; }
+  .bcard:hover { transform: none; }
+  .hero__title .text--grad { text-shadow: none; }
+  .hero__title .text--grad::after { display: none; }
+}
 </style>
 </head>
 
@@ -2322,7 +2462,7 @@ section:not(.hero) .chips {
 
         <div class="bento" data-stagger>
 
-          <article class="bcard bcard--wide" data-reveal>
+          <article class="bcard bcard--wide" data-reveal data-status="ACTIVE">
             <span class="bcard__index">/ 01</span>
             <h3 class="bcard__title">Use case</h3>
             <p class="bcard__body text--measure">
@@ -2338,7 +2478,7 @@ section:not(.hero) .chips {
             </div>
           </article>
 
-          <article class="bcard bcard--accent-red" data-reveal>
+          <article class="bcard bcard--accent-red" data-reveal data-status="OUTPUT READY">
             <span class="bcard__index">/ 02</span>
             <h3 class="bcard__title">Đầu ra</h3>
             <p class="bcard__body">
@@ -2346,7 +2486,7 @@ section:not(.hero) .chips {
             </p>
           </article>
 
-          <article class="bcard bcard--accent-green" data-reveal>
+          <article class="bcard bcard--accent-green" data-reveal data-status="CAPTURED">
             <span class="bcard__index">/ 03</span>
             <h3 class="bcard__title">Cách làm</h3>
             <p class="bcard__body">
@@ -2354,7 +2494,7 @@ section:not(.hero) .chips {
             </p>
           </article>
 
-          <article class="bcard" data-reveal>
+          <article class="bcard" data-reveal data-status="VERIFIED">
             <span class="bcard__index">/ 04</span>
             <h3 class="bcard__title">Bằng chứng</h3>
             <p class="bcard__body">
@@ -2362,7 +2502,7 @@ section:not(.hero) .chips {
             </p>
           </article>
 
-          <article class="bcard bcard--kpi" data-reveal>
+          <article class="bcard bcard--kpi" data-reveal data-status="MEASURED">
             <span class="bcard__index">/ 05</span>
             <h3 class="bcard__title">Chỉ số</h3>
             <p class="bcard__body">Khi phù hợp có thể đo:</p>
@@ -2375,7 +2515,7 @@ section:not(.hero) .chips {
             </div>
           </article>
 
-          <article class="bcard bcard--wide bcard--accent-blue bcard--passport" data-reveal>
+          <article class="bcard bcard--wide bcard--accent-blue bcard--passport" data-reveal data-status="AI PASSPORT">
             <div class="bcard__passport-grid">
               <div class="bcard__passport-info">
                 <span class="bcard__index">/ 06</span>

@@ -545,6 +545,136 @@
   }
 
   /* --------------------------------------------------------------------------
+     PHASE 2 — CASE CINEMATIC REVEAL  (FLOW + VERIFY phase)
+  -------------------------------------------------------------------------- */
+  function initCaseReveal() {
+    if (reduce) return;
+
+    var cases = qsa('.case');
+    cases.forEach(function(caseEl) {
+      var mediaCol  = qs('.case__media-col', caseEl);
+      var bodyCol   = qs('.case__body', caseEl);
+      var timeline  = qs('.case-timeline', caseEl);
+      var metrics   = qsa('.cs-metric-chip, .case-metric', caseEl);
+      var mediaWrap = qs('.case-video-embed, .cs-case__media-wrapper', caseEl);
+
+      if (!mediaCol || !bodyCol) return;
+
+      /* Initial state — media clips from right edge, body from left edge */
+      gsap.set(mediaCol, { clipPath: 'inset(0 100% 0 0)' });
+      gsap.set(bodyCol,  { clipPath: 'inset(0 0 0 100%)' });
+
+      var tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: caseEl,
+          start: 'top 78%',
+          once: true,
+        }
+      });
+
+      /* Media wipe reveal */
+      tl.to(mediaCol, {
+        clipPath: 'inset(0 0% 0 0)',
+        duration: 0.7,
+        ease: 'power3.out'
+      }, 0);
+
+      /* Body reveal from opposite direction */
+      tl.to(bodyCol, {
+        clipPath: 'inset(0 0 0 0%)',
+        duration: 0.65,
+        ease: 'power3.out'
+      }, 0.1);
+
+      /* Timeline draw */
+      if (timeline) {
+        tl.call(function() {
+          timeline.classList.add('timeline--drawn');
+        }, null, 0.5);
+      }
+
+      /* Metric chips scan — stagger */
+      if (metrics.length) {
+        tl.call(function() {
+          metrics.forEach(function(chip, i) {
+            setTimeout(function() {
+              chip.classList.add('chip--revealed');
+            }, i * 120);
+          });
+        }, null, 0.75);
+      }
+    });
+
+    /* Subtle media parallax as user scrolls */
+    qsa('.case__media-col .case-video-embed, .case__media-col .cs-case__media-wrapper').forEach(function(el) {
+      gsap.fromTo(el,
+        { y: 12 },
+        {
+          y: -12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.2,
+          }
+        }
+      );
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     PHASE 2 — BENTO "SYSTEM MODULES" STAGGER DOCK  (PROCESS phase)
+  -------------------------------------------------------------------------- */
+  function initBentoDock() {
+    if (reduce) return;
+
+    var bento = qs('.bento');
+    if (!bento) return;
+
+    var cards = qsa('.bcard', bento);
+    if (!cards.length) return;
+
+    /* Initial state — all cards slightly below and invisible */
+    gsap.set(cards, { autoAlpha: 0, y: 28, scale: 0.97 });
+
+    ScrollTrigger.create({
+      trigger: bento,
+      start: 'top 80%',
+      once: true,
+      onEnter: function() {
+        /* Cards "dock" in staggered sequence — wide card first, then modules */
+        var wideCards  = cards.filter(function(c) { return c.classList.contains('bcard--wide'); });
+        var normCards  = cards.filter(function(c) { return !c.classList.contains('bcard--wide'); });
+        var ordered    = [].concat(wideCards.slice(0,1), normCards, wideCards.slice(1));
+
+        var tl = gsap.timeline();
+        ordered.forEach(function(card, i) {
+          tl.to(card, {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            ease: 'power2.out'
+          }, i * 0.08);
+        });
+      }
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     PHASE 2 — TYPE A HEADINGS  (apply class to key sections)
+  -------------------------------------------------------------------------- */
+  function initHeadingTypes() {
+    /* TYPE A — kinetic scale headings */
+    var typeA = ['#van-de', '#nhan-duoc', '#case'];
+    typeA.forEach(function(sel) {
+      var head = qs(sel + ' .head');
+      if (head) head.classList.add('head--type-a');
+    });
+  }
+
+  /* --------------------------------------------------------------------------
      BOOT — run after DOM ready
   -------------------------------------------------------------------------- */
   function boot() {
@@ -560,6 +690,11 @@
     initDarkPanel();
     initSectionTransitions();
     initPositioningPanel();
+
+    /* Phase 2 */
+    initCaseReveal();
+    initBentoDock();
+    initHeadingTypes();
 
     /* Refresh ScrollTrigger after fonts load */
     if (document.fonts && document.fonts.ready) {
