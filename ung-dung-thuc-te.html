@@ -12,6 +12,75 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Azeret+Mono:wght@400;500;600;700&display=swap">
 <script>var d=document.documentElement;d.classList.add("has-js");if(location.protocol==="file:")d.classList.add("is-file-protocol");</script>
 <link rel="stylesheet" href="assets/css/go4ai.css">
+<style>
+/* ── Video Sticky Scroll & Layout Balance ──────────────────────────── */
+.cs-case {
+  overflow: visible !important;
+}
+
+.cs-case__grid {
+  align-items: start;
+}
+
+@media (min-width: 992px) {
+  .cs-case__media {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: calc(var(--header-h, 75px) + 24px) !important;
+    z-index: 2;
+    align-self: start;
+  }
+}
+
+@media (max-width: 991px) {
+  .cs-case__media {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-case__media {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+/* Đảm bảo flex/grid child không blow-out và wrap mượt */
+.cs-case__grid > * {
+  min-width: 0;
+}
+
+.cs-case__body,
+.cs-case__media,
+.case-timeline__content {
+  min-width: 0;
+}
+
+.case-timeline__text {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.cs-flow-chips,
+.cs-hub-flow,
+.cs-pipeline-strip {
+  max-width: 100%;
+}
+
+/* Khoảng cách nhịp điệu corporate B2B */
+.cs-case__body {
+  gap: 16px;
+}
+
+.case-timeline {
+  gap: 12px;
+}
+
+.case-timeline__item {
+  gap: 12px;
+}
+</style>
 </head>
 
 <body>
@@ -184,42 +253,54 @@
             <div class="cs-case__body">
               <div class="cs-case__header">
                 <span class="case__tag">Workforce Enablement</span>
-                <h2 class="cs-case__title" id="cs-01-title">AI Enablement — Đào tạo để nhân sự làm được việc thật</h2>
+                <h2 class="cs-case__title" id="cs-01-title">AI Enablement — Phát triển năng lực AI trong công việc</h2>
               </div>
               <div class="case-timeline">
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Bài toán</div>
-                    <p class="case-timeline__text">Doanh nghiệp có thể đào tạo AI cho nhiều người, nhưng câu hỏi khó hơn là: sau khóa học, nhân sự có thực sự đưa AI vào công việc và tạo ra đầu ra tốt hơn không?</p>
+                    <p class="case-timeline__text">Đào tạo AI đại trà khó đo lường hiệu quả thực tế: sau khóa học, nhân sự có ứng dụng được AI vào công việc và nâng cao hiệu suất hay không?</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Đối tượng</div>
-                    <p class="case-timeline__text">Doanh nghiệp, trường học và tổ chức muốn biến kiến thức AI thành năng lực ứng dụng thực tế cho từng vai trò.</p>
+                    <p class="case-timeline__text">Doanh nghiệp, trường học và tổ chức muốn chuyển hóa kiến thức AI thành năng lực ứng dụng thực tế theo từng vai trò.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Cách triển khai</div>
-                    <p class="case-timeline__text">Vai trò → Bài toán thật → Thực hành → Output → Evidence → KPI</p>
+                    <div class="cs-flow-chips" role="list" aria-label="Quy trình triển khai AI Enablement">
+                      <span class="cs-flow-chip">Vai trò</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Bài toán thật</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Thực hành</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Output</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Evidence</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip cs-flow-chip--accent">KPI</span>
+                    </div>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Đầu ra</div>
-                    <p class="case-timeline__text">Mỗi người rời chương trình với sản phẩm có thể dùng lại trong công việc, kèm cách làm và bằng chứng ứng dụng.</p>
+                    <p class="case-timeline__text">Mỗi nhân sự hoàn thiện sản phẩm ứng dụng ngay trong công việc, kèm phương pháp thực hiện và bằng chứng đo lường.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Kết quả</div>
-                    <p class="case-timeline__text">Đã tiếp cận hơn 3.000 người học, phối hợp cùng 14+ đơn vị giáo dục và 10+ doanh nghiệp trong các chương trình AI ứng dụng.</p>
+                    <p class="case-timeline__text">Tiếp cận hơn 3.000 người học, đồng hành cùng 14+ đơn vị giáo dục và 10+ doanh nghiệp trong các chương trình AI ứng dụng thực chiến.</p>
                   </div>
                 </div>
               </div>
@@ -302,14 +383,14 @@
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Bài toán</div>
-                    <p class="case-timeline__text">Đào tạo AI không đồng nghĩa với việc biết ai thực sự ứng dụng được AI và tạo ra giá trị trong công việc.</p>
+                    <p class="case-timeline__text">Đào tạo AI không đồng nghĩa với việc xác định được ai thực sự ứng dụng hiệu quả và tạo ra giá trị cụ thể trong công việc.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Đối tượng</div>
-                    <p class="case-timeline__text">Doanh nghiệp, tổ chức giáo dục, HR/L&amp;D và các đơn vị cần đánh giá năng lực AI theo cá nhân, nhóm hoặc phòng ban.</p>
+                    <p class="case-timeline__text">Doanh nghiệp, cơ sở giáo dục và bộ phận HR/L&amp;D cần chuẩn hóa đánh giá năng lực AI theo cá nhân và phòng ban.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
@@ -337,7 +418,7 @@
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Kết quả</div>
-                    <p class="case-timeline__text">Tổ chức có hồ sơ năng lực AI có thể xác minh, nhìn thấy năng lực thực tế của từng người và chuẩn hóa các use case tốt để nhân rộng.</p>
+                    <p class="case-timeline__text">Xây dựng hồ sơ năng lực AI có thể xác minh, nhận diện đúng nhân sự làm được việc và nhân rộng các use case xuất sắc.</p>
                   </div>
                 </div>
               </div>
@@ -561,28 +642,34 @@
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Bài toán</div>
-                    <p class="case-timeline__text">Mất nhiều thời gian xử lý JD, CV và chuẩn bị phỏng vấn.</p>
+                    <p class="case-timeline__text">Mất nhiều thời gian xử lý JD, lọc CV ứng viên và chuẩn bị câu hỏi phỏng vấn theo từng vị trí.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Cách triển khai</div>
-                    <p class="case-timeline__text">AI hỗ trợ chuẩn hóa JD, screening CV và tạo interview kit.</p>
+                    <div class="cs-flow-chips" role="list" aria-label="Quy trình HR AI">
+                      <span class="cs-flow-chip">Chuẩn hóa JD</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Screening CV</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip cs-flow-chip--accent">Interview Kit</span>
+                    </div>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Đầu ra</div>
-                    <p class="case-timeline__text">Bộ JD chuẩn hóa + shortlist tự động + interview workflow.</p>
+                    <p class="case-timeline__text">Bộ JD chuẩn hóa + danh sách ứng viên phù hợp + rubric phỏng vấn hoàn chỉnh.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Kết quả</div>
-                    <p class="case-timeline__text">Giảm thời gian chuẩn bị và tăng tính nhất quán trong quy trình tuyển dụng.</p>
+                    <p class="case-timeline__text">Rút ngắn thời gian chuẩn bị và nâng cao tính nhất quán trong quy trình tuyển dụng.</p>
                   </div>
                 </div>
               </div>
@@ -651,35 +738,35 @@
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Bài toán</div>
-                    <p class="case-timeline__text">Doanh nghiệp thường vận hành rời rạc giữa chiến lược, nhân sự, dự án, quy trình, bán hàng và dữ liệu. Mỗi bộ phận sử dụng một hệ thống riêng khiến thông tin phân mảnh, khó đồng bộ và lãnh đạo thiếu một góc nhìn vận hành thống nhất.</p>
+                    <p class="case-timeline__text">Doanh nghiệp vận hành rời rạc giữa chiến lược, nhân sự, dự án, quy trình và bán hàng khiến thông tin phân mảnh và lãnh đạo thiếu góc nhìn tổng thể.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Đối tượng</div>
-                    <p class="case-timeline__text">Doanh nghiệp và tổ chức cần kết nối các phân hệ quản trị, chuẩn hóa vận hành và đưa AI vào quá trình giám sát, phối hợp và ra quyết định.</p>
+                    <p class="case-timeline__text">Doanh nghiệp và tổ chức cần hợp nhất các phân hệ quản trị, chuẩn hóa quy trình và ứng dụng AI điều phối vận hành.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Cách triển khai</div>
-                    <p class="case-timeline__text">Đặt AI làm trung tâm điều phối, kết nối các phân hệ: <strong>Chiến lược → Dự án &amp; Công việc → Quy trình → Nhân sự &amp; Nhân tài → Sales → Tri thức</strong>. AI hỗ trợ xuyên suốt từ dự báo KPI, tạo workflow, phê duyệt thông minh, đánh giá nhân sự đến khai thác dữ liệu và tri thức nội bộ.</p>
+                    <p class="case-timeline__text">Đặt AI làm trung tâm điều phối, liên kết các phân hệ: <strong>Chiến lược → Dự án → Quy trình → Nhân sự → Sales → Tri thức</strong> để dự báo KPI, tạo workflow và phê duyệt tự động.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Đầu ra</div>
-                    <p class="case-timeline__text">Một nền tảng vận hành thống nhất, nơi dữ liệu, quy trình, nhiệm vụ và thông tin quản trị được liên kết thay vì tồn tại ở các hệ thống tách rời.</p>
+                    <p class="case-timeline__text">Nền tảng vận hành thống nhất, kết nối dữ liệu, quy trình và nhiệm vụ quản trị trên một hệ thống duy nhất.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Kết quả</div>
-                    <p class="case-timeline__text">Lãnh đạo có thể theo dõi sức khỏe vận hành trên một hệ thống; quản lý và nhân viên nhận gợi ý hành động từ AI; quy trình được chuẩn hóa; dữ liệu và tri thức doanh nghiệp được tập trung để khai thác hiệu quả hơn.</p>
+                    <p class="case-timeline__text">Lãnh đạo theo dõi sức khỏe vận hành tập trung; đội ngũ nhận gợi ý hành động từ AI; tri thức nội bộ được khai thác hiệu quả.</p>
                   </div>
                 </div>
               </div>
@@ -774,28 +861,38 @@
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Bài toán</div>
-                    <p class="case-timeline__text">Các bộ phận Kinh doanh, Nhân sự, Vận hành và Tài chính phải xử lý khối lượng dữ liệu lớn nhưng vẫn phụ thuộc vào tổng hợp thủ công, công thức và báo cáo định kỳ — mất thời gian và khó phát hiện sớm bất thường.</p>
+                    <p class="case-timeline__text">Kinh doanh, Nhân sự, Vận hành và Tài chính xử lý dữ liệu lớn nhưng phụ thuộc tổng hợp thủ công — mất thời gian và khó phát hiện kịp thời bất thường.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Đối tượng</div>
-                    <p class="case-timeline__text">Nhân sự thường xuyên làm việc với bảng dữ liệu, báo cáo và các chỉ số vận hành.</p>
+                    <p class="case-timeline__text">Nhân sự thường xuyên làm việc với số liệu, báo cáo định kỳ và các chỉ số vận hành trọng yếu.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Cách triển khai</div>
-                    <p class="case-timeline__text">Dữ liệu → Tổng hợp → Phân tích → Phát hiện bất thường → Cảnh báo</p>
+                    <div class="cs-flow-chips" role="list" aria-label="Quy trình AI Agent xử lý dữ liệu">
+                      <span class="cs-flow-chip">Dữ liệu</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Tổng hợp</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Phân tích</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Phát hiện bất thường</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip cs-flow-chip--accent">Cảnh báo</span>
+                    </div>
                   </div>
                 </div>
                 <div class="case-timeline__item">
                   <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
                   <div class="case-timeline__content">
                     <div class="case-timeline__label">Kết quả</div>
-                    <p class="case-timeline__text">Tự động tổng hợp và cập nhật chỉ số; AI hỗ trợ đọc dữ liệu, phát hiện vấn đề, chuẩn bị thông tin trước cuộc họp và gửi cảnh báo đến đúng người phụ trách khi vượt ngưỡng.</p>
+                    <p class="case-timeline__text">Tự động tổng hợp chỉ số; AI hỗ trợ đọc dữ liệu, chuẩn bị tóm tắt trước cuộc họp và gửi cảnh báo ngay khi vượt ngưỡng.</p>
                   </div>
                 </div>
               </div>
