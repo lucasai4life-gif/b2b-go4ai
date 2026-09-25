@@ -385,8 +385,8 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 128px 198px 146px;
-  gap: 30px;
+  grid-template-columns: 130px 210px 150px;
+  gap: 0;
   align-items: center;
   width: 100%;
   box-sizing: border-box;
@@ -412,15 +412,25 @@
   fill: none;
 }
 
+@keyframes wireDataFlow {
+  0%   { stroke-dashoffset: 200; opacity: 0.3; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { stroke-dashoffset: -200; opacity: 0.3; }
+}
 .engine__wire--active {
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
-  stroke-dasharray: 6 6;
-  animation: engineStream 18s linear infinite;
-  opacity: 0.85;
-  transition: opacity 0.3s ease, stroke-width 0.3s ease;
+  stroke-dasharray: 8 140;
+  animation: wireDataFlow 2.4s linear infinite;
 }
+#wire-sales { animation-delay: 0s; }
+#wire-hr    { animation-delay: 0.8s; }
+#wire-fin   { animation-delay: 1.6s; }
+#wire-prop  { animation-delay: 0.4s; }
+#wire-dash  { animation-delay: 1.2s; }
+#wire-sop   { animation-delay: 2.0s; }
 
 @keyframes engineStream {
   from { stroke-dashoffset: 240; }
@@ -551,16 +561,31 @@
 
 .engine-core {
   position: relative;
+  overflow: hidden;
   width: 100%;
-  background: linear-gradient(168deg, #0e1614 0%, #06110e 100%);
+  min-width: 210px;
+  background: #0a1210;
   border: 1.5px solid rgba(52, 211, 153, 0.35);
   border-radius: 14px;
   padding: 14px 12px 12px;
-  box-shadow:
-    0 20px 42px rgba(0, 0, 0, 0.25),
-    0 0 32px rgba(8, 144, 108, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 1px rgba(52,211,153,0.2), 0 0 40px rgba(8,144,108,0.15), 0 0 80px rgba(8,144,108,0.06);
   color: #ffffff;
+}
+.engine-core::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(52,211,153,0.6), transparent);
+  animation: coreScan 3s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes coreScan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+
   box-sizing: border-box;
   animation: coreBreathing 6s ease-in-out infinite;
 }
@@ -1073,9 +1098,9 @@
 
 /* ── 1. HIGH-TECH BACKGROUND — subtle technical grid ─── */
 /* Applied to all light sections via pseudo-element on body */
-body::before {
+.section.hero::before {
   content: '';
-  position: fixed;
+  position: absolute;
   inset: 0;
   background-image:
     linear-gradient(var(--sys-grid-color) 1px, transparent 1px),
@@ -1182,17 +1207,7 @@ body::before {
 }
 
 /* Micro system labels beside section headings */
-.head::before {
-  content: attr(data-sys-label);
-  display: block;
-  font-family: 'Azeret Mono', 'Courier New', monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  color: var(--sys-emerald);
-  opacity: 0.6;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
+
 
 /* ── 4. DATA COUNTER STYLES ─────────────────────────── */
 
@@ -1249,7 +1264,7 @@ body::before {
   height: 16px;
   border-top: 1.5px solid var(--sys-emerald);
   border-left: 1.5px solid var(--sys-emerald);
-  opacity: 0.35;
+  opacity: 0.2;
   pointer-events: none;
   z-index: 1;
 }
@@ -1263,7 +1278,7 @@ body::before {
   height: 16px;
   border-bottom: 1.5px solid var(--sys-emerald);
   border-right: 1.5px solid var(--sys-emerald);
-  opacity: 0.25;
+  opacity: 0.2;
   pointer-events: none;
   z-index: 1;
 }
@@ -1438,6 +1453,154 @@ section:not(.hero) .chips {
   .dark-panel::before { display: none; }
   .dark-panel--sys::after { display: none; }
 }
+
+/* ── HERO ENV ─────────────────────────────── */
+.hero-env {
+  position: absolute;
+  inset: -40px;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-env__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(8,144,108,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8,144,108,0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transform: perspective(600px) rotateX(20deg);
+  transform-origin: bottom center;
+  opacity: 0.6;
+}
+.hero-env__glow {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  width: 400px;
+  height: 300px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(8,144,108,0.12) 0%, transparent 70%);
+}
+.hero-env__beam {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, rgba(52,211,153,0.15) 40%, rgba(52,211,153,0.08) 60%, transparent);
+}
+.hero-env__label {
+  position: absolute;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(8,144,108,0.35);
+  white-space: nowrap;
+}
+.hero-env__label--tl { top: 12px; left: 12px; }
+.hero-env__label--br { bottom: 12px; right: 12px; }
+
+/* ── DARK IMPACT SECTION ─────────────────────────────── */
+.impact-section {
+  background: #07110e !important;
+  color: #e8f5f0 !important;
+  position: relative;
+  overflow: hidden;
+}
+.impact-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(52,211,153,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52,211,153,0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+.impact-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(8,144,108,0.10) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+.impact-section .container-impact,
+.impact-section .padding-global {
+  position: relative;
+  z-index: 1;
+}
+.impact-section .impact-section_heading {
+  position: relative;
+  z-index: 1;
+}
+.impact-section .chips {
+  color: rgba(52,211,153,0.85) !important;
+  border-color: rgba(52,211,153,0.2) !important;
+  background: rgba(52,211,153,0.06) !important;
+}
+.impact-section .title--l {
+  color: #f0faf6 !important;
+}
+.impact-section .text--number {
+  font-size: clamp(3rem, 6vw, 5.5rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1 !important;
+  color: #fff !important;
+}
+.impact-section .impact-bg {
+  background: rgba(8,144,108,0.12) !important;
+  border: 1px solid rgba(52,211,153,0.15) !important;
+}
+.impact-section .impact-item__label {
+  color: rgba(232,245,240,0.75) !important;
+}
+.impact-section .impact-item__note {
+  color: rgba(232,245,240,0.45) !important;
+}
+.impact-section .impact-item-accent {
+  background: rgba(8,144,108,0.8) !important;
+}
+.impact-section .impact-item-accent-text p {
+  color: #fff !important;
+}
+.impact-animation-track {
+  position: relative;
+}
+.impact-animation-track::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #08906c 30%, #34d399 50%, #08906c 70%, transparent);
+  opacity: 0.6;
+}
+
+/* ── OVERSIZED SECTION NUMBERS ─────────────────────────────── */
+.section--with-index {
+  position: relative;
+  overflow: hidden;
+}
+.section-bg-index {
+  position: absolute;
+  top: -0.15em;
+  right: -0.05em;
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: clamp(8rem, 18vw, 16rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(8,144,108,0.06);
+  text-stroke: 1px rgba(8,144,108,0.06);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  will-change: transform;
+}
+
 </style>
 </head>
 
@@ -1555,6 +1718,14 @@ section:not(.hero) .chips {
         </div>
 
         <div class="hero__visual hero-engine" role="region" aria-label="Bộ máy năng lực AI — AI Capability Engine: Từ vai trò nhân sự đến xác thực năng lực">
+          <!-- Hero Environment Background -->
+          <div class="hero-env" aria-hidden="true">
+            <div class="hero-env__grid"></div>
+            <div class="hero-env__glow"></div>
+            <div class="hero-env__beam"></div>
+            <div class="hero-env__label hero-env__label--tl">AI / SYSTEM 01</div>
+            <div class="hero-env__label hero-env__label--br">STATUS: ACTIVE</div>
+          </div>
           <!-- Ambient background glow & grid canvas -->
           <div class="engine__ambient" aria-hidden="true">
             <div class="engine__glow engine__glow--emerald"></div>
@@ -1839,8 +2010,9 @@ section:not(.hero) .chips {
 
 
   <!-- ============= 3. VẤN ĐỀ — LƯỚI THẺ BENTO ============= -->
-  <section class="section section--gray" id="van-de" aria-labelledby="van-de-title">
+  <section class="section section--gray section--with-index" id="van-de" aria-labelledby="van-de-title">
     <div class="padding-global">
+      <div class="section-bg-index" aria-hidden="true">03</div>
       <div class="container">
 
         <div class="head" data-reveal data-sys-label="01 · VẤNDE">
@@ -1938,8 +2110,9 @@ section:not(.hero) .chips {
 
 
   <!-- ========================== 4. CÁCH HỌC ========================== -->
-  <section class="section section--white" id="cach-hoc" aria-labelledby="cach-hoc-title">
+  <section class="section section--white section--with-index" id="cach-hoc" aria-labelledby="cach-hoc-title">
     <div class="padding-global">
+      <div class="section-bg-index" aria-hidden="true">04</div>
       <div class="container">
 
         <div class="head" data-reveal data-sys-label="02 · PHƯƠNG PHÁP">
@@ -2125,8 +2298,9 @@ section:not(.hero) .chips {
 
 
   <!-- ============ 5. NHẬN ĐƯỢC GÌ — BENTO CỦA A ============ -->
-  <section class="section section--gray" id="nhan-duoc" aria-labelledby="nhan-duoc-title">
+  <section class="section section--gray section--with-index" id="nhan-duoc" aria-labelledby="nhan-duoc-title">
     <div class="padding-global">
+      <div class="section-bg-index" aria-hidden="true">05</div>
       <div class="container">
 
         <div class="head" data-reveal data-sys-label="03 · CHƯƠNG TRÌNH">
@@ -2327,8 +2501,9 @@ section:not(.hero) .chips {
 
 
   <!-- ========== 7. CHƯƠNG TRÌNH — GUIDE BLOCK CỦA B ========== -->
-  <section class="section section--gray" id="chuong-trinh" aria-labelledby="chuong-trinh-title">
+  <section class="section section--gray section--with-index" id="chuong-trinh" aria-labelledby="chuong-trinh-title">
     <div class="padding-global">
+      <div class="section-bg-index" aria-hidden="true">07</div>
       <div class="container">
 
         <div class="head" data-reveal data-sys-label="04 · CASE">
@@ -2590,8 +2765,9 @@ section:not(.hero) .chips {
   <!-- ============ 8. CASE — MEDIA TRÁI, BỐ CỤC A ============ -->
   <!-- NỀN ĐỔI gray → white: khối 7 (chương trình, B) cũng đang là gray nên
        hai khối liền nhau sẽ dính vào nhau. Xem README.md §2.3. -->
-  <section class="section section--white" id="case" aria-labelledby="case-title">
+  <section class="section section--white section--with-index" id="case" aria-labelledby="case-title">
     <div class="padding-global">
+      <div class="section-bg-index" aria-hidden="true">08</div>
       <div class="container">
 
         <div class="head" data-reveal data-sys-label="05 · OUTPUT">
