@@ -417,7 +417,7 @@
       var tag    = qs('.case__tag', caseEl);
       var title  = qs('.cs-case__title', caseEl);
       var rule   = qs('.acs-title-rule', caseEl);
-      var media  = qs('.case-video-embed', caseEl) || qs('.case-video-card', caseEl);
+      var media  = qs('.case-video-embed', caseEl) || qs('.case-video-card', caseEl) || qs('.case-image-card', caseEl);
       var tl0    = qs('.case-timeline', caseEl);
       var items  = qsa('.case-timeline__item', caseEl);
       var action = qs('.case__action', caseEl);
@@ -644,14 +644,20 @@
       });
     }
 
-    /* Case 03 — AI Sales Agent: old value → arrow → target value */
+    /* Case 03, 04, 07: old value → arrow → target value → badges → supporting text */
     qsa('.cs-sales-metric-card').forEach(function (card, ci) {
       var from  = qs('.cs-sales-metric-card__from', card);
       var arrow = qs('.cs-sales-metric-card__arrow', card);
       var to    = qs('.cs-sales-metric-card__to', card);
       if (!from || !to) return;
 
+      var impactUnit = card.closest('.cs-sales-impact');
+      var badges     = impactUnit ? qs('.cs-impact-badges', impactUnit) : null;
+      var supporting = impactUnit ? qs('.cs-impact-supporting', impactUnit) : null;
+
       gsap.set([from, arrow, to].filter(Boolean), { autoAlpha: 0, y: 10 });
+      if (badges) gsap.set(badges, { autoAlpha: 0, y: 8 });
+      if (supporting) gsap.set(supporting, { autoAlpha: 0, y: 8 });
 
       ST.create({
         trigger: card,
@@ -670,6 +676,12 @@
           }
           tl.to(to, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'back.out(1.4)' }, 0.5);
           tl.call(function () { to.classList.add('is--pulsed'); }, null, 0.72);
+          if (badges) {
+            tl.to(badges, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.88);
+          }
+          if (supporting) {
+            tl.to(supporting, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.05);
+          }
         }
       });
     });

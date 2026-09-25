@@ -6,6 +6,7 @@
 <title>Ứng dụng thực tế — GO4AI Đào tạo &amp; Triển khai AI Doanh nghiệp</title>
 <meta name="description" content="Các case study ứng dụng AI thực tế tại GO4AI: Workforce Enablement, AI Sales Agent, HR, AI Enterprise Hub, Data &amp; Decision Intelligence và Workflow Automation — kết quả đo lường được." data-page-node-id="vTA01YfKFs8MHlJizcpOhf">
 <meta name="theme-color" content="#06110e" data-page-node-id="yaImNWckpR8BNtNPagL3o2">
+<link rel="icon" href="assets/images/logos/logo-go4ai-life.png" type="image/png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="2dKb7PbzmDTtIgWX88HXhq">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="FcoSeEAEj1ReN0l5rCJUvO">
@@ -330,6 +331,134 @@
   font-size: 0.8125rem !important;
   line-height: 1.5 !important;
   margin: 0 !important;
+}
+
+/* ── Case Image Media Frame ────────────────────────────────────────── */
+.case-image-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: #07110e;
+  border: 1px solid rgba(8, 144, 108, 0.24);
+  box-shadow: 0 14px 38px rgba(6, 17, 14, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cs-case--dark-close .case-image-card,
+.cs-case--dark .case-image-card {
+  background-color: #040d0a;
+  border-color: rgba(52, 211, 153, 0.35);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+}
+.case-image-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Custom Wide Impact Card & Badges ──────────────────────────────── */
+.cs-sales-metric-card--wide {
+  grid-column: 1 / -1;
+  padding: 16px 20px !important;
+}
+.cs-case--pale .cs-sales-metric-card {
+  background: #091a14 !important;
+  border-color: rgba(8, 144, 108, 0.35) !important;
+  color: #fff !important;
+}
+.cs-case--pale .cs-sales-impact__tag {
+  color: #059669 !important;
+}
+.cs-case--pale .cs-sales-impact__lead {
+  color: #2d3748 !important;
+}
+.cs-case--pale .cs-sales-metric-card__from {
+  color: rgba(232, 245, 240, 0.7) !important;
+}
+.cs-impact-comparison {
+  display: grid;
+  grid-template-columns: 1fr auto 1.3fr;
+  align-items: center;
+  gap: 16px;
+}
+.cs-impact-side {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cs-impact-side__kicker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 245, 240, 0.55);
+}
+.cs-case--pale .cs-impact-side__kicker {
+  color: rgba(52, 211, 153, 0.85);
+}
+.cs-impact-side--to .cs-sales-metric-card__to {
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem) !important;
+  line-height: 1.25;
+}
+.cs-impact-side__sub {
+  font-size: 0.78125rem;
+  color: rgba(232, 245, 240, 0.65);
+  line-height: 1.35;
+}
+.cs-impact-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.cs-impact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.71875rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(8, 144, 108, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  color: #34d399;
+  letter-spacing: 0.02em;
+}
+.cs-case--pale .cs-impact-badge {
+  background: rgba(8, 144, 108, 0.08);
+  border-color: rgba(8, 144, 108, 0.22);
+  color: #065f46;
+  font-weight: 600;
+}
+.cs-case--dark-close .cs-impact-badge {
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.28);
+  color: #6ee7b7;
+}
+.cs-impact-supporting {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  color: rgba(232, 245, 240, 0.7);
+}
+.cs-case--pale .cs-impact-supporting {
+  color: #4b5563;
+}
+@media (max-width: 580px) {
+  .cs-impact-comparison {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cs-sales-metric-card__arrow {
+    transform: rotate(90deg);
+    align-self: center;
+    margin: -2px 0;
+  }
 }
 </style>
 <link rel="stylesheet" href="assets/css/app-case-system.css" data-page-node-id="Yl2CAkFP57NQr4GX8PbW93">
@@ -915,7 +1044,7 @@
 
         <!--
         ══════════════════════════════════════════════════════════
-        CASE 04 — AI CHO HR & TUYỂN DỤNG   |   Tone: Pale Green
+        CASE 04 — HR & TUYỂN DỤNG   |   Tone: Pale Green
         ══════════════════════════════════════════════════════════
         -->
         <article class="cs-case cs-case--pale" id="case-04" aria-labelledby="cs-04-title" data-page-node-id="9bqJI212AwRTJYTdRPalMm">
@@ -928,54 +1057,23 @@
           <div class="cs-case__num-badge" aria-hidden="true" data-page-node-id="46Wdi2aTRriV3YuVlR6vJ9">04</div>
           <div class="cs-case__grid" data-page-node-id="4HTdpCgT7mgEgugeUPEaUS">
 
-            <!-- VIDEO / MEDIA (Left 47%) -->
+            <!-- MEDIA (Left 46.5%) -->
             <div class="cs-case__media" data-page-node-id="f4nQMEdSTRZ9xbbsEOMko9">
-              <div class="case-video-card" data-video-card data-page-node-id="N0bfwcElTMv2OQQkP8yLS0">
-                <!-- CASE_03_VIDEO: bỏ comment dòng dưới khi có file -->
-                <!-- <source src="assets/videos/CASE_03_ai-hr.mp4" type="video/mp4"> -->
-                <video class="case-video-card__element" controls playsinline preload="metadata"
-                       aria-label="Video demo: AI cho HR & Tuyển dụng" data-page-node-id="mCnDxKbF0E1t2vqdGpvP07">
-                </video>
-                <div class="case-video-card__poster" data-page-node-id="lDSuWmnmgkNEMugfWHZ5g4">
-                  <svg class="case-video-card__grid-bg" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-page-node-id="XtTPbD8fkPkfBStNrh7fac">
-                    <defs data-page-node-id="DTXxJFI02I4lQaTCE6TEl0">
-                      <radialGradient id="glow-03" cx="50%" cy="50%" r="60%" data-page-node-id="QkHxnxBSzPrFE0rNYPneLr">
-                        <stop offset="0%" stop-color="#08906c" stop-opacity="0.12" data-page-node-id="zbdPiIGAO15G0pUhE7urgc"/>
-                        <stop offset="100%" stop-color="#08906c" stop-opacity="0" data-page-node-id="ZIywLJdYw4Y2sPNjZ5XuZ9"/>
-                      </radialGradient>
-                    </defs>
-                    <rect width="400" height="300" fill="url(#glow-03)" data-page-node-id="YwGH9GTZrY99WKEBepWtZE"/>
-                    <line x1="0" y1="100" x2="400" y2="100" stroke="#08906c" stroke-opacity="0.1" stroke-dasharray="3 5" data-page-node-id="QfDKkdUGCqfUxG5oQoVV3G"/>
-                    <line x1="0" y1="200" x2="400" y2="200" stroke="#08906c" stroke-opacity="0.1" stroke-dasharray="3 5" data-page-node-id="zmjbiZ1MYpOz6o8gKlB0qW"/>
-                    <line x1="133" y1="0" x2="133" y2="300" stroke="#08906c" stroke-opacity="0.08" stroke-dasharray="3 5" data-page-node-id="s8S5UpTHMhpO7DPDy1hTVJ"/>
-                    <line x1="267" y1="0" x2="267" y2="300" stroke="#08906c" stroke-opacity="0.08" stroke-dasharray="3 5" data-page-node-id="aIFysBPv2ON22WbyRT5ZXW"/>
-                    <rect x="165" y="115" width="70" height="70" rx="8" stroke="#08906c" stroke-opacity="0.2" fill="none" data-page-node-id="PyOYkmiNs23IawvVyAzl7q"/>
-                  </svg>
-                  <div class="case-video-card__top" data-page-node-id="hyeWRHkbXTrlvpC6EpyOM8">
-                    <div class="case-video-card__badge" data-page-node-id="PDiI2BtkLkGIp2w25GJ2LN">
-                      <span class="case-video-card__dot" data-page-node-id="JHDL8WrQQUc0Oa8S7sYMHF"></span>
-                      <span data-page-node-id="CBQ4c7352wmQX9er3pmjOM">4:3 HR DEMO</span>
-                    </div>
-                    <span class="case-video-card__duration" data-page-node-id="52Wjunt9Om82bLj9pDnM93">HR</span>
-                  </div>
-                  <div class="case-video-card__center" data-page-node-id="FJqHkjwMPzAqKTV2swnfeN">
-                    <button type="button" class="case-video-card__play-btn" aria-label="Phát video demo AI cho HR" data-page-node-id="jpjxINaj0f8FEua6RFcKV5">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" data-page-node-id="QEaGP0zx2bqMIfzKpTxK3u"><polygon points="6 3 20 12 6 21 6 3" data-page-node-id="RIDYlCDZsAsCS5id2uvQ7H"/></svg>
-                    </button>
-                  </div>
-                  <div class="case-video-card__bottom" data-page-node-id="b8KzBpqPl2ylSMZxYTVTUj">
-                    <span class="case-video-card__caption-tag text--mono" data-page-node-id="q0uxzhAFRFchDAIB6SMmnU">[CASE_03_HR]</span>
-                    <p class="case-video-card__caption-text" data-page-node-id="cvTLTkjbpdYpN95EZcrjFD">Workflow tuyển dụng &amp; screening · tỷ lệ 4:3</p>
-                  </div>
-                </div>
+              <div class="case-image-card">
+                <img src="assets/images/cases/case-hr-recruitment.png" 
+                     alt="HR AI Agent · Recruitment Operations — Tự động xử lý CV và cập nhật CRM" 
+                     class="case-image-card__img" 
+                     width="1024" height="576" 
+                     loading="lazy" 
+                     decoding="async">
               </div>
             </div>
 
-            <!-- CONTENT (Right 53%) -->
+            <!-- CONTENT (Right 53.5%) -->
             <div class="cs-case__body" data-page-node-id="IddjXYRbFhAM8d26GpiD9Z">
               <div class="cs-case__header" data-page-node-id="fVWUhp1cUJAo9Db9EZ2mZz">
-                <span class="case__tag" data-page-node-id="CmO3eICNBj9y40YFJnwR2v">HR &amp; Tuyển dụng</span>
-                <h2 class="cs-case__title" id="cs-04-title" data-page-node-id="6KSatwB2VTMSPhMZZpY10S">AI cho HR &amp; Tuyển dụng</h2>
+                <span class="case__tag" data-page-node-id="CmO3eICNBj9y40YFJnwR2v">HR AI Agent · Recruitment Operations</span>
+                <h2 class="cs-case__title" id="cs-04-title" data-page-node-id="6KSatwB2VTMSPhMZZpY10S">AI cho HR &amp; Tuyển dụng — Tự động xử lý CV và cập nhật CRM</h2>
                 <span class="acs-title-rule" aria-hidden="true" data-page-node-id="w6OzV4AAPo9DLVzp0BLlfh"></span>
               </div>
               <div class="case-timeline" data-page-node-id="0KiXWVkKOilp5gueHk5Pu5">
@@ -984,37 +1082,90 @@
                   <div class="case-timeline__marker" data-page-node-id="kX9piPDiPbcTYRRJCsPaOw"><span class="case-timeline__dot" data-page-node-id="dSaRmDp8NkF5kCrQ4FQ4VV"></span></div>
                   <div class="case-timeline__content" data-page-node-id="pn0LVK2nV5E42CWX88qPtb">
                     <div class="case-timeline__label" data-page-node-id="LT63tyYmzIkwLuxjbx0HLZ">Bài toán</div>
-                    <p class="case-timeline__text" data-page-node-id="ZmH56Sif77yTWuTpslPms9">Mất nhiều thời gian xử lý JD, lọc CV ứng viên và chuẩn bị câu hỏi phỏng vấn theo từng vị trí.</p>
+                    <p class="case-timeline__text" data-page-node-id="ZmH56Sif77yTWuTpslPms9">Bộ phận tuyển dụng phải xử lý CV từ nhiều định dạng như PDF scan, DOCX hoặc CV song ngữ, sau đó nhập thủ công từng hồ sơ vào CRM. Một CV có thể mất khoảng 15 phút để nhập, kiểm tra và đối chiếu dữ liệu.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item" data-page-node-id="9HKt7Fd5YrIGgg1pRn2eqS">
                   <div class="case-timeline__marker" data-page-node-id="ZNa9dVPJQxwgj2gjVOvT8w"><span class="case-timeline__dot" data-page-node-id="eDaQ8l0WPjJQ0HyBHwBEHw"></span></div>
                   <div class="case-timeline__content" data-page-node-id="pzecEERB2p247cRs89hfdf">
-                    <div class="case-timeline__label" data-page-node-id="Yewsc93gIooeFMIAafJCGa">Cách triển khai</div>
-                    <div class="cs-flow-chips" role="list" aria-label="Quy trình HR AI" data-page-node-id="OMSpPzjlc7Devx0sJ6j66m">
-                      <span class="cs-flow-chip" data-page-node-id="BFSHkfkkEviCV2tH6gfuGk">Chuẩn hóa JD</span>
-                      <span class="cs-flow-arrow" aria-hidden="true" data-page-node-id="CH05faDGMStpkg15PVrrtR">→</span>
-                      <span class="cs-flow-chip" data-page-node-id="HJwNSvthZOKZNuOcO8m3ci">Screening CV</span>
-                      <span class="cs-flow-arrow" aria-hidden="true" data-page-node-id="EGQkgMIe98AQCriVqnf2B8">→</span>
-                      <span class="cs-flow-chip cs-flow-chip--accent" data-page-node-id="th19uU86uB6a3PVBHiRthw">Interview Kit</span>
-                    </div>
+                    <div class="case-timeline__label" data-page-node-id="Yewsc93gIooeFMIAafJCGa">Đối tượng</div>
+                    <p class="case-timeline__text" data-page-node-id="OJQ7kWhWhmzAOsaRBNVr5y">Đội ngũ HR và tuyển dụng có khối lượng CV lớn, đang vận hành trên CRM hoặc hệ thống nội bộ chưa có API và còn nhiều bước nhập liệu thủ công.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item" data-page-node-id="CSPyqPIOH4MXjxseHoc5tB">
                   <div class="case-timeline__marker" data-page-node-id="ObjHAtGEFk3FqPB2KsPmmT"><span class="case-timeline__dot" data-page-node-id="yU3Ui3MSNqcE4Wbgcmntqo"></span></div>
                   <div class="case-timeline__content" data-page-node-id="tjAcQpbwTcjyiW8xnrXL6H">
-                    <div class="case-timeline__label" data-page-node-id="IuOBZZweYA2ZEuDpeM0eWB">Đầu ra</div>
-                    <p class="case-timeline__text" data-page-node-id="JzOdCQh945VexkTwsSGyxp">Bộ JD chuẩn hóa + danh sách ứng viên phù hợp + rubric phỏng vấn hoàn chỉnh.</p>
+                    <div class="case-timeline__label" data-page-node-id="IuOBZZweYA2ZEuDpeM0eWB">Cách triển khai</div>
+                    <div class="cs-flow-chips" role="list" aria-label="Quy trình HR AI Agent" data-page-node-id="OMSpPzjlc7Devx0sJ6j66m">
+                      <span class="cs-flow-chip">CV đầu vào</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Trích xuất dữ liệu</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Kiểm tra trùng</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Nhập CRM</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Chuẩn hóa HR</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Kiểm tra lại</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip cs-flow-chip--accent">Human Review</span>
+                    </div>
+                    <p class="case-timeline__text" style="margin-top: 8px;">
+                      AI Agent đọc quy trình nghiệp vụ trước khi thao tác, người dùng tự đăng nhập hệ thống và AI không xử lý mật khẩu. Sau khi nhập dữ liệu, hệ thống tải lại hồ sơ để đối chiếu; các trường hợp thiếu thông tin, nghi trùng hoặc chưa đủ chắc chắn được chuyển cho con người xem xét.
+                    </p>
                   </div>
                 </div>
                 <div class="case-timeline__item" data-page-node-id="CYy35DdpuUILdFHCMC8o8Y">
                   <div class="case-timeline__marker" data-page-node-id="CZiUFIVHHIph1k4BHhze7V"><span class="case-timeline__dot" data-page-node-id="aH7gY29jPHMXqIm3LdFD1A"></span></div>
                   <div class="case-timeline__content" data-page-node-id="jbZPM8TbQkk9thZqA1E2WK">
-                    <div class="case-timeline__label" data-page-node-id="fswpobCdBKq7zvEHFBOIup">Kết quả</div>
-                    <p class="case-timeline__text" data-page-node-id="YHekbOGiiCvkGAK37m9zmj">Rút ngắn thời gian chuẩn bị và nâng cao tính nhất quán trong quy trình tuyển dụng.</p>
+                    <div class="case-timeline__label" data-page-node-id="fswpobCdBKq7zvEHFBOIup">Đầu ra</div>
+                    <p class="case-timeline__text" data-page-node-id="JzOdCQh945VexkTwsSGyxp">Hồ sơ ứng viên được tạo và chuẩn hóa trên CRM, bao gồm thông tin cá nhân, kinh nghiệm, học vấn và file CV đính kèm; đồng thời có nhật ký xử lý để HR theo dõi hồ sơ đã hoàn tất, cần xem lại hoặc được bỏ qua.</p>
+                  </div>
+                </div>
+                <div class="case-timeline__item">
+                  <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
+                  <div class="case-timeline__content">
+                    <div class="case-timeline__label">Kết quả</div>
+                    <p class="case-timeline__text" data-page-node-id="YHekbOGiiCvkGAK37m9zmj">Tự động hóa phần lớn các thao tác nhập liệu và kiểm tra CV lặp lại, đồng thời vẫn giữ Human-in-the-loop ở những trường hợp dữ liệu chưa chắc chắn để đảm bảo tính kiểm soát trong quy trình tuyển dụng.</p>
                   </div>
                 </div>
               </div>
+
+              <!-- IMPACT & METRICS SECTION -->
+              <div class="cs-sales-impact cs-impact-unit">
+                <div class="cs-sales-impact__header">
+                  <span class="cs-sales-impact__tag">Impact đo lường</span>
+                  <span class="cs-sales-impact__lead">Từ xử lý thủ công → tự động hóa theo lô với AI Agent</span>
+                </div>
+
+                <div class="cs-sales-metric-card cs-sales-metric-card--wide">
+                  <div class="cs-impact-comparison">
+                    <div class="cs-impact-side cs-impact-side--from">
+                      <span class="cs-impact-side__kicker">Trước đây</span>
+                      <span class="cs-sales-metric-card__from">15 phút / CV</span>
+                      <span class="cs-impact-side__sub">Nhập và kiểm tra thủ công</span>
+                    </div>
+                    <span class="cs-sales-metric-card__arrow" aria-hidden="true">→</span>
+                    <div class="cs-impact-side cs-impact-side--to">
+                      <span class="cs-impact-side__kicker">Với AI Agent</span>
+                      <span class="cs-sales-metric-card__to">Xử lý theo lô với AI Agent</span>
+                      <span class="cs-impact-side__sub">Thao tác trực tiếp trên CRM</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="cs-impact-badges" aria-label="Đặc điểm giải pháp">
+                  <span class="cs-impact-badge">Không cần API</span>
+                  <span class="cs-impact-badge">Human Review</span>
+                  <span class="cs-impact-badge">Verification Log</span>
+                </div>
+
+                <p class="cs-impact-supporting">
+                  AI thao tác theo quy trình doanh nghiệp — không đoán dữ liệu, không chạm mật khẩu và luôn kiểm tra lại trước khi hoàn tất.
+                </p>
+              </div>
+
               <div class="case__action" data-page-node-id="c3cD9LWzjEGXPTNQLFFApY">
                 <a class="link-arrow" href="index.html#lien-he" data-page-node-id="ULZA8hXpdbsAdOdM47SMBv">
                   Tư vấn giải pháp HR AI
@@ -1296,7 +1447,7 @@
 
         <!--
         ══════════════════════════════════════════════════════════
-        CASE 07 — AI WORKFLOW & AUTOMATION   |   Tone: Dark Near-Black
+        CASE 07 — FINANCE & FP&A   |   Tone: Dark Near-Black
         ══════════════════════════════════════════════════════════
         -->
         <article class="cs-case cs-case--dark-close" id="case-07" aria-labelledby="cs-07-title" data-page-node-id="FO2ViV3y7trOyUKd9u04jJ">
@@ -1309,61 +1460,23 @@
           <div class="cs-case__num-badge" aria-hidden="true" data-page-node-id="aCbzZMmioZzF71FEzkDrDk">07</div>
           <div class="cs-case__grid" data-page-node-id="IzmMuyGzhHYqkMCgYKuCtz">
 
-            <!-- VIDEO / MEDIA (Left 47%) -->
+            <!-- MEDIA (Left 46.5%) -->
             <div class="cs-case__media" data-page-node-id="XpU1iuXfBOEaZCxqIdkKBv">
-              <div class="case-video-card case-video-card--dark" data-video-card data-page-node-id="KWDmWY6nkGWDk5GALhDwiw">
-                <!-- CASE_06_VIDEO: bỏ comment dòng dưới khi có file -->
-                <!-- <source src="assets/videos/CASE_06_ai-automation.mp4" type="video/mp4"> -->
-                <video class="case-video-card__element" controls playsinline preload="metadata"
-                       aria-label="Video demo: AI Workflow & Automation" data-page-node-id="pxyWWUUG1Kt71KfkFqp5AH">
-                </video>
-                <div class="case-video-card__poster" data-page-node-id="7LOR4h3zgdOEc7Yk49avI7">
-                  <svg class="case-video-card__grid-bg" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-page-node-id="CT7y5knRoyzV2Q18N83CSr">
-                    <defs data-page-node-id="G5tFa99Xem1Cm0rrKeGUQQ">
-                      <radialGradient id="glow-06" cx="50%" cy="50%" r="65%" data-page-node-id="cjpvDdFuqJTc0Nu2FgN8TZ">
-                        <stop offset="0%" stop-color="#34d399" stop-opacity="0.2" data-page-node-id="v29nABLJX0GlsYMjHYQCQZ"/>
-                        <stop offset="100%" stop-color="#34d399" stop-opacity="0" data-page-node-id="izgwuADwSOUFlrqjeH3ks6"/>
-                      </radialGradient>
-                    </defs>
-                    <rect width="400" height="300" fill="url(#glow-06)" data-page-node-id="aVUWqxC36gZv4cl5RolWx6"/>
-                    <circle cx="80"  cy="100" r="18" stroke="#34d399" stroke-opacity="0.3"  fill="none" data-page-node-id="8ucWr8rlSECOyxztNeA8dO"/>
-                    <circle cx="200" cy="60"  r="22" stroke="#34d399" stroke-opacity="0.5"  fill="rgba(52,211,153,0.06)" data-page-node-id="nBNcmQM5xHM5nLEHjGlCuP"/>
-                    <circle cx="320" cy="100" r="18" stroke="#34d399" stroke-opacity="0.3"  fill="none" data-page-node-id="wPCxfHAcbMLouyFYULnqa4"/>
-                    <circle cx="130" cy="200" r="18" stroke="#34d399" stroke-opacity="0.25" fill="none" data-page-node-id="YAlBWD5QUtfs1Gf3fynyA0"/>
-                    <circle cx="270" cy="200" r="18" stroke="#34d399" stroke-opacity="0.25" fill="none" data-page-node-id="BCfiNBKPKGg6eGI9J2MMPB"/>
-                    <circle cx="200" cy="240" r="14" stroke="#34d399" stroke-opacity="0.4"  fill="rgba(52,211,153,0.08)" data-page-node-id="Fzx4lPOh24JL1dkBNw0ClJ"/>
-                    <line x1="80"  y1="100" x2="200" y2="60"  stroke="#34d399" stroke-opacity="0.2" stroke-dasharray="3 4" data-page-node-id="nA42modCctA12VGE4CU3tB"/>
-                    <line x1="200" y1="60"  x2="320" y2="100" stroke="#34d399" stroke-opacity="0.2" stroke-dasharray="3 4" data-page-node-id="Dj8oAiQzHRwhFRVm6fXO4L"/>
-                    <line x1="80"  y1="100" x2="130" y2="200" stroke="#34d399" stroke-opacity="0.15" stroke-dasharray="3 4" data-page-node-id="iCoLXqrAjBaMUZcxlA0eGn"/>
-                    <line x1="320" y1="100" x2="270" y2="200" stroke="#34d399" stroke-opacity="0.15" stroke-dasharray="3 4" data-page-node-id="Q4kygUkpDHQfzLL97LMEwq"/>
-                    <line x1="130" y1="200" x2="200" y2="240" stroke="#34d399" stroke-opacity="0.2" stroke-dasharray="2 5" data-page-node-id="RKpqvfnFzKFeJVAsywEooM"/>
-                    <line x1="270" y1="200" x2="200" y2="240" stroke="#34d399" stroke-opacity="0.2" stroke-dasharray="2 5" data-page-node-id="VHqucDLVu3THR62GZDMWMr"/>
-                  </svg>
-                  <div class="case-video-card__top" data-page-node-id="bWJ0xHwOdfwiqM7QeDDQYy">
-                    <div class="case-video-card__badge" data-page-node-id="ANmv7FHJdeGS9A2fKy00wT">
-                      <span class="case-video-card__dot" data-page-node-id="Qr2XfErnt6ScjqfV9bRGma"></span>
-                      <span data-page-node-id="xQIMcJxy87mw8bxyvvpslt">4:3 WORKFLOW DEMO</span>
-                    </div>
-                    <span class="case-video-card__duration" data-page-node-id="DwnhrsVawmuNAYtFRWDK3A">AUTOMATION</span>
-                  </div>
-                  <div class="case-video-card__center" data-page-node-id="GDG2nYiRQimyvlt733KgGr">
-                    <button type="button" class="case-video-card__play-btn" aria-label="Phát video demo AI Workflow Automation" data-page-node-id="HXL3MQDSrH4r15ombRBUwW">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" data-page-node-id="67h0CCiasXVFMYrPaGADyK"><polygon points="6 3 20 12 6 21 6 3" data-page-node-id="mvC33H8fUQ9IttYSnErRlt"/></svg>
-                    </button>
-                  </div>
-                  <div class="case-video-card__bottom" data-page-node-id="68Kq0JOscxV5dUFuLTxwtE">
-                    <span class="case-video-card__caption-tag text--mono" data-page-node-id="NC700oGrJ5pEKzWJBBiArT">[CASE_06_AUTOMATION]</span>
-                    <p class="case-video-card__caption-text" data-page-node-id="Fh9Dm9jUYYml3xQ8AqIF9q">Automation workflow &amp; SOP prototype · tỷ lệ 4:3</p>
-                  </div>
-                </div>
+              <div class="case-image-card">
+                <img src="assets/images/cases/case-finance-fpa.png" 
+                     alt="Finance AI Agent · FP&A &amp; Decision Intelligence — Mô phỏng đa kịch bản và tối ưu quyết định" 
+                     class="case-image-card__img" 
+                     width="1024" height="576" 
+                     loading="lazy" 
+                     decoding="async">
               </div>
             </div>
 
-            <!-- CONTENT (Right 53%) -->
+            <!-- CONTENT (Right 53.5%) -->
             <div class="cs-case__body" data-page-node-id="yiU2Kp9KA1nsBTLE5JwO5M">
               <div class="cs-case__header" data-page-node-id="fPRwNT2lqMEPxaVNDSjC6Y">
-                <span class="case__tag case__tag--dark" data-page-node-id="GQ2VaUxUws8zZ2ng4BTip1">Workflow &amp; Automation</span>
-                <h2 class="cs-case__title" id="cs-07-title" data-page-node-id="QN2s9jvZkqx8Ejun3eAC9j">AI Workflow &amp; Automation</h2>
+                <span class="case__tag case__tag--dark" data-page-node-id="GQ2VaUxUws8zZ2ng4BTip1">Finance AI Agent · FP&amp;A &amp; Decision Intelligence</span>
+                <h2 class="cs-case__title" id="cs-07-title" data-page-node-id="QN2s9jvZkqx8Ejun3eAC9j">AI cho Tài chính &amp; FP&amp;A — Mô phỏng đa kịch bản và tối ưu quyết định</h2>
                 <span class="acs-title-rule" aria-hidden="true" data-page-node-id="h5wCsJ4vGC3gSFrDVq0Z7K"></span>
               </div>
               <div class="case-timeline case-timeline--dark" data-page-node-id="SZLZuAubPNGObQCfeo5FqU">
@@ -1372,55 +1485,92 @@
                   <div class="case-timeline__marker" data-page-node-id="B9v6dmgXE1BUwwjGmuzvtL"><span class="case-timeline__dot" data-page-node-id="aVlUKRNbvH5rxJej7z2GZf"></span></div>
                   <div class="case-timeline__content" data-page-node-id="UUuEW8AebxRRQRXySFECbK">
                     <div class="case-timeline__label" data-page-node-id="HsanczTn3HXmuNVuZcPLyJ">Bài toán</div>
-                    <p class="case-timeline__text" data-page-node-id="2mFo5XjMAhRmB5oirp1A2M">Nhiều bước công việc lặp lại và phụ thuộc chuyển giao thủ công giữa người và bộ phận.</p>
+                    <p class="case-timeline__text" data-page-node-id="2mFo5XjMAhRmB5oirp1A2M">Các mô hình tài chính truyền thống thường phải điều chỉnh từng giả định trong Excel và khó xử lý khi nhiều biến như giá, sản lượng, công suất, marketing, nhà cung cấp, đại lý, OPEX và CAPEX cùng thay đổi.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item" data-page-node-id="e3yMFgF4y9GBejXMZ8yuE6">
                   <div class="case-timeline__marker" data-page-node-id="wKGmjOKqyRV4PSLOaVIlQz"><span class="case-timeline__dot" data-page-node-id="g8Y3J6LJ3dnRSz7lA0bfrK"></span></div>
                   <div class="case-timeline__content" data-page-node-id="K7Fnxw9n3nY9gPZQAj0pnJ">
-                    <div class="case-timeline__label" data-page-node-id="O5RX30EAjzJPYfefCUUFzk">Cách triển khai</div>
-                    <p class="case-timeline__text" data-page-node-id="GLAEFgvnLVnOBaek8g2D4S">Map quy trình → xác định điểm AI hỗ trợ → human review → đo KPI từng bước.</p>
+                    <div class="case-timeline__label" data-page-node-id="O5RX30EAjzJPYfefCUUFzk">Đối tượng</div>
+                    <p class="case-timeline__text" data-page-node-id="GLAEFgvnLVnOBaek8g2D4S">CFO, FP&amp;A và đội ngũ tài chính cần đánh giá nhiều phương án kinh doanh, kiểm tra tác động chéo giữa các biến và ra quyết định trên cơ sở nhiều kịch bản hơn.</p>
                   </div>
                 </div>
                 <div class="case-timeline__item" data-page-node-id="XmnXv4dnvaAXRbcuf3S0jN">
                   <div class="case-timeline__marker" data-page-node-id="L4rGCqjg8RKRgkblwO9SuB"><span class="case-timeline__dot" data-page-node-id="QoYQbZttryNJBG0vF9IyGm"></span></div>
                   <div class="case-timeline__content" data-page-node-id="gOGJ69joPqXV5dLVOGq6V7">
-                    <div class="case-timeline__label" data-page-node-id="2y6NQiETrzo5HEA70lfZNS">Đầu ra</div>
-                    <p class="case-timeline__text" data-page-node-id="VwY3FyNqh3b33jw2FhVmPI">Workflow chuẩn hóa + SOP vận hành + automation prototype kiểm chứng được.</p>
+                    <div class="case-timeline__label" data-page-node-id="2y6NQiETrzo5HEA70lfZNS">Cách triển khai</div>
+                    <div class="cs-flow-chips" role="list" aria-label="Quy trình Finance AI Agent">
+                      <span class="cs-flow-chip">Dữ liệu &amp; giả định</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Mô hình đa biến</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Hàng nghìn kịch bản</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Quan hệ chéo</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip">Vùng tối ưu</span>
+                      <span class="cs-flow-arrow" aria-hidden="true">→</span>
+                      <span class="cs-flow-chip cs-flow-chip--accent">Human Review</span>
+                    </div>
+                    <p class="case-timeline__text" style="margin-top: 8px;">
+                      AI hỗ trợ giải đồng thời nhiều biến liên kết và phi tuyến, thay vì điều chỉnh từng giả định riêng lẻ. Hệ thống liên tục thay đổi các điều kiện đầu vào để quan sát tác động lên doanh thu, chi phí, công suất và các chỉ số tài chính liên quan.
+                    </p>
                   </div>
                 </div>
                 <div class="case-timeline__item" data-page-node-id="vZPRCNypdzhR3nxmAFhqnO">
                   <div class="case-timeline__marker" data-page-node-id="rX7ALxjiX6hyywHXw1UtUc"><span class="case-timeline__dot" data-page-node-id="SgcolJXyCzCJgn9WFWXWUl"></span></div>
                   <div class="case-timeline__content" data-page-node-id="ATW5QuOu2zwrCIWBVNu4xb">
-                    <div class="case-timeline__label" data-page-node-id="ynw4qw7wMDEivXpGuSzno8">Kết quả</div>
-                    <p class="case-timeline__text" data-page-node-id="o8U1xmBqN26SrzZ68a0dco">Giảm thao tác thủ công và tăng khả năng mở rộng quy trình mà không cần tăng nhân lực tương ứng.</p>
+                    <div class="case-timeline__label" data-page-node-id="ynw4qw7wMDEivXpGuSzno8">Đầu ra</div>
+                    <p class="case-timeline__text" data-page-node-id="o8U1xmBqN26SrzZ68a0dco">Tập hợp các kịch bản tài chính được mô phỏng và so sánh, kèm các vùng tối ưu, quan hệ chéo giữa các biến và những điểm gãy cần được CFO/FP&amp;A xem xét trước khi ra quyết định.</p>
+                  </div>
+                </div>
+                <div class="case-timeline__item">
+                  <div class="case-timeline__marker"><span class="case-timeline__dot"></span></div>
+                  <div class="case-timeline__content">
+                    <div class="case-timeline__label">Kết quả</div>
+                    <p class="case-timeline__text">Quy trình phân tích vốn có thể mất nhiều ngày hoặc nhiều tuần của đội ngũ FP&amp;A giàu kinh nghiệm được rút ngắn thành một quy trình tương tác gần thời gian thực, giúp mở rộng đáng kể số lượng kịch bản có thể kiểm tra trước khi quyết định.</p>
                   </div>
                 </div>
               </div>
-              <div class="cs-auto-flow" data-page-node-id="REYusl8FlrlgJqK9c0BDsT">
-                <div class="cs-auto-flow__node" data-page-node-id="8542mQg38U5PVuUAIcw3hg">
-                  <span class="cs-auto-flow__icon" aria-hidden="true" data-page-node-id="MfKDQoxRFSvBjGYY7XvKcZ">⬡</span>
-                  <span data-page-node-id="Kclz9ljfWfTN6Rrv3dosBo">Map QT</span>
+
+              <!-- IMPACT & METRICS SECTION -->
+              <div class="cs-sales-impact cs-impact-unit">
+                <div class="cs-sales-impact__header">
+                  <span class="cs-sales-impact__tag">Impact đo lường</span>
+                  <span class="cs-sales-impact__lead">Từ phân tích giả định thủ công → mô phỏng đa kịch bản gần thời gian thực</span>
                 </div>
-                <div class="cs-auto-flow__connector" aria-hidden="true" data-page-node-id="7sJKNZni4IO8kAYllEbX9M"></div>
-                <div class="cs-auto-flow__node cs-auto-flow__node--ai" data-page-node-id="azvi23fdeTE48gFehqouB4">
-                  <span class="cs-auto-flow__icon" aria-hidden="true" data-page-node-id="262PZB3DNOB9riPZ7Q5gCz">⬡</span>
-                  <span data-page-node-id="QBMFBw1qNagLdNdDPirI5v">AI Layer</span>
+
+                <div class="cs-sales-metric-card cs-sales-metric-card--wide">
+                  <div class="cs-impact-comparison">
+                    <div class="cs-impact-side cs-impact-side--from">
+                      <span class="cs-impact-side__kicker">Trước đây</span>
+                      <span class="cs-sales-metric-card__from">Vài ngày – vài tuần</span>
+                      <span class="cs-impact-side__sub">Phân tích và điều chỉnh giả định thủ công</span>
+                    </div>
+                    <span class="cs-sales-metric-card__arrow" aria-hidden="true">→</span>
+                    <div class="cs-impact-side cs-impact-side--to">
+                      <span class="cs-impact-side__kicker">Với AI Agent</span>
+                      <span class="cs-sales-metric-card__to">Hàng nghìn kịch bản</span>
+                      <span class="cs-impact-side__sub">Được mô phỏng &amp; so sánh trong một quy trình tương tác</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="cs-auto-flow__connector" aria-hidden="true" data-page-node-id="0uw6SuGZKBc0zIdDPGrSmG"></div>
-                <div class="cs-auto-flow__node" data-page-node-id="Ry1FDLJq3IeZIo1BjsbsTR">
-                  <span class="cs-auto-flow__icon" aria-hidden="true" data-page-node-id="7s760FVnDLF5EvHUlHQbBC">⬡</span>
-                  <span data-page-node-id="YDuvKJfQtm3Mno03EScdA3">Human Review</span>
+
+                <div class="cs-impact-badges" aria-label="Đặc điểm giải pháp">
+                  <span class="cs-impact-badge">Multi-variable</span>
+                  <span class="cs-impact-badge">Scenario Simulation</span>
+                  <span class="cs-impact-badge">Non-linear Analysis</span>
+                  <span class="cs-impact-badge">Human Decision</span>
                 </div>
-                <div class="cs-auto-flow__connector" aria-hidden="true" data-page-node-id="uNo6xaip5KQESSpB6aUlnk"></div>
-                <div class="cs-auto-flow__node cs-auto-flow__node--kpi" data-page-node-id="lxDulhTyILPKsDIKZg7gxh">
-                  <span class="cs-auto-flow__icon" aria-hidden="true" data-page-node-id="VUY2oQeh7uEFAhJJGdTwPe">⬡</span>
-                  <span data-page-node-id="Ze51jD3dHsY0ZM84rbrBCt">KPI</span>
-                </div>
+
+                <p class="cs-impact-supporting">
+                  Giá trị không chỉ nằm ở việc tính nhanh hơn, mà ở khả năng phát hiện quan hệ chéo và điểm gãy mà mô hình tuyến tính hoặc dashboard thông thường khó nhìn thấy.
+                </p>
               </div>
+
               <div class="case__action" data-page-node-id="VDlWFtE08CoSK7ByOS8oOD">
                 <a class="link-arrow link-arrow--dark" href="index.html#lien-he" data-page-node-id="hAtuaaK9AgrKGzAmv6NXDb">
-                  Tư vấn AI Workflow Automation
+                  Tư vấn giải pháp Finance AI
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" data-page-node-id="9Dx9TZaUNW2u91kpaKLhz3"><path d="M5 12h14M13 6l6 6-6 6" data-page-node-id="aGtCQnl64jeDzj3OZJzLBu"/></svg>
                 </a>
               </div>
