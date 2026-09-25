@@ -173,7 +173,7 @@
                 el.setAttribute('data-counted', 'hero');
 
                 // Finish pulse & scanline
-                el.classList.add('is--done');
+                el.classList.add('is--done', 'proof-pulse');
                 var parentItem = el.closest('.engine__proof-item');
                 if (parentItem) parentItem.classList.add('is--done');
               }
@@ -194,7 +194,7 @@
     if (!pipeline || !trust) return;
 
     var pills = qsa('li:not(.hero__trust-sep)', trust);
-    var seps  = qsa('.hero__trust-sep', trust);
+    var seps  = qsa('.hero__trust-sep', pipeline);
     if (!pills.length) return;
 
     var currentIndex = 0;
@@ -209,12 +209,11 @@
         p.classList.toggle('is--active', i === idx);
       });
 
-      // Pulse connecting arrow between previous and current
-      var prevSepIdx = idx > 0 ? idx - 1 : seps.length - 1;
+      // Pulse connecting arrow corresponding to current active pill
       seps.forEach(function (s, i) {
-        if (i === prevSepIdx && idx > 0) {
+        if (i === idx) {
           s.classList.add('is--pulse');
-          setTimeout(function () { s.classList.remove('is--pulse'); }, 400);
+          setTimeout(function () { s.classList.remove('is--pulse'); }, 450);
         } else {
           s.classList.remove('is--pulse');
         }
@@ -591,7 +590,7 @@
 
     function startTimer() {
       if (timer) clearInterval(timer);
-      timer = setInterval(nextCard, 2600);
+      timer = setInterval(nextCard, 800); // 700–850ms / card
     }
 
     diagGrid.addEventListener('mouseenter', function () { isPaused = true; });
@@ -600,6 +599,13 @@
     diagGrid.addEventListener('focusout', function () { isPaused = false; });
 
     cards.forEach(function (card, idx) {
+      card.addEventListener('mouseenter', function () {
+        isPaused = true;
+        activateCard(idx);
+      });
+      card.addEventListener('mouseleave', function () {
+        isPaused = false;
+      });
       card.addEventListener('click', function () {
         activateCard(idx);
         startTimer();
@@ -686,6 +692,92 @@
     });
 
     // NOTE for Task 4: Removed parallax scrub on .case-video-embed because it breaks CSS sticky scroll on desktop
+  }
+
+  /* --------------------------------------------------------------------------
+     12b. CASE METRICS MOTION (Task 5: Case 1 Count-up & Case 2 Time Sequence)
+  -------------------------------------------------------------------------- */
+  function initCaseMetricsMotion() {
+    if (reduce) return;
+
+    // Case 1: AI Enablement (Count-up 0 -> 3.000+, 0 -> 14+, 0 -> 10+)
+    var case1 = qs('.case.case--light');
+    if (case1) {
+      var case1Counts = qsa('[data-case-count]', case1);
+      if (case1Counts.length) {
+        // Initialize numbers to 0+
+        case1Counts.forEach(function (el) {
+          var suffix = el.getAttribute('data-suffix') || '';
+          el.textContent = '0' + suffix;
+        });
+
+        ScrollTrigger.create({
+          trigger: case1,
+          start: 'top 65%', // trigger when ~35-45% into viewport
+          once: true,
+          onEnter: function () {
+            case1Counts.forEach(function (el, i) {
+              setTimeout(function () {
+                var target = parseFloat(el.getAttribute('data-case-count'));
+                var suffix = el.getAttribute('data-suffix') || '';
+                if (isNaN(target)) return;
+
+                var start = performance.now();
+                var dur = 1300; // 1.1–1.5s duration
+
+                function tick(now) {
+                  var progress = Math.min((now - start) / dur, 1);
+                  var eased = 1 - Math.pow(1 - progress, 3);
+                  var val = Math.round(target * eased);
+                  var formatted = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                  el.textContent = formatted + suffix;
+
+                  if (progress < 1) {
+                    requestAnimationFrame(tick);
+                  } else {
+                    var finalFormatted = target.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                    el.textContent = finalFormatted + suffix;
+                    el.classList.add('proof-pulse');
+                    setTimeout(function () { el.classList.remove('proof-pulse'); }, 850);
+                  }
+                }
+                requestAnimationFrame(tick);
+              }, i * 140);
+            });
+          }
+        });
+      }
+    }
+
+    // Case 2: AI Sales Agent (15-30 phút -> <60 giây sequence)
+    var case2 = qs('.case.case--dark');
+    if (case2) {
+      var rangeContainer = qs('.case-metric-range', case2);
+      if (rangeContainer) {
+        var oldVal = qs('.metric-old', rangeContainer);
+        var arrow  = qs('.metric-arrow', rangeContainer);
+        var target = qs('.metric-target', rangeContainer);
+
+        gsap.set([oldVal, arrow, target].filter(Boolean), { autoAlpha: 0, y: 10 });
+
+        ScrollTrigger.create({
+          trigger: case2,
+          start: 'top 65%', // trigger when ~35-45% into viewport
+          once: true,
+          onEnter: function () {
+            var tl = gsap.timeline({ delay: 0.1 });
+            if (oldVal) tl.to(oldVal, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0);
+            if (arrow)  tl.to(arrow,  { autoAlpha: 1, y: 0, scale: 1.15, duration: 0.35, ease: 'back.out(1.4)' }, 0.25);
+            if (target) {
+              tl.to(target, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.5)' }, 0.45);
+              tl.call(function () {
+                target.classList.add('is--pulsed');
+              }, null, 0.65);
+            }
+          }
+        });
+      }
+    }
   }
 
   /* --------------------------------------------------------------------------
@@ -794,6 +886,7 @@
     initSectionTransitions();
     initPositioningPanel();
     initCaseReveal();
+    initCaseMetricsMotion();
     initBentoDock();
     initHeadingTypes();
 
