@@ -1,0 +1,144 @@
+/* Claude 90 phút: quảng bá tạm thời, trong luồng nội dung. */
+html.claude-promo-ended .claude-promo,
+html.claude-promo-ended .ev-spot { display: none !important; }
+
+.claude-promo-bar {
+  background: #103b35;
+  color: #f5fffb;
+  font-family: Archivo, Arial, sans-serif;
+  position: relative;
+  z-index: 1001;
+}
+.claude-promo-bar__inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  min-height: 48px;
+  padding: 8px clamp(16px, 4vw, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+}
+.claude-promo-bar__label { font-weight: 700; }
+.claude-promo-bar__link {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+.claude-promo-bar__link:hover, .claude-promo-bar__link:focus-visible { color: #a9f0d9; }
+
+.claude-promo-card {
+  background: #e7f5ee;
+  padding: clamp(24px, 4vw, 56px) clamp(20px, 4vw, 40px);
+  font-family: Archivo, Arial, sans-serif;
+}
+.claude-promo-card__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(210px, .65fr);
+  align-items: stretch;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #08251f;
+  color: #fff;
+  box-shadow: 0 20px 50px rgba(6, 35, 28, .14);
+}
+.claude-promo-card__content {
+  padding: clamp(28px, 5vw, 64px);
+}
+.claude-promo-card__eyebrow {
+  margin: 0 0 14px;
+  color: #a7ebc9;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.claude-promo-card__title {
+  margin: 0 0 16px;
+  color: #fff;
+  font-size: clamp(28px, 3.3vw, 48px);
+  line-height: 1.12;
+  letter-spacing: -.03em;
+}
+.claude-promo-card__desc {
+  max-width: 650px;
+  margin: 0 0 24px;
+  color: #e1f1ea;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.55;
+}
+.claude-promo-card__facts {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 28px;
+}
+.claude-promo-card__facts span {
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+  font-size: 14px;
+}
+.claude-promo-card__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.claude-promo-card__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 11px 20px;
+  border-radius: 8px;
+  background: #d9f28a;
+  color: #153528;
+  font-weight: 700;
+  text-decoration: none;
+}
+.claude-promo-card__button:hover, .claude-promo-card__button:focus-visible { background: #ecffb5; }
+.claude-promo-card__secondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 4px;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.claude-promo-card__secondary:hover, .claude-promo-card__secondary:focus-visible { color: #a7ebc9; }
+.claude-promo-card__photo { min-height: 300px; overflow: hidden; }
+.claude-promo-card__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+@media (max-width: 700px) {
+  .claude-promo-bar__inner { gap: 4px 10px; font-size: 12px; }
+  .claude-promo-card__inner { grid-template-columns: 1fr; }
+  .claude-promo-card__content { padding: 28px 22px; }
+  .claude-promo-card__photo { min-height: 210px; max-height: 250px; order: -1; }
+  .claude-promo-card__photo img { object-position: center 28%; }
+  .claude-promo-card__actions { flex-direction: column; align-items: stretch; }
+  .claude-promo-card__button, .claude-promo-card__secondary { justify-content: center; }
+}
+@media print {
+  .claude-promo { display: none !important; }
+}
+
+
+/* Trạng thái trang đích sau khi buổi trực tuyến kết thúc. */
+#registration-closed { display: none; }
+html.claude-promo-ended #tham-gia .lede,
+html.claude-promo-ended #tham-gia .reg { display: none !important; }
+html.claude-promo-ended #registration-closed {
+  display: block;
+  max-width: 720px;
+  padding: 24px;
+  border-radius: 12px;
+  background: #e7f5ee;
+  color: #16392e;
+  line-height: 1.6;
+}
+#registration-closed p { margin: 0 0 12px; }
+#registration-closed a { color: #06694f; font-weight: 700; text-decoration: underline; }
