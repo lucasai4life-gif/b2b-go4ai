@@ -1356,6 +1356,56 @@ body.lucas-page .lucas-timeline-item__name {
 
 body.lucas-page .lucas-timeline-item__desc { font-size: 0.8125rem; color: var(--gray-600); line-height: 1.5; margin: 0; }
 
+/* Certificate timeline — auto-active dot.
+   Driven by lucas-system.js: the five entries light up one after another from
+   the top, then loop. Every animated rule is scoped under `.lx-motion`, which
+   the motion layer only adds after it has verified the DOM — if that script
+   never runs, is blocked or throws, the dots keep their authored look and
+   nothing moves. Text, spacing, structure and section width are untouched:
+   only the dot's paint and a decorative pseudo-element change. */
+body.lucas-page.lx-motion .lucas-timeline-item::before {
+  transition: transform 0.26s var(--lx-ease-soft),
+              background-color 0.26s var(--lx-ease-soft),
+              border-color 0.26s var(--lx-ease-soft),
+              box-shadow 0.26s var(--lx-ease-soft);
+}
+
+/* Soft emerald segment laid over the rail beside the active entry, so the
+   progression reads top-to-bottom. Decorative only, no layout impact. */
+body.lucas-page .lucas-timeline-item::after {
+  content: '';
+  position: absolute;
+  left: -19px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom,
+    rgba(16, 185, 129, 0) 0%,
+    rgba(16, 185, 129, 0.5) 20%,
+    rgba(16, 185, 129, 0.8) 50%,
+    rgba(16, 185, 129, 0.5) 80%,
+    rgba(16, 185, 129, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.26s var(--lx-ease-soft);
+  pointer-events: none;
+}
+
+body.lucas-page.lx-motion .lucas-timeline-item.is--lx-live::before {
+  background: var(--lx-emerald-br);
+  border-color: var(--lx-emerald-br);
+  transform: scale(1.18);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.16), 0 0 14px rgba(16, 185, 129, 0.5);
+  animation: lx-timeline-pulse 1.7s var(--lx-ease-soft) infinite;
+}
+
+body.lucas-page.lx-motion .lucas-timeline-item.is--lx-live::after { opacity: 1; }
+
+@keyframes lx-timeline-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.16), 0 0 14px rgba(16, 185, 129, 0.5); }
+  50%      { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0.06), 0 0 19px rgba(16, 185, 129, 0.26); }
+}
+
 /* press — hover only, content untouched */
 body.lucas-page .lucas-press-featured {
   border-radius: 12px;
@@ -1522,17 +1572,28 @@ body.lucas-page .lucas-cta-band {
   margin-top: 30px;
 }
 
+/* Base background + ONE soft emerald glow. Nothing else.
+   The shared stylesheet also declares `.lucas-cta-band::before` as a fixed
+   260x260 box pinned to the top-right corner. `inset: 0` does NOT beat that:
+   width/height are separate declarations and kept the layer 260px wide, so the
+   glow and the grid it carried stopped dead and painted a hard vertical seam
+   down the middle of the card. They are reset explicitly below.
+   The fade ends on the glow's own hue at alpha 0 rather than `transparent`
+   (= rgba(0,0,0,0)), so the falloff never interpolates through a grey band.
+   No mask, no second layer, no fixed overlay width — nothing left that can
+   produce a visible start/end edge. */
 body.lucas-page .lucas-cta-band::before {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(58% 130% at 88% 8%, rgba(16, 185, 129, 0.2) 0%, transparent 66%),
-    linear-gradient(to right, rgba(52, 211, 153, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(52, 211, 153, 0.06) 1px, transparent 1px);
-  background-size: auto, 40px 40px, 40px 40px;
-  -webkit-mask-image: radial-gradient(120% 130% at 80% 0%, #000 0%, transparent 78%);
-  mask-image: radial-gradient(120% 130% at 80% 0%, #000 0%, transparent 78%);
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(125% 155% at 74% 2%,
+    rgba(16, 185, 129, 0.17) 0%,
+    rgba(16, 185, 129, 0.11) 30%,
+    rgba(16, 185, 129, 0.05) 56%,
+    rgba(16, 185, 129, 0.015) 76%,
+    rgba(16, 185, 129, 0) 94%);
   pointer-events: none;
 }
 
@@ -1805,10 +1866,18 @@ body.lucas-page .lucas-cta-band__action .button--red:focus-visible {
   body.lucas-page .lx-dot,
   body.lucas-page .lx-scan,
   body.lucas-page .lx-pulse-line::after,
+  body.lucas-page .lucas-timeline-item.is--lx-live::before,
   body.lucas-page .journey-stepper__progress-line::after {
     animation: none !important;
   }
   body.lucas-page .lx-scan { display: none; }
+  /* certificate timeline settles on its plain authored look */
+  body.lucas-page .lucas-timeline-item::before,
+  body.lucas-page .lucas-timeline-item::after { transition: none !important; }
+  body.lucas-page .lucas-timeline-item.is--lx-live::before {
+    transform: none !important;
+    box-shadow: none !important;
+  }
 }
 
 /* Safety net: if the motion layer was torn down, nothing may stay hidden. */

@@ -74,6 +74,9 @@
       if (c.rotateTimer) { clearInterval(c.rotateTimer); c.rotateTimer = null; }
       if (c.card) c.card.classList.remove('is--lx-active');
       if (c.root) c.root.classList.remove('is--lx-active');
+      if (c.timelineItems) {
+        c.timelineItems.forEach(function (n) { n.classList.remove('is--lx-live'); });
+      }
       if (c.rotateNodes) {
         c.rotateNodes.forEach(function (n) { n.classList.remove(c.rotateClass, 'is--lx-node'); });
       }
@@ -418,6 +421,96 @@
     });
   }
 
+  /* --------------------------------------------------- certificate timeline */
+  /*
+     The five credential dots light up one after another, top to bottom, then
+     loop: 2026 -> 2025 -> 2025 -> MBA/eMBA -> Cử nhân -> 2026 ...
+     Only one entry is live at a time. The last entry holds a beat longer
+     before the cycle restarts.
+
+     Presentation only — no text, spacing, structure or width is touched, and
+     the whole thing lives behind `.lx-motion`, so a blocked/failed script
+     leaves the authored static timeline exactly as it is.
+  */
+  function initTimeline() {
+    var root = document.querySelector('.lucas-editorial-timeline');
+    if (!root) return;
+
+    var items = qsa('.lucas-timeline-item', root);
+    if (items.length < 2) return;
+
+    var STEP = 820;        /* per entry — inside the requested 700-1000ms band */
+    var LAST_HOLD = 1500;  /* a longer beat on the last entry, then loop */
+    var TICK = 120;        /* coarse poll; the time gate below does the pacing */
+
+    var timer = null;
+    var index = -1;
+    var lastStepAt = 0;
+    var visible = false;
+    var hovered = false;
+    var focused = false;
+
+    function apply(i) {
+      items.forEach(function (item, idx) {
+        item.classList.toggle('is--lx-live', idx === i);
+      });
+      index = i;
+    }
+
+    function step() {
+      if (tornDown || !visible || hovered || focused || document.hidden) return;
+      var wait = index === items.length - 1 ? LAST_HOLD : STEP;
+      if (Date.now() - lastStepAt < wait) return;
+      lastStepAt = Date.now();
+      apply((index + 1) % items.length);
+    }
+
+    function start() {
+      if (timer || tornDown) return;
+      if (index < 0) { apply(0); lastStepAt = Date.now(); }
+      timer = setInterval(step, TICK);
+    }
+
+    function stop() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    /* visibility gating — no work while off-screen, resume on return */
+    if ('IntersectionObserver' in window) {
+      var vio = new IntersectionObserver(function (entries) {
+        ioFired = true;
+        entries.forEach(function (e) {
+          visible = e.isIntersecting;
+          if (visible) start(); else stop();
+        });
+      }, { threshold: 0.2 });
+      vio.observe(root);
+    } else {
+      visible = true;
+      start();
+    }
+
+    root.addEventListener('mouseenter', function () { hovered = true; });
+    root.addEventListener('mouseleave', function () {
+      hovered = false;
+      if (visible) start();
+    });
+    root.addEventListener('focusin', function () { focused = true; });
+    root.addEventListener('focusout', function () {
+      if (!root.contains(document.activeElement)) {
+        focused = false;
+        if (visible) start();
+      }
+    });
+
+    cycles.push({
+      root: root,
+      card: null,
+      timelineItems: items,
+      stop: stop
+    });
+  }
+
   /* ---------------------------------------------------------- stall / error */
   function armGuards() {
     window.addEventListener('error', function () {
@@ -455,6 +548,7 @@
       var r2 = initCounters();
       initCardCycles();
       initStepper();
+      initTimeline();
 
       ok = r1 || r2 || cycles.length > 0;
 

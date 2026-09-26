@@ -1423,6 +1423,13 @@ html.motion-scroll .ev-scroll.is--on {
   .insights-carousel-viewport { scroll-snap-type: x mandatory; }
   .insight-carousel-card { scroll-snap-align: start; }
 
+  /* While the slow drift runs, snap is suspended — `mandatory` re-snaps on every
+     programmatic scrollLeft write and would fight the drift (visible jitter).
+     initRail() drops `.is--auto` the instant the drift pauses, so swipe, drag
+     and keyboard navigation keep their snapping. */
+  .ev-rail.is--auto,
+  .insights-carousel-viewport.is--auto { scroll-snap-type: none; }
+
   .featured-insight-card { grid-template-columns: minmax(0, 1fr); padding: 22px; }
   .ev-cta { flex-direction: column; align-items: flex-start; }
 }
@@ -1699,7 +1706,6 @@ html.motion-scroll .ev-scroll.is--on {
             <button type="button" class="ev-filter__btn is--active" data-ev-filter="all" aria-pressed="true" data-page-node-id="7imcXrDOQuQEAU5NiZfZ5r">Tất cả</button>
             <button type="button" class="ev-filter__btn" data-ev-filter="upcoming" aria-pressed="false" data-page-node-id="05LU8VoTfrT6AdQlJuoiyP">Sắp diễn ra</button>
             <button type="button" class="ev-filter__btn" data-ev-filter="past" aria-pressed="false" data-page-node-id="h0tqqRHchhp4iA2943ifAC">Đã diễn ra</button>
-            <button type="button" class="ev-filter__btn" data-ev-filter="news" aria-pressed="false" data-page-node-id="3iTfQzSozQ2YrBaBffiMXO">Tin tức</button>
           </div>
         </div>
 
@@ -2869,6 +2875,16 @@ html.motion-scroll .ev-scroll.is--on {
        and write the accumulated position back. Rails that do not opt in keep
        exactly their previous behaviour. */
     var subpixel = opts.subpixel === true;
+    /* Auto-scroll was desktop-only (>=992px). `autoMobile: true` opts a rail
+       into the same slow drift on phones/tablets, where it also keeps its
+       swipe + drag behaviour. Rails that do not opt in behave exactly as before. */
+    var autoMobile = opts.autoMobile === true;
+    /* While the drift is running we suspend scroll-snap: `scroll-snap-type:
+       x mandatory` re-snaps on every programmatic write, which fights the
+       per-frame scrollLeft updates and produces visible jitter. Snap comes
+       back the moment the drift stops (interaction / off-screen / hidden tab). */
+    var autoClass = 'is--auto';
+    var autoOn = false;
     var pos = null;
     var wide = null;
     try { wide = window.matchMedia('(min-width: 992px)'); } catch (err) { wide = null; }
@@ -2885,8 +2901,14 @@ html.motion-scroll .ev-scroll.is--on {
 
     function canAuto() {
       if (reduceMotion || speed <= 0) return false;
-      if (wide && !wide.matches) return false;      /* mobile uses swipe + snap */
+      if (!autoMobile && wide && !wide.matches) return false;  /* desktop-only rail */
       return !paused && !dragging && inView && tabOn;
+    }
+
+    function setAuto(on) {
+      if (on === autoOn) return;
+      autoOn = on;
+      el.classList.toggle(autoClass, on);
     }
 
     function stepSize() {
@@ -2899,9 +2921,13 @@ html.motion-scroll .ev-scroll.is--on {
 
     function tick() {
       raf = window.requestAnimationFrame(tick);
-      if (!canAuto()) { pos = null; return; }   /* resync from real scrollLeft on resume */
       var max = el.scrollWidth - el.clientWidth;
-      if (max <= 4) return;
+      if (!canAuto() || max <= 4) {
+        setAuto(false);
+        pos = null;   /* resync from real scrollLeft on resume */
+        return;
+      }
+      setAuto(true);
 
       if (subpixel) {
         if (pos === null) {
@@ -2936,12 +2962,21 @@ html.motion-scroll .ev-scroll.is--on {
     el.addEventListener('pointermove', function (e) {
       if (!dragging) return;
       var dx = e.clientX - startX;
-      if (Math.abs(dx) > 6) {
+      if (Math.abs(dx) <= 6) return;
+      if (!moved) {
+        /* First real move: re-anchor. Suspending the drift re-enables
+           scroll-snap, which can nudge the rail right after pointerdown;
+           anchoring after that keeps the drag from jumping. */
+        startX = e.clientX;
+        startScroll = el.scrollLeft;
         moved = true;
         try { el.setPointerCapture(e.pointerId); } catch (err) {}
         e.preventDefault();
-        el.scrollLeft = startScroll - dx;
+        return;
       }
+      try { el.setPointerCapture(e.pointerId); } catch (err) {}
+      e.preventDefault();
+      el.scrollLeft = startScroll - dx;
     });
 
     function endDrag(e) {
@@ -3023,6 +3058,9 @@ html.motion-scroll .ev-scroll.is--on {
   var filterBtns = Array.prototype.slice.call(document.querySelectorAll('.ev-filter__btn'));
   var railCards = railTrack ? Array.prototype.slice.call(railTrack.querySelectorAll('.ev-card')) : [];
 
+  /* Only filters that still have a button: all / upcoming / past.
+     The former `news` group was removed from the DOM — its empty-state copy
+     is gone with it so no dead branch is left behind. */
   var EMPTY_COPY = {
     upcoming: {
       t: 'Chưa có sự kiện sắp diễn ra',
@@ -3031,16 +3069,13 @@ html.motion-scroll .ev-scroll.is--on {
     past: {
       t: 'Chưa có hoạt động nào',
       d: 'Các hoạt động đã triển khai sẽ được cập nhật tại đây.'
-    },
-    news: {
-      t: 'Chưa có tin tức mới',
-      d: 'Tin tức và case study mới sẽ được cập nhật tại đây.'
     }
   };
 
   var railApi = initRail(railEl, {
     track: railTrack,
     speed: 0.5,
+    autoMobile: true,
     cardSelector: '.ev-card',
     onActivate: activateCard
   });
@@ -3096,13 +3131,14 @@ html.motion-scroll .ev-scroll.is--on {
 
   /* ==========================================================================
      6. SECTION 03 — KNOWLEDGE HUB RAIL
-     Slow desktop auto-scroll, reusing the shared initRail() engine.
+     Slow auto-scroll, reusing the shared initRail() engine.
      speed = 0.32 px/frame (~19 px/s at 60fps) — slow enough to read the card
      that is passing, fast enough that the rail is visibly alive.
      `subpixel: true` is required for any speed below 0.5 (see tick()).
      initRail() already pauses on hover, keyboard focus, off-screen, dragging
-     and hidden tab, only runs at >=992px, and stays off under
-     prefers-reduced-motion. On mobile/tablet the rail keeps swipe + scroll-snap.
+     and hidden tab, and stays off under prefers-reduced-motion.
+     `autoMobile: true` brings the same drift to phones/tablets (the rail used
+     to be frozen below 992px); swipe + scroll-snap still work there.
      ========================================================================== */
   var insViewport = document.getElementById('insights-carousel-viewport');
   var insTrack = document.getElementById('insights-carousel-track');
@@ -3111,6 +3147,7 @@ html.motion-scroll .ev-scroll.is--on {
     track: insTrack,
     speed: 0.32,
     subpixel: true,
+    autoMobile: true,
     cardSelector: '.insight-carousel-card'
   });
 
