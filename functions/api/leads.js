@@ -8,12 +8,7 @@ export async function onRequestPost(context) {
   const { request, env } = context;
 
   // CORS headers
-  const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'https://b2b.go4ai.org',
-    'Access-Control-Allow-Methods': 'POST',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  };
+  const headers = getCorsHeaders(request);
 
   // Only allow POST
   if (request.method !== 'POST') {
@@ -166,19 +161,33 @@ export async function onRequestPost(context) {
 }
 
 // Handle OPTIONS preflight
-export async function onRequestOptions() {
+export async function onRequestOptions(context) {
+  const headers = getCorsHeaders(context.request);
+  headers['Access-Control-Max-Age'] = '86400';
   return new Response(null, {
     status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': 'https://b2b.go4ai.org',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Max-Age': '86400',
-    },
+    headers,
   });
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────
+function getCorsHeaders(request) {
+  const origin = (request && request.headers ? request.headers.get('Origin') : '') || '';
+  const isAllowedOrigin =
+    origin === 'https://b2b.go4ai.org' ||
+    origin.endsWith('.b2b-go4ai.pages.dev') ||
+    origin === 'https://b2b-go4ai.pages.dev' ||
+    origin.startsWith('http://localhost:') ||
+    origin.startsWith('http://127.0.0.1:');
+  const allowOrigin = isAllowedOrigin ? origin : 'https://b2b.go4ai.org';
+
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
 function sanitize(val, maxLen) {
   if (val === undefined || val === null) return '';
   return String(val).trim().slice(0, maxLen);
