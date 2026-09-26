@@ -1556,6 +1556,63 @@ html.motion-impact .impact-section {
   .impact-item-accent-text { opacity: 1 !important; }
 }
 
+/* ---------------------------------------------------------------------------
+   11a. MOBILE — VERTICAL ACTIVE SEQUENCE (5 vòng tròn "Bằng chứng")
+   Chỉ áp dụng ≤991px (breakpoint mobile thật của section) VÀ chỉ khi người dùng
+   không bật reduced-motion ⇒ desktop/laptop giữ nguyên 100%.
+
+   Selector cố tình dùng specificity 0,2,0 / 0,3,0 để thắng các theme 0,1,0–0,2,0
+   có `!important` khai báo trong <style> của trang. Inline style do JS ghi KHÔNG
+   thắng được `!important` của stylesheet, nên trạng thái active buộc phải là CSS
+   và JS chỉ bật/tắt class `.is--active`.
+   --------------------------------------------------------------------------- */
+@media (max-width: 991px) and (prefers-reduced-motion: no-preference) {
+  .impact-list .impact-item,
+  .impact-list .impact-item-accent {
+    transform-origin: 50% 50%;
+    transition:
+      transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      border-color 260ms ease,
+      box-shadow 260ms ease;
+  }
+
+  /* Accent: base ở trên để `transform: scale(0)` (chờ desktop reveal). Trên
+     mobile phải hiện đủ — trước đây việc này do inline style của GSAP gánh, nên
+     nếu GSAP nạp lỗi thì vòng thứ 5 biến mất ở dải 768–991px. */
+  .impact-list .impact-item-accent { transform: scale(1); }
+  .impact-list .impact-item-accent .impact-item-accent-text { opacity: 1; }
+
+  .impact-list .impact-item .text--number,
+  .impact-list .impact-item-accent .title--m {
+    transition:
+      transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      text-shadow 260ms ease,
+      color 0.3s ease;
+  }
+
+  /* ── ACTIVE — mỗi thời điểm chỉ 1 vòng ──────────────────────────────── */
+  .impact-list .impact-item.is--active,
+  .impact-list .impact-item-accent.is--active {
+    transform: scale(1.03);
+    border-color: #34d399 !important;
+    box-shadow:
+      0 0 0 1px rgba(52, 211, 153, 0.5),
+      0 0 26px rgba(52, 211, 153, 0.4),
+      0 0 58px rgba(8, 144, 108, 0.28),
+      0 18px 44px rgba(0, 0, 0, 0.42) !important;
+  }
+
+  .impact-list .impact-item.is--active .text--number,
+  .impact-list .impact-item-accent.is--active .title--m {
+    transform: scale(1.03);
+    text-shadow: 0 0 18px rgba(52, 211, 153, 0.42);
+  }
+
+  .impact-list .impact-item.is--active .impact-item__label {
+    opacity: 1 !important;
+  }
+}
+
 /* --------------------------------------------------------- 12. PROGRAM TRACKS */
 .tracks { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-20); }
 .track {

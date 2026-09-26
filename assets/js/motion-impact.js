@@ -181,97 +181,87 @@
     };
   });
 
-  /* Mobile / Tablet Viewport (< 992px) — Smooth Organic Float Motion
-     Cùng ngôn ngữ chuyển động với bản desktop (dịch chuyển dọc, ease mềm, loop
-     vô hạn) — chỉ giảm biên độ cho vừa viewport.
+  /* Mobile / Tablet Viewport (< 992px) — VERTICAL ACTIVE SEQUENCE
+     Bố cục xếp dọc giữ nguyên. 5 vòng tròn lần lượt "active" rồi loop:
+       1 → 2 → 3 → 4 → 5 → (nghỉ ngắn) → 1 …
+     Mỗi thời điểm CHỈ 1 vòng active. Toàn bộ phần "da" của trạng thái active
+     (border emerald sáng, glow, scale 1.03, số nổi hơn, transition 260ms) nằm
+     trong CSS của `assets/css/go4ai.css` — JS chỉ bật/tắt class `.is--active`,
+     nên không có inline style nào tranh chấp với các theme `!important` của
+     trang.
 
-     Bản trước dùng biên độ cố định ±3.5px trên vòng tròn ~342px (≈1%) nên mắt
-     gần như không thấy ⇒ bị đọc là "đứng yên". Nay biên độ bám theo kích thước
-     vòng tròn thật (~9–10px) và MỌI vòng luôn dịch cùng một chiều, nên độ nén
-     lớn nhất giữa hai vòng kề nhau = AMP < khoảng cách 16px ⇒ không bao giờ
-     chồng lấn. Chỉ dùng trục y ⇒ không phát sinh overflow ngang.
+     Vì sao KHÔNG dùng GSAP cho transform ở nhánh này: theme gốc của từng vòng
+     (`border` / `box-shadow` / `background` trong <style> của trang) đều
+     `!important`, mà inline style do GSAP ghi thì KHÔNG thắng được `!important`
+     của stylesheet. Class + CSS là cách duy nhất ghi đè an toàn.
 
-     Motion chỉ chạy khi section Bằng chứng nằm trong viewport (onToggle). */
+     Motion chỉ chạy khi section Bằng chứng nằm trong viewport (onToggle).
+     Desktop/laptop KHÔNG bị ảnh hưởng: nhánh này chỉ áp dụng ≤991px. */
   mm.add('(max-width: 991px) and (prefers-reduced-motion: no-preference)', function () {
     root.classList.remove('motion-impact');
 
     var section = document.querySelector('.impact-section');
-    var all5 = [item1, item2, item3, item4, accent].filter(Boolean);
-    all5.forEach(function (el) {
+    var seq = [item1, item2, item3, item4, accent].filter(Boolean);
+
+    seq.forEach(function (el) {
       el.style.pointerEvents = '';
-      gsap.set(el, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0, y: 0 });
+      /* Bỏ transform/opacity inline còn sót lại (do nhánh desktop ghi khi
+         resize desktop → mobile) để CSS `.is--active` điều khiển được
+         transform. Base CSS của go4ai.css đã lo scale(1) cho accent nên
+         clearProps không làm vòng thứ 5 biến mất. */
+      gsap.set(el, { clearProps: 'transform,opacity' });
     });
     gsap.set(labels, { opacity: 1, filter: 'none' });
     if (accentText) gsap.set(accentText, { opacity: 1 });
 
-    // Biên độ theo kích thước vòng tròn thực tế (342–352px ở mọi viewport
-    // mobile/tablet) ⇒ ~10px: đủ thấy, vẫn "nhẹ, mượt, enterprise".
-    var circleW = (all5[0] && all5[0].getBoundingClientRect().width) || 320;
-    var AMP = Math.max(8, Math.min(12, circleW * 0.03));
-    var PERIOD = 5.6;
+    /* Nhịp: mỗi vòng active 1500ms (spec 1200–1600ms), transition do CSS lo
+       (260ms, spec 220–320ms). Vòng cuối giữ thêm 400ms rồi mới loop về vòng
+       đầu (spec 300–500ms). */
+    var STEP = 1500;
+    var TAIL = 400;
 
-    var floatTweens = [];
-    var revealed = false;
+    var idx = 0;
+    var timer = null;
 
-    function buildFloats() {
-      if (floatTweens.length) return;
-      all5.forEach(function (el, idx) {
-        floatTweens.push(gsap.to(el, {
-          y: '+=' + AMP,
-          duration: PERIOD,
-          delay: idx * 0.5, // lệch pha ~32°/vòng ⇒ sóng chạy nhẹ xuống dưới
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-          paused: true
-        }));
-      });
-    }
-
-    function setFloats(playing) {
-      for (var i = 0; i < floatTweens.length; i++) {
-        if (playing) { floatTweens[i].play(); } else { floatTweens[i].pause(); }
+    function paint(active) {
+      for (var k = 0; k < seq.length; k++) {
+        seq[k].classList.toggle('is--active', k === active);
       }
     }
 
-    function revealOnce() {
-      if (revealed) return;
-      revealed = true;
-      gsap.fromTo(all5,
-        { opacity: 0.35, scale: 0.94 },
-        { opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: 'power2.out' }
-      );
+    function tick() {
+      paint(idx);
+      var hold = STEP + (idx === seq.length - 1 ? TAIL : 0);
+      idx = (idx + 1) % seq.length;
+      timer = setTimeout(tick, hold);
     }
 
-    buildFloats();
+    function startSeq() { if (!timer) tick(); }
+    function stopSeq() { if (timer) { clearTimeout(timer); timer = null; } }
 
     var st = ScrollTrigger.create({
       trigger: section || list,
       start: 'top bottom',
       end: 'bottom top',
       onToggle: function (self) {
-        if (self.isActive) revealOnce();
-        setFloats(self.isActive);
+        if (self.isActive) { startSeq(); } else { stopSeq(); }
       }
     });
 
     // Section đã nằm trong viewport ngay lúc khởi tạo (reload giữa trang).
-    if (st.isActive) {
-      revealOnce();
-      setFloats(true);
-    }
+    if (st.isActive) startSeq();
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
     }
 
     return function () {
+      stopSeq();
       if (st) st.kill();
-      for (var i = 0; i < floatTweens.length; i++) { floatTweens[i].kill(); }
-      floatTweens = [];
-      all5.forEach(function (el) {
+      idx = 0;
+      seq.forEach(function (el) {
+        el.classList.remove('is--active');
         el.style.pointerEvents = '';
-        gsap.set(el, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0, y: 0 });
       });
       gsap.set(labels, { opacity: 1, filter: 'none' });
       if (accentText) gsap.set(accentText, { opacity: 1 });
