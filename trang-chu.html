@@ -553,22 +553,7 @@
   z-index: 1;
 }
 
-@media (min-width: 992px) {
-  .hero__grid {
-    grid-template-columns: minmax(0, 1fr) 490px;
-    gap: clamp(20px, 2.5vw, 48px);
-    align-items: center;
-  }
-}
-@media (max-width: 991px) {
-  .hero__grid {
-    grid-template-columns: 1fr;
-    gap: var(--s-32);
-  }
-  .hero__visual.hero-engine {
-    max-width: 540px;
-  }
-}
+/* Note: Hero grid & responsive tier layouts are consolidated in the RESPONSIVE HERO section below */
 
 /* Hero Environment Grid & Horizon Beam */
 .hero-env {
@@ -1177,8 +1162,40 @@
   }
 }
 
-/* ── RESPONSIVE HERO: LAPTOP / LOW VIEWPORT HEIGHT (<=900px) ───────── */
-@media (min-width: 992px) and (max-height: 900px) {
+/* ── RESPONSIVE HERO: 1. DESKTOP >= 1536px ─────────────────────────── */
+@media (min-width: 1536px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 55fr) minmax(0, 45fr) !important;
+    gap: clamp(40px, 3.5vw, 60px) !important;
+    align-items: center !important;
+  }
+  .hero__visual.hero-engine {
+    max-width: 580px !important;
+  }
+}
+
+/* ── RESPONSIVE HERO: 2. LAPTOP 1200–1535px ────────────────────────── */
+@media (min-width: 1200px) and (max-width: 1535px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 55fr) minmax(0, 45fr) !important;
+    gap: clamp(28px, 2.5vw, 40px) !important;
+    align-items: center !important;
+  }
+  .hero__content {
+    max-width: 100% !important;
+  }
+  .hero__sub {
+    max-width: 100% !important;
+  }
+  .hero__visual.hero-engine {
+    max-width: 520px !important;
+    justify-self: start !important;
+    margin: 0 !important;
+  }
+}
+
+/* Laptop with low viewport height (height <= 900px, e.g. 1440x900, 1366x768, 1280x720) */
+@media (min-width: 1200px) and (max-height: 900px) {
   .section.hero {
     min-height: auto !important;
     align-items: flex-start !important;
@@ -1186,8 +1203,6 @@
     padding-bottom: 24px !important;
   }
   .hero__grid {
-    grid-template-columns: minmax(0, 1.08fr) 490px !important;
-    gap: clamp(20px, 2.2vw, 36px) !important;
     align-items: flex-start !important;
   }
   .hero__content > .chips {
@@ -1195,7 +1210,7 @@
   }
   .hero__title {
     margin: 0.25rem 0 0.75rem !important;
-    font-size: clamp(2.35rem, 3.6vw, 3.5rem) !important;
+    font-size: clamp(2.35rem, 3.4vw, 3.5rem) !important;
     line-height: 1.1 !important;
   }
   .hero__sub {
@@ -1217,13 +1232,14 @@
   }
 }
 
-@media (min-width: 992px) and (max-height: 768px) {
+/* Extra low height (height <= 768px) */
+@media (min-width: 1200px) and (max-height: 768px) {
   .section.hero {
     padding-top: calc(var(--header-h, 75px) + 10px) !important;
     padding-bottom: 16px !important;
   }
   .hero__title {
-    font-size: clamp(2.1rem, 3.2vw, 2.85rem) !important;
+    font-size: clamp(2.1rem, 3vw, 2.75rem) !important;
   }
   .hero__sub {
     margin: 0 0 12px !important;
@@ -1239,8 +1255,96 @@
   }
 }
 
-/* ── RESPONSIVE HERO: MOBILE HERO & ENGINE FIXES (<=767px) ─────────── */
+/* ── RESPONSIVE HERO: 3. TABLET 768–1199px ─────────────────────────── */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .section.hero {
+    min-height: auto !important;
+    align-items: flex-start !important;
+    padding-top: calc(var(--header-h, 75px) + 20px) !important;
+    padding-bottom: 40px !important;
+  }
+  .hero__grid {
+    grid-template-columns: 1fr !important;
+    gap: clamp(24px, 3.2vw, 36px) !important;
+    max-width: 640px !important;
+    margin: 0 auto !important;
+  }
+  .hero__content {
+    max-width: 100% !important;
+  }
+  .hero__title {
+    font-size: clamp(2.25rem, 4.5vw, 3rem) !important;
+    line-height: 1.12 !important;
+    margin: 0.25rem 0 0.875rem !important;
+  }
+  .hero__sub {
+    font-size: clamp(1rem, 1.8vw, 1.125rem) !important;
+    line-height: 1.55 !important;
+    margin: 0 0 20px !important;
+    max-width: 100% !important;
+  }
+  .hero__ctas {
+    margin: 0 0 20px !important;
+    gap: 12px !important;
+  }
+  .hero__pipeline {
+    margin-bottom: 4px !important;
+  }
+  .hero__visual.hero-engine {
+    max-width: 530px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    gap: 16px !important;
+  }
+  .engine__stage {
+    justify-content: center !important;
+  }
+}
+
+/* ── RESPONSIVE HERO: 4. MOBILE <= 767px ───────────────────────────── */
 @media (max-width: 767px) {
+  .section.hero {
+    min-height: auto !important;
+    padding-top: calc(var(--header-h, 75px) + 14px) !important;
+    padding-bottom: 32px !important;
+  }
+  .hero__grid {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .hero__content {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .hero__content > .chips {
+    margin-bottom: 12px !important;
+    font-size: 0.6875rem !important;
+  }
+  .hero__title {
+    font-size: clamp(1.6875rem, 5.8vw, 2.125rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.03em !important;
+    margin: 0.25rem 0 0.75rem !important;
+  }
+  .hero__sub {
+    font-size: clamp(0.9375rem, 3.6vw, 1.0625rem) !important;
+    line-height: 1.55 !important;
+    margin: 0 0 16px !important;
+    max-width: 100% !important;
+  }
+  .hero__ctas {
+    margin: 0 0 16px !important;
+    gap: 10px !important;
+  }
+  .hero__ctas .button {
+    min-height: 38px !important;
+    padding: 0.5rem 1.125rem !important;
+    font-size: 0.84375rem !important;
+  }
+
   /* 1. Mobile Pipeline — 2 deliberate clean rows */
   .hero__pipeline {
     display: flex !important;
