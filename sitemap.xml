@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://b2b.go4ai.org/</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/activities/SK2.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/ung-dung-thuc-te</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/cases/case-hr-recruitment.png</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/tin-tuc-chia-se</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/activities/SK4.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/lucas</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/claude/</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/chinh-sach-bao-ve-du-lieu</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/dieu-khoan-su-dung</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/lien-he-phan-anh</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
+  </url>
+</urlset>
