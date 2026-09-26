@@ -4,3 +4,8 @@
 
 name = "b2b-go4ai"
 pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "b2b-go4ai-leads"
+database_id = "7b4f6f70-6f08-4f00-abf4-19eca197cb82"

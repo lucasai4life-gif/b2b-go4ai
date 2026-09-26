@@ -135,6 +135,7 @@
 
     /* Footer */
     '        <div class="consult-footer">',
+    '          <span class="consult-error" id="consult-submit-err" role="alert" style="display:none; margin-bottom: 1rem; text-align: center;"></span>',
     '          <button class="consult-submit" id="consult-submit" type="submit">Gửi yêu cầu tư vấn →</button>',
     '          <p class="consult-submit-note">GO4AI sẽ sử dụng thông tin này để liên hệ và trao đổi về nhu cầu của doanh nghiệp.</p>',
     '        </div>',
@@ -392,11 +393,38 @@
        });
     ─────────────────────────────────────────────────────────────────── */
 
-    /* Stub — simulate success while backend is pending */
-    console.info('[ConsultationModal] Payload ready for integration:', JSON.stringify(payload, null, 2));
-    setTimeout(function () {
+    // Capture UTM and referrer from current page URL
+    var urlParams = new URLSearchParams(window.location.search);
+    payload.utm_source   = urlParams.get('utm_source')   || undefined;
+    payload.utm_medium   = urlParams.get('utm_medium')   || undefined;
+    payload.utm_campaign = urlParams.get('utm_campaign') || undefined;
+    payload.utm_content  = urlParams.get('utm_content')  || undefined;
+    payload.referrer     = document.referrer || undefined;
+    payload.leadType     = 'enterprise_consultation';
+    payload.source       = 'main_website';
+
+    fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(res) {
+      if (!res.ok) return res.json().then(function(d) { throw new Error(d.error || 'Server error ' + res.status); });
+      return res.json();
+    })
+    .then(function() {
       showSuccess();
-    }, 600);
+    })
+    .catch(function(err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Gửi yêu cầu tư vấn →';
+      showSubmitError('Gửi thất bại. Vui lòng thử lại hoặc liên hệ trực tiếp GO4AI.');
+    });
+  }
+
+  function showSubmitError(msg) {
+    var errEl = qs('#consult-submit-err');
+    if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
   }
 
   function showSuccess() {

@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS leads (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  lead_type TEXT NOT NULL,
+  source TEXT NOT NULL,
+  source_page TEXT,
+  source_cta TEXT,
+  name TEXT,
+  email TEXT NOT NULL,
+  phone TEXT,
+  company TEXT,
+  role TEXT,
+  payload_json TEXT,
+  utm_source TEXT,
+  utm_medium TEXT,
+  utm_campaign TEXT,
+  utm_content TEXT,
+  referrer TEXT,
+  telegram_status TEXT DEFAULT 'pending',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

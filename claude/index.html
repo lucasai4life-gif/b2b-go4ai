@@ -2127,25 +2127,41 @@
      gemglobal_handle_lead_submission → CPT gem_lead). gemConfig do
      gemglobal_static_pages() chèn vào <head>. */
   function sendLead(payload){
-    var cfg = window.gemConfig || {};
-    if(cfg.ajaxUrl) {
-      payload.source_url = window.location.href;
-      var body = new FormData();
-      body.append('action','gemglobal_lead_submit');
-      body.append('nonce', cfg.nonce || '');
-      body.append('payload', JSON.stringify(payload));
-      return fetch(cfg.ajaxUrl, {method:'POST', body:body, credentials:'same-origin'})
-        .then(function(r){ return r.json(); })
-        .then(function(res){ if(!res || !res.success) throw new Error('rejected'); return res; });
-    }
-    // Standalone fallback: log and persist
-    console.info('[Go4ai Lead] Received payload:', payload);
-    try {
-      var leads = JSON.parse(localStorage.getItem('go4ai_workshop_leads') || '[]');
-      leads.push({ payload: payload, submitted_at: new Date().toISOString() });
-      localStorage.setItem('go4ai_workshop_leads', JSON.stringify(leads));
-    } catch(e){}
-    return new Promise(function(resolve){ setTimeout(resolve, 600); });
+    // Map claude form fields to unified lead API schema
+    var urlParams = new URLSearchParams(window.location.search);
+    var unifiedPayload = {
+      leadType:      'claude_workshop_registration',
+      source:        'claude_landing_page',
+      sourcePage:    '/claude/',
+      name:          payload.full_name || payload.name || '',
+      email:         payload.email || '',
+      phone:         payload.phone || '',
+      company:       payload.company || '',
+      role:          payload.job_title || payload.role || '',
+      // Extra fields stored in payload_json
+      aiLevel:       payload.ai_level || payload.aiLevel || '',
+      mostInterested: payload.most_interested || payload.mostInterested || payload.want || '',
+      intent:        payload.intent || '',
+      program:       payload.program || '',
+      message:       payload.message || '',
+      // UTM
+      utm_source:    urlParams.get('utm_source')   || undefined,
+      utm_medium:    urlParams.get('utm_medium')   || undefined,
+      utm_campaign:  urlParams.get('utm_campaign') || undefined,
+      utm_content:   urlParams.get('utm_content')  || undefined,
+      referrer:      document.referrer || undefined
+    };
+
+    return fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(unifiedPayload)
+    })
+    .then(function(r){
+      if(!r.ok) return r.json().then(function(d){ throw new Error(d.error || 'Server error ' + r.status); });
+      return r.json();
+    })
+    .then(function(res){ if(!res || !res.success) throw new Error('rejected'); return res; });
   }
   window.gemSendLead = sendLead;
 
@@ -2228,10 +2244,10 @@
       phone: d.getElementById('phone').value.trim(),
       company: d.getElementById('company').value.trim(),
       job_title: d.getElementById('role').value,
+      aiLevel: lv.value ? lv.options[lv.selectedIndex].text : '',
+      mostInterested: wt.options[wt.selectedIndex] ? wt.options[wt.selectedIndex].text : '',
       program: 'claude_workshop',
-      intent: 'Workshop Claude online 90 phút — 30/10/2026',
-      message: 'Mức độ dùng AI: ' + (lv.value ? lv.options[lv.selectedIndex].text : 'Chưa rõ') +
-               '\nMuốn xem nhất: ' + (wt.value || 'Chưa chọn')
+      intent: 'Workshop Claude online 90 phút — 30/10/2026'
     }).then(function(){
       form.style.display = 'none';
       okBox.classList.add('on');
