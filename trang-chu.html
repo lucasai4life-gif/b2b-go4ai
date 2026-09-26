@@ -2152,6 +2152,25 @@ html.motion-impact .impact-section {
   margin-bottom: 0.5rem !important;
   display: block !important;
 }
+/* Metric 01 ("3.000+") is the longest string in the grid, so it is the only one that can
+   outgrow its circle. The shared clamp() above sizes it from viewport WIDTH (6.2vw), but the
+   circle is sized by min(44rem, 100svh - header - 3rem, available row width). On a short and/or
+   narrow desktop window the circle shrinks while the font keeps growing, and the outer strokes
+   get cut by the round mask: at 1536x730 the glyphs measured 336.7px inside a 300.5px circle.
+   The measured circle diameter is min(352px, (vw - 512px)/2, (100svh - 129px)/2) — checked
+   against 16 viewports. The glyph ink is 3.66x the font size wide and 1.163x tall, so keeping
+   the whole ink box inside the circle needs font-size <= 0.2604 x diameter; this uses
+   <= 0.245 x diameter for margin, which both terms below satisfy for every viewport >= 992px:
+       5.6vw  <= 0.245 x (vw - 512)/2        (holds for vw >= 9.4px)
+       9.8svh <= 0.245 x (100svh - 129)/2    (holds for svh >= 6.4px)
+   and the 5.25rem cap sits under 0.245 x 352px = 86.2px, so this cannot overflow anywhere.
+   Desktop only: below 992px the circles stack vertically and the shared clamp() is correct. */
+@media (min-width: 992px) {
+  .impact-item.is--01 .text--number {
+    font-size: clamp(2.5rem, min(5.6vw, 9.8vh), 5.25rem) !important;
+    font-size: clamp(2.5rem, min(5.6vw, 9.8svh), 5.25rem) !important;
+  }
+}
 .impact-item .impact-item__label {
   font-size: clamp(0.875rem, 1.1vw, 1.0625rem) !important;
   line-height: 1.4 !important;
