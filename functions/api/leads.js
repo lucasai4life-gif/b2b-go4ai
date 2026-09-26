@@ -2,165 +2,430 @@
  * POST /api/leads
  * Unified lead capture for b2b.go4ai.org
  * Handles both enterprise consultation (Form A) and Claude workshop registration (Form B)
+ *
+ * Fully hardened against:
+ * - Spam / Flooding / Replay attacks
+ * - Malicious URLs / Phishing / Link shorteners
+ * - Casino / Gambling / Betting spam
+ * - Script / HTML injection
+ * - Unauthorized / unverified bots via Cloudflare Turnstile
  */
+
+import {
+  checkRequestHeaders,
+  sanitizeField,
+  validateEmail,
+  validatePhone,
+  checkIpRateLimit,
+  recordIpFailure,
+  verifyTurnstile,
+  computePayloadHash,
+  checkMemoryDuplicate,
+  checkTelegramDedupe,
+  evaluateSpam,
+  logSecurityEvent,
+} from './_security.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-
-  // CORS headers
   const headers = getCorsHeaders(request);
+  const clientIp = request.headers.get('cf-connecting-ip') ||
+                   request.headers.get('x-forwarded-for') ||
+                   '127.0.0.1';
 
-  // Only allow POST
-  if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
-      status: 405,
-      headers,
-    });
-  }
-
-  // Parse JSON body
-  let body;
   try {
-    body = await request.json();
-  } catch {
-    return new Response(JSON.stringify({ success: false, error: 'Invalid JSON' }), {
-      status: 400,
-      headers,
-    });
-  }
-
-  // ─── VALIDATE REQUIRED FIELDS ────────────────────────────────────────
-  const name  = sanitize(body.name,  120);
-  const email = sanitize(body.email, 320);
-  const leadType   = sanitize(body.leadType,   64);
-  const source     = sanitize(body.source,     64);
-  const sourcePage = sanitize(body.sourcePage, 255);
-  const sourceCta  = sanitize(body.sourceCta,  255);
-
-  if (!email || !validateEmail(email)) {
-    return new Response(JSON.stringify({ success: false, error: 'Invalid email address' }), {
-      status: 422,
-      headers,
-    });
-  }
-
-  if (!leadType || !['enterprise_consultation', 'claude_workshop_registration'].includes(leadType)) {
-    return new Response(JSON.stringify({ success: false, error: 'Invalid leadType' }), {
-      status: 422,
-      headers,
-    });
-  }
-
-  // ─── BUILD RECORD ────────────────────────────────────────────────────
-  const phone   = sanitize(body.phone,   64);
-  const company = sanitize(body.company, 255);
-  const role    = sanitize(body.role,    128);
-
-  // UTM + referrer
-  const utmSource   = sanitize(body.utm_source,   128);
-  const utmMedium   = sanitize(body.utm_medium,   128);
-  const utmCampaign = sanitize(body.utm_campaign, 128);
-  const utmContent  = sanitize(body.utm_content,  255);
-  const referrer    = sanitize(body.referrer,      512);
-
-  // All extra form-specific fields go into payload_json
-  const payloadExtra = {};
-  const allowedExtra = [
-    'companySize', 'interest', 'problem', 'privacyConsent',
-    'aiLevel', 'mostInterested', 'intent', 'job_title',
-    'program', 'message', 'full_name'
-  ];
-  for (const k of allowedExtra) {
-    if (body[k] !== undefined && body[k] !== null && body[k] !== '') {
-      payloadExtra[k] = typeof body[k] === 'string' ? sanitize(body[k], 2000) : body[k];
+    // ─── 1. REQUEST HEADERS & SIZE HARDENING ──────────────────────────
+    const headerCheck = checkRequestHeaders(request);
+    if (!headerCheck.ok) {
+      recordIpFailure(clientIp);
+      logSecurityEvent({
+        action: 'header_check_failed',
+        clientIp,
+        status: headerCheck.status,
+        reasons: [headerCheck.error],
+      });
+      return new Response(JSON.stringify({ success: false, error: headerCheck.error }), {
+        status: headerCheck.status,
+        headers,
+      });
     }
-  }
 
-  const createdAt = new Date().toISOString();
+    // ─── 2. IN-MEMORY RATE LIMITING (Burst & Jail) ────────────────────
+    const rateCheck = checkIpRateLimit(clientIp);
+    if (!rateCheck.allowed) {
+      logSecurityEvent({
+        action: 'rate_limited',
+        clientIp,
+        status: 429,
+        reasons: ['ip_burst_or_jail_limit_exceeded'],
+      });
+      const resHeaders = { ...headers, 'Retry-After': String(rateCheck.retryAfter || 60) };
+      return new Response(JSON.stringify({ success: false, error: rateCheck.error }), {
+        status: 429,
+        headers: resHeaders,
+      });
+    }
 
-  // ─── WRITE TO D1 ────────────────────────────────────────────────────
-  let leadId;
-  try {
-    const result = await env.DB.prepare(`
-      INSERT INTO leads (
-        lead_type, source, source_page, source_cta,
-        name, email, phone, company, role,
-        payload_json,
-        utm_source, utm_medium, utm_campaign, utm_content,
-        referrer, telegram_status, created_at
-      ) VALUES (
-        ?, ?, ?, ?,
-        ?, ?, ?, ?, ?,
-        ?,
-        ?, ?, ?, ?,
-        ?, 'pending', ?
-      )
-    `).bind(
-      leadType, source, sourcePage || '', sourceCta || '',
-      name || '', email, phone || '', company || '', role || '',
-      JSON.stringify(payloadExtra),
-      utmSource || null, utmMedium || null, utmCampaign || null, utmContent || null,
-      referrer || null, createdAt
-    ).run();
+    // ─── 3. PARSE JSON BODY ───────────────────────────────────────────
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({ success: false, error: 'Định dạng JSON không hợp lệ.' }), {
+        status: 400,
+        headers,
+      });
+    }
 
-    leadId = result.meta?.last_row_id;
-  } catch (dbErr) {
-    console.error('[leads] D1 write error:', dbErr.message);
-    return new Response(JSON.stringify({ success: false, error: 'Database error. Please try again.' }), {
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({ success: false, error: 'Dữ liệu gửi lên không đúng định dạng.' }), {
+        status: 400,
+        headers,
+      });
+    }
+
+    // Prevent prototype pollution attempts
+    if (Object.prototype.hasOwnProperty.call(body, '__proto__') || Object.prototype.hasOwnProperty.call(body, 'constructor')) {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({ success: false, error: 'Yêu cầu không hợp lệ.' }), {
+        status: 400,
+        headers,
+      });
+    }
+
+    // ─── 4. EXTRACT & SANITIZE FIELDS ─────────────────────────────────
+    const name       = sanitizeField(body.name || body.full_name, 100);
+    const email      = sanitizeField(body.email, 254).toLowerCase();
+    const phone      = sanitizeField(body.phone, 25);
+    const company    = sanitizeField(body.company, 150);
+    const role       = sanitizeField(body.role || body.job_title, 100);
+    const leadType   = sanitizeField(body.leadType, 64);
+    const source     = sanitizeField(body.source, 64);
+    const sourcePage = sanitizeField(body.sourcePage, 255);
+    const sourceCta  = sanitizeField(body.sourceCta, 100);
+
+    // UTM + referrer
+    const utmSource   = sanitizeField(body.utm_source, 100);
+    const utmMedium   = sanitizeField(body.utm_medium, 100);
+    const utmCampaign = sanitizeField(body.utm_campaign, 100);
+    const utmContent  = sanitizeField(body.utm_content, 100);
+    const referrer    = sanitizeField(body.referrer, 300);
+
+    // Extra form-specific fields
+    const payloadExtra = {};
+    const allowedExtra = [
+      'companySize', 'interest', 'problem', 'privacyConsent',
+      'aiLevel', 'mostInterested', 'intent', 'job_title',
+      'program', 'message', 'full_name'
+    ];
+    for (const k of allowedExtra) {
+      if (body[k] !== undefined && body[k] !== null && body[k] !== '') {
+        if (Array.isArray(body[k])) {
+          payloadExtra[k] = body[k].slice(0, 10).map(v => sanitizeField(v, 100));
+        } else if (typeof body[k] === 'boolean') {
+          payloadExtra[k] = body[k];
+        } else {
+          payloadExtra[k] = sanitizeField(body[k], 1000);
+        }
+      }
+    }
+
+    // ─── 5. VALIDATE REQUIRED BUSINESS RULES ──────────────────────────
+    if (!email || !validateEmail(email)) {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({ success: false, error: 'Email không hợp lệ. Vui lòng kiểm tra lại.' }), {
+        status: 422,
+        headers,
+      });
+    }
+
+    if (phone && !validatePhone(phone)) {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({ success: false, error: 'Số điện thoại không hợp lệ.' }), {
+        status: 422,
+        headers,
+      });
+    }
+
+    if (!leadType || !['enterprise_consultation', 'claude_workshop_registration'].includes(leadType)) {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({ success: false, error: 'Loại yêu cầu không hợp lệ.' }), {
+        status: 422,
+        headers,
+      });
+    }
+
+    // ─── 6. CLOUDFLARE TURNSTILE SERVER-SIDE VERIFICATION ─────────────
+    const turnstileToken = body.turnstileToken || body['cf-turnstile-response'];
+    const turnstileRes = await verifyTurnstile({
+      token: turnstileToken,
+      secret: env.TURNSTILE_SECRET_KEY,
+      remoteIp: clientIp,
+    });
+
+    if (!turnstileRes.success) {
+      recordIpFailure(clientIp);
+      logSecurityEvent({
+        action: 'turnstile_rejected',
+        clientIp,
+        leadType,
+        score: 100,
+        reasons: [turnstileRes.reason || 'turnstile_fail'],
+        status: 403,
+      });
+
+      return new Response(JSON.stringify({
+        success: false,
+        error: turnstileRes.error || 'Xác thực bảo mật không thành công. Vui lòng thử lại.'
+      }), {
+        status: 403,
+        headers,
+      });
+    }
+
+    // ─── 7. SPAM & MALICIOUS CONTENT SCORING ──────────────────────────
+    const spamEval = evaluateSpam({
+      payload: { ...body, name, email, phone, company, role, ...payloadExtra },
+      turnstileResult: turnstileRes,
+    });
+
+    if (spamEval.isBlocked) {
+      recordIpFailure(clientIp);
+      logSecurityEvent({
+        action: 'spam_blocked',
+        clientIp,
+        leadType,
+        score: spamEval.score,
+        reasons: spamEval.reasons,
+        status: 400,
+      });
+
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Nội dung không hợp lệ hoặc chứa liên kết không được chấp nhận.'
+      }), {
+        status: 400,
+        headers,
+      });
+    }
+
+    // ─── 8. DUPLICATE & REPLAY PROTECTION ─────────────────────────────
+    const payloadHash = await computePayloadHash({
+      leadType, email, phone, name, company,
+      problem: payloadExtra.problem,
+      message: payloadExtra.message,
+    });
+
+    // Layer A: Fast In-Memory Duplicate Check (within 5 minutes)
+    if (checkMemoryDuplicate(payloadHash)) {
+      logSecurityEvent({
+        action: 'duplicate_replay_detected_memory',
+        clientIp,
+        leadType,
+        score: 0,
+        reasons: ['memory_hash_match'],
+      });
+      return new Response(JSON.stringify({
+        success: true,
+        duplicate: true,
+        message: 'Yêu cầu của bạn đã được ghi nhận trước đó. Đội ngũ GO4AI sẽ liên hệ trong thời gian sớm nhất.'
+      }), {
+        status: 200,
+        headers,
+      });
+    }
+
+    // Layer B: D1 Database Checks (Persistent dedupe & cross-edge rate limits)
+    if (env.DB) {
+      try {
+        // Check identical payload within 10 minutes in D1
+        const dupCheck = await env.DB.prepare(`
+          SELECT id FROM leads
+          WHERE payload_hash = ? AND created_at > datetime('now', '-10 minutes')
+          LIMIT 1
+        `).bind(payloadHash).first();
+
+        if (dupCheck) {
+          logSecurityEvent({
+            action: 'duplicate_replay_detected_db',
+            clientIp,
+            leadType,
+            reasons: ['db_hash_match'],
+          });
+          return new Response(JSON.stringify({
+            success: true,
+            duplicate: true,
+            leadId: dupCheck.id,
+            message: 'Yêu cầu của bạn đã được ghi nhận trước đó.'
+          }), {
+            status: 200,
+            headers,
+          });
+        }
+
+        // Rolling limit: max 2 submissions per email per 10 minutes
+        const emailRateCheck = await env.DB.prepare(`
+          SELECT COUNT(*) as count FROM leads
+          WHERE email = ? AND created_at > datetime('now', '-10 minutes')
+        `).bind(email).first();
+
+        if (emailRateCheck && emailRateCheck.count >= 2) {
+          logSecurityEvent({
+            action: 'email_rate_limit_exceeded',
+            clientIp,
+            leadType,
+            reasons: ['email_frequency_limit'],
+          });
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Bạn đã gửi yêu cầu gần đây. Chúng tôi đã nhận được thông tin và sẽ phản hồi sớm.'
+          }), {
+            status: 429,
+            headers,
+          });
+        }
+
+        // Rolling limit: max 2 submissions per phone per 10 minutes (if phone is given)
+        if (phone) {
+          const phoneRateCheck = await env.DB.prepare(`
+            SELECT COUNT(*) as count FROM leads
+            WHERE phone = ? AND created_at > datetime('now', '-10 minutes')
+          `).bind(phone).first();
+
+          if (phoneRateCheck && phoneRateCheck.count >= 2) {
+            return new Response(JSON.stringify({
+              success: false,
+              error: 'Số điện thoại này đã gửi yêu cầu gần đây. Vui lòng đợi trong ít phút.'
+            }), {
+              status: 429,
+              headers,
+            });
+          }
+        }
+      } catch (dbQueryErr) {
+        console.warn('[leads] Rate query warning:', dbQueryErr.message);
+      }
+    }
+
+    // ─── 9. WRITE TO D1 DATABASE ──────────────────────────────────────
+    const createdAt = new Date().toISOString();
+    let leadId;
+    const initialTelegramStatus = spamEval.isSuspicious ? 'quarantined' : 'pending';
+
+    try {
+      const result = await env.DB.prepare(`
+        INSERT INTO leads (
+          lead_type, source, source_page, source_cta,
+          name, email, phone, company, role,
+          payload_json,
+          utm_source, utm_medium, utm_campaign, utm_content,
+          referrer, telegram_status, created_at,
+          client_ip, spam_score, spam_reasons, payload_hash
+        ) VALUES (
+          ?, ?, ?, ?,
+          ?, ?, ?, ?, ?,
+          ?,
+          ?, ?, ?, ?,
+          ?, ?, ?,
+          ?, ?, ?, ?
+        )
+      `).bind(
+        leadType, source, sourcePage || '', sourceCta || '',
+        name || '', email, phone || '', company || '', role || '',
+        JSON.stringify(payloadExtra),
+        utmSource || null, utmMedium || null, utmCampaign || null, utmContent || null,
+        referrer || null, initialTelegramStatus, createdAt,
+        clientIp, spamEval.score, spamEval.reasons.join(','), payloadHash
+      ).run();
+
+      leadId = result.meta?.last_row_id;
+    } catch (dbErr) {
+      console.error('[leads] D1 write error:', dbErr.message);
+      return new Response(JSON.stringify({ success: false, error: 'Lỗi cơ sở dữ liệu. Vui lòng thử lại.' }), {
+        status: 500,
+        headers,
+      });
+    }
+
+    // ─── 10. TELEGRAM NOTIFICATION (Strictly Clean Leads Only) ────────
+    // Suspicious leads are quarantined in D1 and NEVER sent to Telegram!
+    let telegramStatus = initialTelegramStatus;
+
+    if (spamEval.isClean && env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+      const tgDedupeKey = `${email}|${leadType}`;
+      if (!checkTelegramDedupe(tgDedupeKey)) {
+        try {
+          const message = buildTelegramMessage({
+            leadType, source, sourcePage, sourceCta,
+            name, email, phone, company, role,
+            payloadExtra, createdAt
+          });
+
+          const tgRes = await fetch(
+            `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: env.TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'HTML'
+              })
+            }
+          );
+
+          const tgData = await tgRes.json();
+          telegramStatus = tgData.ok ? 'sent' : 'failed';
+
+          // Update telegram_status in D1 asynchronously
+          if (leadId) {
+            await env.DB.prepare(
+              `UPDATE leads SET telegram_status = ? WHERE id = ?`
+            ).bind(telegramStatus, leadId).run().catch(() => {});
+          }
+        } catch (tgErr) {
+          console.error('[leads] Telegram delivery error:', tgErr.message);
+          telegramStatus = 'error';
+        }
+      } else {
+        telegramStatus = 'deduped';
+      }
+    }
+
+    logSecurityEvent({
+      action: spamEval.isSuspicious ? 'lead_quarantined' : 'lead_accepted',
+      clientIp,
+      leadType,
+      score: spamEval.score,
+      reasons: spamEval.reasons,
+      status: 201,
+    });
+
+    return new Response(JSON.stringify({
+      success: true,
+      leadId,
+      telegramStatus,
+      message: 'Yêu cầu của bạn đã được gửi thành công.'
+    }), {
+      status: 201,
+      headers,
+    });
+
+  } catch (err) {
+    console.error('[leads] Unexpected handler exception:', err.stack || err.message);
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Hệ thống đang bận. Vui lòng thử lại sau ít phút.'
+    }), {
       status: 500,
       headers,
     });
   }
-
-  // ─── SEND TELEGRAM NOTIFICATION ─────────────────────────────────────
-  // Telegram failure must NOT block lead save success
-  let telegramStatus = 'skipped';
-  const botToken = env.TELEGRAM_BOT_TOKEN;
-  const chatId   = env.TELEGRAM_CHAT_ID;
-
-  if (botToken && chatId) {
-    try {
-      const message = buildTelegramMessage({
-        leadType, source, sourcePage, sourceCta,
-        name, email, phone, company, role,
-        payloadExtra, createdAt
-      });
-
-      const tgRes = await fetch(
-        `https://api.telegram.org/bot${botToken}/sendMessage`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: 'HTML'
-          })
-        }
-      );
-
-      const tgData = await tgRes.json();
-      telegramStatus = tgData.ok ? 'sent' : 'failed';
-
-      // Update telegram_status in D1
-      if (leadId) {
-        await env.DB.prepare(
-          `UPDATE leads SET telegram_status = ? WHERE id = ?`
-        ).bind(telegramStatus, leadId).run().catch(() => {});
-      }
-    } catch (tgErr) {
-      console.error('[leads] Telegram error:', tgErr.message);
-      telegramStatus = 'error';
-    }
-  }
-
-  return new Response(JSON.stringify({ success: true, leadId, telegramStatus }), {
-    status: 201,
-    headers,
-  });
 }
 
-// Handle OPTIONS preflight
+// ─── OPTIONS PREFLIGHT ───────────────────────────────────────────────────
 export async function onRequestOptions(context) {
   const headers = getCorsHeaders(context.request);
   headers['Access-Control-Max-Age'] = '86400';
@@ -170,16 +435,16 @@ export async function onRequestOptions(context) {
   });
 }
 
-// Reject GET requests
+// ─── REJECT GET REQUESTS ─────────────────────────────────────────────────
 export async function onRequestGet(context) {
   const headers = getCorsHeaders(context.request);
-  return new Response(JSON.stringify({ success: false, error: 'Method not allowed. Use POST.' }), {
+  return new Response(JSON.stringify({ success: false, error: 'Phương thức không được hỗ trợ. Vui lòng sử dụng POST.' }), {
     status: 405,
     headers,
   });
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────────────────
+// ─── CORS HELPER ─────────────────────────────────────────────────────────
 function getCorsHeaders(request) {
   const origin = (request && request.headers ? request.headers.get('Origin') : '') || '';
   const isAllowedOrigin =
@@ -194,20 +459,12 @@ function getCorsHeaders(request) {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, cf-turnstile-response',
   };
 }
-function sanitize(val, maxLen) {
-  if (val === undefined || val === null) return '';
-  return String(val).trim().slice(0, maxLen);
-}
 
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-}
-
+// ─── TELEGRAM MESSAGE BUILDER ────────────────────────────────────────────
 function esc(val) {
-  // HTML escape for Telegram HTML mode
   return String(val || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -221,7 +478,6 @@ function line(label, val) {
 
 function buildTelegramMessage(data) {
   const { leadType, source, sourcePage, sourceCta, name, email, phone, company, role, payloadExtra, createdAt } = data;
-
   const dt = new Date(createdAt).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
 
   if (leadType === 'enterprise_consultation') {
@@ -260,12 +516,14 @@ function buildTelegramMessage(data) {
       line('Vai trò', role || payloadExtra.job_title),
       line('Mức độ dùng AI', payloadExtra.aiLevel),
       line('Muốn xem nhất', payloadExtra.mostInterested),
-      `\nTrang: /claude/`,
+      line('Chương trình', payloadExtra.program),
+      line('Mục tiêu', payloadExtra.intent),
+      line('Ghi chú / Việc cụ thể', payloadExtra.message),
+      `\nTrang: ${esc(sourcePage || '/claude/')}`,
       `\n──────────────`,
       `\n<i>${dt}</i>`,
     ].filter(Boolean).join('');
   }
 
-  // Generic fallback
   return `📋 <b>NEW LEAD</b>\nType: ${esc(leadType)}\nSource: ${esc(source)}\nEmail: ${esc(email)}\n<i>${dt}</i>`;
 }

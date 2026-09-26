@@ -538,7 +538,18 @@
   }
 }
 
+/* ── Turnstile Container ─────────────────────────────────────────────────── */
+.consult-turnstile-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 65px;
+  margin: 12px 0 6px;
+  width: 100%;
+}
+
 /* Body scroll lock */
 body.consult-open {
   overflow: hidden;
 }
+

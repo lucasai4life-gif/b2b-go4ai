@@ -6,6 +6,7 @@
 <title>Claude không chỉ để hỏi — Hội thảo trực tuyến 90 phút · Go4ai</title>
 <link rel="icon" href="assets/go4ai-badge.png" type="image/png">
 <meta name="description" content="6 cấp độ ứng dụng Claude trong doanh nghiệp: từ một cửa sổ chat đến hệ điều hành AI vận hành tuyển dụng, nhân sự và quản trị doanh nghiệp. Hội thảo trực tuyến miễn phí 90 phút cùng Lucas Đặng & Go4ai.">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Medium.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Bold.woff2") format("woff2");font-style:normal;font-weight:600 700;font-display:swap}</style>
 <style>
   :root{
@@ -1360,6 +1361,8 @@
             </select>
           </div>
 
+          <div class="cf-turnstile" id="claude-turnstile" data-sitekey="0x4AAAAAAFEKUSpRYiMMOJsg" data-theme="dark" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
+
           <button type="submit" class="cta-btn submit" id="submit">
             <span class="spin" aria-hidden="true"></span>
             <span class="submit__t">Đăng ký tham gia</span>
@@ -1494,6 +1497,8 @@
             <p class="hintx" id="e-freq">Việc lặp càng thường xuyên, thời gian tiết kiệm được càng rõ.</p>
             <p class="err" id="err-freq" role="alert"></p>
           </div>
+
+          <div class="cf-turnstile" id="claude-off-turnstile" data-sitekey="0x4AAAAAAFEKUSpRYiMMOJsg" data-theme="dark" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
 
           <button type="submit" class="cta-btn submit" id="submitOff">
             <span class="spin" aria-hidden="true"></span>
@@ -2126,7 +2131,21 @@
   /* Gửi lead thật tới handler chung của theme (functions.php →
      gemglobal_handle_lead_submission → CPT gem_lead). gemConfig do
      gemglobal_static_pages() chèn vào <head>. */
+  var pageLoadTime = Date.now();
   function sendLead(payload){
+    var turnstileToken = payload.turnstileToken || '';
+    if (!turnstileToken && window.turnstile) {
+      try { turnstileToken = window.turnstile.getResponse(); } catch(e) {}
+    }
+    if (!turnstileToken) {
+      var cfInput = document.querySelector('[name="cf-turnstile-response"]');
+      if (cfInput) turnstileToken = cfInput.value;
+    }
+
+    if (!turnstileToken) {
+      return Promise.reject(new Error('Vui lòng hoàn thành xác thực bảo mật trước khi gửi.'));
+    }
+
     // Map claude form fields to unified lead API schema
     var urlParams = new URLSearchParams(window.location.search);
     var unifiedPayload = {
@@ -2144,6 +2163,8 @@
       intent:        payload.intent || '',
       program:       payload.program || '',
       message:       payload.message || '',
+      turnstileToken: turnstileToken,
+      clientTimestamp: pageLoadTime,
       // UTM
       utm_source:    urlParams.get('utm_source')   || undefined,
       utm_medium:    urlParams.get('utm_medium')   || undefined,
@@ -2256,9 +2277,14 @@
       okBox.focus();
     }).catch(function(error){
       /* error: giữ nguyên dữ liệu đã nhập, cho phép gửi lại */
-      failBox.textContent = error && error.message === 'no-endpoint'
-        ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
-        : 'Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
+      if (window.turnstile) {
+        try { window.turnstile.reset(); } catch(e) {}
+      }
+      failBox.textContent = (error && error.message && error.message !== 'rejected' && error.message !== 'no-endpoint')
+        ? error.message
+        : (error && error.message === 'no-endpoint'
+          ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
+          : 'Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.');
       failBox.classList.add('on');
       btn.disabled = false;
       btn.classList.remove('is-loading');
@@ -2480,9 +2506,14 @@
         okOff.setAttribute('tabindex','-1');
         okOff.focus();
       }).catch(function(error){
-        failOff.textContent = error && error.message === 'no-endpoint'
-          ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
-          : 'Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
+        if (window.turnstile) {
+          try { window.turnstile.reset(); } catch(e) {}
+        }
+        failOff.textContent = (error && error.message && error.message !== 'rejected' && error.message !== 'no-endpoint')
+          ? error.message
+          : (error && error.message === 'no-endpoint'
+            ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
+            : 'Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.');
         failOff.classList.add('on');
         offBtn.disabled = false;
         offBtn.classList.remove('is-loading');

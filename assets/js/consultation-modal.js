@@ -132,6 +132,9 @@
     '          </label>',
     '        </div>',
     '        <span class="consult-error" id="cf-consent-err" role="alert"></span>',
+    '',
+    '        <!-- Cloudflare Turnstile Verification -->',
+    '        <div class="consult-turnstile-wrap" id="consult-turnstile" style="margin: 0.85rem 0 0.5rem; min-height: 65px; display: flex; justify-content: center;"></div>',
 
     /* Footer */
     '        <div class="consult-footer">',
@@ -147,9 +150,13 @@
   ].join('\n');
 
   /* ── State ──────────────────────────────────────────────────────────── */
-  var overlay    = null;
-  var lastOpener = null;
-  var sourcePage = window.location.pathname.split('/').pop() || 'index.html';
+  var overlay           = null;
+  var lastOpener        = null;
+  var sourcePage        = window.location.pathname.split('/').pop() || 'index.html';
+  var turnstileWidgetId = null;
+  var turnstileToken    = '';
+  var modalOpenTime     = 0;
+  var TURNSTILE_SITEKEY = '0x4AAAAAAFEKUSpRYiMMOJsg';
 
   /* ── Helpers ─────────────────────────────────────────────────────────── */
   function qs(sel, ctx) { return (ctx || document).querySelector(sel); }
@@ -207,6 +214,52 @@
     }
   }
 
+  /* ── Turnstile Integration ───────────────────────────────────────────── */
+  function initTurnstile() {
+    var container = qs('#consult-turnstile', overlay);
+    if (!container) return;
+
+    function renderWidget() {
+      if (!window.turnstile) return;
+      if (turnstileWidgetId !== null) {
+        try { window.turnstile.reset(turnstileWidgetId); } catch (e) {}
+        return;
+      }
+      try {
+        turnstileWidgetId = window.turnstile.render(container, {
+          sitekey: TURNSTILE_SITEKEY,
+          theme: 'dark',
+          callback: function(token) {
+            turnstileToken = token;
+            var errEl = qs('#consult-submit-err');
+            if (errEl) errEl.style.display = 'none';
+          },
+          'expired-callback': function() {
+            turnstileToken = '';
+          },
+          'error-callback': function() {
+            turnstileToken = '';
+          }
+        });
+      } catch (err) {
+        console.warn('Turnstile render warning:', err);
+      }
+    }
+
+    if (window.turnstile) {
+      renderWidget();
+    } else {
+      var s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      s.async = true;
+      s.defer = true;
+      s.onload = function() {
+        if (window.turnstile) renderWidget();
+      };
+      document.head.appendChild(s);
+    }
+  }
+
   /* ── Open / Close ────────────────────────────────────────────────────── */
   function openModal(openerEl, sourceCta) {
     lastOpener = openerEl || null;
@@ -221,6 +274,11 @@
     /* Clear all errors */
     qsa('.consult-error', overlay).forEach(function (e) { clearError(e); });
     qsa('.' + ERROR_CLASS, overlay).forEach(function (e) { e.classList.remove(ERROR_CLASS); });
+
+    /* Reset & init Turnstile verification */
+    modalOpenTime = Date.now();
+    turnstileToken = '';
+    initTurnstile();
 
     /* Store source CTA for payload */
     overlay.dataset.sourceCta  = sourceCta  || (openerEl ? (openerEl.textContent || '').trim() : '');
@@ -393,6 +451,20 @@
        });
     ─────────────────────────────────────────────────────────────────── */
 
+    // Verify Turnstile token
+    var token = turnstileToken;
+    if (window.turnstile && turnstileWidgetId !== null) {
+      var resp = window.turnstile.getResponse(turnstileWidgetId);
+      if (resp) token = resp;
+    }
+
+    if (!token) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Gửi yêu cầu tư vấn →';
+      showSubmitError('Vui lòng hoàn thành xác thực bảo mật trước khi gửi.');
+      return;
+    }
+
     // Capture UTM and referrer from current page URL
     var urlParams = new URLSearchParams(window.location.search);
     payload.utm_source   = urlParams.get('utm_source')   || undefined;
@@ -402,6 +474,8 @@
     payload.referrer     = document.referrer || undefined;
     payload.leadType     = 'enterprise_consultation';
     payload.source       = 'main_website';
+    payload.turnstileToken = token;
+    payload.clientTimestamp = modalOpenTime;
 
     fetch('/api/leads', {
       method: 'POST',
@@ -409,7 +483,7 @@
       body: JSON.stringify(payload)
     })
     .then(function(res) {
-      if (!res.ok) return res.json().then(function(d) { throw new Error(d.error || 'Server error ' + res.status); });
+      if (!res.ok) return res.json().then(function(d) { throw new Error(d.error || 'Lỗi xử lý từ máy chủ (' + res.status + ')'); });
       return res.json();
     })
     .then(function() {
@@ -418,7 +492,10 @@
     .catch(function(err) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Gửi yêu cầu tư vấn →';
-      showSubmitError('Gửi thất bại. Vui lòng thử lại hoặc liên hệ trực tiếp GO4AI.');
+      if (window.turnstile && turnstileWidgetId !== null) {
+        try { window.turnstile.reset(turnstileWidgetId); } catch (e) {}
+      }
+      showSubmitError(err.message || 'Gửi thất bại. Vui lòng thử lại hoặc liên hệ trực tiếp GO4AI.');
     });
   }
 

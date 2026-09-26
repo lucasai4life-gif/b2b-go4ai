@@ -44,3 +44,4 @@ yarn-error.log*
 
 # Local agent workspace (memory, per-project notes) — never deploy
 .workbuddy-ai/
+_worker.bundle
