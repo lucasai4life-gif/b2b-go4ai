@@ -1,0 +1,1821 @@
+/* ============================================================================
+   LUCAS SYSTEM — page-specific presentation layer for lucas.html
+   ----------------------------------------------------------------------------
+   Art direction: EXECUTIVE AI PROFILE × ENTERPRISE COMMAND SYSTEM
+                  × TECHNOLOGY EDITORIAL
+
+   Loaded AFTER go4ai.css + consultation-modal.css. Every rule is scoped to
+   `body.lucas-page` so no other page on the site can be affected.
+
+   VISUAL RHYTHM
+     HEADER ................ DARK (shared, already dark — untouched)
+     HERO .................. DARK / CINEMATIC
+     EVIDENCE .............. LIGHT
+     AI CAPABILITY ......... DARK
+     DEPLOYMENT PROTOCOL ... PALE
+     OPERATING CAPABILITIES  WHITE
+     CREDENTIALS & PRESS ... LIGHT EDITORIAL
+     TRAINING MODULES ...... PALE
+     CTA ................... DARK
+
+   MOTION CONTRACT (hard rule for this repo)
+     CONTENT VISIBLE BY DEFAULT. All hidden states are gated behind
+     `.lx-motion`, a class added at RUNTIME by lucas-system.js only after it
+     has verified the DOM it needs. If that script never runs, fails to load,
+     throws, or is blocked, no element is ever hidden.
+     A watchdog inside lucas-system.js removes `.lx-motion` and restores every
+     animated value if anything goes wrong. `prefers-reduced-motion: reduce`
+     skips the whole layer.
+   ========================================================================= */
+
+/* ---------------------------------------------------------------- 1. TOKENS */
+body.lucas-page {
+  --lx-ink:          #070b0a;
+  --lx-ink-2:        #0b1311;
+  --lx-ink-3:        #101a17;
+  --lx-ink-4:        #16231e;
+  --lx-emerald-deep: #052e22;
+  --lx-emerald:      #10b981;
+  --lx-emerald-br:   #34d399;
+  --lx-emerald-txt:  #6ee7b7;
+  --lx-line:         rgba(52, 211, 153, 0.15);
+  --lx-line-strong:  rgba(52, 211, 153, 0.34);
+  --lx-hi:           #eef5f2;
+  --lx-txt:          rgba(230, 244, 239, 0.84);
+  --lx-txt-dim:      rgba(196, 219, 211, 0.62);
+  --lx-txt-faint:    rgba(178, 205, 196, 0.42);
+
+  --lx-pale:         #edf3f1;
+  --lx-pale-2:       #e6efec;
+  --lx-light:        #f7faf9;
+  --lx-white:        #ffffff;
+
+  --lx-ease:         cubic-bezier(0.16, 1, 0.3, 1);
+  --lx-ease-soft:    cubic-bezier(0.4, 0, 0.2, 1);
+  --lx-mono:         var(--font-mono, 'Azeret Mono', monospace);
+
+  background-color: var(--lx-light);
+  color: var(--gray-900);
+  /* Decorative layers are clipped to the section, never the document. */
+  overflow-x: clip;
+}
+
+/* Shared page shell */
+body.lucas-page .lucas-section { padding: 76px 0; position: relative; }
+
+body.lucas-page .lucas-section__eyebrow {
+  font-family: var(--lx-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green-700);
+  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.lucas-page .lucas-section__eyebrow::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+  flex: 0 0 auto;
+}
+
+body.lucas-page .lucas-section__title {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.24;
+  margin: 0;
+  color: var(--gray-900);
+}
+
+body.lucas-page .lucas-section__lead {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  color: var(--gray-600);
+  line-height: 1.55;
+  max-width: 62ch;
+}
+
+/* ------------------------------------------------- 2. TECHNICAL DECOR UTILS */
+/* Faint blueprint grid, faded out with a mask so it never reads as noise. */
+.lx-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, rgba(52, 211, 153, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 211, 153, 0.07) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(120% 90% at 78% 8%, #000 0%, transparent 74%);
+  mask-image: radial-gradient(120% 90% at 78% 8%, #000 0%, transparent 74%);
+}
+
+.lx-grid--center {
+  -webkit-mask-image: radial-gradient(90% 80% at 50% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(90% 80% at 50% 0%, #000 0%, transparent 72%);
+  background-size: 64px 64px;
+  background-image:
+    linear-gradient(to right, rgba(52, 211, 153, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 211, 153, 0.06) 1px, transparent 1px);
+}
+
+/* Corner brackets used on technical frames */
+.lx-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  z-index: 4;
+  border: 0 solid var(--lx-emerald-br);
+  opacity: 0.55;
+}
+.lx-corner--tl { top: 10px; left: 10px; border-top-width: 1px; border-left-width: 1px; }
+.lx-corner--tr { top: 10px; right: 10px; border-top-width: 1px; border-right-width: 1px; }
+.lx-corner--bl { bottom: 10px; left: 10px; border-bottom-width: 1px; border-left-width: 1px; }
+.lx-corner--br { bottom: 10px; right: 10px; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* Mono system label */
+.lx-label {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.lx-label--dim  { color: var(--lx-txt-faint); }
+.lx-label--em   { color: var(--lx-emerald-br); }
+.lx-label--ink  { color: var(--green-700); }
+.lx-label--muted { color: var(--gray-400); }
+
+/* Small pulsing status dot */
+.lx-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lx-emerald);
+  display: inline-block;
+  flex: 0 0 auto;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+}
+.lx-motion .lx-dot { animation: lx-dot-pulse 2.6s var(--lx-ease-soft) infinite; }
+
+@keyframes lx-dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+  50%      { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+}
+
+/* ---------------------------------------------- 3. MOTION GATING & FAILSAFE */
+/* Nothing below is applied until lucas-system.js adds `.lx-motion`. */
+.lx-motion [data-lx-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--lx-ease), transform 0.8s var(--lx-ease);
+}
+.lx-motion [data-lx-reveal].is--lx-in { opacity: 1; transform: none; }
+
+.lx-motion [data-lx-reveal='sm'] { transform: translateY(10px); }
+.lx-motion [data-lx-reveal='left']  { transform: translateX(-24px); }
+.lx-motion [data-lx-reveal='right'] { transform: translateX(24px); }
+.lx-motion [data-lx-reveal='none']  { transform: none; }
+
+.lx-motion [data-lx-stagger] > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s var(--lx-ease), transform 0.7s var(--lx-ease);
+}
+.lx-motion [data-lx-stagger].is--lx-in > * { opacity: 1; transform: none; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(1) { transition-delay: 0.04s; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(2) { transition-delay: 0.10s; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(3) { transition-delay: 0.16s; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(4) { transition-delay: 0.22s; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(5) { transition-delay: 0.28s; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(6) { transition-delay: 0.34s; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(7) { transition-delay: 0.40s; }
+.lx-motion [data-lx-stagger].is--lx-in > *:nth-child(8) { transition-delay: 0.46s; }
+
+/* Heading mask reveal — clip-path only, text stays selectable */
+.lx-motion .lx-mask {
+  -webkit-clip-path: inset(0 100% 0 0);
+  clip-path: inset(0 100% 0 0);
+  transition: -webkit-clip-path 1s var(--lx-ease), clip-path 1s var(--lx-ease);
+}
+.lx-motion .lx-mask.is--lx-in {
+  -webkit-clip-path: inset(0 0 0 0);
+  clip-path: inset(0 0 0 0);
+}
+
+/* ------------------------------------------------------------------ 4. HERO */
+body.lucas-page .lucas-hero {
+  padding: 40px 0 46px;
+  background: var(--lx-ink);
+  overflow: hidden;
+}
+
+body.lucas-page .lucas-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(80% 120% at 84% 6%, rgba(16, 185, 129, 0.16) 0%, transparent 62%),
+    radial-gradient(70% 100% at 4% 96%, rgba(5, 46, 34, 0.9) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body.lucas-page .lucas-hero > .padding-global { position: relative; z-index: 1; }
+
+body.lucas-page .lucas-executive-hero {
+  position: relative;
+  background: var(--lx-ink-2);
+  border: 1px solid var(--lx-line);
+  border-radius: 16px;
+  grid-template-columns: 32% 68%;
+  overflow: hidden;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  margin-bottom: 18px;
+}
+
+/* blueprint grid + coordinate rules behind the hero */
+body.lucas-page .lucas-executive-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(52, 211, 153, 0.065) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 211, 153, 0.065) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(110% 100% at 72% 12%, #000 0%, transparent 76%);
+  mask-image: radial-gradient(110% 100% at 72% 12%, #000 0%, transparent 76%);
+}
+
+body.lucas-page .lucas-executive-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  z-index: 3;
+  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.55), transparent);
+  pointer-events: none;
+}
+
+/* --- portrait column --- */
+body.lucas-page .lucas-hero__portrait-col {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, var(--lx-ink-3) 0%, var(--lx-ink) 100%);
+  border-right: 1px solid var(--lx-line);
+}
+
+body.lucas-page .lucas-hero__portrait-frame { position: relative; overflow: hidden; }
+
+body.lucas-page .lucas-hero__portrait-img {
+  position: relative;
+  z-index: 1;
+  object-position: center 8%;
+  filter: saturate(1.02) contrast(1.03);
+}
+
+/* keep the portrait readable against the dark frame */
+body.lucas-page .lucas-hero__portrait-col::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(7, 11, 10, 0.5) 0%, transparent 26%, transparent 62%, rgba(7, 11, 10, 0.72) 100%),
+    linear-gradient(90deg, rgba(7, 11, 10, 0.35) 0%, transparent 34%);
+}
+
+/* single scan sweep across the portrait, runs once */
+.lx-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 24%;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(180deg, transparent, rgba(52, 211, 153, 0.16) 55%, rgba(52, 211, 153, 0.42) 100%);
+}
+.lx-motion .lx-scan { animation: lx-scan-run 2.4s var(--lx-ease-soft) 0.35s 1 both; }
+
+@keyframes lx-scan-run {
+  0%   { opacity: 0; transform: translateY(-110%); }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(420%); }
+}
+
+body.lucas-page .lucas-hero__portrait-badge {
+  z-index: 5;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  justify-content: flex-start;
+  background: rgba(7, 11, 10, 0.82);
+  border: 1px solid var(--lx-line-strong);
+  border-radius: 6px;
+  padding: 7px 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.625rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+body.lucas-page .lucas-badge-dot {
+  background: var(--lx-emerald-br);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+}
+
+/* --- content column --- */
+body.lucas-page .lucas-hero__content-col {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  padding: 34px 38px;
+  justify-content: center;
+}
+
+body.lucas-page .lucas-hero__tech-bg {
+  top: -14px;
+  right: -14px;
+  opacity: 0.85;
+  filter: brightness(1.5) saturate(1.15);
+}
+
+body.lucas-page .lucas-hero__content-inner { gap: 16px; }
+
+/* hero meta strip: PROFILE / 01 · GO4AI SYSTEM · STATUS / VERIFIED */
+.lx-hero__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--lx-line);
+  margin-bottom: 2px;
+}
+
+.lx-hero__meta-sep {
+  width: 1px;
+  height: 10px;
+  background: var(--lx-line-strong);
+  flex: 0 0 auto;
+}
+
+body.lucas-page .lucas-overview__role-chip {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--lx-emerald-txt);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--lx-line-strong);
+  padding: 5px 11px;
+  border-radius: 4px;
+}
+
+body.lucas-page .lucas-overview__headline {
+  font-size: clamp(1.625rem, 2.4vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  color: var(--lx-hi);
+  line-height: 1.2;
+  margin: 4px 0 0;
+  text-wrap: balance;
+}
+
+/* system chips (was: pipe-separated subpills) */
+body.lucas-page .lucas-overview__subpills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lx-txt-dim);
+}
+
+body.lucas-page .lucas-overview__subpills span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--lx-line);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.025);
+  transition: border-color 0.3s var(--lx-ease-soft), color 0.3s var(--lx-ease-soft);
+}
+
+body.lucas-page .lucas-overview__subpills span::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--lx-emerald);
+  flex: 0 0 auto;
+}
+
+body.lucas-page .lucas-overview__subpills span:not(:last-child)::after { content: none; }
+
+body.lucas-page .lucas-overview__quote {
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid var(--lx-line);
+  border-left: 2px solid var(--lx-emerald);
+  border-radius: 0 8px 8px 0;
+  padding: 15px 18px;
+  font-size: 0.9rem;
+  color: var(--lx-txt);
+  line-height: 1.6;
+}
+
+body.lucas-page .lucas-overview__quote strong { color: var(--lx-hi); }
+body.lucas-page .lucas-overview__quote p[style] { color: var(--lx-txt-dim) !important; font-size: 0.8125rem !important; }
+
+/* 3 compact enterprise data modules */
+body.lucas-page .lucas-cap-strip { gap: 10px; }
+
+body.lucas-page .lucas-cap-block {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.015) 100%);
+  border: 1px solid var(--lx-line);
+  border-radius: 8px;
+  padding: 13px 14px 14px;
+  gap: 5px;
+  transition: border-color 0.35s var(--lx-ease-soft), background 0.35s var(--lx-ease-soft);
+}
+
+body.lucas-page .lucas-cap-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14px;
+  width: 22px;
+  height: 1px;
+  background: var(--lx-emerald-br);
+  opacity: 0.6;
+}
+
+body.lucas-page .lucas-cap-block:hover {
+  border-color: var(--lx-line-strong);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+body.lucas-page .lucas-cap-block__label {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--lx-emerald-br);
+}
+
+body.lucas-page .lucas-cap-block__desc {
+  font-size: 0.8125rem;
+  color: var(--lx-txt);
+  line-height: 1.5;
+}
+
+body.lucas-page .lucas-ecosystem {
+  font-size: 0.75rem;
+  color: var(--lx-txt-dim);
+  border-top: 1px solid var(--lx-line);
+  padding-top: 13px;
+  line-height: 1.55;
+}
+
+body.lucas-page .lucas-ecosystem strong {
+  font-family: var(--lx-mono);
+  color: var(--lx-emerald-txt);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-size: 0.6875rem;
+}
+
+/* ------------------------------------------------- 5. CREDIBILITY RAIL DARK */
+body.lucas-page .lucas-credibility-rail {
+  position: relative;
+  background: var(--lx-ink-2);
+  border: 1px solid var(--lx-line);
+  border-radius: 12px;
+  padding: 0 22px;
+  grid-template-columns: 1.25fr 1.3fr 0.9fr;
+  gap: 0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+body.lucas-page .lucas-credibility-rail::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 160% at 100% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+}
+
+/* Grid children must be allowed to shrink, or a long nowrap mono label blows
+   the single mobile track out past the rail and gets clipped away. */
+body.lucas-page .lucas-credibility-rail > * { min-width: 0; }
+
+/* VERIFIED PROFILE STRIP header bar */
+.lx-rail__head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 9px 0 8px;
+  border-bottom: 1px solid var(--lx-line);
+  margin-bottom: 2px;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.lx-rail__head-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.lx-rail__head-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+body.lucas-page .lucas-cred-rail__identity,
+body.lucas-page .lucas-cred-rail__contacts {
+  border-right: 1px solid var(--lx-line);
+  padding-right: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+body.lucas-page .lucas-cred-rail__identity { padding-top: 14px; padding-bottom: 14px; }
+body.lucas-page .lucas-cred-rail__contacts { padding-top: 14px; padding-bottom: 14px; }
+body.lucas-page .lucas-cred-rail__favikon   { padding-top: 14px; padding-bottom: 14px; position: relative; z-index: 1; }
+
+body.lucas-page .lucas-cred-rail__name {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--lx-hi);
+}
+
+body.lucas-page .lucas-cred-rail__alias {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lx-emerald-br);
+  font-family: var(--lx-mono);
+}
+
+body.lucas-page .lucas-cred-rail__role {
+  font-size: 0.78125rem;
+  color: var(--lx-txt-dim);
+  line-height: 1.4;
+}
+
+body.lucas-page .lucas-tag {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--lx-txt-dim);
+  border: 1px solid var(--lx-line);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+body.lucas-page .lucas-contact-chip {
+  font-size: 0.78125rem;
+  color: var(--lx-txt);
+  gap: 8px;
+  transition: color 0.25s var(--lx-ease-soft);
+}
+
+body.lucas-page .lucas-contact-chip svg { color: var(--lx-emerald); }
+body.lucas-page .lucas-contact-chip:hover { color: var(--lx-emerald-txt); }
+
+/* Favikon block — verified indicator, mono, count-up */
+body.lucas-page .lucas-favikon-badge {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.03) 100%);
+  border: 1px solid var(--lx-line-strong);
+  border-radius: 8px;
+  padding: 10px 13px;
+}
+
+body.lucas-page .lucas-favikon-badge__header {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  color: var(--lx-emerald-txt);
+  margin-bottom: 7px;
+}
+
+body.lucas-page .lucas-favikon-badge__num {
+  font-family: var(--lx-mono);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+body.lucas-page .lucas-favikon-badge__label {
+  font-size: 0.625rem;
+  color: var(--lx-txt-dim);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+/* -------------------------------------------------------- 6. EVIDENCE LIGHT */
+body.lucas-page #dau-an {
+  background: var(--lx-light);
+  border-top: 1px solid rgba(21, 23, 26, 0.08);
+  border-bottom: 1px solid rgba(21, 23, 26, 0.08);
+}
+
+/* enterprise evidence dashboard */
+body.lucas-page .lucas-impact-rail {
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.1);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(21, 23, 26, 0.03);
+}
+
+body.lucas-page .lucas-impact-rail__item {
+  padding: 22px 22px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2px;
+  transition: background-color 0.4s var(--lx-ease-soft);
+}
+
+body.lucas-page .lucas-impact-rail__item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--lx-emerald);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--lx-ease);
+}
+
+body.lucas-page .lucas-impact-rail__item.is--lx-live::before,
+body.lucas-page .lucas-impact-rail.is--lx-in .lucas-impact-rail__item::before { transform: scaleX(1); }
+
+body.lucas-page .lucas-impact-rail.is--lx-in .lucas-impact-rail__item { background: rgba(16, 185, 129, 0.03); }
+body.lucas-page .lucas-impact-rail.is--lx-in .lucas-impact-rail__item:nth-child(2)::before { transition-delay: 0.12s; }
+body.lucas-page .lucas-impact-rail.is--lx-in .lucas-impact-rail__item:nth-child(3)::before { transition-delay: 0.24s; }
+body.lucas-page .lucas-impact-rail.is--lx-in .lucas-impact-rail__item:nth-child(4)::before { transition-delay: 0.36s; }
+
+body.lucas-page .lucas-impact-rail__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 1px;
+  background: rgba(21, 23, 26, 0.08);
+}
+
+/* mono technical index on each metric */
+.lx-metric__idx {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+body.lucas-page .lucas-impact-rail__num {
+  font-family: var(--lx-mono);
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--gray-900);
+  font-variant-numeric: tabular-nums;
+}
+
+body.lucas-page .lucas-impact-rail__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-top: 7px;
+  line-height: 1.3;
+}
+
+body.lucas-page .lucas-impact-rail__desc {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  margin-top: 3px;
+}
+
+/* evidence panels */
+body.lucas-page .lucas-highlight-panels { gap: 16px; }
+
+body.lucas-page .lucas-highlight-panel {
+  position: relative;
+  border-radius: 12px;
+  padding: 24px 26px;
+  gap: 22px;
+  overflow: hidden;
+  transition: transform 0.3s var(--lx-ease), border-color 0.3s var(--lx-ease), box-shadow 0.3s var(--lx-ease);
+}
+
+body.lucas-page .lucas-highlight-panel--1 {
+  background: linear-gradient(135deg, #f0fdf7 0%, #ffffff 72%);
+  border: 1px solid rgba(16, 185, 129, 0.38);
+  box-shadow: 0 2px 12px rgba(8, 144, 108, 0.06);
+}
+
+body.lucas-page .lucas-highlight-panel--2 {
+  background: linear-gradient(135deg, #f5faf8 0%, #ffffff 72%);
+  border: 1px solid rgba(21, 23, 26, 0.13);
+  box-shadow: 0 2px 12px rgba(21, 23, 26, 0.03);
+}
+
+body.lucas-page .lucas-highlight-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.07));
+  opacity: 0;
+  transition: opacity 0.4s var(--lx-ease-soft);
+  pointer-events: none;
+}
+
+body.lucas-page .lucas-highlight-panel:hover { transform: translateY(-2px); border-color: var(--green-600); }
+body.lucas-page .lucas-highlight-panel:hover::after { opacity: 1; }
+
+body.lucas-page .lucas-highlight-panel__stat {
+  font-family: var(--lx-mono);
+  font-size: clamp(1.75rem, 2.8vw, 2.375rem);
+  font-weight: 800;
+  color: var(--green-700);
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+
+body.lucas-page .lucas-highlight-panel__badge {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--green-700);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body.lucas-page .lucas-highlight-panel__badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--lx-emerald);
+  flex: 0 0 auto;
+}
+
+body.lucas-page .lucas-highlight-panel__text { font-size: 0.90625rem; color: var(--gray-700); line-height: 1.5; }
+body.lucas-page .lucas-highlight-panel__text strong { color: var(--gray-900); }
+
+/* ---------------------------------------------------- 7. CAPABILITY DARK */
+body.lucas-page #tru-cot-nang-luc {
+  background: var(--lx-ink);
+  overflow: hidden;
+}
+
+body.lucas-page #tru-cot-nang-luc .lucas-section__eyebrow { color: var(--lx-emerald-br); }
+body.lucas-page #tru-cot-nang-luc .lucas-section__title { color: var(--lx-hi); }
+body.lucas-page #tru-cot-nang-luc .lucas-section__header { position: relative; z-index: 1; }
+
+body.lucas-page #tru-cot-nang-luc .lucas-bento__grid {
+  position: relative;
+  z-index: 1;
+  gap: 16px;
+}
+
+body.lucas-page .lucas-bento-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.012) 100%);
+  border: 1px solid var(--lx-line);
+  border-radius: 14px;
+  padding: 24px;
+  overflow: hidden;
+  transition: transform 0.4s var(--lx-ease), border-color 0.4s var(--lx-ease), box-shadow 0.4s var(--lx-ease);
+}
+
+body.lucas-page .lucas-bento-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lx-emerald-br), transparent);
+  opacity: 0;
+  transition: opacity 0.5s var(--lx-ease-soft);
+  pointer-events: none;
+}
+
+body.lucas-page .lucas-bento-card:hover { transform: translateY(-3px); border-color: var(--lx-line-strong); }
+
+/* auto-active + hover/focus active state */
+body.lucas-page .lucas-bento-card.is--lx-active {
+  border-color: rgba(52, 211, 153, 0.5);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, rgba(255, 255, 255, 0.015) 100%);
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.14), 0 20px 48px rgba(0, 0, 0, 0.42);
+}
+
+body.lucas-page .lucas-bento-card.is--lx-active::after { opacity: 1; }
+
+body.lucas-page .lucas-bento-card--featured {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.09) 0%, rgba(255, 255, 255, 0.015) 100%);
+  border-color: rgba(52, 211, 153, 0.34);
+  box-shadow: none;
+}
+
+body.lucas-page .lucas-bento-card__badge {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  color: var(--lx-emerald-br);
+}
+
+body.lucas-page .lucas-bento-card__featured-tag {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  background: var(--lx-emerald-deep);
+  border: 1px solid var(--lx-line-strong);
+  color: var(--lx-emerald-txt);
+  padding: 3px 7px;
+}
+
+body.lucas-page .lucas-bento-card__title { color: var(--lx-hi); font-size: 1.1875rem; margin: 0 0 9px; }
+body.lucas-page .lucas-bento-card__desc  { color: var(--lx-txt-dim); font-size: 0.84375rem; line-height: 1.6; margin: 0 0 20px; }
+
+/* micro-diagrams re-skinned for dark */
+body.lucas-page .micro-diagram {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--lx-line);
+  border-radius: 9px;
+  padding: 15px 13px;
+  margin-top: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+body.lucas-page .micro-diagram--featured {
+  background: rgba(16, 185, 129, 0.07);
+  border-color: rgba(52, 211, 153, 0.28);
+}
+
+body.lucas-page .passport-flow__icon {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--lx-line);
+  color: var(--lx-txt);
+}
+
+body.lucas-page .passport-flow__node--verified .passport-flow__icon {
+  background: var(--lx-emerald);
+  border-color: var(--lx-emerald-br);
+  color: #04231a;
+}
+
+body.lucas-page .passport-flow__label { color: var(--lx-txt-dim); font-size: 0.625rem; }
+body.lucas-page .passport-flow__arrow { color: var(--lx-txt-faint); }
+
+body.lucas-page .enterprise-pipeline__step {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: var(--lx-line);
+}
+
+body.lucas-page .enterprise-pipeline__step--active,
+body.lucas-page .enterprise-pipeline__step.is--lx-node {
+  border-color: var(--lx-emerald-br);
+  background: rgba(16, 185, 129, 0.18);
+}
+
+body.lucas-page .enterprise-pipeline__step-idx { color: var(--lx-emerald-br); font-size: 0.625rem; }
+body.lucas-page .enterprise-pipeline__step-name { color: var(--lx-hi); }
+
+body.lucas-page .enterprise-pipeline__meta {
+  color: var(--lx-txt-dim);
+  border-top-color: var(--lx-line);
+  font-size: 0.625rem;
+}
+
+body.lucas-page .agentic-tree__leader {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--lx-line);
+  color: var(--lx-txt);
+}
+
+body.lucas-page .agentic-tree__agent {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: var(--lx-line-strong);
+  color: var(--lx-emerald-txt);
+  font-size: 0.625rem;
+  transition: background-color 0.35s var(--lx-ease-soft), border-color 0.35s var(--lx-ease-soft);
+}
+
+body.lucas-page .agentic-tree__review { color: var(--lx-txt-dim); font-size: 0.625rem; }
+body.lucas-page .agentic-tree__review::before { color: var(--lx-emerald-br); }
+
+/* rotating "node active" highlight driven by data-lx-rotate */
+body.lucas-page .agentic-tree__agent.is--lx-node {
+  background: rgba(16, 185, 129, 0.3);
+  border-color: var(--lx-emerald-br);
+  color: #ffffff;
+}
+
+body.lucas-page .passport-flow__node.is--lx-node .passport-flow__icon {
+  background: rgba(16, 185, 129, 0.26);
+  border-color: var(--lx-emerald-br);
+  color: var(--lx-emerald-txt);
+}
+
+body.lucas-page .passport-flow__node.is--lx-node .passport-flow__label { color: var(--lx-emerald-txt); }
+
+/* connector / data pulse while a card is active */
+.lx-pulse-line {
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 8px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lx-line-strong), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+.lx-motion .lucas-bento-card.is--lx-active .lx-pulse-line { opacity: 1; }
+
+.lx-pulse-line::after {
+  content: '';
+  position: absolute;
+  top: -1.5px;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--lx-emerald-br);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.9);
+  opacity: 0;
+}
+
+.lx-motion .lucas-bento-card.is--lx-active .lx-pulse-line::after {
+  animation: lx-travel 2.2s var(--lx-ease-soft) infinite;
+}
+
+@keyframes lx-travel {
+  0%   { left: 0; opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { left: calc(100% - 4px); opacity: 0; }
+}
+
+/* -------------------------------------------- 8. DEPLOYMENT PROTOCOL (PALE) */
+body.lucas-page #quy-trinh-6-buoc {
+  background: var(--lx-pale);
+  border-top: 1px solid rgba(21, 23, 26, 0.07);
+  border-bottom: 1px solid rgba(21, 23, 26, 0.07);
+  overflow: hidden;
+}
+
+body.lucas-page .lucas-journey-box {
+  position: relative;
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.1);
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 1px 3px rgba(21, 23, 26, 0.03);
+}
+
+body.lucas-page .lucas-journey-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 30px;
+  width: 46px;
+  height: 2px;
+  background: var(--lx-emerald);
+}
+
+/* mono protocol header */
+.lx-protocol__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding-bottom: 12px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(21, 23, 26, 0.08);
+}
+
+.lx-protocol__head-left,
+.lx-protocol__head-right { display: inline-flex; align-items: center; gap: 10px; }
+
+body.lucas-page .lucas-journey__principle {
+  border-left: 2px solid var(--lx-emerald);
+  padding-left: 18px;
+  margin-bottom: 26px;
+}
+
+body.lucas-page .lucas-journey__eyebrow {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--green-700);
+  margin-bottom: 6px;
+}
+
+body.lucas-page .lucas-journey__statement {
+  font-size: clamp(1.0625rem, 1.8vw, 1.375rem);
+  font-weight: 700;
+  color: var(--gray-900);
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+body.lucas-page .lucas-journey__desc { font-size: 0.875rem; color: var(--gray-600); line-height: 1.55; margin: 0; }
+
+/* stepper rail geometry: line runs centre-to-centre of step 01 → step 06 */
+body.lucas-page .journey-stepper { --lx-gap: 8px; gap: var(--lx-gap); margin-bottom: 22px; }
+
+body.lucas-page .journey-stepper::before {
+  top: 21px;
+  left: calc((100% - 5 * var(--lx-gap)) / 12);
+  right: auto;
+  width: calc((100% - 5 * var(--lx-gap)) * 5 / 6);
+  height: 2px;
+  background: rgba(21, 23, 26, 0.09);
+}
+
+body.lucas-page .journey-stepper__progress-line {
+  top: 21px;
+  left: calc((100% - 5 * var(--lx-gap)) / 12);
+  right: auto;
+  width: calc((100% - 5 * var(--lx-gap)) / 6 * (var(--lx-p, 0) / 100));
+  height: 2px;
+  background: linear-gradient(90deg, var(--green-700), var(--lx-emerald));
+  transition: width 0.45s var(--lx-ease);
+}
+
+/* data pulse travelling with the active step */
+body.lucas-page .journey-stepper__progress-line::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lx-emerald);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+}
+body.lucas-page.lx-motion .journey-stepper__progress-line::after { animation: lx-dot-pulse 2.4s var(--lx-ease-soft) infinite; }
+
+body.lucas-page .journey-step-btn {
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.11);
+  border-radius: 9px;
+  padding: 11px 8px 12px;
+  transition: transform 0.3s var(--lx-ease), border-color 0.3s var(--lx-ease), background-color 0.3s var(--lx-ease), box-shadow 0.3s var(--lx-ease);
+}
+
+body.lucas-page .journey-step-btn:hover { border-color: var(--green-600); transform: translateY(-2px); }
+
+body.lucas-page .journey-step-btn.is-active {
+  border-color: var(--green-700);
+  background: #f2fbf7;
+  box-shadow: 0 6px 18px rgba(8, 144, 108, 0.14);
+}
+
+body.lucas-page .journey-step-btn__num {
+  width: 26px;
+  height: 26px;
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.12);
+  color: var(--gray-700);
+  font-family: var(--lx-mono);
+  font-size: 0.6875rem;
+}
+
+body.lucas-page .journey-step-btn.is-active .journey-step-btn__num {
+  background: var(--green-700);
+  border-color: var(--green-700);
+  color: #ffffff;
+}
+
+body.lucas-page .journey-step-btn__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.35;
+}
+
+body.lucas-page .journey-step-btn.is-active .journey-step-btn__title { color: var(--green-700); }
+
+/* detail panel presented as a system readout */
+body.lucas-page .journey-detail-panel {
+  position: relative;
+  background: #f6fbf9;
+  border: 1px solid rgba(16, 185, 129, 0.26);
+  border-radius: 11px;
+  padding: 24px 26px;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 26px;
+  align-items: center;
+}
+
+body.lucas-page .journey-detail-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 26px;
+  width: 30px;
+  height: 2px;
+  background: var(--lx-emerald);
+}
+
+body.lucas-page .journey-detail__badge {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--green-700);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+body.lucas-page .journey-detail__title { font-size: 1.1875rem; font-weight: 700; color: var(--gray-900); margin: 10px 0 6px; letter-spacing: -0.015em; }
+body.lucas-page .journey-detail__sub   { font-size: 0.8125rem; font-weight: 600; color: var(--green-700); margin-bottom: 10px; }
+body.lucas-page .journey-detail__desc  { font-size: 0.84375rem; color: var(--gray-600); line-height: 1.6; margin: 0; }
+
+body.lucas-page .journey-detail__deliverables {
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.09);
+  border-radius: 9px;
+  padding: 16px 18px;
+  gap: 12px;
+}
+
+body.lucas-page .journey-detail__box-row { gap: 3px; }
+
+body.lucas-page .journey-detail__box-label {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--gray-500);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body.lucas-page .journey-detail__box-label::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--lx-emerald);
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+body.lucas-page .journey-detail__box-val { font-size: 0.8125rem; color: var(--gray-900); font-weight: 500; line-height: 1.45; }
+
+/* ------------------------------------------ 9. CAPABILITY MATRIX (WHITE) */
+body.lucas-page #nang-luc-van-hanh { background: var(--lx-white); }
+
+body.lucas-page .lucas-caps-grid { gap: 14px; }
+
+body.lucas-page .lucas-cap-card {
+  position: relative;
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.1);
+  border-radius: 11px;
+  padding: 24px 24px 24px 26px;
+  gap: 9px;
+  overflow: hidden;
+  transition: border-color 0.35s var(--lx-ease), background-color 0.35s var(--lx-ease), transform 0.35s var(--lx-ease);
+}
+
+body.lucas-page .lucas-cap-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--lx-emerald);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.6s var(--lx-ease);
+}
+
+body.lucas-page .lucas-cap-card.is--lx-in::before { transform: scaleY(1); }
+body.lucas-page .lucas-cap-card:hover { border-color: var(--green-600); background: #fcfefd; transform: translateY(-2px); }
+
+/* English capability name as mono overline (content preserved below) */
+.lx-cap__en {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+body.lucas-page .lucas-cap-card__header { align-items: flex-start; gap: 10px; }
+
+body.lucas-page .lucas-cap-card__idx {
+  font-family: var(--lx-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--green-700);
+  padding-top: 1px;
+}
+
+body.lucas-page .lucas-cap-card__title { font-size: 1.0625rem; font-weight: 700; color: var(--gray-900); margin: 0; line-height: 1.35; }
+body.lucas-page .lucas-cap-card__desc  { font-size: 0.875rem; color: var(--gray-600); line-height: 1.6; margin: 0; }
+
+/* -------------------------------------- 10. CREDENTIALS & PRESS (LIGHT ED.) */
+body.lucas-page #chuyen-mon-truyen-thong {
+  background: var(--lx-light);
+  border-top: 1px solid rgba(21, 23, 26, 0.08);
+  border-bottom: 1px solid rgba(21, 23, 26, 0.08);
+}
+
+body.lucas-page .lucas-col-block__title {
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* dossier header bar */
+.lx-dossier__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding-bottom: 11px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(21, 23, 26, 0.1);
+}
+
+.lx-dossier__head-left { display: inline-flex; align-items: center; gap: 9px; }
+
+/* certificate timeline */
+body.lucas-page .lucas-editorial-timeline { padding-left: 22px; }
+body.lucas-page .lucas-editorial-timeline::before { background: rgba(21, 23, 26, 0.12); width: 1px; }
+
+body.lucas-page .lucas-timeline-item { padding-bottom: 24px; }
+
+body.lucas-page .lucas-timeline-item::before {
+  left: -22px;
+  width: 9px;
+  height: 9px;
+  background: var(--lx-white);
+  border: 2px solid var(--lx-emerald);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+body.lucas-page .lucas-timeline-item__badge {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--green-700);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 7px;
+}
+
+body.lucas-page .lucas-timeline-item__name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 0 0 3px;
+  line-height: 1.35;
+}
+
+body.lucas-page .lucas-timeline-item__desc { font-size: 0.8125rem; color: var(--gray-600); line-height: 1.5; margin: 0; }
+
+/* press — hover only, content untouched */
+body.lucas-page .lucas-press-featured {
+  border-radius: 12px;
+  transition: border-color 0.35s var(--lx-ease), box-shadow 0.35s var(--lx-ease), transform 0.35s var(--lx-ease);
+}
+
+body.lucas-page .lucas-press-featured:hover {
+  border-color: var(--green-600);
+  box-shadow: 0 12px 34px rgba(8, 144, 108, 0.12);
+  transform: translateY(-2px);
+}
+
+body.lucas-page .lucas-press-card {
+  border-radius: 10px;
+  transition: border-color 0.35s var(--lx-ease), box-shadow 0.35s var(--lx-ease), transform 0.35s var(--lx-ease);
+}
+
+body.lucas-page .lucas-press-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(21, 23, 26, 0.09);
+}
+
+body.lucas-page .lucas-press-card--dark:hover  { border-color: var(--lx-emerald-br); }
+body.lucas-page .lucas-press-card--light:hover,
+body.lucas-page .lucas-press-card--pale:hover   { border-color: var(--green-600); }
+
+body.lucas-page .lucas-press-card__arrow { transition: transform 0.35s var(--lx-ease); }
+body.lucas-page .lucas-press-card:hover .lucas-press-card__arrow { transform: translate(2px, -2px); }
+
+body.lucas-page .lucas-press-cta-arrow { transition: transform 0.35s var(--lx-ease); }
+body.lucas-page .lucas-press-featured:hover .lucas-press-cta-arrow { transform: translateX(4px); }
+
+/* ------------------------------------------- 11. TRAINING MODULES (PALE) */
+body.lucas-page #chu-de-dao-tao {
+  background: var(--lx-pale);
+  border-top: 1px solid rgba(21, 23, 26, 0.07);
+  overflow: hidden;
+}
+
+body.lucas-page .lucas-topics-grid { gap: 14px; }
+
+body.lucas-page .lucas-topic-card {
+  position: relative;
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.1);
+  border-radius: 11px;
+  padding: 22px;
+  gap: 16px;
+  overflow: hidden;
+  transition: transform 0.4s var(--lx-ease), border-color 0.4s var(--lx-ease), box-shadow 0.4s var(--lx-ease);
+}
+
+/* neutralise the old tint variants so the grid reads as one system */
+body.lucas-page .lucas-topic-card--accent,
+body.lucas-page .lucas-topic-card--highlight {
+  background: var(--lx-white);
+  border: 1px solid rgba(21, 23, 26, 0.1);
+}
+
+body.lucas-page .lucas-topic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green-700), var(--lx-emerald));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--lx-ease);
+}
+
+body.lucas-page .lucas-topic-card:hover { transform: translateY(-3px); border-color: var(--green-600); box-shadow: 0 10px 28px rgba(8, 144, 108, 0.08); }
+
+body.lucas-page .lucas-topic-card.is--lx-active {
+  border-color: rgba(8, 144, 108, 0.5);
+  box-shadow: 0 12px 30px rgba(8, 144, 108, 0.11);
+}
+
+body.lucas-page .lucas-topic-card.is--lx-active::before { transform: scaleX(1); }
+
+body.lucas-page .lucas-topic-card__idx {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--gray-400);
+}
+
+body.lucas-page .lucas-topic-card__badge {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--green-700);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 3px 7px;
+  border-radius: 4px;
+}
+
+body.lucas-page .lucas-topic-card__title { font-size: 1.0625rem; font-weight: 700; color: var(--gray-900); margin: 6px 0 0; line-height: 1.35; letter-spacing: -0.012em; }
+body.lucas-page .lucas-topic-card__desc  { font-size: 0.8125rem; color: var(--gray-600); line-height: 1.55; margin: 0; }
+
+body.lucas-page .lucas-topic-card__footer {
+  border-top: 1px solid rgba(21, 23, 26, 0.08);
+  padding-top: 11px;
+  font-size: 0.75rem;
+  color: var(--gray-700);
+  line-height: 1.45;
+}
+
+body.lucas-page .lucas-topic-card__footer strong {
+  font-family: var(--lx-mono);
+  font-weight: 700;
+  color: var(--green-700);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.625rem;
+}
+
+/* mono OUTPUT prefix injected before the existing ĐẦU RA label */
+.lx-output-prefix {
+  font-family: var(--lx-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--gray-400);
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* --------------------------------------------------------- 12. CTA DARK BAND */
+body.lucas-page #hop-tac { background: var(--lx-white); }
+
+body.lucas-page .lucas-formats-grid { gap: 12px; }
+
+body.lucas-page .lucas-format-card {
+  position: relative;
+  background: var(--lx-light);
+  border: 1px solid rgba(21, 23, 26, 0.1);
+  border-radius: 9px;
+  padding: 17px 14px;
+  font-size: 0.84375rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  transition: border-color 0.3s var(--lx-ease), transform 0.3s var(--lx-ease), background-color 0.3s var(--lx-ease);
+}
+
+body.lucas-page .lucas-format-card:hover {
+  border-color: var(--green-600);
+  background: var(--lx-white);
+  transform: translateY(-2px);
+}
+
+body.lucas-page .lucas-cta-band {
+  position: relative;
+  background: var(--lx-ink-2);
+  border: 1px solid var(--lx-line-strong);
+  border-radius: 16px;
+  padding: 46px 48px;
+  gap: 36px;
+  overflow: hidden;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.42);
+  margin-top: 30px;
+}
+
+body.lucas-page .lucas-cta-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(58% 130% at 88% 8%, rgba(16, 185, 129, 0.2) 0%, transparent 66%),
+    linear-gradient(to right, rgba(52, 211, 153, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 211, 153, 0.06) 1px, transparent 1px);
+  background-size: auto, 40px 40px, 40px 40px;
+  -webkit-mask-image: radial-gradient(120% 130% at 80% 0%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(120% 130% at 80% 0%, #000 0%, transparent 78%);
+  pointer-events: none;
+}
+
+body.lucas-page .lucas-cta-band__content { max-width: 700px; gap: 12px; position: relative; z-index: 1; }
+
+.lx-cta__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--lx-line-strong);
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.08);
+  align-self: flex-start;
+}
+
+body.lucas-page .lucas-cta-band__statement {
+  font-family: var(--lx-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  color: var(--lx-emerald-br);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.lucas-page .lucas-cta-band__title {
+  font-size: clamp(1.0625rem, 1.7vw, 1.3125rem);
+  font-weight: 700;
+  line-height: 1.5;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.012em;
+}
+
+body.lucas-page .lucas-cta-band__contact {
+  font-family: var(--lx-mono);
+  font-size: 0.75rem;
+  color: var(--lx-txt-dim);
+  margin-top: 6px;
+}
+
+body.lucas-page .lucas-cta-band__action { position: relative; z-index: 1; }
+
+body.lucas-page .lucas-cta-band__action .button--red {
+  background-color: var(--lx-emerald);
+  color: #04231a;
+  border-radius: 8px;
+  padding: 15px 30px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+  transition: transform 0.25s var(--lx-ease), background-color 0.25s var(--lx-ease), box-shadow 0.25s var(--lx-ease);
+}
+
+body.lucas-page .lucas-cta-band__action .button--red:hover {
+  background-color: var(--lx-emerald-br);
+  color: #04231a;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(16, 185, 129, 0.42);
+}
+
+body.lucas-page .lucas-cta-band__action .button--red:focus-visible {
+  outline: 2px solid var(--lx-emerald-br);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------ 13. RESPONSIVE */
+/* Large desktop — keep the composition wide and premium */
+@media (min-width: 1441px) {
+  body.lucas-page .lucas-executive-hero { grid-template-columns: 31% 69%; }
+  body.lucas-page .lucas-hero__content-col { padding: 40px 46px; }
+}
+
+/* Laptop */
+@media (max-width: 1280px) {
+  body.lucas-page .lucas-hero__content-col { padding: 30px 32px; }
+  body.lucas-page .lucas-executive-hero { grid-template-columns: 34% 66%; }
+  body.lucas-page .lucas-credibility-rail { grid-template-columns: 1.2fr 1.25fr 0.95fr; }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  body.lucas-page .lucas-executive-hero { grid-template-columns: 1fr; }
+  body.lucas-page .lucas-hero__portrait-col {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    border-right: none;
+    border-bottom: 1px solid var(--lx-line);
+  }
+  body.lucas-page .lucas-hero__portrait-img { object-position: center 12%; }
+  /* the stacked composition already carries the technical grid; the floating
+     node diagram only reads correctly beside the portrait */
+  body.lucas-page .lucas-hero__tech-bg { display: none; }
+
+  body.lucas-page .lucas-credibility-rail { grid-template-columns: 1fr; gap: 0; }
+  body.lucas-page .lucas-cred-rail__identity,
+  body.lucas-page .lucas-cred-rail__contacts {
+    border-right: none;
+    border-bottom: 1px solid var(--lx-line);
+    padding-right: 0;
+    padding-bottom: 16px;
+  }
+  body.lucas-page .lucas-cred-rail__favikon { justify-content: flex-start; }
+
+  body.lucas-page .lucas-bento__grid { grid-template-columns: 1fr; }
+  body.lucas-page .lucas-creds-media__grid { grid-template-columns: 1fr; gap: 38px; }
+  body.lucas-page .lucas-formats-grid { grid-template-columns: repeat(2, 1fr); }
+  body.lucas-page .journey-detail-panel { grid-template-columns: 1fr; gap: 20px; }
+  body.lucas-page .lucas-caps-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Small tablet / large phone */
+@media (max-width: 768px) {
+  body.lucas-page .lucas-section { padding: 56px 0; }
+  body.lucas-page .lucas-hero { padding: 26px 0 34px; }
+  body.lucas-page .lucas-hero__content-col { padding: 26px 22px; }
+  body.lucas-page .lucas-executive-hero { border-radius: 13px; }
+  body.lucas-page .lucas-overview__headline { font-size: clamp(1.4375rem, 5.6vw, 1.75rem); }
+  body.lucas-page .lucas-cred-rail__contacts { flex-direction: column; align-items: flex-start; gap: 9px; }
+  body.lucas-page .lucas-contact-chip { word-break: break-word; }
+
+  body.lucas-page .lucas-impact-rail { grid-template-columns: repeat(2, 1fr); }
+  body.lucas-page .lucas-impact-rail__item:nth-child(2)::after { display: none; }
+  body.lucas-page .lucas-highlight-panels { grid-template-columns: 1fr; }
+  body.lucas-page .lucas-highlight-panel { flex-direction: column; align-items: flex-start; gap: 12px; }
+
+  body.lucas-page .lucas-cap-strip { grid-template-columns: 1fr; }
+  body.lucas-page .lucas-cap-card { padding: 22px; }
+
+  body.lucas-page .lucas-journey-box { padding: 22px 18px; }
+  body.lucas-page .journey-stepper { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  body.lucas-page .journey-stepper::before,
+  body.lucas-page .journey-stepper__progress-line { display: none; }
+  body.lucas-page .journey-detail-panel { padding: 20px 18px; }
+
+  body.lucas-page .lucas-caps-grid { grid-template-columns: 1fr; }
+  body.lucas-page .lucas-topics-grid { grid-template-columns: 1fr; }
+
+  body.lucas-page .lucas-cta-band { flex-direction: column; align-items: flex-start; padding: 32px 24px; gap: 24px; }
+  body.lucas-page .lucas-cta-band__action { width: 100%; }
+  body.lucas-page .lucas-cta-band__action .button { width: 100%; text-align: center; }
+
+  body.lucas-page .lucas-editorial-timeline { padding-left: 20px; }
+  body.lucas-page .lucas-timeline-item::before { left: -20px; }
+
+  /* Readability floor: on small screens every mono system label is raised to
+     11px. Decorative chrome may not become illegible on a phone. */
+  body.lucas-page .lx-label,
+  body.lucas-page .lx-metric__idx,
+  body.lucas-page .lx-cap__en,
+  body.lucas-page .lx-output-prefix,
+  body.lucas-page .lucas-hero__portrait-badge,
+  body.lucas-page .lucas-overview__role-chip,
+  body.lucas-page .lucas-overview__subpills,
+  body.lucas-page .lucas-cap-block__label,
+  body.lucas-page .lucas-tag,
+  body.lucas-page .lucas-bento-card__badge,
+  body.lucas-page .lucas-bento-card__featured-tag,
+  body.lucas-page .passport-flow__arrow,
+  body.lucas-page .passport-flow__label,
+  body.lucas-page .enterprise-pipeline__step-idx,
+  body.lucas-page .enterprise-pipeline__meta,
+  body.lucas-page .agentic-tree__leader,
+  body.lucas-page .agentic-tree__agent,
+  body.lucas-page .agentic-tree__review,
+  body.lucas-page .lucas-impact-rail__desc,
+  body.lucas-page .lucas-favikon-badge__header,
+  body.lucas-page .lucas-favikon-badge__label,
+  body.lucas-page .lucas-journey__eyebrow,
+  body.lucas-page .journey-detail__badge,
+  body.lucas-page .journey-detail__box-label,
+  body.lucas-page .lucas-topic-card__idx,
+  body.lucas-page .lucas-topic-card__badge,
+  body.lucas-page .lucas-timeline-item__badge,
+  body.lucas-page .lucas-highlight-panel__badge,
+  body.lucas-page .lucas-press-kicker,
+  body.lucas-page .lucas-press-featured__status,
+  body.lucas-page .lucas-press-card__outlet,
+  body.lucas-page .lucas-press-card__year,
+  body.lucas-page .lucas-press-year-pill {
+    font-size: 0.6875rem;
+  }
+
+  /* those press micro-labels must be allowed to wrap at 11px */
+  body.lucas-page .lucas-press-card__outlet { white-space: normal; }
+
+  /* Long mono system labels wrap instead of being clipped by their frame. */
+  body.lucas-page .lx-rail__head-right,
+  body.lucas-page .lx-protocol__head-right,
+  body.lucas-page .lx-dossier__head-right { min-width: 0; flex-wrap: wrap; }
+
+  body.lucas-page .lx-rail__head-right .lx-label,
+  body.lucas-page .lx-protocol__head-right .lx-label,
+  body.lucas-page .lx-dossier__head .lx-label {
+    white-space: normal;
+    text-align: right;
+  }
+
+  /* keep the status dot on the same line as its wrapped label */
+  body.lucas-page .lx-protocol__head-right .lx-label { flex: 1 1 auto; min-width: 0; text-align: left; }
+}
+
+/* Phones — 430 / 390 / 375 */
+@media (max-width: 480px) {
+  body.lucas-page .lucas-section { padding: 46px 0; }
+  body.lucas-page .lucas-hero { padding: 20px 0 28px; }
+  body.lucas-page .lucas-hero__content-col { padding: 22px 18px; }
+  body.lucas-page .lucas-hero__portrait-col { aspect-ratio: 5 / 4; }
+  body.lucas-page .lucas-hero__portrait-badge { left: 12px; right: 12px; bottom: 12px; }
+  body.lucas-page .lucas-overview__headline { font-size: clamp(1.3125rem, 6.4vw, 1.5625rem); line-height: 1.24; }
+  body.lucas-page .lucas-overview__subpills { font-size: 0.6875rem; gap: 6px; }
+  body.lucas-page .lucas-overview__subpills span { padding: 4px 8px; }
+  body.lucas-page .lucas-overview__quote { padding: 13px 14px; font-size: 0.84375rem; }
+  body.lucas-page .lucas-ecosystem { font-size: 0.6875rem; }
+
+  body.lucas-page .lucas-credibility-rail { padding: 0 16px; }
+  body.lucas-page .lucas-favikon-badge__ranks { grid-template-columns: 1fr 1fr; gap: 10px; }
+  body.lucas-page .lucas-favikon-badge__num { font-size: 1.3125rem; }
+
+  body.lucas-page .lucas-impact-rail { grid-template-columns: 1fr; }
+  body.lucas-page .lucas-impact-rail__item:not(:last-child)::after { display: none; }
+  body.lucas-page .lucas-impact-rail__item { border-bottom: 1px solid rgba(21, 23, 26, 0.08); padding: 18px 18px 16px; }
+  body.lucas-page .lucas-impact-rail__item:last-child { border-bottom: none; }
+
+  body.lucas-page .lucas-highlight-panel { padding: 20px 18px; }
+  body.lucas-page .lucas-highlight-panel__stat { font-size: 1.75rem; }
+
+  body.lucas-page .lucas-journey-box { padding: 20px 15px; }
+  body.lucas-page .journey-stepper { grid-template-columns: repeat(2, 1fr); }
+  body.lucas-page .journey-step-btn { padding: 10px 6px; }
+  body.lucas-page .journey-step-btn__title { font-size: 0.6875rem; }
+
+  body.lucas-page .lucas-formats-grid { grid-template-columns: 1fr; }
+  body.lucas-page .lucas-cta-band { padding: 26px 18px; border-radius: 13px; }
+  body.lucas-page .lucas-cta-band__title { font-size: 1rem; }
+  body.lucas-page .lucas-bento-card,
+  body.lucas-page .lucas-cap-card,
+  body.lucas-page .lucas-topic-card { padding: 20px 18px; }
+
+  body.lucas-page .lucas-press-featured { padding: 18px; }
+  body.lucas-page .lucas-press-card { padding: 16px; }
+
+  /* phone: the protocol frame keeps only its primary identifier */
+  body.lucas-page .lx-protocol__head-right { display: none; }
+}
+
+/* Extra-small (375 and below) — no text under 11px, no overflow */
+@media (max-width: 375px) {
+  body.lucas-page .lucas-hero__content-col { padding: 20px 15px; }
+  body.lucas-page .lucas-overview__headline { font-size: 1.375rem; }
+  body.lucas-page .lucas-impact-rail__num { font-size: 1.625rem; }
+  body.lucas-page .lucas-cred-rail__name { font-size: 1rem; }
+}
+
+/* ------------------------------------------------------ 14. REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  body.lucas-page [data-lx-reveal],
+  body.lucas-page [data-lx-stagger] > *,
+  body.lucas-page .lx-mask {
+    opacity: 1 !important;
+    transform: none !important;
+    -webkit-clip-path: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+  body.lucas-page .lx-dot,
+  body.lucas-page .lx-scan,
+  body.lucas-page .lx-pulse-line::after,
+  body.lucas-page .journey-stepper__progress-line::after {
+    animation: none !important;
+  }
+  body.lucas-page .lx-scan { display: none; }
+}
+
+/* Safety net: if the motion layer was torn down, nothing may stay hidden. */
+body.lucas-page:not(.lx-motion) [data-lx-reveal],
+body.lucas-page:not(.lx-motion) [data-lx-stagger] > *,
+body.lucas-page:not(.lx-motion) .lx-mask {
+  opacity: 1 !important;
+  transform: none !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+}

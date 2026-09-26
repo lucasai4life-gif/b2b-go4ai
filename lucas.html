@@ -16,6 +16,7 @@ document.documentElement.classList.add("has-js");
 </script>
 <link rel="stylesheet" href="assets/css/go4ai.css">
 <link rel="stylesheet" href="assets/css/consultation-modal.css">
+<link rel="stylesheet" href="assets/css/lucas-system.css">
 </head>
 
 <body class="lucas-page">
@@ -73,15 +74,21 @@ document.documentElement.classList.add("has-js");
 
   <!-- ==================== 1. SINGLE EXECUTIVE HERO FULL WIDTH & CREDIBILITY RAIL ==================== -->
   <section class="lucas-section lucas-hero" id="profile-hero">
+    <div class="lx-grid" aria-hidden="true"></div>
     <div class="padding-global">
       <div class="container">
 
-        <!-- SINGLE EXECUTIVE HERO FRAME (33% PORTRAIT / 67% CONTENT) -->
+        <!-- SINGLE EXECUTIVE HERO FRAME (32% PORTRAIT / 68% CONTENT) -->
         <div class="lucas-executive-hero">
-          <!-- CỘT TRÁI ~33%: CHÂN DUNG CROP 4:5 EXECUTIVE -->
+          <!-- CỘT TRÁI: CHÂN DUNG CROP 4:5 EXECUTIVE -->
           <div class="lucas-hero__portrait-col">
             <div class="lucas-hero__portrait-frame">
               <img src="assets/images/lucas-crop-4-5.jpg" alt="Đặng Cường Thắng — Lucas Đặng" class="lucas-hero__portrait-img" loading="eager">
+              <span class="lx-scan" aria-hidden="true"></span>
+              <span class="lx-corner lx-corner--tl" aria-hidden="true"></span>
+              <span class="lx-corner lx-corner--tr" aria-hidden="true"></span>
+              <span class="lx-corner lx-corner--bl" aria-hidden="true"></span>
+              <span class="lx-corner lx-corner--br" aria-hidden="true"></span>
               <div class="lucas-hero__portrait-badge">
                 <span class="lucas-badge-dot"></span>
                 <span>Enterprise AI Lead</span>
@@ -118,10 +125,19 @@ document.documentElement.classList.add("has-js");
             </svg>
 
             <div class="lucas-hero__content-inner">
+              <div class="lx-hero__meta" data-lx-reveal="sm">
+                <span class="lx-label lx-label--em">PROFILE / 01</span>
+                <span class="lx-hero__meta-sep" aria-hidden="true"></span>
+                <span class="lx-label lx-label--dim">GO4AI SYSTEM</span>
+                <span class="lx-hero__meta-sep" aria-hidden="true"></span>
+                <span class="lx-label lx-label--dim">STATUS / VERIFIED</span>
+                <span class="lx-dot" aria-hidden="true"></span>
+              </div>
+
               <div class="lucas-overview__top">
                 <span class="lucas-overview__role-chip">ENTERPRISE AI LEAD · GIẢNG VIÊN THỰC CHIẾN</span>
-                <h1 class="lucas-overview__headline">CHUYÊN GIA TRIỂN KHAI<br>&amp; ĐÀO TẠO AI ỨNG DỤNG</h1>
-                <div class="lucas-overview__subpills">
+                <h1 class="lucas-overview__headline lx-mask">CHUYÊN GIA TRIỂN KHAI<br>&amp; ĐÀO TẠO AI ỨNG DỤNG</h1>
+                <div class="lucas-overview__subpills" data-lx-reveal="sm">
                   <span>Mô Hình Vận Hành AI</span>
                   <span>Quy Trình Nghiệp Vụ</span>
                   <span>Kiểm Soát Chất Lượng</span>
@@ -129,13 +145,13 @@ document.documentElement.classList.add("has-js");
                 </div>
               </div>
 
-              <div class="lucas-overview__quote">
+              <div class="lucas-overview__quote" data-lx-reveal="sm">
                 <p><strong>Tập trung giải quyết bài toán thật:</strong> Chuyển đổi từ các công cụ AI rời rạc thành năng lực vận hành có quy trình, có kiểm soát rủi ro, tạo sản phẩm kiểm chứng được và đo lường hiệu quả rõ ràng cho doanh nghiệp và học viên.</p>
                 <p style="font-size: 0.84375rem; color: var(--gray-600);">Tập trung đưa AI vào công việc thật: Chọn đúng bài toán, chuẩn hóa quy trình, tạo sản phẩm kiểm chứng và đo lường KPI rõ ràng.</p>
               </div>
 
-              <!-- 3 Compact Blocks: ĐỊNH VỊ | PHƯƠNG CHÂM | ĐẦU RA -->
-              <div class="lucas-cap-strip">
+              <!-- 3 Compact Enterprise Data Modules: ĐỊNH VỊ | PHƯƠNG CHÂM | ĐẦU RA -->
+              <div class="lucas-cap-strip" data-lx-stagger>
                 <div class="lucas-cap-block">
                   <span class="lucas-cap-block__label">ĐỊNH VỊ</span>
                   <p class="lucas-cap-block__desc">Đưa AI vào quy trình làm việc chuẩn hóa của doanh nghiệp.</p>
@@ -150,7 +166,7 @@ document.documentElement.classList.add("has-js");
                 </div>
               </div>
 
-              <div class="lucas-ecosystem">
+              <div class="lucas-ecosystem" data-lx-reveal="sm">
                 <strong>HỆ SINH THÁI HỢP TÁC:</strong> Đại học FPT TP.HCM • Đại học Hoa Sen • Cao đẳng CTIM • 10+ Doanh nghiệp đối tác Go4AI
               </div>
             </div>
@@ -159,6 +175,17 @@ document.documentElement.classList.add("has-js");
 
         <!-- HORIZONTAL CREDIBILITY RAIL FULL WIDTH -->
         <aside class="lucas-credibility-rail" aria-label="Thông tin chuyên gia & Xếp hạng">
+          <!-- System rail header -->
+          <div class="lx-rail__head">
+            <span class="lx-rail__head-left">
+              <span class="lx-dot" aria-hidden="true"></span>
+              <span class="lx-label lx-label--em">VERIFIED PROFILE STRIP</span>
+            </span>
+            <span class="lx-rail__head-right">
+              <span class="lx-label lx-label--dim">IDENTITY · CONTACT · RANKING</span>
+            </span>
+          </div>
+
           <!-- Block 1: Định danh & Vai trò -->
           <div class="lucas-cred-rail__identity">
             <div class="lucas-cred-rail__name-group">
@@ -205,11 +232,11 @@ document.documentElement.classList.add("has-js");
               </div>
               <div class="lucas-favikon-badge__ranks">
                 <div class="lucas-favikon-badge__item">
-                  <span class="lucas-favikon-badge__num">2</span>
+                  <span class="lucas-favikon-badge__num" data-lx-count>2</span>
                   <span class="lucas-favikon-badge__label">Giáo dục AI<br>LinkedIn Việt Nam</span>
                 </div>
                 <div class="lucas-favikon-badge__item">
-                  <span class="lucas-favikon-badge__num">30</span>
+                  <span class="lucas-favikon-badge__num" data-lx-count>30</span>
                   <span class="lucas-favikon-badge__label">CN &amp; Phần mềm<br>LinkedIn Việt Nam</span>
                 </div>
               </div>
@@ -227,28 +254,32 @@ document.documentElement.classList.add("has-js");
       <div class="container">
         <header class="lucas-section__header">
           <span class="lucas-section__eyebrow">DẤU ẤN TRIỂN KHAI &amp; TÁC ĐỘNG</span>
-          <h3 class="lucas-section__title">Năng lực đã được kiểm chứng qua con số</h3>
+          <h3 class="lucas-section__title lx-mask">Năng lực đã được kiểm chứng qua con số</h3>
         </header>
 
         <!-- Impact Rail: 4 Metrics Trong Một Thanh Thống Nhất -->
-        <div class="lucas-impact-rail">
+        <div class="lucas-impact-rail" data-lx-stagger>
           <div class="lucas-impact-rail__item">
-            <div class="lucas-impact-rail__num">10.000+</div>
+            <div class="lx-metric__idx"><span>EVIDENCE / 01</span><span class="lx-dot" aria-hidden="true"></span></div>
+            <div class="lucas-impact-rail__num" data-lx-count>10.000+</div>
             <div class="lucas-impact-rail__label">Người học AI</div>
             <div class="lucas-impact-rail__desc">Chương trình phổ cập</div>
           </div>
           <div class="lucas-impact-rail__item">
-            <div class="lucas-impact-rail__num">200+</div>
+            <div class="lx-metric__idx"><span>EVIDENCE / 02</span><span class="lx-dot" aria-hidden="true"></span></div>
+            <div class="lucas-impact-rail__num" data-lx-count>200+</div>
             <div class="lucas-impact-rail__label">Học viên trả phí</div>
             <div class="lucas-impact-rail__desc">Đầu ra thực tế</div>
           </div>
           <div class="lucas-impact-rail__item">
-            <div class="lucas-impact-rail__num">20</div>
+            <div class="lx-metric__idx"><span>EVIDENCE / 03</span><span class="lx-dot" aria-hidden="true"></span></div>
+            <div class="lucas-impact-rail__num" data-lx-count>20</div>
             <div class="lucas-impact-rail__label">Trường / Đơn vị</div>
             <div class="lucas-impact-rail__desc">Workshop &amp; đào tạo</div>
           </div>
           <div class="lucas-impact-rail__item">
-            <div class="lucas-impact-rail__num">10</div>
+            <div class="lx-metric__idx"><span>EVIDENCE / 04</span><span class="lx-dot" aria-hidden="true"></span></div>
+            <div class="lucas-impact-rail__num" data-lx-count>10</div>
             <div class="lucas-impact-rail__label">Doanh nghiệp</div>
             <div class="lucas-impact-rail__desc">Dùng hồ sơ AI Passport</div>
           </div>
@@ -256,8 +287,8 @@ document.documentElement.classList.add("has-js");
 
         <!-- 2 Highlight Panels Nổi Bật -->
         <div class="lucas-highlight-panels">
-          <div class="lucas-highlight-panel lucas-highlight-panel--1">
-            <div class="lucas-highlight-panel__stat">~70%</div>
+          <div class="lucas-highlight-panel lucas-highlight-panel--1" data-lx-reveal="left">
+            <div class="lucas-highlight-panel__stat" data-lx-count>~70%</div>
             <div class="lucas-highlight-panel__body">
               <span class="lucas-highlight-panel__badge">HIỆU QUẢ VẬN HÀNH</span>
               <p class="lucas-highlight-panel__text">
@@ -265,8 +296,8 @@ document.documentElement.classList.add("has-js");
               </p>
             </div>
           </div>
-          <div class="lucas-highlight-panel lucas-highlight-panel--2">
-            <div class="lucas-highlight-panel__stat">20 → 100+</div>
+          <div class="lucas-highlight-panel lucas-highlight-panel--2" data-lx-reveal="right">
+            <div class="lucas-highlight-panel__stat" data-lx-count>20 → 100+</div>
             <div class="lucas-highlight-panel__body">
               <span class="lucas-highlight-panel__badge">TĂNG TRƯỞNG QUY MÔ</span>
               <p class="lucas-highlight-panel__text">
@@ -282,17 +313,18 @@ document.documentElement.classList.add("has-js");
 
   <!-- ==================== 3. 3 TRỤ CỘT NĂNG LỰC (BENTO 3 CỘT) ==================== -->
   <section class="lucas-section" id="tru-cot-nang-luc">
+    <div class="lx-grid lx-grid--center" aria-hidden="true"></div>
     <div class="padding-global">
       <div class="container">
         <header class="lucas-section__header">
           <span class="lucas-section__eyebrow">3 TRỤ CỘT NĂNG LỰC &amp; GIẢI PHÁP TRIỂN KHAI THỰC TẾ</span>
-          <h3 class="lucas-section__title">Cấu trúc giải pháp bền vững cho doanh nghiệp</h3>
+          <h3 class="lucas-section__title lx-mask">Cấu trúc giải pháp bền vững cho doanh nghiệp</h3>
         </header>
 
-        <div class="lucas-bento__grid">
+        <div class="lucas-bento__grid" data-lx-cycle="bento" data-lx-stagger>
 
           <!-- Card 1: AI Passport -->
-          <div class="lucas-bento-card">
+          <div class="lucas-bento-card" data-lx-rotate=".passport-flow__node">
             <div>
               <div class="lucas-bento-card__badge-row">
                 <span class="lucas-bento-card__badge">AI PASSPORT</span>
@@ -320,10 +352,11 @@ document.documentElement.classList.add("has-js");
                 </div>
               </div>
             </div>
+            <span class="lx-pulse-line" aria-hidden="true"></span>
           </div>
 
           <!-- Card 2: AI Doanh nghiệp (Featured / Trọng tâm) -->
-          <div class="lucas-bento-card lucas-bento-card--featured">
+          <div class="lucas-bento-card lucas-bento-card--featured" data-lx-rotate=".enterprise-pipeline__step" data-lx-rotate-class="enterprise-pipeline__step--active">
             <div>
               <div class="lucas-bento-card__badge-row">
                 <span class="lucas-bento-card__badge">AI DOANH NGHIỆP</span>
@@ -360,10 +393,11 @@ document.documentElement.classList.add("has-js");
                 </div>
               </div>
             </div>
+            <span class="lx-pulse-line" aria-hidden="true"></span>
           </div>
 
           <!-- Card 3: Agentic Workflow -->
-          <div class="lucas-bento-card">
+          <div class="lucas-bento-card" data-lx-rotate=".agentic-tree__agent">
             <div>
               <div class="lucas-bento-card__badge-row">
                 <span class="lucas-bento-card__badge">AGENTIC WORKFLOW</span>
@@ -384,6 +418,7 @@ document.documentElement.classList.add("has-js");
                 <div class="agentic-tree__review">Con người duyệt cuối &amp; chịu trách nhiệm</div>
               </div>
             </div>
+            <span class="lx-pulse-line" aria-hidden="true"></span>
           </div>
 
         </div>
@@ -397,10 +432,20 @@ document.documentElement.classList.add("has-js");
       <div class="container">
         <header class="lucas-section__header">
           <span class="lucas-section__eyebrow">PHƯƠNG PHÁP ĐÀO TẠO &amp; QUY TRÌNH THỰC THI 6 BƯỚC</span>
-          <h3 class="lucas-section__title">Từ bài toán công việc đến hồ sơ chuẩn hóa</h3>
+          <h3 class="lucas-section__title lx-mask">Từ bài toán công việc đến hồ sơ chuẩn hóa</h3>
         </header>
 
         <div class="lucas-journey-box">
+          <div class="lx-protocol__head">
+            <span class="lx-protocol__head-left">
+              <span class="lx-label lx-label--ink">DEPLOYMENT PROTOCOL / 01–06</span>
+            </span>
+            <span class="lx-protocol__head-right">
+              <span class="lx-dot" aria-hidden="true"></span>
+              <span class="lx-label lx-label--muted">SEQUENTIAL · AUDITABLE · HUMAN-IN-THE-LOOP</span>
+            </span>
+          </div>
+
           <div class="lucas-journey__principle">
             <div class="lucas-journey__eyebrow">NGUYÊN TẮC CỐT LÕI</div>
             <h4 class="lucas-journey__statement">“Học → Ứng dụng → Chứng minh → AI Passport”</h4>
@@ -411,7 +456,7 @@ document.documentElement.classList.add("has-js");
 
           <!-- Interactive Stepper Track -->
           <div class="journey-stepper" role="tablist" aria-label="6 bước đào tạo và thực thi">
-            <div class="journey-stepper__progress-line" id="journey-progress-line" style="width: 0%;"></div>
+            <div class="journey-stepper__progress-line" id="journey-progress-line" style="--lx-p: 0;"></div>
 
             <button class="journey-step-btn is-active" type="button" role="tab" aria-selected="true" data-step="0">
               <div class="journey-step-btn__num">01</div>
@@ -451,10 +496,12 @@ document.documentElement.classList.add("has-js");
             </div>
             <div class="journey-detail__deliverables">
               <div class="journey-detail__box-row">
+                <span class="lx-label lx-label--muted">EXECUTION REQUIREMENT</span>
                 <span class="journey-detail__box-label">YÊU CẦU THỰC THI</span>
                 <span class="journey-detail__box-val" id="journey-detail-req">Chọn đúng bài toán công việc hàng ngày</span>
               </div>
               <div class="journey-detail__box-row">
+                <span class="lx-label lx-label--muted">ACCEPTANCE CRITERIA</span>
                 <span class="journey-detail__box-label">TIÊU CHÍ NGHIỆM THU</span>
                 <span class="journey-detail__box-val" id="journey-detail-kpi">Có chỉ số đo lường hiệu quả cụ thể (thời gian, chi phí, chất lượng)</span>
               </div>
@@ -472,11 +519,12 @@ document.documentElement.classList.add("has-js");
       <div class="container">
         <header class="lucas-section__header">
           <span class="lucas-section__eyebrow">NĂNG LỰC VẬN HÀNH &amp; CHUẨN HÓA AI (OPERATING CAPABILITIES)</span>
-          <h3 class="lucas-section__title">4 trụ cột năng lực triển khai thực tế cho doanh nghiệp</h3>
+          <h3 class="lucas-section__title lx-mask">4 trụ cột năng lực triển khai thực tế cho doanh nghiệp</h3>
         </header>
 
         <div class="lucas-caps-grid">
-          <div class="lucas-cap-card">
+          <div class="lucas-cap-card" data-lx-reveal="sm">
+            <span class="lx-cap__en">CAPABILITY / 01 · AI OPERATING MODEL</span>
             <div class="lucas-cap-card__header">
               <span class="lucas-cap-card__idx">01.</span>
               <h4 class="lucas-cap-card__title">Thiết kế Mô hình Vận hành AI:</h4>
@@ -486,7 +534,8 @@ document.documentElement.classList.add("has-js");
             </p>
           </div>
 
-          <div class="lucas-cap-card">
+          <div class="lucas-cap-card" data-lx-reveal="sm">
+            <span class="lx-cap__en">CAPABILITY / 02 · SOP &amp; WORKFLOW</span>
             <div class="lucas-cap-card__header">
               <span class="lucas-cap-card__idx">02.</span>
               <h4 class="lucas-cap-card__title">Chuẩn hóa Quy trình &amp; SOP:</h4>
@@ -496,7 +545,8 @@ document.documentElement.classList.add("has-js");
             </p>
           </div>
 
-          <div class="lucas-cap-card">
+          <div class="lucas-cap-card" data-lx-reveal="sm">
+            <span class="lx-cap__en">CAPABILITY / 03 · GOVERNANCE &amp; QA</span>
             <div class="lucas-cap-card__header">
               <span class="lucas-cap-card__idx">03.</span>
               <h4 class="lucas-cap-card__title">Quản trị Rủi ro &amp; Kiểm soát (QA):</h4>
@@ -506,7 +556,8 @@ document.documentElement.classList.add("has-js");
             </p>
           </div>
 
-          <div class="lucas-cap-card">
+          <div class="lucas-cap-card" data-lx-reveal="sm">
+            <span class="lx-cap__en">CAPABILITY / 04 · ADOPTION &amp; SCALE</span>
             <div class="lucas-cap-card__header">
               <span class="lucas-cap-card__idx">04.</span>
               <h4 class="lucas-cap-card__title">Thúc đẩy Ứng dụng &amp; Adoption:</h4>
@@ -530,8 +581,16 @@ document.documentElement.classList.add("has-js");
         <div class="lucas-col-block">
           <header>
             <span class="lucas-section__eyebrow">CHỨNG CHỈ &amp; NỀN TẢNG CHUYÊN MÔN</span>
-            <h3 class="lucas-col-block__title">Học thuật quốc tế &amp; Chứng nhận công nghệ</h3>
+            <h3 class="lucas-col-block__title lx-mask">Học thuật quốc tế &amp; Chứng nhận công nghệ</h3>
           </header>
+
+          <div class="lx-dossier__head">
+            <span class="lx-dossier__head-left">
+              <span class="lx-dot" aria-hidden="true"></span>
+              <span class="lx-label lx-label--ink">EXECUTIVE CREDENTIALS DOSSIER</span>
+            </span>
+            <span class="lx-label lx-label--muted">05 ENTRIES · VERIFIED</span>
+          </div>
 
           <div class="lucas-editorial-timeline">
             <div class="lucas-timeline-item">
@@ -570,8 +629,16 @@ document.documentElement.classList.add("has-js");
         <div class="lucas-col-block lucas-col-block--press">
           <header>
             <span class="lucas-section__eyebrow">BÁO CHÍ &amp; TRUYỀN THÔNG</span>
-            <h3 class="lucas-col-block__title">Ghi nhận từ cơ quan báo chí uy tín</h3>
+            <h3 class="lucas-col-block__title lx-mask">Ghi nhận từ cơ quan báo chí uy tín</h3>
           </header>
+
+          <div class="lx-dossier__head">
+            <span class="lx-dossier__head-left">
+              <span class="lx-dot" aria-hidden="true"></span>
+              <span class="lx-label lx-label--ink">PRESS &amp; MEDIA COVERAGE</span>
+            </span>
+            <span class="lx-label lx-label--muted">04 OUTLETS · 2025–2026</span>
+          </div>
 
           <div class="lucas-editorial-press">
 
@@ -694,17 +761,17 @@ document.documentElement.classList.add("has-js");
       <div class="container">
         <header class="lucas-section__header">
           <span class="lucas-section__eyebrow">CHỦ ĐỀ ĐÀO TẠO TRỌNG TÂM CHO DOANH NGHIỆP &amp; ĐẠI HỌC</span>
-          <h3 class="lucas-section__title">Các module đào tạo thực chiến theo nghiệp vụ</h3>
+          <h3 class="lucas-section__title lx-mask">Các module đào tạo thực chiến theo nghiệp vụ</h3>
           <p class="lucas-section__lead">Nội dung được cấu trúc theo bài toán công việc cụ thể, cam kết đầu ra kiểm chứng được.</p>
         </header>
 
-        <div class="lucas-topics-grid">
+        <div class="lucas-topics-grid" data-lx-cycle="modules" data-lx-stagger>
 
           <!-- 01 -->
           <div class="lucas-topic-card">
             <div class="lucas-topic-card__header">
               <div class="lucas-topic-card__meta">
-                <span class="lucas-topic-card__idx">01</span>
+                <span class="lucas-topic-card__idx">MODULE / 01</span>
                 <span class="lucas-topic-card__badge">VĂN PHÒNG</span>
               </div>
               <h4 class="lucas-topic-card__title">AI Cho Công Việc Văn Phòng</h4>
@@ -713,6 +780,7 @@ document.documentElement.classList.add("has-js");
               </p>
             </div>
             <div class="lucas-topic-card__footer">
+              <span class="lx-output-prefix">OUTPUT / DELIVERABLE</span>
               <strong>ĐẦU RA:</strong> Bộ template prompt &amp; báo cáo mẫu
             </div>
           </div>
@@ -721,7 +789,7 @@ document.documentElement.classList.add("has-js");
           <div class="lucas-topic-card lucas-topic-card--accent">
             <div class="lucas-topic-card__header">
               <div class="lucas-topic-card__meta">
-                <span class="lucas-topic-card__idx">02</span>
+                <span class="lucas-topic-card__idx">MODULE / 02</span>
                 <span class="lucas-topic-card__badge">QUẢN TRỊ</span>
               </div>
               <h4 class="lucas-topic-card__title">AI Cho Quản Lý &amp; Lãnh Đạo</h4>
@@ -730,6 +798,7 @@ document.documentElement.classList.add("has-js");
               </p>
             </div>
             <div class="lucas-topic-card__footer">
+              <span class="lx-output-prefix">OUTPUT / DELIVERABLE</span>
               <strong>ĐẦU RA:</strong> Bản đồ use-case &amp; lộ trình AI
             </div>
           </div>
@@ -738,7 +807,7 @@ document.documentElement.classList.add("has-js");
           <div class="lucas-topic-card lucas-topic-card--highlight">
             <div class="lucas-topic-card__header">
               <div class="lucas-topic-card__meta">
-                <span class="lucas-topic-card__idx">03</span>
+                <span class="lucas-topic-card__idx">MODULE / 03</span>
                 <span class="lucas-topic-card__badge">QUY TRÌNH</span>
               </div>
               <h4 class="lucas-topic-card__title">Thiết Kế Quy Trình AI Phòng Ban</h4>
@@ -747,6 +816,7 @@ document.documentElement.classList.add("has-js");
               </p>
             </div>
             <div class="lucas-topic-card__footer">
+              <span class="lx-output-prefix">OUTPUT / DELIVERABLE</span>
               <strong>ĐẦU RA:</strong> SOP ứng dụng AI từng bộ phận
             </div>
           </div>
@@ -755,7 +825,7 @@ document.documentElement.classList.add("has-js");
           <div class="lucas-topic-card">
             <div class="lucas-topic-card__header">
               <div class="lucas-topic-card__meta">
-                <span class="lucas-topic-card__idx">04</span>
+                <span class="lucas-topic-card__idx">MODULE / 04</span>
                 <span class="lucas-topic-card__badge">KIỂM SOÁT</span>
               </div>
               <h4 class="lucas-topic-card__title">Kiểm Soát Chất Lượng Đầu Ra AI</h4>
@@ -764,6 +834,7 @@ document.documentElement.classList.add("has-js");
               </p>
             </div>
             <div class="lucas-topic-card__footer">
+              <span class="lx-output-prefix">OUTPUT / DELIVERABLE</span>
               <strong>ĐẦU RA:</strong> Bộ rubric &amp; checklist nghiệm thu
             </div>
           </div>
@@ -772,7 +843,7 @@ document.documentElement.classList.add("has-js");
           <div class="lucas-topic-card lucas-topic-card--accent">
             <div class="lucas-topic-card__header">
               <div class="lucas-topic-card__meta">
-                <span class="lucas-topic-card__idx">05</span>
+                <span class="lucas-topic-card__idx">MODULE / 05</span>
                 <span class="lucas-topic-card__badge">TÁC NHÂN</span>
               </div>
               <h4 class="lucas-topic-card__title">Agentic AI &amp; Tự Động Hóa</h4>
@@ -781,6 +852,7 @@ document.documentElement.classList.add("has-js");
               </p>
             </div>
             <div class="lucas-topic-card__footer">
+              <span class="lx-output-prefix">OUTPUT / DELIVERABLE</span>
               <strong>ĐẦU RA:</strong> Kịch bản workflow đa tác nhân
             </div>
           </div>
@@ -789,7 +861,7 @@ document.documentElement.classList.add("has-js");
           <div class="lucas-topic-card">
             <div class="lucas-topic-card__header">
               <div class="lucas-topic-card__meta">
-                <span class="lucas-topic-card__idx">06</span>
+                <span class="lucas-topic-card__idx">MODULE / 06</span>
                 <span class="lucas-topic-card__badge">ĐO LƯỜNG</span>
               </div>
               <h4 class="lucas-topic-card__title">Đo Lường Hiệu Quả Đào Tạo (ROI)</h4>
@@ -798,6 +870,7 @@ document.documentElement.classList.add("has-js");
               </p>
             </div>
             <div class="lucas-topic-card__footer">
+              <span class="lx-output-prefix">OUTPUT / DELIVERABLE</span>
               <strong>ĐẦU RA:</strong> Bảng chỉ số đo lường hiệu quả
             </div>
           </div>
@@ -813,7 +886,7 @@ document.documentElement.classList.add("has-js");
       <div class="container">
         <header class="lucas-section__header">
           <span class="lucas-section__eyebrow">HÌNH THỨC GIẢNG DẠY &amp; HỢP TÁC</span>
-          <h3 class="lucas-section__title">Các phương thức phối hợp linh hoạt cùng doanh nghiệp &amp; đại học</h3>
+          <h3 class="lucas-section__title lx-mask">Các phương thức phối hợp linh hoạt cùng doanh nghiệp &amp; đại học</h3>
         </header>
 
         <!-- 4 Compact Chips/Cards -->
@@ -835,6 +908,10 @@ document.documentElement.classList.add("has-js");
         <!-- Dark CTA Band -->
         <aside class="lucas-cta-band" aria-label="Cam kết đào tạo &amp; Hành động">
           <div class="lucas-cta-band__content">
+            <span class="lx-cta__status">
+              <span class="lx-dot" aria-hidden="true"></span>
+              <span class="lx-label lx-label--em">READY TO DEPLOY</span>
+            </span>
             <span class="lucas-cta-band__statement">Học → Ứng dụng → Chứng minh → AI Passport</span>
             <h3 class="lucas-cta-band__title">
               Chương trình đào tạo AI thực chiến 100% • Giải quyết bài toán thật • Có sản phẩm đầu ra kiểm chứng và đo lường được KPI.
@@ -844,7 +921,7 @@ document.documentElement.classList.add("has-js");
             </div>
           </div>
           <div class="lucas-cta-band__action">
-            <a class="button button--red" href="index.html#lien-he">
+            <a class="button button--red" href="index.html#lien-he" data-consultation-open>
               Trao đổi với Lucas
             </a>
           </div>
@@ -1049,7 +1126,9 @@ document.documentElement.classList.add("has-js");
         btn.setAttribute('aria-selected', 'true');
 
         const pct = (idx / (stepBtns.length - 1)) * 100;
-        progressLine.style.width = pct + '%';
+        // The progress rail geometry lives in lucas-system.css; we only publish
+        // the 0–100 position so the rail stays centre-to-centre with the steps.
+        progressLine.style.setProperty('--lx-p', pct);
 
         const data = stepsData[idx];
         if (data) {
@@ -1066,5 +1145,6 @@ document.documentElement.classList.add("has-js");
 })();
 </script>
 <script src="assets/js/consultation-modal.js"></script>
+<script src="assets/js/lucas-system.js"></script>
 </body>
 </html>
