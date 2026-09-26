@@ -170,6 +170,15 @@ export async function onRequestOptions(context) {
   });
 }
 
+// Reject GET requests
+export async function onRequestGet(context) {
+  const headers = getCorsHeaders(context.request);
+  return new Response(JSON.stringify({ success: false, error: 'Method not allowed. Use POST.' }), {
+    status: 405,
+    headers,
+  });
+}
+
 // ─── HELPERS ──────────────────────────────────────────────────────────────
 function getCorsHeaders(request) {
   const origin = (request && request.headers ? request.headers.get('Origin') : '') || '';
