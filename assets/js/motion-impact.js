@@ -181,10 +181,21 @@
     };
   });
 
-  /* Mobile / Tablet Viewport (< 992px) — Smooth Organic Float Motion */
+  /* Mobile / Tablet Viewport (< 992px) — Smooth Organic Float Motion
+     Cùng ngôn ngữ chuyển động với bản desktop (dịch chuyển dọc, ease mềm, loop
+     vô hạn) — chỉ giảm biên độ cho vừa viewport.
+
+     Bản trước dùng biên độ cố định ±3.5px trên vòng tròn ~342px (≈1%) nên mắt
+     gần như không thấy ⇒ bị đọc là "đứng yên". Nay biên độ bám theo kích thước
+     vòng tròn thật (~9–10px) và MỌI vòng luôn dịch cùng một chiều, nên độ nén
+     lớn nhất giữa hai vòng kề nhau = AMP < khoảng cách 16px ⇒ không bao giờ
+     chồng lấn. Chỉ dùng trục y ⇒ không phát sinh overflow ngang.
+
+     Motion chỉ chạy khi section Bằng chứng nằm trong viewport (onToggle). */
   mm.add('(max-width: 991px) and (prefers-reduced-motion: no-preference)', function () {
     root.classList.remove('motion-impact');
 
+    var section = document.querySelector('.impact-section');
     var all5 = [item1, item2, item3, item4, accent].filter(Boolean);
     all5.forEach(function (el) {
       el.style.pointerEvents = '';
@@ -193,57 +204,70 @@
     gsap.set(labels, { opacity: 1, filter: 'none' });
     if (accentText) gsap.set(accentText, { opacity: 1 });
 
-    var revealed = false;
-    var floatTweens = [];
+    // Biên độ theo kích thước vòng tròn thực tế (342–352px ở mọi viewport
+    // mobile/tablet) ⇒ ~10px: đủ thấy, vẫn "nhẹ, mượt, enterprise".
+    var circleW = (all5[0] && all5[0].getBoundingClientRect().width) || 320;
+    var AMP = Math.max(8, Math.min(12, circleW * 0.03));
+    var PERIOD = 5.6;
 
-    function startFloats() {
+    var floatTweens = [];
+    var revealed = false;
+
+    function buildFloats() {
       if (floatTweens.length) return;
       all5.forEach(function (el, idx) {
-        var offset = idx % 2 === 0 ? 3.5 : -3.5;
-        var dur = 2.8 + (idx * 0.25);
-        var tw = gsap.to(el, {
-          y: '+=' + offset,
-          duration: dur,
+        floatTweens.push(gsap.to(el, {
+          y: '+=' + AMP,
+          duration: PERIOD,
+          delay: idx * 0.5, // lệch pha ~32°/vòng ⇒ sóng chạy nhẹ xuống dưới
+          ease: 'sine.inOut',
           yoyo: true,
           repeat: -1,
-          ease: 'sine.inOut',
-          delay: idx * 0.15
-        });
-        floatTweens.push(tw);
+          paused: true
+        }));
       });
     }
 
+    function setFloats(playing) {
+      for (var i = 0; i < floatTweens.length; i++) {
+        if (playing) { floatTweens[i].play(); } else { floatTweens[i].pause(); }
+      }
+    }
+
+    function revealOnce() {
+      if (revealed) return;
+      revealed = true;
+      gsap.fromTo(all5,
+        { opacity: 0.35, scale: 0.94 },
+        { opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: 'power2.out' }
+      );
+    }
+
+    buildFloats();
+
     var st = ScrollTrigger.create({
-      trigger: list,
-      start: 'top 85%',
-      end: 'bottom 15%',
-      onEnter: function () {
-        if (!revealed) {
-          revealed = true;
-          gsap.fromTo(all5,
-            { opacity: 0.35, scale: 0.94 },
-            { opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: 'power2.out', onComplete: startFloats }
-          );
-        } else {
-          startFloats();
-          floatTweens.forEach(function (t) { t.play(); });
-        }
-      },
-      onLeave: function () {
-        floatTweens.forEach(function (t) { t.pause(); });
-      },
-      onEnterBack: function () {
-        startFloats();
-        floatTweens.forEach(function (t) { t.play(); });
-      },
-      onLeaveBack: function () {
-        floatTweens.forEach(function (t) { t.pause(); });
+      trigger: section || list,
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: function (self) {
+        if (self.isActive) revealOnce();
+        setFloats(self.isActive);
       }
     });
 
+    // Section đã nằm trong viewport ngay lúc khởi tạo (reload giữa trang).
+    if (st.isActive) {
+      revealOnce();
+      setFloats(true);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+    }
+
     return function () {
       if (st) st.kill();
-      floatTweens.forEach(function (t) { t.kill(); });
+      for (var i = 0; i < floatTweens.length; i++) { floatTweens[i].kill(); }
       floatTweens = [];
       all5.forEach(function (el) {
         el.style.pointerEvents = '';
