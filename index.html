@@ -3349,13 +3349,23 @@ html.motion-impact .impact-section {
        CHUYỂN ĐỘNG: port từ section "Tác động" của b2b.go4ai.org.
          · spec gốc + cách dịch: đầu file assets/js/motion-impact.js
          · phần dựng hình    : khối <style> trong <head> của trang này
-         · trục cuộn         : .impact-track (250vh) > .impact-pin (sticky 100svh)
+         · trục cuộn desktop : .impact-animation-track (250vh) > .impact-section
+                               (sticky 100svh) — CHỈ khi <html> có .motion-impact
          · hook cho JS       : data-impact-track / data-impact-list
-         · [data-motion-own] = phần tử mà GSAP sở hữu; KHÔNG gắn data-reveal vào
-           nó, vì hai chủ sở hữu trên một thuộc tính là lỗi đã biết.
-       Khi <html> KHÔNG có class .motion-impact (mobile, in, no-JS,
-       prefers-reduced-motion, hoặc GSAP nạp lỗi) thì .impact-track/.impact-pin
-       không có style nào ⇒ section trở về đúng bố cục tĩnh của A. -->
+         · hook cho reveal   : html.evidence-reveal (≤991px, do motion-impact.js gắn)
+       HAI CHẾ ĐỘ — breakpoint THẬT là 991px, KHÔNG phải 767px:
+         · ≥992px — GSAP pin + converge. Cần .motion-impact; thiếu nó (no-JS,
+                    prefers-reduced-motion, hoặc GSAP nạp lỗi) ⇒ section trở về
+                    đúng bố cục tĩnh của A.
+         · ≤991px — KHÔNG auto-loop, KHÔNG GSAP. Mỗi vòng reveal ĐÚNG 1 LẦN khi
+                    người dùng cuộn tới (IntersectionObserver, mốc ~70% viewport)
+                    rồi giữ visible. Thứ tự kể chuyện câu hỏi → 3.000+ → 14+ → 10+
+                    → ~70% do `order: -1` trong assets/css/go4ai.css (khối 11);
+                    DOM giữ nguyên nên desktop không bị ảnh hưởng. Thiếu
+                    .evidence-reveal ⇒ không rule nào ẩn ⇒ nội dung vẫn hiển thị.
+       Lưu ý: `@media (max-width: 991px)` trong <style> của trang đè rule 767px của
+       go4ai.css (từ 991px trở xuống đã là cột dọc 5 vòng full-width). Sửa section
+       này thì probe getComputedStyle ở 991/992 trước — đừng tin số ghi trong comment. -->
   <!-- ========================== 6. BẰNG CHỨNG ========================== -->
   <div class="impact-animation-track" data-impact-track>
     <section class="section section--dark impact-section" id="bang-chung" aria-labelledby="bang-chung-title">
