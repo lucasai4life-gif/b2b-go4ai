@@ -3,7 +3,7 @@
  * Provides:
  * 1. Cloudflare Turnstile Server-Side Verification
  * 2. Multi-tier Rate Limiting (Burst limit, Penalty Jail, Rolling Cooldown)
- * 3. Duplicate & Replay Protection (In-Memory + D1 Payload Fingerprinting)
+ * 3. Duplicate & Replay Protection (D1 Payload Fingerprinting)
  * 4. Request Hardening & Size/Payload Enforcement
  * 5. Malicious Link, Gambling, Casino, and Phishing Content Detection
  * 6. Spam Scoring Engine (Clean, Suspicious, Blocked)
@@ -16,8 +16,6 @@
 
 const IP_BUCKETS = new Map();         // ip -> { count: number, windowStart: number }
 const IP_FAILURES = new Map();        // ip -> { count: number, windowStart: number, jailUntil: number }
-const RECENT_HASHES = new Map();      // hash -> timestamp
-const RECENT_TELEGRAM_HASHES = new Map(); // tgKey -> timestamp
 
 const MAX_CACHE_ENTRIES = 5000;
 
@@ -150,47 +148,13 @@ export function recordIpFailure(clientIp) {
 
 // ─── 3. CLOUDFLARE TURNSTILE VERIFICATION ──────────────────────────────────
 
-/**
- * ⚠️ MIGRATION BRIDGE — DELETE THIS CONSTANT.
- *
- * This value sat in this file, in a public repository, so it is compromised by definition
- * and must be treated as public. It is kept ONLY as a bridge so that shipping the frontend
- * fix cannot take lead capture down on a project whose Pages environment may not yet have
- * `TURNSTILE_SECRET_KEY` bound — a fail-closed deploy without that binding returns 503 for
- * every visitor, which is strictly worse than the bug being fixed.
- *
- * To retire it (two steps, no code change needed in between):
- *   1. Cloudflare dashboard → Turnstile → this widget → "Rotate secret key".
- *   2. Pages → b2b-go4ai → Settings → Environment variables → bind the new value as
- *      `TURNSTILE_SECRET_KEY` (Production **and** Preview), then delete this constant.
- *
- * Once the constant is gone, `verifyTurnstile` below fails closed on its own and the caller
- * answers 503 TURNSTILE_NOT_CONFIGURED — the intended end state.
- */
-const LEGACY_TURNSTILE_SECRET = '0x4AAAAAAFEKUfnC1dZSC_LRcP2We0HFCfE';
-
 export async function verifyTurnstile({ token, secret, remoteIp }) {
   // FAIL CLOSED. A missing server-side secret is a deployment error, never a reason to
   // accept a submission. `notConfigured` tells the caller to answer 503 rather than 403:
   // our own misconfiguration must never be reported to a visitor as their failure.
   const boundSecret = secret && typeof secret === 'string' && secret.trim() !== '' ? secret.trim() : '';
-  const usingLegacyBridge = !boundSecret;
 
-  if (usingLegacyBridge) {
-    // Observable, and safe: no secret and no token is ever written to the log. If this line
-    // appears in the Pages logs, TURNSTILE_SECRET_KEY is still unbound and the migration in
-    // SETUP_SECRETS.md has not been completed.
-    console.warn(JSON.stringify({
-      tag: 'GO4AI_SECURITY',
-      timestamp: new Date().toISOString(),
-      action: 'turnstile_legacy_secret_in_use',
-      note: 'TURNSTILE_SECRET_KEY is unbound; the compromised legacy secret is still in use.',
-    }));
-  }
-
-  const effectiveSecret = boundSecret || LEGACY_TURNSTILE_SECRET;
-
-  if (!effectiveSecret) {
+  if (!boundSecret) {
     return {
       success: false,
       notConfigured: true,
@@ -209,7 +173,7 @@ export async function verifyTurnstile({ token, secret, remoteIp }) {
 
   try {
     const formData = new URLSearchParams();
-    formData.append('secret', effectiveSecret);
+    formData.append('secret', boundSecret);
     formData.append('response', token.trim());
     if (remoteIp) formData.append('remoteip', remoteIp);
 
@@ -272,28 +236,6 @@ export async function computePayloadHash(payload) {
   return Array.from(new Uint8Array(buf))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
-}
-
-export function checkMemoryDuplicate(payloadHash, maxAgeMs = 5 * 60 * 1000) {
-  const now = Date.now();
-  cleanupCache(RECENT_HASHES, maxAgeMs * 2);
-  const prevTime = RECENT_HASHES.get(payloadHash);
-  if (prevTime && now - prevTime < maxAgeMs) {
-    return true;
-  }
-  RECENT_HASHES.set(payloadHash, now);
-  return false;
-}
-
-export function checkTelegramDedupe(key, maxAgeMs = 10 * 60 * 1000) {
-  const now = Date.now();
-  cleanupCache(RECENT_TELEGRAM_HASHES, maxAgeMs * 2);
-  const prev = RECENT_TELEGRAM_HASHES.get(key);
-  if (prev && now - prev < maxAgeMs) {
-    return true; // Already sent recently
-  }
-  RECENT_TELEGRAM_HASHES.set(key, now);
-  return false;
 }
 
 // ─── 5. MALICIOUS LINK, GAMBLING, CASINO & INJECTION DETECTION ─────────────

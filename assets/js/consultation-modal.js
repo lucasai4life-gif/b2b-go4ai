@@ -675,7 +675,10 @@
         return d;
       });
     })
-    .then(function () {
+    .then(function (data) {
+      if (!data || data.success !== true) {
+        throw new Error('Máy chủ chưa xác nhận đã nhận yêu cầu. Vui lòng thử lại.');
+      }
       showSuccess();
     })
     .catch(function (err) {

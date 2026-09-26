@@ -15,23 +15,14 @@ Turnstile → your widget → Settings → Secret Key).*
 `TURNSTILE_SECRET_KEY` is missing or empty it answers `503 TURNSTILE_NOT_CONFIGURED` and
 **rejects the submission** — it never accepts a lead without a verified Turnstile token.
 
-> **Current state — one step left.** `functions/api/_security.js` still carries a
-> `LEGACY_TURNSTILE_SECRET` constant. It exists only so that shipping the frontend fix
-> cannot take lead capture down on an environment that has not bound this variable yet;
-> a fail-closed deploy without the binding returns 503 for every visitor. Retire it:
->
-> 1. rotate the widget's secret key in the Cloudflare dashboard (Turnstile → widget →
->    *Rotate secret key*);
-> 2. bind the new value here as `TURNSTILE_SECRET_KEY` (Production **and** Preview);
-> 3. delete the `LEGACY_TURNSTILE_SECRET` constant from `functions/api/_security.js`.
->
-> After step 3 the endpoint fails closed exactly as described above, and the 503 branch in
-> `functions/api/leads.js` becomes the active guard it was written to be.
+Production and Preview both have `TURNSTILE_SECRET_KEY` configured in the Pages dashboard.
+The code no longer has a fallback secret. If either binding is removed, the endpoint
+returns `503 TURNSTILE_NOT_CONFIGURED` without accepting the lead.
 
-> **Rotate, don't reuse.** An earlier revision of this codebase shipped a hardcoded
-> fallback secret inside `_security.js`, in a public repository, so that value must be
-> treated as compromised. Rotate the widget secret in the Cloudflare dashboard, then put
-> the **new** value into `TURNSTILE_SECRET_KEY` **before** deleting the constant.
+**Rotate the existing key.** An earlier revision shipped a hardcoded fallback in a public
+repository, so the old Turnstile secret must be treated as compromised. Rotate the widget
+secret in the Cloudflare dashboard and replace `TURNSTILE_SECRET_KEY` in both Production
+and Preview. Redeploy and verify a real form submission after the replacement.
 
 > **Never commit a secret.** Do not paste it into `.env`, `wrangler.toml`, source files, or
 > a commit message. The endpoint never logs the secret or a full token; only Cloudflare's

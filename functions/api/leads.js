@@ -20,8 +20,6 @@ import {
   recordIpFailure,
   verifyTurnstile,
   computePayloadHash,
-  checkMemoryDuplicate,
-  checkTelegramDedupe,
   evaluateSpam,
   logSecurityEvent,
 } from './_security.js';
@@ -253,32 +251,14 @@ export async function onRequestPost(context) {
       message: payloadExtra.message,
     });
 
-    // Layer A: Fast In-Memory Duplicate Check (within 5 minutes)
-    if (checkMemoryDuplicate(payloadHash)) {
-      logSecurityEvent({
-        action: 'duplicate_replay_detected_memory',
-        clientIp,
-        leadType,
-        score: 0,
-        reasons: ['memory_hash_match'],
-      });
-      return new Response(JSON.stringify({
-        success: true,
-        duplicate: true,
-        message: 'Yêu cầu của bạn đã được ghi nhận trước đó. Đội ngũ GO4AI sẽ liên hệ trong thời gian sớm nhất.'
-      }), {
-        status: 200,
-        headers,
-      });
-    }
-
-    // Layer B: D1 Database Checks (Persistent dedupe & cross-edge rate limits)
+    // D1 is the source of truth. Never mark a payload as received before an INSERT succeeds.
+    // An isolate-memory marker here previously made retries look successful after a D1 error.
     if (env.DB) {
       try {
         // Check identical payload within 10 minutes in D1
         const dupCheck = await env.DB.prepare(`
           SELECT id FROM leads
-          WHERE payload_hash = ? AND created_at > datetime('now', '-10 minutes')
+          WHERE payload_hash = ? AND julianday(created_at) > julianday('now', '-10 minutes')
           LIMIT 1
         `).bind(payloadHash).first();
 
@@ -303,7 +283,7 @@ export async function onRequestPost(context) {
         // Rolling limit: max 2 submissions per email per 10 minutes
         const emailRateCheck = await env.DB.prepare(`
           SELECT COUNT(*) as count FROM leads
-          WHERE email = ? AND created_at > datetime('now', '-10 minutes')
+          WHERE email = ? AND julianday(created_at) > julianday('now', '-10 minutes')
         `).bind(email).first();
 
         if (emailRateCheck && emailRateCheck.count >= 2) {
@@ -326,7 +306,7 @@ export async function onRequestPost(context) {
         if (phone) {
           const phoneRateCheck = await env.DB.prepare(`
             SELECT COUNT(*) as count FROM leads
-            WHERE phone = ? AND created_at > datetime('now', '-10 minutes')
+            WHERE phone = ? AND julianday(created_at) > julianday('now', '-10 minutes')
           `).bind(phone).first();
 
           if (phoneRateCheck && phoneRateCheck.count >= 2) {
@@ -347,7 +327,9 @@ export async function onRequestPost(context) {
     // ─── 9. WRITE TO D1 DATABASE ──────────────────────────────────────
     const createdAt = new Date().toISOString();
     let leadId;
-    const initialTelegramStatus = spamEval.isSuspicious ? 'quarantined' : 'pending';
+    const initialTelegramStatus = spamEval.isSuspicious
+      ? 'quarantined'
+      : (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID ? 'pending' : 'not_configured');
 
     try {
       const result = await env.DB.prepare(`
@@ -375,6 +357,7 @@ export async function onRequestPost(context) {
         clientIp, spamEval.score, spamEval.reasons.join(','), payloadHash
       ).run();
 
+      if (result.success === false) throw new Error('D1 INSERT returned success=false');
       leadId = result.meta?.last_row_id;
     } catch (dbErr) {
       console.error('[leads] D1 write error:', dbErr.message);
@@ -389,43 +372,43 @@ export async function onRequestPost(context) {
     let telegramStatus = initialTelegramStatus;
 
     if (spamEval.isClean && env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
-      const tgDedupeKey = `${email}|${leadType}`;
-      if (!checkTelegramDedupe(tgDedupeKey)) {
-        try {
-          const message = buildTelegramMessage({
-            leadType, source, sourcePage, sourceCta,
-            name, email, phone, company, role,
-            payloadExtra, createdAt
-          });
-
-          const tgRes = await fetch(
-            `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                chat_id: env.TELEGRAM_CHAT_ID,
-                text: message,
-                parse_mode: 'HTML'
-              })
-            }
-          );
-
-          const tgData = await tgRes.json();
-          telegramStatus = tgData.ok ? 'sent' : 'failed';
-
-          // Update telegram_status in D1 asynchronously
-          if (leadId) {
-            await env.DB.prepare(
-              `UPDATE leads SET telegram_status = ? WHERE id = ?`
-            ).bind(telegramStatus, leadId).run().catch(() => {});
+      // The D1 payload check already handles identical retries. Different accepted leads
+      // from the same email must each notify the team.
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      try {
+        const message = buildTelegramMessage({
+          leadType, source, sourcePage, sourceCta,
+          name, email, phone, company, role,
+          payloadExtra, createdAt
+        });
+        const tgRes = await fetch(
+          `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: env.TELEGRAM_CHAT_ID,
+              text: message,
+              parse_mode: 'HTML'
+            }),
+            signal: controller.signal,
           }
-        } catch (tgErr) {
-          console.error('[leads] Telegram delivery error:', tgErr.message);
-          telegramStatus = 'error';
-        }
-      } else {
-        telegramStatus = 'deduped';
+        );
+        const tgData = await tgRes.json();
+        telegramStatus = tgRes.ok && tgData.ok ? 'sent' : 'failed';
+      } catch (tgErr) {
+        console.error('[leads] Telegram delivery error:', tgErr.message);
+        telegramStatus = 'error';
+      } finally {
+        clearTimeout(timeout);
+      }
+
+      try {
+        await env.DB.prepare('UPDATE leads SET telegram_status = ? WHERE id = ?')
+          .bind(telegramStatus, leadId).run();
+      } catch (statusErr) {
+        console.error('[leads] D1 telegram status update error:', statusErr.message);
       }
     }
 
