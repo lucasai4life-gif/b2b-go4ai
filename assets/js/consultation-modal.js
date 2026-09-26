@@ -677,20 +677,32 @@
         try { window.turnstile.reset(turnstileWidgetId); } catch (e) {}
       }
 
+      /* The submit-level message belongs in #consult-submit-err, which the Turnstile widget
+         can never clear. The verification line below is only a hint: re-arming the
+         challenge fires callback() within a second or two on a fast connection, and that
+         callback resets the line — so a message reported ONLY there is a message the
+         visitor never gets to read. Measured: a 429 left the modal with no visible text at
+         all until this was fixed. */
       if (httpStatus === 503) {
         /* Our own deployment is incomplete — never blame the visitor for it. */
         setTurnstileStatus('error', TS_MSG.server);
-        showSubmitError(err.message || 'Hệ thống xác thực bảo mật chưa sẵn sàng.');
+        showSubmitError(err.message || TS_MSG.server);
       } else if (httpStatus === 403) {
-        setTurnstileStatus('expired', 'Xác thực bảo mật không hợp lệ hoặc đã hết hạn. Bấm “Xác thực lại” rồi gửi lại — thông tin bạn đã nhập vẫn được giữ.');
+        var expiredCopy = 'Xác thực bảo mật không hợp lệ hoặc đã hết hạn. Bấm “Xác thực lại” rồi gửi lại — thông tin bạn đã nhập vẫn được giữ.';
+        setTurnstileStatus('expired', expiredCopy);
+        showSubmitError(err.message || expiredCopy);
       } else if (httpStatus === 429) {
-        setTurnstileStatus('error', err.message || 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.');
+        var busyCopy = err.message || 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.';
+        setTurnstileStatus('error', busyCopy);
+        showSubmitError(busyCopy);
       } else if (httpStatus === 400 || httpStatus === 422) {
+        var invalidCopy = err.message || 'Thông tin gửi lên chưa hợp lệ. Vui lòng kiểm tra lại.';
         setTurnstileStatus('unverified', 'Vui lòng kiểm tra lại thông tin và hoàn thành xác thực bảo mật trước khi gửi lại.');
-        showSubmitError(err.message || 'Thông tin gửi lên chưa hợp lệ. Vui lòng kiểm tra lại.');
+        showSubmitError(invalidCopy);
       } else {
         /* No HTTP status at all: the request never completed (offline, DNS, timeout). */
         setTurnstileStatus('error', TS_MSG.network);
+        showSubmitError(TS_MSG.network);
       }
     });
   }
