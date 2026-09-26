@@ -276,7 +276,7 @@
         trigger: track,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 0.8, // Matches Webflow smoothing: 80
+        scrub: true,
         invalidateOnRefresh: true,
         onUpdate: function (self) {
           list.classList.toggle('is--scrubbing', self.progress > 0.05);
