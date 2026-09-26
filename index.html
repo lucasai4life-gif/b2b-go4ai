@@ -143,6 +143,9 @@
   font-size: clamp(1.0625rem, 1.35vw, 1.25rem);
   line-height: 1.6;
 }
+.hero__desc-br {
+  display: none;
+}
 
 .hero__ctas .button--outline {
   color: #e8f5f0;
@@ -1185,18 +1188,67 @@
 /* ── RESPONSIVE HERO: 2. LAPTOP 1200–1535px ────────────────────────── */
 @media (min-width: 1200px) and (max-width: 1535px) {
   .hero__grid {
-    grid-template-columns: minmax(0, 56fr) minmax(0, 44fr) !important;
-    gap: clamp(28px, 2.5vw, 40px) !important;
+    grid-template-columns: minmax(0, 56.5fr) minmax(0, 43.5fr) !important;
+    gap: clamp(24px, 2.2vw, 36px) !important;
     align-items: center !important;
   }
   .hero__content {
     max-width: 100% !important;
   }
+  .hero__content > .chips {
+    font-size: 0.8125rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    padding: 6px 14px 6px 10px !important;
+    border-radius: 999px !important;
+    gap: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    margin-bottom: 14px !important;
+  }
+  .hero__content > .chips .chips__icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+  .hero__title {
+    font-size: clamp(2.85rem, 3.8vw, 3.75rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.035em !important;
+    margin: 0.35rem 0 0.85rem !important;
+  }
   .hero__sub {
     max-width: 100% !important;
+    font-size: clamp(1.0625rem, 1.22vw, 1.1875rem) !important;
+    line-height: 1.55 !important;
+    margin: 0 0 20px !important;
+  }
+  .hero__desc-br {
+    display: inline !important;
+  }
+  .hero__ctas {
+    margin: 0 0 20px !important;
+    gap: 12px !important;
+  }
+  .hero__ctas .button {
+    min-height: 42px !important;
+    padding: 0.625rem 1.25rem !important;
+    font-size: 0.9375rem !important;
+    font-weight: 600 !important;
   }
   .hero__pipeline {
     max-width: 100% !important;
+    height: 38px !important;
+    padding: 5px 16px 5px 8px !important;
+    gap: 5px !important;
+  }
+  .hero__pipeline-tag {
+    font-size: 0.65625rem !important;
+    padding: 3px 9px !important;
+  }
+  .hero__trust > li span {
+    font-size: 0.71875rem !important;
+    padding: 2px 6px !important;
   }
   .hero__visual.hero-engine {
     max-width: 520px !important;
@@ -1217,25 +1269,36 @@
     align-items: flex-start !important;
   }
   .hero__content > .chips {
-    margin-bottom: 10px !important;
+    margin-bottom: 12px !important;
+    padding: 5px 13px 5px 9px !important;
+    font-size: 0.8125rem !important;
   }
   .hero__title {
-    margin: 0.2rem 0 0.65rem !important;
-    font-size: clamp(2.35rem, 3.4vw, 3.5rem) !important;
-    line-height: 1.1 !important;
+    margin: 0.2rem 0 0.7rem !important;
+    font-size: clamp(2.55rem, 3.68vw, 3.5rem) !important;
+    line-height: 1.08 !important;
   }
   .hero__sub {
-    margin: 0 0 14px !important;
-    font-size: clamp(0.9375rem, 1.1vw, 1.0625rem) !important;
-    line-height: 1.5 !important;
+    margin: 0 0 16px !important;
+    font-size: clamp(1.03125rem, 1.16vw, 1.125rem) !important;
+    line-height: 1.52 !important;
+  }
+  .hero__desc-br {
+    display: inline !important;
   }
   .hero__ctas {
-    margin: 0 0 14px !important;
-    gap: 10px !important;
+    margin: 0 0 16px !important;
+    gap: 12px !important;
   }
   .hero__ctas .button {
-    min-height: 38px !important;
-    padding: 0.5rem 1.125rem !important;
+    min-height: 40px !important;
+    padding: 0.5625rem 1.1875rem !important;
+    font-size: 0.90625rem !important;
+  }
+  .hero__pipeline {
+    height: 36px !important;
+    padding: 5px 14px 5px 8px !important;
+    gap: 4px !important;
   }
   .hero__visual.hero-engine {
     padding: 0 !important;
@@ -1249,16 +1312,37 @@
     padding-top: calc(var(--header-h, 75px) + 8px) !important;
     padding-bottom: 14px !important;
   }
+  .hero__content > .chips {
+    margin-bottom: 10px !important;
+    padding: 4px 12px 4px 8px !important;
+    font-size: 0.78125rem !important;
+  }
   .hero__title {
-    font-size: clamp(2.1rem, 3vw, 2.75rem) !important;
-    margin: 0.15rem 0 0.5rem !important;
+    font-size: clamp(2.35rem, 3.25vw, 2.95rem) !important;
+    line-height: 1.08 !important;
+    margin: 0.15rem 0 0.55rem !important;
   }
   .hero__sub {
-    margin: 0 0 10px !important;
-    font-size: 0.9375rem !important;
+    margin: 0 0 12px !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+  .hero__desc-br {
+    display: inline !important;
   }
   .hero__ctas {
-    margin: 0 0 10px !important;
+    margin: 0 0 12px !important;
+    gap: 10px !important;
+  }
+  .hero__ctas .button {
+    min-height: 38px !important;
+    padding: 0.5rem 1.125rem !important;
+    font-size: 0.875rem !important;
+  }
+  .hero__pipeline {
+    height: 34px !important;
+    padding: 4px 12px 4px 7px !important;
+    gap: 3px !important;
   }
   .engine__stage {
     transform: scale(0.92);
@@ -2533,8 +2617,7 @@ html.motion-impact .impact-section {
           </h1>
 
           <p class="text--l hero__sub text--measure">
-            GO4AI giúp doanh nghiệp đưa AI vào công việc thông qua chương trình đào tạo
-            theo vai trò, phòng ban và bài toán thực tế.
+            GO4AI giúp doanh nghiệp đưa AI vào công việc thông qua chương trình đào tạo theo vai trò,<br class="hero__desc-br"> phòng ban và bài toán thực tế.
           </p>
 
           <!-- HAI CÂU “KHÔNG CHỈ HỌC CÁCH DÙNG CHATGPT…” ĐÃ ĐƯỢC GỠ Ở ĐÂY:
