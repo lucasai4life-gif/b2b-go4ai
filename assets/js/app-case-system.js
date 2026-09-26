@@ -262,13 +262,25 @@
       return;
     }
 
-    var isDesktop = window.matchMedia && window.matchMedia('(min-width: 992px)').matches;
+    var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var touchPipelineResumeTimer = null;
     steps.forEach(function (step, i) {
       step.addEventListener('mouseenter', function () {
-        if (!isDesktop) return;
+        if (!canHover) return;
         hovered = true;
         stop();
         activate(i);
+      });
+      step.addEventListener('click', function () {
+        activate(i);
+        if (!canHover) {
+          stop();
+          if (touchPipelineResumeTimer) clearTimeout(touchPipelineResumeTimer);
+          touchPipelineResumeTimer = setTimeout(function () {
+            hovered = false;
+            start();
+          }, 3200);
+        }
       });
     });
     bar.addEventListener('mouseleave', function () {
@@ -321,13 +333,15 @@
 
     if (l1) tl.to(l1, {
       yPercent: 0, opacity: 1, filter: 'blur(0px)',
-      duration: 0.85, ease: 'power3.out'
+      duration: 0.85, ease: 'power3.out',
+      onComplete: function () { gsap.set(l1, { clearProps: 'filter' }); }
     }, 0.55);
 
     if (l2) {
       tl.to(l2, {
         yPercent: 0, opacity: 1, filter: 'blur(0px)',
-        duration: 0.9, ease: 'power3.out'
+        duration: 0.9, ease: 'power3.out',
+        onComplete: function () { gsap.set(l2, { clearProps: 'filter' }); }
       }, 1.12);
       tl.call(function () { l2.classList.add('is--sweep'); }, null, 1.72);
     }
@@ -360,6 +374,8 @@
   function initHeroParallax() {
     if (reduce) return;
     if (!(window.matchMedia && window.matchMedia('(min-width: 992px)').matches)) return;
+    var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!canHover) return;
 
     var grid = qs('.acs-hero-bg__grid');
     var glow = qs('.acs-hero-bg__glow');
@@ -439,7 +455,8 @@
         tl.fromTo(title,
           { y: 38, autoAlpha: 0, filter: 'blur(6px)', clipPath: 'inset(100% 0% 0% 0%)' },
           { y: 0, autoAlpha: 1, filter: 'blur(0px)', clipPath: 'inset(0% 0% 0% 0%)',
-            duration: 0.85, ease: 'power3.out' }, 0.18);
+            duration: 0.85, ease: 'power3.out',
+            onComplete: function () { gsap.set(title, { clearProps: 'filter,clipPath' }); } }, 0.18);
       }
 
       if (rule) {

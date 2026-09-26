@@ -31,6 +31,7 @@
 
   var mqReduce = null;
   try { mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)'); } catch (e) { mqReduce = null; }
+  var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   var motionOn   = false;
   var tornDown   = false;
@@ -311,9 +312,9 @@
       start();
     }
 
-    root.addEventListener('mouseenter', function () { c.hovered = true; });
+    root.addEventListener('mouseenter', function () { if (canHover) c.hovered = true; });
     root.addEventListener('mouseleave', function () { c.hovered = false; });
-    root.addEventListener('focusin', function () { c.focused = true; });
+    root.addEventListener('focusin', function () { if (canHover) c.focused = true; });
     root.addEventListener('focusout', function () {
       if (!root.contains(document.activeElement)) c.focused = false;
     });
@@ -397,9 +398,9 @@
       start();
     }
 
-    stepper.addEventListener('mouseenter', function () { hovered = true; });
+    stepper.addEventListener('mouseenter', function () { if (canHover) hovered = true; });
     stepper.addEventListener('mouseleave', function () { hovered = false; });
-    stepper.addEventListener('focusin', function () { focused = true; });
+    stepper.addEventListener('focusin', function () { if (canHover) focused = true; });
     stepper.addEventListener('focusout', function () {
       if (!stepper.contains(document.activeElement)) focused = false;
     });
@@ -490,12 +491,12 @@
       start();
     }
 
-    root.addEventListener('mouseenter', function () { hovered = true; });
+    root.addEventListener('mouseenter', function () { if (canHover) hovered = true; });
     root.addEventListener('mouseleave', function () {
       hovered = false;
       if (visible) start();
     });
-    root.addEventListener('focusin', function () { focused = true; });
+    root.addEventListener('focusin', function () { if (canHover) focused = true; });
     root.addEventListener('focusout', function () {
       if (!root.contains(document.activeElement)) {
         focused = false;

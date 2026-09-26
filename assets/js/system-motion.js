@@ -21,6 +21,9 @@
   -------------------------------------------------------------------------- */
   function qs(sel, ctx) { return (ctx || document).querySelector(sel); }
   function qsa(sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); }
+  function hasFinePointer() {
+    return window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }
 
   /* --------------------------------------------------------------------------
      2. HERO BOOT SEQUENCE (Section C: 0.0s → 2.5s Cinematic Sequence)
@@ -200,6 +203,7 @@
     var currentIndex = 0;
     var timer = null;
     var isHovered = false;
+    var touchResumeTimer = null;
 
     function activatePill(idx) {
       if (idx < 0 || idx >= pills.length) idx = 0;
@@ -239,12 +243,27 @@
       timer = setInterval(nextPill, 1000); // 900–1100ms
     }
 
-    // Desktop hover: pause & activate hovered pill
+    // Capability-based hover: pause & activate hovered pill only on fine pointer
     pills.forEach(function (pill, idx) {
       pill.addEventListener('mouseenter', function () {
-        isHovered = true;
-        if (timer) { clearInterval(timer); timer = null; }
+        if (hasFinePointer()) {
+          isHovered = true;
+          if (timer) { clearInterval(timer); timer = null; }
+          activatePill(idx);
+        }
+      });
+
+      // Touch / tap support: activate tapped pill and auto-resume loop after 3.2s
+      pill.addEventListener('click', function () {
         activatePill(idx);
+        if (!hasFinePointer()) {
+          if (timer) { clearInterval(timer); timer = null; }
+          if (touchResumeTimer) clearTimeout(touchResumeTimer);
+          touchResumeTimer = setTimeout(function () {
+            isHovered = false;
+            startCycle();
+          }, 3200);
+        }
       });
     });
 
@@ -362,20 +381,51 @@
       }
     }, 3000);
 
-    // Hover management: hover pauses auto-cycle and activates hovered element
+    var touchEngineResumeTimer = null;
+    function resumeEngineAfterTouch() {
+      if (touchEngineResumeTimer) clearTimeout(touchEngineResumeTimer);
+      touchEngineResumeTimer = setTimeout(function () {
+        isHovered = false;
+        clearAllActive();
+        currentIdx = (currentIdx + 1) % steps.length;
+        if (isStarted && isInViewport) {
+          startCycle();
+        }
+      }, 3500);
+    }
+
+    // Hover management: hover pauses auto-cycle and activates hovered element (fine pointer)
     allCards.forEach(function (card) {
       card.addEventListener('mouseenter', function () {
-        isHovered = true;
+        if (hasFinePointer()) {
+          isHovered = true;
+          pauseCycle();
+          clearAllActive();
+          card.classList.add('is--active');
+
+          // Route highlight for role cards
+          var route = card.getAttribute('data-route');
+          if (route) {
+            var cls = 'is--highlight-' + (route === 'finance' ? 'fin' : route);
+            stage.classList.add(cls);
+            if (passport) passport.classList.add('is--highlighted');
+          }
+        }
+      });
+
+      // Mobile / touch tap support
+      card.addEventListener('click', function () {
         pauseCycle();
         clearAllActive();
         card.classList.add('is--active');
-
-        // Route highlight for role cards
         var route = card.getAttribute('data-route');
         if (route) {
           var cls = 'is--highlight-' + (route === 'finance' ? 'fin' : route);
           stage.classList.add(cls);
           if (passport) passport.classList.add('is--highlighted');
+        }
+        if (!hasFinePointer()) {
+          resumeEngineAfterTouch();
         }
       });
     });
@@ -417,6 +467,7 @@
   function initHeroParallax() {
     if (reduce) return;
     if (window.matchMedia('(max-width: 991px)').matches) return;
+    if (!hasFinePointer()) return;
 
     var heroSection = qs('.section.hero');
     if (!heroSection) return;
@@ -510,7 +561,9 @@
         onEnter: function () {
           gsap.fromTo(title,
             { autoAlpha: 0, y: 30, filter: 'blur(5px)' },
-            { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'power3.out' }
+            { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'power3.out',
+              onComplete: function () { gsap.set(title, { clearProps: 'filter' }); }
+            }
           );
           if (grad) {
             setTimeout(function () {
@@ -580,7 +633,7 @@
 
           requestAnimationFrame(tick);
         });
-      }, { threshold: 0.35 });
+      }, { threshold: 0.15 });
 
       io.observe(el);
     });
@@ -690,20 +743,44 @@
       if (timer) { clearTimeout(timer); timer = null; }
     }
 
-    // Hover & focus handling
-    flow.addEventListener('mouseenter', function () { isHovered = true; pauseCycle(); });
-    flow.addEventListener('mouseleave', function () { isHovered = false; if (inView) startCycle(); });
-    flow.addEventListener('focusin', function () { isHovered = true; pauseCycle(); });
-    flow.addEventListener('focusout', function () { isHovered = false; if (inView) startCycle(); });
+    var touchFlowResumeTimer = null;
+    function resumeFlowAfterTouch() {
+      if (touchFlowResumeTimer) clearTimeout(touchFlowResumeTimer);
+      touchFlowResumeTimer = setTimeout(function () {
+        isHovered = false;
+        if (inView) startCycle();
+      }, 3200);
+    }
+
+    // Hover & focus handling (capability-based)
+    flow.addEventListener('mouseenter', function () {
+      if (hasFinePointer()) { isHovered = true; pauseCycle(); }
+    });
+    flow.addEventListener('mouseleave', function () {
+      isHovered = false; if (inView) startCycle();
+    });
+    flow.addEventListener('focusin', function () {
+      if (hasFinePointer()) { isHovered = true; pauseCycle(); }
+      else { resumeFlowAfterTouch(); }
+    });
+    flow.addEventListener('focusout', function () {
+      isHovered = false; if (inView) startCycle();
+    });
 
     pills.forEach(function (pill, idx) {
       pill.addEventListener('mouseenter', function () {
-        isHovered = true;
-        pauseCycle();
-        activatePill(idx);
+        if (hasFinePointer()) {
+          isHovered = true;
+          pauseCycle();
+          activatePill(idx);
+        }
       });
       pill.addEventListener('click', function () {
         activatePill(idx);
+        if (!hasFinePointer()) {
+          pauseCycle();
+          resumeFlowAfterTouch();
+        }
       });
     });
 
@@ -960,22 +1037,41 @@
       timer = setInterval(nextCard, 800); // 700–850ms / card
     }
 
-    diagGrid.addEventListener('mouseenter', function () { isPaused = true; });
-    diagGrid.addEventListener('mouseleave', function () { isPaused = false; });
-    diagGrid.addEventListener('focusin', function () { isPaused = true; });
+    var touchDiagResumeTimer = null;
+    function resumeDiagAfterTouch() {
+      if (touchDiagResumeTimer) clearTimeout(touchDiagResumeTimer);
+      touchDiagResumeTimer = setTimeout(function () {
+        isPaused = false;
+        startTimer();
+      }, 3500);
+    }
+
+    diagGrid.addEventListener('mouseenter', function () { if (hasFinePointer()) isPaused = true; });
+    diagGrid.addEventListener('mouseleave', function () { if (hasFinePointer()) isPaused = false; });
+    diagGrid.addEventListener('focusin', function () {
+      if (hasFinePointer()) isPaused = true;
+      else resumeDiagAfterTouch();
+    });
     diagGrid.addEventListener('focusout', function () { isPaused = false; });
 
     cards.forEach(function (card, idx) {
       card.addEventListener('mouseenter', function () {
-        isPaused = true;
-        activateCard(idx);
+        if (hasFinePointer()) {
+          isPaused = true;
+          activateCard(idx);
+        }
       });
       card.addEventListener('mouseleave', function () {
-        isPaused = false;
+        if (hasFinePointer()) isPaused = false;
       });
       card.addEventListener('click', function () {
         activateCard(idx);
-        startTimer();
+        if (hasFinePointer()) {
+          startTimer();
+        } else {
+          isPaused = true;
+          resumeDiagAfterTouch();
+        }
       });
     });
 
@@ -1300,6 +1396,9 @@
         ScrollTrigger.refresh();
       });
     }
+    window.addEventListener('load', function () {
+      ScrollTrigger.refresh();
+    });
   }
 
   if (document.readyState === 'loading') {

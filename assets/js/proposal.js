@@ -8,6 +8,7 @@
   'use strict';
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   // NOTE: the .has-js class is added by a tiny inline script in <head> (before the
   // stylesheet) so reveal targets never flash visible-then-hidden on first paint.
 
@@ -210,7 +211,7 @@
           }
         })(start);
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.15 });
 
     nodes.forEach(function (n) { io.observe(n); });
   }
@@ -277,12 +278,16 @@
 
     cards.forEach(function (card) {
       card.addEventListener('mouseenter', function () {
-        container.classList.add('has--active-track');
-        card.classList.add('is--active');
+        if (canHover) {
+          container.classList.add('has--active-track');
+          card.classList.add('is--active');
+        }
       });
       card.addEventListener('mouseleave', function () {
-        container.classList.remove('has--active-track');
-        card.classList.remove('is--active');
+        if (canHover) {
+          container.classList.remove('has--active-track');
+          card.classList.remove('is--active');
+        }
       });
     });
   }
@@ -349,12 +354,16 @@
 
     steps.forEach(function (step, i) {
       step.addEventListener('mouseenter', function () {
-        hoveredIndex = i;
-        applyActive(i);
+        if (canHover) {
+          hoveredIndex = i;
+          applyActive(i);
+        }
       });
       step.addEventListener('mouseleave', function () {
-        hoveredIndex = -1;
-        applyActive(scrollIndex);
+        if (canHover) {
+          hoveredIndex = -1;
+          applyActive(scrollIndex);
+        }
       });
       step.addEventListener('click', function () {
         scrollIndex = i;
@@ -403,12 +412,12 @@
 
       diagCards.forEach(function (card) {
         card.addEventListener('mouseenter', function () {
-          if (!activeDiag) {
+          if (canHover && !activeDiag) {
             diagGrid.classList.add('has--active-card');
           }
         });
         card.addEventListener('mouseleave', function () {
-          if (!activeDiag) {
+          if (canHover && !activeDiag) {
             diagGrid.classList.remove('has--active-card');
           }
         });

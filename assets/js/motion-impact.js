@@ -162,8 +162,8 @@
       });
     }, {
       root: null,
-      /* Đáy root bị cắt 30% ⇒ mốc kích hoạt nằm ở ~70% chiều cao viewport. */
-      rootMargin: '0px 0px -30% 0px',
+      /* Đáy root điều chỉnh 15% để thích ứng tốt với URL bar co giãn trên Android Chrome */
+      rootMargin: '0px 0px -15% 0px',
       threshold: 0
     });
 
@@ -174,7 +174,7 @@
 
     /* Vòng nào đã ở trên mốc kích hoạt ngay lúc mount (reload giữa trang,
        deep-link #bang-chung) thì reveal luôn, không chờ cuộn. */
-    var triggerY = window.innerHeight * 0.7;
+    var triggerY = window.innerHeight * 0.85;
     seq.forEach(function (el) {
       if (el.getBoundingClientRect().top <= triggerY) reveal(el);
       else io.observe(el);

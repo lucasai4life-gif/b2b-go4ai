@@ -21,7 +21,7 @@
   var r = document.documentElement;
   r.classList.add("has-js");
   if (location.protocol === "file:") r.classList.add("is-file-protocol");
-  var q = "(min-width: 992px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)";
+  var q = "(min-width: 992px) and (prefers-reduced-motion: no-preference)";
   if (window.matchMedia && window.matchMedia(q).matches) {
     r.classList.add("motion-impact");
     /* Lưới an toàn: chỉ GIỮ gate khi GSAP đã dựng được timeline thật. */
@@ -4764,10 +4764,11 @@ html.motion-impact .impact-section {
         if (passport) passport.classList.remove('is--highlighted');
       }
 
-      card.addEventListener('mouseenter', activate);
-      card.addEventListener('mouseleave', deactivate);
-      card.addEventListener('focus', activate);
-      card.addEventListener('blur', deactivate);
+      var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      card.addEventListener('mouseenter', function () { if (canHover) activate(); });
+      card.addEventListener('mouseleave', function () { if (canHover) deactivate(); });
+      card.addEventListener('focus', function () { if (canHover) activate(); });
+      card.addEventListener('blur', function () { if (canHover) deactivate(); });
     });
   }
   if (document.readyState === 'loading') {

@@ -1766,7 +1766,7 @@
     {p:0.30, x:8,  y:8,  s:0.30}
   ];
 
-  var mqMobile = window.matchMedia('(max-width: 860px)');
+  var mqMobile = window.matchMedia('(max-width: 900px)');
   function activeWaypoints(){ return mqMobile.matches ? WP_MOBILE : WP_DESKTOP; }
 
   function catmull(p0,p1,p2,p3,t){
@@ -1976,8 +1976,18 @@
     return null;
   }
 
+  var cachedVH = window.innerHeight || (document.documentElement && document.documentElement.clientHeight) || 800;
+  var cachedVW = window.innerWidth || (document.documentElement && document.documentElement.clientWidth) || 1200;
+  window.addEventListener('resize', function(){
+    cachedVW = window.innerWidth || (document.documentElement && document.documentElement.clientWidth) || 1200;
+    var curH = window.innerHeight || (document.documentElement && document.documentElement.clientHeight) || 800;
+    if (!mqMobile.matches || Math.abs(curH - cachedVH) > 110) {
+      cachedVH = curH;
+    }
+  }, { passive: true });
+
   function frame(ts){
-    var vh = window.innerHeight, vw = window.innerWidth, sy = window.scrollY;
+    var vh = cachedVH, vw = cachedVW, sy = window.scrollY;
     var t = ts/1000;
     var mobile = mqMobile.matches;
     var pastHero = sy > vh * 0.92;
@@ -2049,7 +2059,9 @@
   var ctaBtn = document.getElementById('ctaBtn');
   var flash = document.getElementById('flash');
 
-  if(!reduce){
+  var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  if(!reduce && canHover){
     wrap.addEventListener('mousemove', function(e){
       var r = wrap.getBoundingClientRect();
       var cx = r.left + r.width/2, cy = r.top + r.height/2;
@@ -2076,12 +2088,14 @@
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSpace(); });
 
   canvas.addEventListener('mouseover', function(e){
+    if(!canHover) return;
     var h = e.target.closest('.hotspot'); if(!h) return;
     canvas.classList.add('dimmed');
     var el = document.getElementById('part-'+h.getAttribute('data-level'));
     if(el) el.classList.add('is-active');
   });
   canvas.addEventListener('mouseout', function(e){
+    if(!canHover) return;
     var h = e.target.closest('.hotspot'); if(!h) return;
     canvas.classList.remove('dimmed');
     var el = document.getElementById('part-'+h.getAttribute('data-level'));

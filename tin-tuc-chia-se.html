@@ -3008,10 +3008,11 @@ html.motion-scroll .ev-scroll.is--on {
     });
 
     /* --- pause conditions --- */
-    el.addEventListener('mouseenter', function () { paused = true; });
-    el.addEventListener('mouseleave', function () { paused = false; });
-    el.addEventListener('focusin', function () { paused = true; });
-    el.addEventListener('focusout', function () { paused = false; });
+    var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    el.addEventListener('mouseenter', function () { if (canHover) paused = true; });
+    el.addEventListener('mouseleave', function () { if (canHover) paused = false; });
+    el.addEventListener('focusin', function () { if (canHover) paused = true; });
+    el.addEventListener('focusout', function () { if (canHover) paused = false; });
     document.addEventListener('visibilitychange', function () { tabOn = !document.hidden; });
 
     if ('IntersectionObserver' in window) {
