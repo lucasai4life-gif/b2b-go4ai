@@ -227,14 +227,19 @@
 
   /* ── Turnstile Integration ───────────────────────────────────────────── */
   /* Visitor-facing copy per verification state. Four distinct outcomes — chưa xác thực,
-     hết hạn, lỗi Turnstile, lỗi mạng — each with the same recovery action so a blocked
-     submit is never a dead end and never costs the visitor their typed-in data. */
+     hết hạn, lỗi Turnstile, lỗi mạng — each with a recovery action, so a blocked submit is
+     never a dead end and never costs the visitor their typed-in data.
+     ⚠️ Copy must not promise the "Xác thực lại" button: re-arming the challenge makes the
+     widget call back within a second or two on a working connection, and that callback
+     hides the button again. Measured: after a stubbed network failure the status line was
+     already empty 2.5s later while the submit message was still on screen. Point the
+     visitor at the submit button unless the copy is for a state where the button stays. */
   var TS_MSG = {
     loading:    'Đang tải bước xác thực bảo mật…',
     unverified: 'Vui lòng hoàn thành xác thực bảo mật trước khi gửi.',
-    expired:    'Phiên xác thực bảo mật đã hết hạn. Bấm “Xác thực lại” để tiếp tục — thông tin bạn đã nhập vẫn được giữ nguyên.',
+    expired:    'Phiên xác thực bảo mật đã hết hạn. Hãy hoàn thành lại xác thực rồi gửi lại — thông tin bạn đã nhập vẫn được giữ nguyên.',
     error:      'Không tải được bước xác thực bảo mật. Vui lòng kiểm tra kết nối mạng rồi bấm “Xác thực lại”.',
-    network:    'Không gửi được yêu cầu. Vui lòng kiểm tra kết nối mạng và bấm “Xác thực lại” để thử lại.',
+    network:    'Không gửi được yêu cầu. Vui lòng kiểm tra kết nối mạng rồi gửi lại — thông tin bạn đã nhập vẫn được giữ nguyên.',
     server:     'Hệ thống xác thực bảo mật chưa sẵn sàng. Vui lòng liên hệ trực tiếp GO4AI để được hỗ trợ.'
   };
 
@@ -626,10 +631,19 @@
     if (!token) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Gửi yêu cầu tư vấn →';
-      /* Distinct state per reason — and never a dead end: the re-verify action is offered. */
-      if (turnstileStatus === 'error')        setTurnstileStatus('error');
-      else if (turnstileStatus === 'expired') setTurnstileStatus('expired');
-      else                                    setTurnstileStatus('unverified');
+      /* Distinct state per reason — and never a dead end: the re-verify action is offered.
+         The same sentence also goes to #consult-submit-err so the reason survives a
+         Turnstile callback firing behind it. */
+      if (turnstileStatus === 'error') {
+        setTurnstileStatus('error');
+        showSubmitError(TS_MSG.error);
+      } else if (turnstileStatus === 'expired') {
+        setTurnstileStatus('expired');
+        showSubmitError(TS_MSG.expired);
+      } else {
+        setTurnstileStatus('unverified');
+        showSubmitError(TS_MSG.unverified);
+      }
       return;
     }
 
@@ -688,7 +702,9 @@
         setTurnstileStatus('error', TS_MSG.server);
         showSubmitError(err.message || TS_MSG.server);
       } else if (httpStatus === 403) {
-        var expiredCopy = 'Xác thực bảo mật không hợp lệ hoặc đã hết hạn. Bấm “Xác thực lại” rồi gửi lại — thông tin bạn đã nhập vẫn được giữ.';
+        /* Same wording rule as TS_MSG: never promise the "Xác thực lại" button, which the
+           widget hides again as soon as it hands back a fresh token. */
+        var expiredCopy = 'Xác thực bảo mật không hợp lệ hoặc đã hết hạn. Hãy hoàn thành lại xác thực rồi gửi lại — thông tin bạn đã nhập vẫn được giữ.';
         setTurnstileStatus('expired', expiredCopy);
         showSubmitError(err.message || expiredCopy);
       } else if (httpStatus === 429) {
