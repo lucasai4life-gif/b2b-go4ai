@@ -548,6 +548,56 @@
   width: 100%;
 }
 
+/* ── Turnstile Verification Status ───────────────────────────────────────── */
+/* Distinct, non-blocking messaging per verification state (chưa xác thực / hết hạn /
+   lỗi Turnstile / lỗi mạng) with a re-verify action that keeps everything the visitor
+   already typed. Never a dead end. */
+.consult-ts-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  text-align: center;
+}
+.consult-ts-status[hidden] {
+  display: none;
+}
+.consult-ts-status__text {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: #fbbf24;
+}
+.consult-ts-retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 16px;
+  background: transparent;
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.55);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.consult-ts-retry[hidden] {
+  display: none;
+}
+.consult-ts-retry:hover {
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.85);
+}
+.consult-ts-retry:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
+}
+
 /* Body scroll lock */
 body.consult-open {
   overflow: hidden;

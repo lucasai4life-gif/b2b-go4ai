@@ -149,7 +149,56 @@ export function recordIpFailure(clientIp) {
 }
 
 // ─── 3. CLOUDFLARE TURNSTILE VERIFICATION ──────────────────────────────────
+
+/**
+ * ⚠️ MIGRATION BRIDGE — DELETE THIS CONSTANT.
+ *
+ * This value sat in this file, in a public repository, so it is compromised by definition
+ * and must be treated as public. It is kept ONLY as a bridge so that shipping the frontend
+ * fix cannot take lead capture down on a project whose Pages environment may not yet have
+ * `TURNSTILE_SECRET_KEY` bound — a fail-closed deploy without that binding returns 503 for
+ * every visitor, which is strictly worse than the bug being fixed.
+ *
+ * To retire it (two steps, no code change needed in between):
+ *   1. Cloudflare dashboard → Turnstile → this widget → "Rotate secret key".
+ *   2. Pages → b2b-go4ai → Settings → Environment variables → bind the new value as
+ *      `TURNSTILE_SECRET_KEY` (Production **and** Preview), then delete this constant.
+ *
+ * Once the constant is gone, `verifyTurnstile` below fails closed on its own and the caller
+ * answers 503 TURNSTILE_NOT_CONFIGURED — the intended end state.
+ */
+const LEGACY_TURNSTILE_SECRET = '0x4AAAAAAFEKUfnC1dZSC_LRcP2We0HFCfE';
+
 export async function verifyTurnstile({ token, secret, remoteIp }) {
+  // FAIL CLOSED. A missing server-side secret is a deployment error, never a reason to
+  // accept a submission. `notConfigured` tells the caller to answer 503 rather than 403:
+  // our own misconfiguration must never be reported to a visitor as their failure.
+  const boundSecret = secret && typeof secret === 'string' && secret.trim() !== '' ? secret.trim() : '';
+  const usingLegacyBridge = !boundSecret;
+
+  if (usingLegacyBridge) {
+    // Observable, and safe: no secret and no token is ever written to the log. If this line
+    // appears in the Pages logs, TURNSTILE_SECRET_KEY is still unbound and the migration in
+    // SETUP_SECRETS.md has not been completed.
+    console.warn(JSON.stringify({
+      tag: 'GO4AI_SECURITY',
+      timestamp: new Date().toISOString(),
+      action: 'turnstile_legacy_secret_in_use',
+      note: 'TURNSTILE_SECRET_KEY is unbound; the compromised legacy secret is still in use.',
+    }));
+  }
+
+  const effectiveSecret = boundSecret || LEGACY_TURNSTILE_SECRET;
+
+  if (!effectiveSecret) {
+    return {
+      success: false,
+      notConfigured: true,
+      reason: 'turnstile_not_configured',
+      error: 'Hệ thống xác thực bảo mật chưa được cấu hình. Vui lòng liên hệ GO4AI.',
+    };
+  }
+
   if (!token || typeof token !== 'string' || token.trim() === '') {
     return {
       success: false,
@@ -157,9 +206,6 @@ export async function verifyTurnstile({ token, secret, remoteIp }) {
       error: 'Thiếu mã xác thực Turnstile. Vui lòng thử lại.',
     };
   }
-
-  // Allow standard Cloudflare test secret in dev/testing environments
-  const effectiveSecret = secret || '0x4AAAAAAFEKUfnC1dZSC_LRcP2We0HFCfE';
 
   try {
     const formData = new URLSearchParams();
@@ -194,10 +240,11 @@ export async function verifyTurnstile({ token, secret, remoteIp }) {
         challengeTs: data.challenge_ts,
       };
     } else {
+      // error-codes are safe metadata (they never contain the secret or the token).
       return {
         success: false,
         reason: 'turnstile_rejected',
-        errorCodes: data['error-codes'] || [],
+        errorCodes: Array.isArray(data['error-codes']) ? data['error-codes'] : [],
         error: 'Xác thực bảo mật không thành công hoặc phiên đã hết hạn. Vui lòng hoàn thành lại xác thực.',
       };
     }
@@ -264,8 +311,33 @@ const SPAM_TLD_REGEX = /\b[a-z0-9][-a-z0-9]{1,62}\.(?:xyz|top|site|club|vip|icu|
 // Standard domains (com, vn, edu, org, etc.)
 const GENERAL_DOMAIN_REGEX = /\b[a-z0-9][-a-z0-9]{1,62}\.(?:com|org|net|vn|com\.vn|edu\.vn|info|biz|ai|io)\b/i;
 
-// IP URLs
-const IP_URL_REGEX = /\b(?:https?:\/\/)?(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/[^\s]*)?\b/;
+// IP URLs.
+// ⛔ The old pattern `(?:https?:\/\/)?(?:\d{1,3}\.){3}\d{1,3}` matched a bare dotted quad,
+// so Vietnamese amounts written with '.' as the thousands separator were blocked as links:
+// "1.234.567.890" -> SPAM_CONTENT_REJECTED. A real lead lost, from a formatting convention.
+//
+// A dotted quad is an IP address only when every group is a valid IPv4 octet:
+//   0-255 AND no leading zero (modern IPv4 never writes "01" / "000").
+// That is exactly the test that separates an address from a number:
+//   "1.234.567.890"  -> 567 > 255            -> not an IP
+//   "1.000.000.000"  -> "000" has a leading 0 -> not an IP
+//   "192.168.1.1"    -> every octet valid     -> IS an IP (still blocked, as before)
+const IP_URL_CANDIDATE_REGEX = /(?:https?:\/\/)?\b(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\b/gi;
+
+export function hasIpUrl(text) {
+  if (!text) return false;
+  IP_URL_CANDIDATE_REGEX.lastIndex = 0;
+  let m;
+  while ((m = IP_URL_CANDIDATE_REGEX.exec(String(text))) !== null) {
+    const octets = [m[1], m[2], m[3], m[4]];
+    const isIpv4 = octets.every((o) => {
+      if (o.length > 1 && o[0] === '0') return false; // leading zero -> not an IPv4 octet
+      return Number(o) <= 255;
+    });
+    if (isIpv4) return true;
+  }
+  return false;
+}
 
 // Punycode & Obfuscation
 const OBFUSCATED_URL_REGEX = /\bxn--|(?:\[|\()dot(?:\]|\))|\bh[x*]{2}p/i;
@@ -339,7 +411,7 @@ export function evaluateSpam({ payload, turnstileResult }) {
     PROTOCOL_REGEX.test(combinedFreeText) ||
     WWW_OR_SLASH_REGEX.test(combinedFreeText) ||
     SHORTENER_AND_CHAT_REGEX.test(combinedFreeText) ||
-    IP_URL_REGEX.test(combinedFreeText) ||
+    hasIpUrl(combinedFreeText) ||
     OBFUSCATED_URL_REGEX.test(combinedFreeText) ||
     SPAM_TLD_REGEX.test(combinedFreeText)
   ) {
@@ -383,12 +455,15 @@ export function evaluateSpam({ payload, turnstileResult }) {
     reasons.push('repetitive_gibberish');
   }
 
-  // Check 5: Suspicious rapid submission (client timestamp provided and < 2s on page)
+  // Check 5: client-side elapsed time — DIAGNOSTIC ONLY, deliberately scores 0.
+  // The client clock is not trustworthy: it can be skewed, timezone-wrong, or spoofed, and
+  // comparing it to the server clock is not a spam signal. It used to add +30, which alone
+  // crossed the quarantine threshold (>=30) and silently stopped legitimate leads from ever
+  // reaching Telegram. Recorded for observability, never allowed to change the score.
   if (payload.clientTimestamp) {
     const elapsed = Date.now() - Number(payload.clientTimestamp);
-    if (elapsed > 0 && elapsed < 2000) {
-      score += 30;
-      reasons.push('too_fast_submit');
+    if (Number.isFinite(elapsed) && elapsed >= 0 && elapsed < 2000) {
+      reasons.push('too_fast_submit_weak');
     }
   }
 
@@ -425,8 +500,8 @@ export function maskIp(ip) {
   return 'masked';
 }
 
-export function logSecurityEvent({ action, clientIp, leadType, score, reasons, status }) {
-  console.log(JSON.stringify({
+export function logSecurityEvent({ action, clientIp, leadType, score, reasons, status, errorCodes }) {
+  const entry = {
     tag: 'GO4AI_SECURITY',
     timestamp: new Date().toISOString(),
     action,
@@ -435,5 +510,15 @@ export function logSecurityEvent({ action, clientIp, leadType, score, reasons, s
     score: score || 0,
     reasons: reasons || [],
     status: status || 200,
-  }));
+  };
+
+  // Safe metadata only. Cloudflare Turnstile error-codes (invalid-input-secret,
+  // invalid-input-response, timeout-or-duplicate, …) are opaque strings that never
+  // contain the secret or the submitted token, so they are safe to log. The secret
+  // and the full token are NEVER logged anywhere.
+  if (Array.isArray(errorCodes) && errorCodes.length > 0) {
+    entry.errorCodes = errorCodes;
+  }
+
+  console.log(JSON.stringify(entry));
 }

@@ -195,6 +195,30 @@ export async function onRequestPost(context) {
     });
 
     if (!turnstileRes.success) {
+      // ── 503: the server-side secret is missing (a deployment error, not a visitor error).
+      // Fail closed — the request does NOT pass — but deliberately do NOT record an IP
+      // failure: jailing real visitors because our own environment is misconfigured would
+      // turn a config mistake into a self-inflicted outage.
+      if (turnstileRes.notConfigured) {
+        logSecurityEvent({
+          action: 'turnstile_not_configured',
+          clientIp,
+          leadType,
+          score: 0,
+          reasons: ['turnstile_not_configured'],
+          status: 503,
+        });
+
+        return new Response(JSON.stringify({
+          success: false,
+          code: 'TURNSTILE_NOT_CONFIGURED',
+          error: 'Hệ thống xác thực bảo mật chưa được cấu hình. Vui lòng liên hệ GO4AI.'
+        }), {
+          status: 503,
+          headers,
+        });
+      }
+
       recordIpFailure(clientIp);
       logSecurityEvent({
         action: 'turnstile_rejected',
@@ -202,6 +226,7 @@ export async function onRequestPost(context) {
         leadType,
         score: 100,
         reasons: [turnstileRes.reason || 'turnstile_fail'],
+        errorCodes: turnstileRes.errorCodes,
         status: 403,
       });
 

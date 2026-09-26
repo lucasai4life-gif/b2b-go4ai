@@ -6,7 +6,7 @@
 <title>Claude không chỉ để hỏi — Hội thảo trực tuyến 90 phút · Go4ai</title>
 <link rel="icon" href="assets/go4ai-badge.png" type="image/png">
 <meta name="description" content="6 cấp độ ứng dụng Claude trong doanh nghiệp: từ một cửa sổ chat đến hệ điều hành AI vận hành tuyển dụng, nhân sự và quản trị doanh nghiệp. Hội thảo trực tuyến miễn phí 90 phút cùng Lucas Đặng & Go4ai.">
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <style>@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Medium.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}@font-face{font-family:Archivo;src:url("assets/fonts/Archivo-Bold.woff2") format("woff2");font-style:normal;font-weight:600 700;font-display:swap}</style>
 <style>
   :root{
@@ -1361,7 +1361,7 @@
             </select>
           </div>
 
-          <div class="cf-turnstile" id="claude-turnstile" data-sitekey="0x4AAAAAAFEKUSpRYiMMOJsg" data-theme="dark" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
+          <div id="claude-turnstile" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
 
           <button type="submit" class="cta-btn submit" id="submit">
             <span class="spin" aria-hidden="true"></span>
@@ -1498,7 +1498,7 @@
             <p class="err" id="err-freq" role="alert"></p>
           </div>
 
-          <div class="cf-turnstile" id="claude-off-turnstile" data-sitekey="0x4AAAAAAFEKUSpRYiMMOJsg" data-theme="dark" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
+          <div id="claude-off-turnstile" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
 
           <button type="submit" class="cta-btn submit" id="submitOff">
             <span class="spin" aria-hidden="true"></span>
@@ -2145,19 +2145,121 @@
   /* Gửi lead thật tới handler chung của theme (functions.php →
      gemglobal_handle_lead_submission → CPT gem_lead). gemConfig do
      gemglobal_static_pages() chèn vào <head>. */
-  var pageLoadTime = Date.now();
-  function sendLead(payload){
-    var turnstileToken = payload.turnstileToken || '';
-    if (!turnstileToken && window.turnstile) {
-      try { turnstileToken = window.turnstile.getResponse(); } catch(e) {}
-    }
-    if (!turnstileToken) {
-      var cfInput = document.querySelector('[name="cf-turnstile-response"]');
-      if (cfInput) turnstileToken = cfInput.value;
+  /* ── TURNSTILE — MỘT WIDGET, MỘT DANH TÍNH ────────────────────────────────
+     Trang này có HAI widget cùng sitekey: form online (#claude-turnstile) và form
+     offline (#claude-off-turnstile, nằm trong pane bị gate display:none).
+
+     Bản cũ gọi window.turnstile.getResponse() KHÔNG truyền widgetId. Cloudflare trả
+     về widget render CUỐI CÙNG — tức widget offline đang bị ẩn — nên form online
+     nhận token rỗng và chỉ sống nhờ một fallback DOM tình cờ đọc hidden input.
+
+     Từ đây: render TƯỜNG MINH từng widget, mỗi widget giữ id + token RIÊNG, và
+     tuyệt đối không có fallback DOM. */
+  var TS_SITEKEY = '0x4AAAAAAFEKUSpRYiMMOJsg';
+  var tsW = {
+    online : { id: null, token: '', host: 'claude-turnstile' },
+    offline: { id: null, token: '', host: 'claude-off-turnstile' }
+  };
+  var tsBooted = false;
+
+  function tsRender(key){
+    var w = tsW[key];
+    if(!w || !window.turnstile) return;
+    var host = document.getElementById(w.host);
+    if(!host) return;
+
+    /* Đã có widget ⇒ reset để lấy token mới, KHÔNG render chồng thêm cái thứ hai. */
+    if(w.id !== null){
+      w.token = '';
+      try { window.turnstile.reset(w.id); return; }
+      catch(e){
+        try { window.turnstile.remove(w.id); } catch(e2){}
+        w.id = null;
+      }
     }
 
-    if (!turnstileToken) {
-      return Promise.reject(new Error('Vui lòng hoàn thành xác thực bảo mật trước khi gửi.'));
+    host.innerHTML = '';
+    try {
+      w.id = window.turnstile.render(host, {
+        sitekey: TS_SITEKEY,
+        theme: 'dark',
+        callback:           function(t){ w.token = t || ''; },
+        'expired-callback': function(){ w.token = ''; },
+        'timeout-callback': function(){ w.token = ''; },
+        'error-callback':   function(c){
+          w.token = '';
+          if(c) console.warn('Turnstile error (' + key + '):', c);
+        }
+      });
+    } catch(err){
+      w.id = null;
+      console.warn('Turnstile render warning (' + key + '):', err);
+    }
+  }
+
+  /* Token PHẢI đọc qua đúng widgetId của widget mình dùng. */
+  function tsToken(key){
+    var w = tsW[key];
+    if(!w) return '';
+    if(window.turnstile && w.id !== null){
+      try {
+        var r = window.turnstile.getResponse(w.id);
+        if(r) return r;
+      } catch(e){}
+    }
+    return w.token || '';
+  }
+
+  function tsReset(key){
+    var w = tsW[key];
+    if(!w || !window.turnstile) return;
+    w.token = '';
+    if(w.id === null){ tsRender(key); return; }
+    try { window.turnstile.reset(w.id); }
+    catch(e){
+      try { window.turnstile.remove(w.id); } catch(e2){}
+      w.id = null;
+      tsRender(key);
+    }
+  }
+
+  function tsBoot(){
+    if(tsBooted || !window.turnstile) return;
+    tsBooted = true;
+    tsRender('online');
+    tsRender('offline');
+  }
+  /* api.js nạp async ⇒ chờ tới khi có window.turnstile rồi mới render (~20s là hết). */
+  (function waitTs(tries){
+    if(window.turnstile){ tsBoot(); return; }
+    if(tries > 200) return;
+    setTimeout(function(){ waitTs(tries + 1); }, 100);
+  })(0);
+
+  window.gemTs = { token: tsToken, reset: tsReset, render: tsRender, widgets: tsW };
+
+  /* Câu lỗi phải nói ĐÚNG việc người dùng cần làm tiếp — không một câu chung cho mọi ca. */
+  function claudeLeadErrorCopy(error, noun, purpose){
+    var httpStatus = (error && error.status) || 0;
+    if(httpStatus === 503) return 'Hệ thống xác thực bảo mật chưa sẵn sàng. Bạn vui lòng liên hệ trực tiếp GO4AI để được hỗ trợ — dữ liệu đã nhập vẫn còn nguyên.';
+    if(httpStatus === 403) return 'Xác thực bảo mật không hợp lệ hoặc đã hết hạn. Bạn bấm vào ô xác thực bảo mật để xác thực lại rồi gửi lại — dữ liệu đã nhập vẫn còn nguyên.';
+    if(httpStatus === 429) return 'Bạn đã gửi quá nhiều lần trong thời gian ngắn. Vui lòng thử lại sau ít phút.';
+    if(httpStatus === 400 || httpStatus === 422) return (error && error.message) || 'Thông tin gửi lên chưa hợp lệ. Bạn kiểm tra lại rồi gửi lại.';
+    if(error && error.message && error.message !== 'rejected' && error.message !== 'no-endpoint') return error.message;
+    if(error && error.message === 'no-endpoint') return 'Trang chưa được kết nối với hệ thống nhận ' + (purpose || noun) + '. Vui lòng liên hệ đơn vị tổ chức để ' + (purpose || noun) + '.';
+    return 'Chưa gửi được ' + noun + '. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
+  }
+  window.gemLeadErrorCopy = claudeLeadErrorCopy;
+
+  var pageLoadTime = Date.now();
+  function sendLead(payload, widgetKey){
+    var key = widgetKey || 'online';
+    var turnstileToken = payload.turnstileToken || tsToken(key);
+
+    if(!turnstileToken){
+      return Promise.reject(new Error(key === 'offline'
+        ? 'Vui lòng hoàn thành xác thực bảo mật ở ô xác thực của hồ sơ ứng tuyển trước khi gửi.'
+        : 'Vui lòng hoàn thành xác thực bảo mật trước khi gửi.'));
     }
 
     // Map claude form fields to unified lead API schema
@@ -2193,10 +2295,21 @@
       body: JSON.stringify(unifiedPayload)
     })
     .then(function(r){
-      if(!r.ok) return r.json().then(function(d){ throw new Error(d.error || 'Server error ' + r.status); });
-      return r.json();
-    })
-    .then(function(res){ if(!res || !res.success) throw new Error('rejected'); return res; });
+      return r.json().catch(function(){ return {}; }).then(function(d){
+        if(!r.ok){
+          var e = new Error(d.error || 'Server error ' + r.status);
+          e.status = r.status;
+          e.code = d.code;
+          throw e;
+        }
+        if(!d || !d.success){
+          var e2 = new Error('rejected');
+          e2.status = r.status;
+          throw e2;
+        }
+        return d;
+      });
+    });
   }
   window.gemSendLead = sendLead;
 
@@ -2283,22 +2396,19 @@
       mostInterested: wt.options[wt.selectedIndex] ? wt.options[wt.selectedIndex].text : '',
       program: 'claude_workshop',
       intent: 'Workshop Claude online 90 phút — 30/10/2026'
-    }).then(function(){
+    }, 'online').then(function(){
       form.style.display = 'none';
       okBox.classList.add('on');
       /* đưa tiêu điểm tới thông báo thành công — không để người dùng bàn phím bị mắc */
       okBox.setAttribute('tabindex','-1');
       okBox.focus();
     }).catch(function(error){
-      /* error: giữ nguyên dữ liệu đã nhập, cho phép gửi lại */
-      if (window.turnstile) {
-        try { window.turnstile.reset(); } catch(e) {}
-      }
-      failBox.textContent = (error && error.message && error.message !== 'rejected' && error.message !== 'no-endpoint')
-        ? error.message
-        : (error && error.message === 'no-endpoint'
-          ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
-          : 'Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.');
+      /* error: giữ nguyên dữ liệu đã nhập, cho phép gửi lại.
+         Token Turnstile là dùng-một-lần ⇒ làm mới ĐÚNG widget của form này. */
+      if (window.gemTs) window.gemTs.reset('online');
+      failBox.textContent = window.gemLeadErrorCopy
+        ? window.gemLeadErrorCopy(error, 'đăng ký')
+        : 'Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
       failBox.classList.add('on');
       btn.disabled = false;
       btn.classList.remove('is-loading');
@@ -2375,6 +2485,12 @@
     Object.keys(panes).forEach(function(k){
       if(panes[k]) panes[k].classList.toggle('on', k === which);
     });
+    /* Đổi đường: chỉ làm mới xác thực khi đường mới CHƯA có token dùng được.
+       Reset vô điều kiện sẽ xoá một token còn hạn và bắt người dùng chờ thêm một lượt
+       giải challenge — đúng lúc họ vừa bấm chọn đường và chuẩn bị gửi. */
+    if(window.gemTs && (which === 'online' || which === 'offline') && !window.gemTs.token(which)){
+      window.gemTs.reset(which);
+    }
     /* ⛔ brain/02 §13: trạng thái không chỉ truyền đạt bằng MÀU.
        aria-pressed + đổi form hiển thị là hai tín hiệu phi-màu. */
     if(moveFocus && panes[which]){
@@ -2514,20 +2630,17 @@
         intent: 'AI Work Lab offline — sau workshop 30/10/2026',
         message: 'Việc lặp lại muốn giải: ' + d.getElementById('task').value.trim() +
                  '\nTần suất: ' + (fq.value ? fq.options[fq.selectedIndex].text : '')
-      }) : Promise.reject()).then(function(){
+      }, 'offline') : Promise.reject()).then(function(){
         offForm.style.display = 'none';
         okOff.classList.add('on');
         okOff.setAttribute('tabindex','-1');
         okOff.focus();
       }).catch(function(error){
-        if (window.turnstile) {
-          try { window.turnstile.reset(); } catch(e) {}
-        }
-        failOff.textContent = (error && error.message && error.message !== 'rejected' && error.message !== 'no-endpoint')
-          ? error.message
-          : (error && error.message === 'no-endpoint'
-            ? 'Trang chưa được kết nối với hệ thống nhận đăng ký. Vui lòng liên hệ đơn vị tổ chức để đăng ký.'
-            : 'Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.');
+        /* Token dùng-một-lần ⇒ làm mới ĐÚNG widget của hồ sơ offline. */
+        if (window.gemTs) window.gemTs.reset('offline');
+        failOff.textContent = window.gemLeadErrorCopy
+          ? window.gemLeadErrorCopy(error, 'hồ sơ', 'đăng ký')
+          : 'Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
         failOff.classList.add('on');
         offBtn.disabled = false;
         offBtn.classList.remove('is-loading');

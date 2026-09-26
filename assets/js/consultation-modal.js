@@ -136,6 +136,13 @@
     '        <!-- Cloudflare Turnstile Verification -->',
     '        <div class="consult-turnstile-wrap" id="consult-turnstile" style="margin: 0.85rem 0 0.5rem; min-height: 65px; display: flex; justify-content: center;"></div>',
 
+    /* Verification status — one message per state, plus a re-verify action that does NOT
+       force the visitor to re-enter anything they already filled in. */
+    '        <div class="consult-ts-status" id="consult-ts-status" role="status" aria-live="polite" hidden>',
+    '          <span class="consult-ts-status__text" id="consult-ts-status-text"></span>',
+    '          <button type="button" class="consult-ts-retry" id="consult-ts-retry" hidden>Xác thực lại</button>',
+    '        </div>',
+
     /* Footer */
     '        <div class="consult-footer">',
     '          <span class="consult-error" id="consult-submit-err" role="alert" style="display:none; margin-bottom: 1rem; text-align: center;"></span>',
@@ -155,6 +162,10 @@
   var sourcePage        = window.location.pathname.split('/').pop() || 'index.html';
   var turnstileWidgetId = null;
   var turnstileToken    = '';
+  /* idle | loading | ready | unverified | expired | error */
+  var turnstileStatus   = 'idle';
+  var turnstileScriptLoading  = false;
+  var turnstileMountScheduled = false;
   var modalOpenTime     = 0;
   var TURNSTILE_SITEKEY = '0x4AAAAAAFEKUSpRYiMMOJsg';
 
@@ -215,48 +226,184 @@
   }
 
   /* ── Turnstile Integration ───────────────────────────────────────────── */
-  function initTurnstile() {
-    var container = qs('#consult-turnstile', overlay);
-    if (!container) return;
+  /* Visitor-facing copy per verification state. Four distinct outcomes — chưa xác thực,
+     hết hạn, lỗi Turnstile, lỗi mạng — each with the same recovery action so a blocked
+     submit is never a dead end and never costs the visitor their typed-in data. */
+  var TS_MSG = {
+    loading:    'Đang tải bước xác thực bảo mật…',
+    unverified: 'Vui lòng hoàn thành xác thực bảo mật trước khi gửi.',
+    expired:    'Phiên xác thực bảo mật đã hết hạn. Bấm “Xác thực lại” để tiếp tục — thông tin bạn đã nhập vẫn được giữ nguyên.',
+    error:      'Không tải được bước xác thực bảo mật. Vui lòng kiểm tra kết nối mạng rồi bấm “Xác thực lại”.',
+    network:    'Không gửi được yêu cầu. Vui lòng kiểm tra kết nối mạng và bấm “Xác thực lại” để thử lại.',
+    server:     'Hệ thống xác thực bảo mật chưa sẵn sàng. Vui lòng liên hệ trực tiếp GO4AI để được hỗ trợ.'
+  };
 
-    function renderWidget() {
-      if (!window.turnstile) return;
-      if (turnstileWidgetId !== null) {
-        try { window.turnstile.reset(turnstileWidgetId); } catch (e) {}
-        return;
-      }
+  function setTurnstileStatus(status, messageOverride) {
+    turnstileStatus = status;
+
+    var wrap   = qs('#consult-ts-status');
+    var textEl = qs('#consult-ts-status-text');
+    var retry  = qs('#consult-ts-retry');
+    if (!wrap || !textEl || !retry) return;
+
+    var msg = '';
+    var showRetry = false;
+
+    switch (status) {
+      case 'loading':
+        msg = messageOverride || TS_MSG.loading;
+        break;
+      case 'unverified':
+        msg = messageOverride || TS_MSG.unverified;
+        showRetry = true;
+        break;
+      case 'expired':
+        msg = messageOverride || TS_MSG.expired;
+        showRetry = true;
+        break;
+      case 'error':
+        msg = messageOverride || TS_MSG.error;
+        showRetry = true;
+        break;
+      default: /* 'idle' | 'ready' */
+        msg = '';
+        break;
+    }
+
+    textEl.textContent = msg;
+    wrap.hidden = !msg;
+    retry.hidden = !showRetry;
+  }
+
+  /* Mount (or re-arm) the widget. Reuses the existing widget via reset() so reopening the
+     modal can never stack a second challenge inside the same container. */
+  function mountTurnstileWidget() {
+    var container = qs('#consult-turnstile', overlay);
+    if (!container || !window.turnstile) return;
+
+    if (turnstileWidgetId !== null) {
+      turnstileToken = '';
+      setTurnstileStatus('loading');
       try {
-        turnstileWidgetId = window.turnstile.render(container, {
-          sitekey: TURNSTILE_SITEKEY,
-          theme: 'dark',
-          callback: function(token) {
-            turnstileToken = token;
-            var errEl = qs('#consult-submit-err');
-            if (errEl) errEl.style.display = 'none';
-          },
-          'expired-callback': function() {
-            turnstileToken = '';
-          },
-          'error-callback': function() {
-            turnstileToken = '';
-          }
-        });
-      } catch (err) {
-        console.warn('Turnstile render warning:', err);
+        window.turnstile.reset(turnstileWidgetId);
+        return;
+      } catch (e) {
+        /* Stale handle — drop it and fall through to a clean re-render. */
+        try { window.turnstile.remove(turnstileWidgetId); } catch (e2) {}
+        turnstileWidgetId = null;
       }
     }
 
-    if (window.turnstile) {
-      renderWidget();
-    } else {
-      var s = document.createElement('script');
-      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-      s.async = true;
-      s.defer = true;
-      s.onload = function() {
-        if (window.turnstile) renderWidget();
-      };
-      document.head.appendChild(s);
+    /* Clear any orphaned challenge markup first, so a partially-failed render can never
+       leave two widgets stacked in the same container. */
+    container.innerHTML = '';
+
+    try {
+      turnstileWidgetId = window.turnstile.render(container, {
+        sitekey: TURNSTILE_SITEKEY,
+        theme: 'dark',
+        callback: function (token) {
+          turnstileToken = token || '';
+          if (turnstileToken) {
+            setTurnstileStatus('ready');
+          } else {
+            setTurnstileStatus('unverified');
+          }
+        },
+        'expired-callback': function () {
+          /* The token really is unusable now, so it has to go — but say so out loud.
+             Silently clearing it is what stranded visitors on the old code. */
+          turnstileToken = '';
+          setTurnstileStatus('expired');
+        },
+        'timeout-callback': function () {
+          turnstileToken = '';
+          setTurnstileStatus('expired');
+        },
+        'error-callback': function (code) {
+          turnstileToken = '';
+          setTurnstileStatus('error');
+          if (code) console.warn('Turnstile error code:', code);
+        }
+      });
+    } catch (err) {
+      turnstileWidgetId = null;
+      setTurnstileStatus('error');
+      console.warn('Turnstile render warning:', err);
+    }
+  }
+
+  function loadTurnstileAndMount() {
+    if (window.turnstile) { mountTurnstileWidget(); return; }
+
+    /* A load is already in flight from an earlier open — its onload will mount. */
+    if (turnstileScriptLoading) return;
+    turnstileScriptLoading = true;
+
+    var s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    s.async = true;
+    s.defer = true;
+    s.onload = function () {
+      turnstileScriptLoading = false;
+      if (window.turnstile) mountTurnstileWidget();
+      else setTurnstileStatus('error');
+    };
+    s.onerror = function () {
+      turnstileScriptLoading = false;
+      setTurnstileStatus('error');
+    };
+    document.head.appendChild(s);
+  }
+
+  /* Render only once the overlay is genuinely visible.
+     The old code called render() BEFORE .consult-overlay received OPEN_CLASS, i.e. while
+     the container was still `visibility: hidden; opacity: 0`. That is the race that made
+     the first open intermittently produce no token and no callback — the visitor had to
+     close and reopen the modal to get one. Two animation frames is enough for OPEN_CLASS
+     to be applied, laid out and painted. */
+  function scheduleTurnstileMount() {
+    if (turnstileMountScheduled) return;
+    turnstileMountScheduled = true;
+    setTurnstileStatus('loading');
+
+    var raf = window.requestAnimationFrame
+      ? window.requestAnimationFrame.bind(window)
+      : function (cb) { return setTimeout(cb, 16); };
+
+    raf(function () {
+      raf(function () {
+        turnstileMountScheduled = false;
+        loadTurnstileAndMount();
+      });
+    });
+  }
+
+  /* Re-verify in place. Touches nothing in the form — the visitor keeps every value. */
+  function retryTurnstile() {
+    var errEl = qs('#consult-submit-err');
+    if (errEl) errEl.style.display = 'none';
+
+    if (!window.turnstile) {
+      setTurnstileStatus('loading');
+      loadTurnstileAndMount();
+      return;
+    }
+
+    if (turnstileWidgetId === null) {
+      setTurnstileStatus('loading');
+      mountTurnstileWidget();
+      return;
+    }
+
+    turnstileToken = '';
+    setTurnstileStatus('loading');
+    try {
+      window.turnstile.reset(turnstileWidgetId);
+    } catch (e) {
+      try { window.turnstile.remove(turnstileWidgetId); } catch (e2) {}
+      turnstileWidgetId = null;
+      mountTurnstileWidget();
     }
   }
 
@@ -275,10 +422,12 @@
     qsa('.consult-error', overlay).forEach(function (e) { clearError(e); });
     qsa('.' + ERROR_CLASS, overlay).forEach(function (e) { e.classList.remove(ERROR_CLASS); });
 
-    /* Reset & init Turnstile verification */
+    /* Reset Turnstile state. The widget itself is mounted further down, once the overlay
+       is genuinely visible — see scheduleTurnstileMount(). */
     modalOpenTime = Date.now();
     turnstileToken = '';
-    initTurnstile();
+    turnstileMountScheduled = false;
+    setTurnstileStatus('idle');
 
     /* Store source CTA for payload */
     overlay.dataset.sourceCta  = sourceCta  || (openerEl ? (openerEl.textContent || '').trim() : '');
@@ -286,6 +435,9 @@
 
     document.body.classList.add('consult-open');
     overlay.classList.add(OPEN_CLASS);
+
+    /* Mount Turnstile only AFTER the overlay is visible. */
+    scheduleTurnstileMount();
 
     /* Focus first field */
     setTimeout(function () {
@@ -304,6 +456,11 @@
     document.body.classList.remove('consult-open');
     document.removeEventListener('keydown', onKeyDown);
     overlay.removeEventListener('keydown', trapFocus);
+
+    /* The widget stays mounted so reopening reuses it (never two challenges stacked in
+       one container), but a Turnstile token is single-use and must not survive the close. */
+    turnstileToken = '';
+    setTurnstileStatus('idle');
 
     /* Return focus */
     if (lastOpener) {
@@ -403,6 +560,10 @@
       return;
     }
 
+    /* The visitor is retrying — drop the previous submission error. */
+    var prevSubmitErr = qs('#consult-submit-err');
+    if (prevSubmitErr) prevSubmitErr.style.display = 'none';
+
     /* Build payload */
     var interests = qsa('input[name="interest"]:checked', form).map(function (cb) {
       return cb.value;
@@ -451,17 +612,24 @@
        });
     ─────────────────────────────────────────────────────────────────── */
 
-    // Verify Turnstile token
+    /* Verify Turnstile token. Always read it back through the explicit widgetId of the
+       widget this modal rendered — never a bare getResponse(), which returns whichever
+       widget was rendered last rather than necessarily ours. */
     var token = turnstileToken;
     if (window.turnstile && turnstileWidgetId !== null) {
-      var resp = window.turnstile.getResponse(turnstileWidgetId);
-      if (resp) token = resp;
+      try {
+        var resp = window.turnstile.getResponse(turnstileWidgetId);
+        if (resp) token = resp;
+      } catch (e) {}
     }
 
     if (!token) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Gửi yêu cầu tư vấn →';
-      showSubmitError('Vui lòng hoàn thành xác thực bảo mật trước khi gửi.');
+      /* Distinct state per reason — and never a dead end: the re-verify action is offered. */
+      if (turnstileStatus === 'error')        setTurnstileStatus('error');
+      else if (turnstileStatus === 'expired') setTurnstileStatus('expired');
+      else                                    setTurnstileStatus('unverified');
       return;
     }
 
@@ -482,20 +650,48 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-    .then(function(res) {
-      if (!res.ok) return res.json().then(function(d) { throw new Error(d.error || 'Lỗi xử lý từ máy chủ (' + res.status + ')'); });
-      return res.json();
+    .then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (d) {
+        if (!res.ok) {
+          var e = new Error(d.error || ('Lỗi xử lý từ máy chủ (' + res.status + ')'));
+          e.status = res.status;
+          e.code = d.code;
+          throw e;
+        }
+        return d;
+      });
     })
-    .then(function() {
+    .then(function () {
       showSuccess();
     })
-    .catch(function(err) {
+    .catch(function (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Gửi yêu cầu tư vấn →';
+
+      var httpStatus = (err && err.status) || 0;
+
+      /* A Turnstile token is single-use: once a submit has been attempted the token we
+         held is spent, so re-arm the challenge. Retry is one click, never a re-fill. */
+      turnstileToken = '';
       if (window.turnstile && turnstileWidgetId !== null) {
         try { window.turnstile.reset(turnstileWidgetId); } catch (e) {}
       }
-      showSubmitError(err.message || 'Gửi thất bại. Vui lòng thử lại hoặc liên hệ trực tiếp GO4AI.');
+
+      if (httpStatus === 503) {
+        /* Our own deployment is incomplete — never blame the visitor for it. */
+        setTurnstileStatus('error', TS_MSG.server);
+        showSubmitError(err.message || 'Hệ thống xác thực bảo mật chưa sẵn sàng.');
+      } else if (httpStatus === 403) {
+        setTurnstileStatus('expired', 'Xác thực bảo mật không hợp lệ hoặc đã hết hạn. Bấm “Xác thực lại” rồi gửi lại — thông tin bạn đã nhập vẫn được giữ.');
+      } else if (httpStatus === 429) {
+        setTurnstileStatus('error', err.message || 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.');
+      } else if (httpStatus === 400 || httpStatus === 422) {
+        setTurnstileStatus('unverified', 'Vui lòng kiểm tra lại thông tin và hoàn thành xác thực bảo mật trước khi gửi lại.');
+        showSubmitError(err.message || 'Thông tin gửi lên chưa hợp lệ. Vui lòng kiểm tra lại.');
+      } else {
+        /* No HTTP status at all: the request never completed (offline, DNS, timeout). */
+        setTurnstileStatus('error', TS_MSG.network);
+      }
     });
   }
 
@@ -520,6 +716,13 @@
     /* Close button */
     var closeBtn = qs('#consult-close');
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    /* Turnstile re-verify — keeps every field the visitor already filled in. */
+    var tsRetry = qs('#consult-ts-retry');
+    if (tsRetry) tsRetry.addEventListener('click', function (e) {
+      e.preventDefault();
+      retryTurnstile();
+    });
 
     /* Success close button */
     var successClose = qs('#consult-success-close');
