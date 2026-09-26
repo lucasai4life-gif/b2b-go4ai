@@ -181,15 +181,88 @@
     };
   });
 
-  /* Mobile / Tablet / Reduced Motion: Instant 100% visibility */
-  mm.add('(max-width: 991px), (prefers-reduced-motion: reduce)', function () {
+  /* Mobile / Tablet Viewport (< 992px) — Smooth Organic Float Motion */
+  mm.add('(max-width: 991px) and (prefers-reduced-motion: no-preference)', function () {
+    root.classList.remove('motion-impact');
+
+    var all5 = [item1, item2, item3, item4, accent].filter(Boolean);
+    all5.forEach(function (el) {
+      el.style.pointerEvents = '';
+      gsap.set(el, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0, y: 0 });
+    });
+    gsap.set(labels, { opacity: 1, filter: 'none' });
+    if (accentText) gsap.set(accentText, { opacity: 1 });
+
+    var revealed = false;
+    var floatTweens = [];
+
+    function startFloats() {
+      if (floatTweens.length) return;
+      all5.forEach(function (el, idx) {
+        var offset = idx % 2 === 0 ? 3.5 : -3.5;
+        var dur = 2.8 + (idx * 0.25);
+        var tw = gsap.to(el, {
+          y: '+=' + offset,
+          duration: dur,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: idx * 0.15
+        });
+        floatTweens.push(tw);
+      });
+    }
+
+    var st = ScrollTrigger.create({
+      trigger: list,
+      start: 'top 85%',
+      end: 'bottom 15%',
+      onEnter: function () {
+        if (!revealed) {
+          revealed = true;
+          gsap.fromTo(all5,
+            { opacity: 0.35, scale: 0.94 },
+            { opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: 'power2.out', onComplete: startFloats }
+          );
+        } else {
+          startFloats();
+          floatTweens.forEach(function (t) { t.play(); });
+        }
+      },
+      onLeave: function () {
+        floatTweens.forEach(function (t) { t.pause(); });
+      },
+      onEnterBack: function () {
+        startFloats();
+        floatTweens.forEach(function (t) { t.play(); });
+      },
+      onLeaveBack: function () {
+        floatTweens.forEach(function (t) { t.pause(); });
+      }
+    });
+
+    return function () {
+      if (st) st.kill();
+      floatTweens.forEach(function (t) { t.kill(); });
+      floatTweens = [];
+      all5.forEach(function (el) {
+        el.style.pointerEvents = '';
+        gsap.set(el, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0, y: 0 });
+      });
+      gsap.set(labels, { opacity: 1, filter: 'none' });
+      if (accentText) gsap.set(accentText, { opacity: 1 });
+    };
+  });
+
+  /* Prefers-reduced-motion: Instant 100% visibility, completely static */
+  mm.add('(prefers-reduced-motion: reduce)', function () {
     root.classList.remove('motion-impact');
     items.forEach(function (item) {
       item.style.pointerEvents = '';
-      gsap.set(item, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0 });
+      gsap.set(item, { scale: 1, opacity: 1, xPercent: 0, yPercent: 0, y: 0 });
     });
     gsap.set(labels, { opacity: 1, filter: 'none' });
-    if (accent) gsap.set(accent, { scale: 1, opacity: 1 });
+    if (accent) gsap.set(accent, { scale: 1, opacity: 1, y: 0 });
     if (accentText) gsap.set(accentText, { opacity: 1 });
   });
 

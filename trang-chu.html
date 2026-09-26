@@ -2294,7 +2294,142 @@ html.motion-impact .impact-section {
   box-shadow: 0 6px 20px rgba(220, 53, 34, 0.3);
 }
 
-/* ── 12. PREFERS-REDUCED-MOTION OVERRIDES ──────────────────────────────── */
+/* ── 12. MOBILE FOOTER BRAND AXIS CENTERING ──────────────────────────── */
+@media (max-width: 767px) {
+  .go4ai-footer-col--brand {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    max-width: 320px !important;
+    width: 100% !important;
+  }
+  .go4ai-footer-logo-link {
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto 16px !important;
+  }
+  .go4ai-footer-logo-img {
+    margin: 0 auto !important;
+  }
+  .go4ai-footer-tagline {
+    text-align: center !important;
+    margin: 0 auto 20px !important;
+    max-width: 290px !important;
+  }
+  .go4ai-footer-social {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+}
+
+/* ── 13. SECTION 7 TRACKS VISUAL SVG MOTION STATES ─────────────────────── */
+.track-vis-node {
+  transition: transform 0.25s ease;
+}
+.track-vis-node.is--active rect {
+  stroke: #08906c !important;
+  stroke-width: 1.5px !important;
+  stroke-opacity: 1 !important;
+  fill: rgba(8, 144, 108, 0.09) !important;
+}
+.track-vis-node.is--active text {
+  fill: #08906c !important;
+  font-weight: 700 !important;
+}
+.track-vis-step {
+  transition: transform 0.25s ease;
+}
+.track-vis-step.is--active rect {
+  stroke: #08906c !important;
+  stroke-width: 1.5px !important;
+  stroke-opacity: 1 !important;
+  fill: rgba(8, 144, 108, 0.09) !important;
+}
+.track-vis-step.is--active text {
+  fill: #08906c !important;
+  font-weight: 700 !important;
+}
+.track-vis-arrow.is--pulse {
+  stroke: #08906c !important;
+  stroke-opacity: 1 !important;
+  animation: arrowGlide 0.6s ease-in-out !important;
+}
+@media (max-width: 991px) {
+  .track-vis-ring--orbit {
+    animation: trackOrbitRotate 24s linear infinite;
+    transform-origin: 160px 48px;
+  }
+}
+
+/* ── 14. SECTION 8 CASE FLOW 6-STEP AUTO-ACTIVE ───────────────────────── */
+.case-flow__pill {
+  cursor: pointer;
+}
+.case-flow__pill.is--active {
+  border-color: #08906c !important;
+  background-color: #f0fdf4 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 14px rgba(8, 144, 108, 0.16) !important;
+}
+.case-flow__pill.is--active .case-flow__name {
+  color: #08906c !important;
+  font-weight: 600 !important;
+}
+.case-flow__pill.is--active .case-flow__num {
+  color: #05684e !important;
+}
+.case-flow__pill--accent.is--active {
+  background-color: #08906c !important;
+  border-color: #08906c !important;
+}
+.case-flow__pill--accent.is--active .case-flow__name,
+.case-flow__pill--accent.is--active .case-flow__num {
+  color: #ffffff !important;
+}
+.case-flow__sep {
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.case-flow__sep.is--pulse {
+  color: #08906c !important;
+  font-weight: 700 !important;
+}
+
+/* ── 15. CASE 01 & CASE 02 TIMELINE DOTS & HIGHLIGHT GLOW ─────────────── */
+.case-timeline__dot {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+.case-timeline__dot.is--active {
+  transform: scale(1.45) !important;
+  background-color: #10b981 !important;
+  box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.35), 0 0 12px rgba(16, 185, 129, 0.5) !important;
+}
+.case-timeline--dark .case-timeline__dot.is--active {
+  background-color: #34d399 !important;
+  box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.4), 0 0 14px rgba(52, 211, 153, 0.6) !important;
+}
+.cs-metric-chip.chip--pulsed {
+  border-color: rgba(8, 144, 108, 0.45) !important;
+  box-shadow: 0 4px 18px rgba(8, 144, 108, 0.15) !important;
+}
+.metric-target.is--pulsed {
+  color: #34d399 !important;
+  text-shadow: 0 0 14px rgba(52, 211, 153, 0.6) !important;
+  transform: scale(1.04) !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), text-shadow 0.4s ease, color 0.4s ease !important;
+}
+.metric-arrow.is--pulse {
+  color: #34d399 !important;
+  transform: scale(1.25) !important;
+  transition: transform 0.3s ease, color 0.3s ease !important;
+}
+
+/* ── 16. PREFERS-REDUCED-MOTION OVERRIDES ──────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .section.hero::before,
   .hero-env,
@@ -2313,6 +2448,14 @@ html.motion-impact .impact-section {
   .impact-item, .impact-content, .impact-item-accent {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .track-vis-ring--orbit,
+  .track-vis-trace,
+  .track-vis-arrow,
+  .case-flow__pill,
+  .case-timeline__dot {
+    animation: none !important;
+    transition: none !important;
   }
 }
 </style>
@@ -2412,7 +2555,7 @@ html.motion-impact .impact-section {
 
           <div class="button-row hero__ctas">
             <a class="button" href="#lien-he">Tư vấn chương trình doanh nghiệp</a>
-            <a class="button button--outline" href="#case">Xem case thực tế</a>
+            <a class="button button--outline" href="ung-dung-thuc-te.html">Xem case thực tế</a>
           </div>
 
           <div class="hero__pipeline">
@@ -4378,7 +4521,7 @@ html.motion-impact .impact-section {
 
           <div class="button-row">
             <a class="button" href="#lien-he">Tư vấn chương trình doanh nghiệp</a>
-            <a class="button button--outline" href="#case">Xem case thực tế</a>
+            <a class="button button--outline" href="ung-dung-thuc-te.html">Xem case thực tế</a>
           </div>
 
           <p class="convert__micro">Mục tiêu: con người làm việc tốt hơn. Quy trình tốt hơn. Và những use case có giá trị đủ lớn có thể tiếp tục được nhân rộng.</p>

@@ -592,10 +592,10 @@
   function initCircuitAnimations() {
     if (reduce) return;
 
-    var workflows = qsa('.cs-case__workflow, .case-flow');
+    var workflows = qsa('.cs-case__workflow');
     workflows.forEach(function (wf) {
-      var steps = qsa('.cs-case__workflow-chip, .case-flow__pill', wf);
-      var seps  = qsa('.cs-case__workflow-sep, .case-flow__sep', wf);
+      var steps = qsa('.cs-case__workflow-chip', wf);
+      var seps  = qsa('.cs-case__workflow-sep', wf);
       if (!steps.length) return;
 
       gsap.set(steps, { autoAlpha: 0, x: -8 });
@@ -628,6 +628,218 @@
         }
       });
     }
+  }
+
+  /* --------------------------------------------------------------------------
+     7b. CASE FLOW 6-STEP AUTO-ACTIVE (01 Bài toán -> ... -> 06 Kết quả)
+  -------------------------------------------------------------------------- */
+  function initCaseFlowAutoLoop() {
+    var flow = qs('.case-flow');
+    if (!flow) return;
+
+    var pills = qsa('.case-flow__pill', flow);
+    var seps  = qsa('.case-flow__sep', flow);
+    if (!pills.length) return;
+
+    var currentIndex = 0;
+    var timer = null;
+    var isHovered = false;
+    var inView = false;
+
+    function activatePill(idx) {
+      if (idx < 0 || idx >= pills.length) idx = 0;
+      currentIndex = idx;
+
+      pills.forEach(function (p, i) {
+        p.classList.toggle('is--active', i === idx);
+      });
+
+      seps.forEach(function (s, i) {
+        if (i === idx - 1) {
+          s.classList.add('is--pulse');
+          setTimeout(function () { s.classList.remove('is--pulse'); }, 500);
+        } else {
+          s.classList.remove('is--pulse');
+        }
+      });
+    }
+
+    if (reduce) {
+      activatePill(pills.length - 1);
+      return;
+    }
+
+    function nextStep() {
+      if (isHovered || !inView) return;
+      var nextIdx = (currentIndex + 1) % pills.length;
+      activatePill(nextIdx);
+
+      // 700–900ms per step, pause 350–500ms longer on step 06 (index 5)
+      var delay = (nextIdx === pills.length - 1) ? 1250 : 800;
+      timer = setTimeout(nextStep, delay);
+    }
+
+    function startCycle() {
+      if (timer) clearTimeout(timer);
+      if (isHovered || !inView) return;
+      activatePill(currentIndex);
+      timer = setTimeout(nextStep, 800);
+    }
+
+    function pauseCycle() {
+      if (timer) { clearTimeout(timer); timer = null; }
+    }
+
+    // Hover & focus handling
+    flow.addEventListener('mouseenter', function () { isHovered = true; pauseCycle(); });
+    flow.addEventListener('mouseleave', function () { isHovered = false; if (inView) startCycle(); });
+    flow.addEventListener('focusin', function () { isHovered = true; pauseCycle(); });
+    flow.addEventListener('focusout', function () { isHovered = false; if (inView) startCycle(); });
+
+    pills.forEach(function (pill, idx) {
+      pill.addEventListener('mouseenter', function () {
+        isHovered = true;
+        pauseCycle();
+        activatePill(idx);
+      });
+      pill.addEventListener('click', function () {
+        activatePill(idx);
+      });
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        inView = entry.isIntersecting;
+        if (inView) {
+          startCycle();
+        } else {
+          pauseCycle();
+        }
+      });
+    }, { threshold: 0.2 });
+
+    io.observe(flow);
+    activatePill(0);
+  }
+
+  /* --------------------------------------------------------------------------
+     7c. MOBILE TRACK VISUALS AUTO-LOOP (Section 7: Chương trình)
+  -------------------------------------------------------------------------- */
+  function initTrackVisualsAutoLoop() {
+    if (reduce) return;
+
+    var tracksContainer = qs('.tracks');
+    if (!tracksContainer) return;
+
+    var trackCards = qsa('.track', tracksContainer);
+    if (trackCards.length < 3) return;
+
+    var inView = false;
+    var timer1 = null, timer2 = null, timer3 = null;
+
+    // CARD 01: Nền tảng chung (4 nodes around CORE AI)
+    var card1 = trackCards[0];
+    var nodes1 = qsa('.track-vis-node', card1);
+    var idx1 = 0;
+
+    function tickCard1() {
+      if (!inView) return;
+      if (!window.matchMedia('(max-width: 991px)').matches) return;
+      nodes1.forEach(function (n, i) {
+        n.classList.toggle('is--active', i === idx1);
+      });
+      idx1 = (idx1 + 1) % nodes1.length;
+      timer1 = setTimeout(tickCard1, 900);
+    }
+
+    // CARD 02: Theo phòng ban (Sales -> HR -> Marketing -> Finance -> Operations)
+    var card2 = trackCards[1];
+    var nodes2All = qsa('.track-vis-node', card2);
+    var traces2 = qsa('.track-vis-trace', card2);
+
+    var deptOrder = ['Sales', 'HR', 'Marketing', 'Finance', 'Operations'];
+    var nodes2Ordered = [];
+    deptOrder.forEach(function (deptName) {
+      var found = nodes2All.find(function (n) {
+        var text = (n.textContent || '').trim();
+        return text.indexOf(deptName) !== -1;
+      });
+      if (found) nodes2Ordered.push(found);
+    });
+    if (!nodes2Ordered.length) nodes2Ordered = nodes2All;
+
+    var idx2 = 0;
+    function tickCard2() {
+      if (!inView) return;
+      if (!window.matchMedia('(max-width: 991px)').matches) return;
+      nodes2All.forEach(function (n) { n.classList.remove('is--active'); });
+      traces2.forEach(function (tr) { tr.classList.remove('is--pulse'); });
+
+      var activeNode = nodes2Ordered[idx2];
+      if (activeNode) {
+        activeNode.classList.add('is--active');
+        if (traces2[idx2 % traces2.length]) {
+          traces2[idx2 % traces2.length].classList.add('is--pulse');
+        }
+      }
+      idx2 = (idx2 + 1) % nodes2Ordered.length;
+      timer2 = setTimeout(tickCard2, 950);
+    }
+
+    // CARD 03: Cho quản lý (Use case -> Human/AI -> Control -> Output KPI)
+    var card3 = trackCards[2];
+    var steps3 = qsa('.track-vis-step', card3);
+    var arrows3 = qsa('.track-vis-arrow', card3);
+    var idx3 = 0;
+
+    function tickCard3() {
+      if (!inView) return;
+      if (!window.matchMedia('(max-width: 991px)').matches) return;
+      steps3.forEach(function (s, i) {
+        s.classList.toggle('is--active', i === idx3);
+      });
+      arrows3.forEach(function (a, i) {
+        if (i === idx3 - 1 || (idx3 === 0 && i === arrows3.length - 1)) {
+          a.classList.add('is--pulse');
+          setTimeout(function () { a.classList.remove('is--pulse'); }, 500);
+        } else {
+          a.classList.remove('is--pulse');
+        }
+      });
+      idx3 = (idx3 + 1) % steps3.length;
+      var delay = (idx3 === 0) ? 1200 : 850;
+      timer3 = setTimeout(tickCard3, delay);
+    }
+
+    function startAll() {
+      stopAll();
+      if (!window.matchMedia('(max-width: 991px)').matches) return;
+      tickCard1();
+      tickCard2();
+      tickCard3();
+    }
+
+    function stopAll() {
+      if (timer1) { clearTimeout(timer1); timer1 = null; }
+      if (timer2) { clearTimeout(timer2); timer2 = null; }
+      if (timer3) { clearTimeout(timer3); timer3 = null; }
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        inView = entry.isIntersecting;
+        if (inView) {
+          startAll();
+        } else {
+          stopAll();
+          nodes1.forEach(function (n) { n.classList.remove('is--active'); });
+          nodes2All.forEach(function (n) { n.classList.remove('is--active'); });
+          steps3.forEach(function (s) { s.classList.remove('is--active'); });
+        }
+      });
+    }, { threshold: 0.15 });
+
+    io.observe(tracksContainer);
   }
 
   /* --------------------------------------------------------------------------
@@ -850,7 +1062,7 @@
   }
 
   /* --------------------------------------------------------------------------
-     12b. CASE METRICS MOTION (Task 5: Case 1 Count-up & Case 2 Time Sequence)
+     12b. CASE METRICS MOTION (Case 1 Count-up & Case 2 Time Sequence)
   -------------------------------------------------------------------------- */
   function initCaseMetricsMotion() {
     if (reduce) return;
@@ -859,6 +1071,8 @@
     var case1 = qs('.case.case--light');
     if (case1) {
       var case1Counts = qsa('[data-case-count]', case1);
+      var dots1 = qsa('.case-timeline__dot', case1);
+
       if (case1Counts.length) {
         // Initialize numbers to 0+
         case1Counts.forEach(function (el) {
@@ -868,9 +1082,19 @@
 
         ScrollTrigger.create({
           trigger: case1,
-          start: 'top 65%', // trigger when ~35-45% into viewport
+          start: 'top 68%',
           once: true,
           onEnter: function () {
+            // Timeline dots pulse sequentially top to bottom
+            if (dots1.length) {
+              dots1.forEach(function (dot, dIdx) {
+                setTimeout(function () {
+                  dot.classList.add('is--active');
+                  setTimeout(function () { dot.classList.remove('is--active'); }, 550);
+                }, dIdx * 200);
+              });
+            }
+
             case1Counts.forEach(function (el, i) {
               setTimeout(function () {
                 var target = parseFloat(el.getAttribute('data-case-count'));
@@ -878,7 +1102,7 @@
                 if (isNaN(target)) return;
 
                 var start = performance.now();
-                var dur = 1300; // 1.1–1.5s duration
+                var dur = 1200; // 900–1400ms duration
 
                 function tick(now) {
                   var progress = Math.min((now - start) / dur, 1);
@@ -893,11 +1117,16 @@
                     var finalFormatted = target.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                     el.textContent = finalFormatted + suffix;
                     el.classList.add('proof-pulse');
-                    setTimeout(function () { el.classList.remove('proof-pulse'); }, 850);
+                    var chip = el.closest('.cs-metric-chip');
+                    if (chip) chip.classList.add('chip--pulsed');
+                    setTimeout(function () {
+                      el.classList.remove('proof-pulse');
+                      if (chip) chip.classList.remove('chip--pulsed');
+                    }, 850);
                   }
                 }
                 requestAnimationFrame(tick);
-              }, i * 140);
+              }, 250 + i * 140);
             });
           }
         });
@@ -908,30 +1137,48 @@
     var case2 = qs('.case.case--dark');
     if (case2) {
       var rangeContainer = qs('.case-metric-range', case2);
-      if (rangeContainer) {
-        var oldVal = qs('.metric-old', rangeContainer);
-        var arrow  = qs('.metric-arrow', rangeContainer);
-        var target = qs('.metric-target', rangeContainer);
+      var dots2 = qsa('.case-timeline__dot', case2);
 
-        gsap.set([oldVal, arrow, target].filter(Boolean), { autoAlpha: 0, y: 10 });
+      ScrollTrigger.create({
+        trigger: case2,
+        start: 'top 68%',
+        once: true,
+        onEnter: function () {
+          // Timeline dots pulse sequentially
+          if (dots2.length) {
+            dots2.forEach(function (dot, dIdx) {
+              setTimeout(function () {
+                dot.classList.add('is--active');
+                setTimeout(function () { dot.classList.remove('is--active'); }, 550);
+              }, dIdx * 220);
+            });
+          }
 
-        ScrollTrigger.create({
-          trigger: case2,
-          start: 'top 65%', // trigger when ~35-45% into viewport
-          once: true,
-          onEnter: function () {
-            var tl = gsap.timeline({ delay: 0.1 });
+          if (rangeContainer) {
+            var oldVal = qs('.metric-old', rangeContainer);
+            var arrow  = qs('.metric-arrow', rangeContainer);
+            var target = qs('.metric-target', rangeContainer);
+
+            gsap.set([oldVal, arrow, target].filter(Boolean), { autoAlpha: 0, y: 10 });
+
+            var tl = gsap.timeline({ delay: 0.15 });
             if (oldVal) tl.to(oldVal, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 0);
-            if (arrow)  tl.to(arrow,  { autoAlpha: 1, y: 0, scale: 1.15, duration: 0.35, ease: 'back.out(1.4)' }, 0.25);
+            if (arrow) {
+              tl.to(arrow, { autoAlpha: 1, y: 0, scale: 1.25, duration: 0.35, ease: 'back.out(1.4)' }, 0.3);
+              tl.call(function () {
+                arrow.classList.add('is--pulse');
+                setTimeout(function () { arrow.classList.remove('is--pulse'); }, 600);
+              }, null, 0.32);
+            }
             if (target) {
-              tl.to(target, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.5)' }, 0.45);
+              tl.to(target, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.5)' }, 0.55);
               tl.call(function () {
                 target.classList.add('is--pulsed');
-              }, null, 0.65);
+              }, null, 0.75);
             }
           }
-        });
-      }
+        }
+      });
     }
   }
 
@@ -1036,6 +1283,8 @@
     initKineticTypography();
     initSystemCounters();
     initCircuitAnimations();
+    initCaseFlowAutoLoop();
+    initTrackVisualsAutoLoop();
     initCardReveals();
     initDarkPanel();
     initDiagnosticAutoLoop();
