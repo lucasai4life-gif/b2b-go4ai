@@ -258,8 +258,11 @@ const WWW_OR_SLASH_REGEX = /\bwww\.[a-z0-9-]+\.[a-z]{2,}|\/\/[a-z0-9-]+\.[a-z]{2
 // Known link shorteners & chat invitation links
 const SHORTENER_AND_CHAT_REGEX = /\b(bit\.ly|tinyurl\.com|t\.co|goo\.gl|ow\.ly|is\.gd|buff\.ly|cutt\.ly|s\.id|rb\.gy|shorturl\.at|rebrand\.ly|bl\.ink|tny\.im|v\.gd|t\.me|telegram\.me|wa\.me|api\.whatsapp\.com|zalo\.me|chat\.zalo\.me|discord\.gg|line\.me|m\.me)\b/i;
 
-// Prohibited domain TLDs in free-text fields
-const DOMAIN_IN_TEXT_REGEX = /\b[a-z0-9][-a-z0-9]{1,62}\.(?:com|org|net|vn|com\.vn|edu\.vn|info|biz|xyz|top|online|site|club|vip|icu|live|app|cc|ru|cn|me|io|tv|space|store|pro|link|click|work|mobi|asia|tokyo|bet|casino|poker|fun|win|bar|buzz)\b/i;
+// High-risk spam TLDs in any field
+const SPAM_TLD_REGEX = /\b[a-z0-9][-a-z0-9]{1,62}\.(?:xyz|top|site|club|vip|icu|live|cc|ru|cn|tv|space|store|link|click|work|mobi|buzz|bet|casino|poker|fun|win|bar)\b/i;
+
+// Standard domains (com, vn, edu, org, etc.)
+const GENERAL_DOMAIN_REGEX = /\b[a-z0-9][-a-z0-9]{1,62}\.(?:com|org|net|vn|com\.vn|edu\.vn|info|biz|ai|io)\b/i;
 
 // IP URLs
 const IP_URL_REGEX = /\b(?:https?:\/\/)?(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/[^\s]*)?\b/;
@@ -331,16 +334,34 @@ export function evaluateSpam({ payload, turnstileResult }) {
   }
 
   // URL / Link detection in free-text fields
+  // A. Explicit protocols, www, shorteners, chat links, IP URLs, obfuscations, or spam TLDs
   if (
     PROTOCOL_REGEX.test(combinedFreeText) ||
     WWW_OR_SLASH_REGEX.test(combinedFreeText) ||
     SHORTENER_AND_CHAT_REGEX.test(combinedFreeText) ||
     IP_URL_REGEX.test(combinedFreeText) ||
     OBFUSCATED_URL_REGEX.test(combinedFreeText) ||
-    DOMAIN_IN_TEXT_REGEX.test(combinedFreeText)
+    SPAM_TLD_REGEX.test(combinedFreeText)
   ) {
     score += 75;
     reasons.push('url_in_freetext');
+  } else {
+    // B. Bare standard business domains (e.g. example.com, mydomain.vn)
+    // If in problem/message/name/role -> +40 quarantine (SUSPICIOUS in D1, NO Telegram spam)
+    // If ONLY in company name (e.g. Tiki.vn, FPT.vn, Lazada.vn) -> legitimate brand, 0 score!
+    const nonCompanyFreeText = [
+      payload.name,
+      payload.role,
+      payload.problem,
+      payload.message,
+      payload.job_title,
+      payload.full_name,
+    ].filter(Boolean).map(String).join(' ');
+
+    if (GENERAL_DOMAIN_REGEX.test(nonCompanyFreeText)) {
+      score += 40;
+      reasons.push('domain_in_text_quarantine');
+    }
   }
 
   // Check 3: Email domain inspection
