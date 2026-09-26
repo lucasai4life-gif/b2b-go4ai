@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { onRequestPost } from '../functions/api/leads.js';
+import { onRequestPost as onOpportunityPost } from '../functions/api/lead-opportunity.js';
 
 let nextIp = 10;
 
@@ -26,7 +27,7 @@ function createDb() {
                 throw new Error('simulated D1 outage');
               }
               const result = sqlite.prepare(sql).run(...values);
-              return { success: true, meta: { last_row_id: Number(result.lastInsertRowid) } };
+              return { success: true, meta: { last_row_id: Number(result.lastInsertRowid), changes: result.changes } };
             },
           };
         },
@@ -168,6 +169,50 @@ test('missing Turnstile secret rejects the lead before D1', async () => {
     assert.equal(body.code, 'TURNSTILE_NOT_CONFIGURED');
     assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS count FROM leads').get().count, 0);
   } finally {
+    db.sqlite.close();
+  }
+});
+
+test('Claude registration persists three contact fields, then qualifies the same row once', async () => {
+  const oldFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ success: true }), { status: 200 });
+  const db = createDb();
+  try {
+    const registered = await submit(db, 'claude@example.com', {
+      leadType: 'claude_workshop_registration', source: 'claude_landing_page',
+    });
+    assert.equal(registered.status, 201);
+    assert.ok(registered.body.opportunityToken);
+    const row = db.sqlite.prepare('SELECT * FROM leads WHERE id = ?').get(registered.body.leadId);
+    assert.equal(JSON.parse(row.payload_json).workshop_source, 'claude_landing_page');
+    assert.ok(JSON.parse(row.payload_json).registered_at);
+    assert.equal(JSON.parse(row.payload_json).opportunity_type, undefined);
+    const duplicate = await submit(db, 'claude@example.com', {
+      leadType: 'claude_workshop_registration', source: 'claude_landing_page',
+    });
+    assert.equal(duplicate.status, 200);
+    assert.equal(duplicate.body.leadId, registered.body.leadId);
+    assert.ok(duplicate.body.opportunityToken);
+    const payload = {
+      leadId: registered.body.leadId, opportunityToken: registered.body.opportunityToken,
+      opportunityType: 'BUILD', currentRole: 'Quản lý',
+      primaryGoal: 'Phát triển doanh nghiệp', startTimeline: 'Trong 1 tháng',
+    };
+    const request = data => new Request('https://b2b.go4ai.org/api/lead-opportunity', {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data),
+    });
+    const forged = await onOpportunityPost({ request: request({ ...payload, opportunityToken: payload.opportunityToken.slice(0, -1) + (payload.opportunityToken.endsWith('0') ? '1' : '0') }), env: { DB: db, TURNSTILE_SECRET_KEY: 'test-secret' } });
+    assert.equal(forged.status, 403);
+    const saved = await onOpportunityPost({ request: request(payload), env: { DB: db, TURNSTILE_SECRET_KEY: 'test-secret' } });
+    assert.equal(saved.status, 200);
+    const savedRow = JSON.parse(db.sqlite.prepare('SELECT payload_json FROM leads WHERE id = ?').get(registered.body.leadId).payload_json);
+    assert.equal(savedRow.opportunity_type, 'BUILD');
+    assert.equal(savedRow.sales_route, 'STRATEGIC_100M');
+    assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS count FROM leads').get().count, 1);
+    const replay = await onOpportunityPost({ request: request(payload), env: { DB: db, TURNSTILE_SECRET_KEY: 'test-secret' } });
+    assert.equal(replay.status, 409);
+  } finally {
+    globalThis.fetch = oldFetch;
     db.sqlite.close();
   }
 });

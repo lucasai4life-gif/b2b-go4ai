@@ -23,6 +23,7 @@ import {
   evaluateSpam,
   logSecurityEvent,
 } from './_security.js';
+import { issueOpportunityToken } from './_opportunity-token.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -263,12 +264,14 @@ export async function onRequestPost(context) {
       try {
         // Check identical payload within 10 minutes in D1
         const dupCheck = await env.DB.prepare(`
-          SELECT id FROM leads
+          SELECT id, email, created_at FROM leads
           WHERE payload_hash = ? AND julianday(created_at) > julianday('now', '-10 minutes')
           LIMIT 1
         `).bind(payloadHash).first();
 
         if (dupCheck) {
+          const opportunityToken = leadType === 'claude_workshop_registration'
+            ? await issueOpportunityToken(env.TURNSTILE_SECRET_KEY, dupCheck) : null;
           logSecurityEvent({
             action: 'duplicate_replay_detected_db',
             clientIp,
@@ -279,6 +282,7 @@ export async function onRequestPost(context) {
             success: true,
             duplicate: true,
             leadId: dupCheck.id,
+            ...(opportunityToken ? { opportunityToken } : {}),
             message: 'Yêu cầu của bạn đã được ghi nhận trước đó.'
           }), {
             status: 200,
@@ -332,6 +336,10 @@ export async function onRequestPost(context) {
 
     // ─── 9. WRITE TO D1 DATABASE ──────────────────────────────────────
     const createdAt = new Date().toISOString();
+    if (leadType === 'claude_workshop_registration') {
+      payloadExtra.workshop_source = utmSource || source || 'claude_landing_page';
+      payloadExtra.registered_at = createdAt;
+    }
     let leadId;
     const initialTelegramStatus = spamEval.isSuspicious
       ? 'quarantined'
@@ -372,6 +380,9 @@ export async function onRequestPost(context) {
         headers,
       });
     }
+
+    const opportunityToken = leadType === 'claude_workshop_registration'
+      ? await issueOpportunityToken(env.TURNSTILE_SECRET_KEY, { id: leadId, email, created_at: createdAt }) : null;
 
     // ─── 10. TELEGRAM NOTIFICATION (Strictly Clean Leads Only) ────────
     // Suspicious leads are quarantined in D1 and NEVER sent to Telegram!
@@ -430,6 +441,7 @@ export async function onRequestPost(context) {
     return new Response(JSON.stringify({
       success: true,
       leadId,
+      ...(opportunityToken ? { opportunityToken } : {}),
       telegramStatus,
       message: 'Yêu cầu của bạn đã được gửi thành công.'
     }), {
@@ -529,6 +541,17 @@ function buildTelegramMessage(data) {
   }
 
   if (leadType === 'claude_workshop_registration') {
+    if (!payloadExtra.q1_interested) {
+      return [
+        '🔵 <b>NEW CLAUDE 90-MIN REGISTRATION</b>',
+        line('Họ tên', name),
+        line('Điện thoại / Zalo', phone),
+        line('Email', email),
+        line('Nguồn', source),
+        `\n<i>${dt}</i>`,
+      ].filter(Boolean).join('');
+    }
+
     /* ── PHÂN HẠNG TỰ ĐỘNG (chốt 2026-09-26) ─────────────────────────────
        Tier đến từ routeLeadTier() phía client — suy TẤT ĐỊNH từ 5 câu chọn,
        không đọc văn bản tự do (form không có ô tự do nào).
