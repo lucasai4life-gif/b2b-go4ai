@@ -458,24 +458,60 @@
     .lv-blurb-d{font-size:12px;line-height:1.3}
     .lv-bridge{font-size:11.5px;line-height:1.35;padding:7px 10px}
     .lv-desc,.lv-bridge{max-width:none}
-    .lv-right{min-height:0;align-items:stretch}
+    /* `.lv-right` là flex HÀNG (align-items:center) ⇒ gợi ý cuộn phải xếp DỌC,
+       nếu không nó thành anh em flex ngang và chia đôi bề rộng với sơ đồ.
+       Đo được: sơ đồ tụt còn 234px/351px khi để mặc định (2026-09-26). */
+    .lv-right{min-height:0;align-items:stretch;flex-direction:column;justify-content:flex-start}
+    .lv-right>*{width:100%;min-width:0}
+    /* ⛔⛔ LỖI THẬT ĐÃ ĐO (diag/shot 2026-09-26) — SƠ ĐỒ BỊ CẮT MÀ KHÔNG CÓ DẤU HIỆU:
+       `.pstage{min-width:580px}` nằm trong hộp `overflow-x:auto` chỉ rộng ~349px
+       ⇒ 231px nội dung bị giấu. Trên cảm ứng, thanh cuộn là overlay nên đo được
+       `scrollbarH=2px` — người dùng KHÔNG thấy gì báo rằng còn nội dung bên phải,
+       ảnh chụp cho thấy thẻ "JD DRAFT" bị cắt ngang giữa chữ.
+       Vá 3 lớp:
+         (1) hạ sàn 580px → --pstage-min, gọn hơn trên máy hẹp nhưng vẫn giữ
+             tỉ lệ sơ đồ đọc được;
+         (2) DẢI MỜ ở mép phải + nhãn "vuốt để xem" = tín hiệu cuộn nhìn thấy được;
+         (3) cuộn-snap để lần vuốt dừng ở mốc rõ ràng.
+       Không đổi `overflow-x:hidden` sang `clip`: hộp này PHẢI cuộn được. */
     .lv-diagram{
       width:100%;
       height:100%;max-height:none;
       overflow-x:auto;
       overflow-y:hidden;
       -webkit-overflow-scrolling:touch;
+      overscroll-behavior-x:contain;
+      scroll-snap-type:x proximity;
       border-radius:14px;
       background:var(--white);
       border:1px solid var(--line);
       padding:14px 8px 16px;
       box-shadow:0 4px 16px rgba(21,23,26,.04);
+      /* Dải mờ báo còn nội dung bên phải.
+         ⛔ Bản nháp đầu khai `background-attachment:local, scroll` (HAI lớp) trong khi
+         chỉ có MỘT `background-image` ⇒ lớp thứ hai rỗng làm hộp không vẽ đúng dải mờ.
+         Một lớp ảnh ⇒ đúng MỘT giá trị attachment.
+         `local` để dải mờ TRÔI THEO NỘI DUNG: tới cuối thì dải mờ ra khỏi khung,
+         đúng lúc gợi ý cuộn cũng tắt — hai tín hiệu không mâu thuẫn nhau. */
+      background-image:linear-gradient(to left,
+        rgba(10,22,32,.16), rgba(10,22,32,.06) 14px, rgba(10,22,32,0) 30px);
+      background-size:32px 100%;
+      background-position:right center;
+      background-repeat:no-repeat;
+      background-attachment:local;
+      scrollbar-width:thin;
     }
+    .lv-diagram::-webkit-scrollbar{height:6px}
+    .lv-diagram::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:3px}
+    .lv-diagram::-webkit-scrollbar-track{background:transparent}
     .pstage{
-      min-width:580px;
+      min-width:var(--pstage-min,520px);
       width:100%;
       height:100%;max-height:none;
     }
+  }
+  @media (max-width:400px){
+    :root{--pstage-min:460px}
   }
 
   @media (max-width:520px){
@@ -601,8 +637,18 @@
   .faq details[open] summary::after{transform:rotate(45deg)}
   .faq .faq__a{padding:0 0 20px;font-size:15px;line-height:1.65;color:var(--gray-500);max-width:680px}
 
-  /* form đăng ký */
-  .reg{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+  /* form đăng ký
+     ⛔⛔ LỖI THẬT ĐÃ ĐO (probe-overflow/diag 2026-09-26) — TRÀN NGANG Ở MÁY HẸP:
+     `1fr` = `minmax(auto,1fr)`, nên SÀN min-content của ô lưới thắng bề rộng khả dụng.
+     Sàn đó bị đẩy lên bởi `<select>`: bề rộng min-content của select = chuỗi `<option>`
+     DÀI NHẤT (option không xuống dòng được). Đo ở 320px:
+       · select#want  min-content = 332px  (option "Hỏi đáp → Trợ lý riêng: AI hiểu tài liệu doanh nghiệp")
+       · .reg__form   min-content = 132px + padding 40px
+       ⇒ cột lưới giải ra 342px trong khi chỉ có 288px ⇒ body.scrollWidth 358 > 320 (tràn 38px).
+     Vá: cho ô lưới `minmax(0,1fr)` và cho con `min-width:0` — sàn tự động bị bỏ,
+     select co theo ô rồi tự cắt chữ (hành vi mặc định của select). */
+  .reg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:44px;align-items:start}
+  .reg>*{min-width:0}
   .reg__info h2{margin-bottom:16px}
   .reg__meta{list-style:none;padding:0;margin:0 0 22px}
   .reg__meta li{display:flex;gap:11px;align-items:flex-start;font-size:15px;
@@ -616,6 +662,10 @@
   .field input,.field select{width:100%;font-family:inherit;font-size:15px;color:var(--black);
     background:var(--white);border:1px solid var(--gray-100);border-radius:11px;
     padding:12px 14px;transition:border-color .18s ease, box-shadow .18s ease}
+  /* ⛔ LƯỚI AN TOÀN: select KHÔNG được để chuỗi <option> dài nhất quyết định bề rộng ô.
+     `min-width:0` + `max-width:100%` buộc nó co theo ô chứa; chữ dài tự bị cắt
+     (đúng hành vi mặc định của select, có mũi tên chỉ báo). */
+  .field select{min-width:0;max-width:100%;text-overflow:ellipsis}
   .field input::placeholder{color:var(--gray-400)}
   /* ⛔⛔ LỖI THẬT — ĐO ĐƯỢC (verify-f.mjs 2026-09-17): 4 ô input/select MẤT VÒNG FOCUS.
      Nguyên nhân: `.field input:focus{outline:none}` áp cho MỌI lần focus, kể cả focus
@@ -680,130 +730,81 @@
     clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
   /* ══════════════════════════════════════════════════════════════════════
-     HAI ĐƯỜNG THAM GIA — online (primary) + offline (qualified secondary)
-     Nguồn số liệu: docs/GO4AI-WORK-LAB-CAMPAIGN-2026-09-14.md
+     FORM LEAD 6 CÂU — chốt 2026-09-26 (owner)
+     · Trang là MÁY TẠO + SÀNG LỌC LEAD, không bán membership.
+     · Form RẤT NGẮN, KHÔNG ô văn bản tự do. 5 câu chọn + 3 ô liên hệ.
+     · Giá KHÔNG hiển thị ở landing.
      Profile: design/profiles/campaigns.yaml
      Motion: M0 — §motion.prohibited_patterns cấm "animation che form đăng ký".
      ══════════════════════════════════════════════════════════════════════ */
-  .paths{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:30px;align-items:stretch}
 
-  /* thẻ chọn đường — <button> vì nó ĐỔI TRẠNG THÁI, không phải <a> điều hướng */
-  .path{position:relative;text-align:left;display:flex;flex-direction:column;
-    font-family:inherit;cursor:pointer;background:var(--white);
-    border:1.5px solid var(--line);border-radius:20px;padding:26px;
-    transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease}
-  .path:hover{border-color:var(--gray-200);transform:translateY(-2px);
-    box-shadow:0 12px 30px rgba(21,23,26,.07)}
-  .path[aria-pressed="true"]{border-color:var(--green-500);background:var(--white);
-    box-shadow:0 0 0 3px rgba(8,144,108,.13), 0 12px 30px rgba(21,23,26,.07)}
-  /* ⛔⛔ LỖI THẬT ĐÃ ĐO (diag-d2.mjs 2026-09-17): hai thẻ có CÙNG opacity:1 và
-     CÙNG background trắng; khác biệt DUY NHẤT là màu viền
-     #d9dfde (217,223,222) vs #08906c (8,144,108).
-     brain/02 §13: "states must not be conveyed by colour alone" ⇒ vi phạm.
-     Sửa: thẻ KHÔNG chọn bị ĐẨY XUỐNG bằng cả (a) nền xám nhạt, (b) viền nét đứt,
-     (c) nhãn chữ đổi thành "Chọn cách này" — ba tín hiệu phi-màu, đọc được cả khi
-     in đen trắng. Thẻ đang chọn thành nền trắng + viền liền + bóng ⇒ nổi lên. */
-  .path:not([aria-pressed="true"]){background:var(--gray-50);border-style:dashed;
-    border-color:var(--gray-200)}
-  .path:not([aria-pressed="true"]):hover{background:var(--white);border-style:solid}
-  .path[aria-pressed="true"] .path__pick{border-color:var(--green-500);background:var(--green-500)}
-  /* chữ trạng thái bên trong thẻ — tín hiệu KHÔNG phải màu */
-  .path__state{display:inline-flex;align-items:center;gap:6px;margin:14px 0 0;
-    font-size:12.5px;font-weight:700;letter-spacing:.02em}
-  .path[aria-pressed="true"] .path__state{color:var(--green-700)}
-  .path:not([aria-pressed="true"]) .path__state{color:var(--gray-500)}
-  /* trạng thái CHỌN phải nhận ra bằng MẮT, và có cả CHỮ (không chỉ màu) */
-  .path__pick{position:absolute;top:22px;right:22px;width:22px;height:22px;border-radius:50%;
-    border:1.5px solid var(--gray-200);display:flex;align-items:center;justify-content:center;
-    transition:background .18s ease,border-color .18s ease}
-  .path__pick svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .18s ease}
-  .path[aria-pressed="true"] .path__pick{background:var(--green-500);border-color:var(--green-500)}
-  .path[aria-pressed="true"] .path__pick svg{opacity:1}
-
-  .path__tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;
-    letter-spacing:.13em;text-transform:uppercase;color:var(--gray-500);margin:0 0 12px}
-  .path__tag b{font-weight:700;color:var(--green-500)}
-  .path__tag--soon{color:var(--coral-600)}
-  .path__tag--soon b{color:var(--coral-600)}
-  .path h3{font-size:22px;font-weight:700;letter-spacing:-.03em;margin:0 0 4px;line-height:1.2}
-  .path__when{font-size:14px;color:var(--gray-500);margin:0 0 16px;line-height:1.55}
-  .path__price{font-size:26px;font-weight:700;letter-spacing:-.03em;margin:0 0 3px}
-  .path__price small{font-size:13px;font-weight:500;color:var(--gray-400);
-    letter-spacing:0;display:block;margin-top:3px}
-  .path__gets{list-style:none;padding:0;margin:16px 0 0;border-top:1px solid var(--gray-100);padding-top:14px}
-  .path__gets li{position:relative;font-size:13.5px;line-height:1.55;color:var(--gray-500);
-    padding-left:20px;margin-bottom:8px}
-  .path__gets li:last-child{margin-bottom:0}
-  /* ⛔⛔ LỖI THẬT ĐÃ ĐO (diag-d2.mjs 2026-09-17): bản đầu phân biệt "có trong gói"
-     với "thêm" CHỈ bằng màu chấm — green-500 (#08906c) vs green-100 (#d3ece4).
-     brain/02 §13: "states must not be conveyed by colour alone".
-     Người không phân biệt được xanh đậm/nhạt thấy 7 chấm giống hệt nhau.
-     Sửa: KHÁC HÌNH DẠNG thật — chấm ĐẶC cho mục chính, VÒNG RỖNG cho mục phụ.
-     Vẫn giữ màu để nhấn, nhưng màu chỉ là lớp thứ hai, không phải tín hiệu duy nhất. */
-  .path__gets li::before{content:"";position:absolute;left:0;top:7px;width:9px;height:9px;
-    border-radius:50%;background:transparent;border:1.5px solid var(--green-500);box-sizing:border-box}
-  .path__gets li.is-star::before{background:var(--green-500);border-color:var(--green-500)}
-  /* chú thích cho trình đọc màn hình: chấm rỗng nghĩa là gì */
-  .path__gets li:not(.is-star)::after{content:" (thêm)";position:absolute;width:1px;height:1px;
-    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-
-  .path__seats{display:inline-flex;align-items:center;gap:7px;margin-top:14px;
-    font-size:12.5px;font-weight:600;color:var(--coral-600);
-    background:var(--coral-50);border:1px solid var(--coral-100);
-    border-radius:99px;padding:6px 13px}
-  .path__seats svg{width:13px;height:13px;flex:0 0 auto}
-
-  /* khối chứa form đã chọn */
-  .path-form{display:none}
-  .path-form.on{display:block}
+  /* ── đầu khối form (tiêu đề chương trình trong cột trái) ── */
   .path-form__head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
     padding-bottom:16px;margin-bottom:22px;border-bottom:1px solid var(--gray-100)}
   .path-form__head h3{font-size:19px;font-weight:700;letter-spacing:-.02em;margin:0}
   .path-form__head p{font-size:13px;color:var(--gray-400);margin:0}
 
-  .field textarea{width:100%;font-family:inherit;font-size:15px;color:var(--black);
-    background:var(--white);border:1.5px solid var(--gray-100);border-radius:11px;
-    padding:13px 14px;resize:vertical;min-height:96px;line-height:1.55;transition:border-color .18s ease}
-  .field textarea:focus:not(:focus-visible){outline:none}
-  .field textarea:focus{border-color:var(--green-500);box-shadow:0 0 0 3px rgba(8,144,108,.13)}
-  .field.has-err textarea{border-color:var(--coral-500);box-shadow:0 0 0 3px rgba(206,60,43,.11)}
+  /* ── câu hỏi ── */
+  .q{border:0;padding:0;margin:0 0 22px}  .q__legend{font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--black);
+    padding:0;margin:0 0 3px;display:flex;gap:7px;align-items:baseline;line-height:1.45}
+  .q__n{color:var(--green-600,#0a7a5c);font-weight:800;flex:0 0 auto}
+  .q__hint{font-size:12.5px;color:var(--gray-400);margin:0 0 10px;font-weight:500}
+  .req{color:var(--coral-500);font-weight:700}
 
-  /* quy trình offline — 4 bước, biện minh cho 2.000.000đ */
-  .steps{list-style:none;padding:0;margin:20px 0 0;counter-reset:st}
-  .steps li{position:relative;padding-left:34px;margin-bottom:15px;font-size:13.5px;
-    line-height:1.55;color:var(--gray-500)}
-  .steps li:last-child{margin-bottom:0}
-  .steps li::before{counter-increment:st;content:counter(st);
-    position:absolute;left:0;top:-1px;width:22px;height:22px;border-radius:50%;
-    background:var(--gray-50);border:1px solid var(--gray-100);color:var(--gray-500);
-    font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
-  .steps li.is-now::before{background:var(--green-500);border-color:var(--green-500);color:#fff}
-  .steps li b{color:var(--black);font-weight:600}
-  .steps li.is-now b{color:var(--green-700)}
+  /* ── lưới lựa chọn ── */
+  .opts{display:grid;grid-template-columns:1fr;gap:9px}
+  @media (min-width:560px){ .opts--two{grid-template-columns:1fr 1fr} }
 
-  /* trạng thái theo THỜI GIAN — chọn bằng hằng số, không rải ngày khắp markup */
-  .gate{display:none}
-  .gate.on{display:block}
-  .gate__box{padding:20px 22px;border-radius:14px;background:var(--gray-50);
-    border:1px solid var(--gray-100);font-size:14px;line-height:1.6;color:var(--gray-500)}
-  .gate__box strong{color:var(--black);display:block;margin-bottom:5px;font-size:15px}
+  /* ⛔ brain/02 §13 — "states must not be conveyed by colour alone".
+     Nên mỗi lựa chọn CHỌN mang 3 tín hiệu phi-màu: (a) viền liền+đậm hơn,
+     (b) ô đánh dấu đổi từ rỗng sang ĐẶC kèm dấu tích hiện ra, (c) nền xám → trắng.
+     Ô đánh dấu là VÒNG (radio) hay VUÔNG (checkbox) — khác cả hình dạng, không chỉ màu. */
+  .opt{position:relative;display:flex;align-items:flex-start;gap:11px;cursor:pointer;
+    background:var(--gray-50);border:1.5px solid var(--gray-100);border-radius:12px;
+    padding:12px 14px;font-size:14.5px;line-height:1.5;color:var(--black);
+    transition:border-color .16s ease, background .16s ease, box-shadow .16s ease}
+  .opt:hover{border-color:var(--gray-200);background:var(--white)}
+  /* ⛔ input ẩn bằng opacity:0 (KHÔNG dùng display:none) ⇒ vẫn nhận focus bàn phím
+     và vẫn đọc được bởi trình đọc màn hình; thao tác qua <label> bọc ngoài. */
+  .opt input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+  .opt__mark{flex:0 0 auto;width:20px;height:20px;margin-top:1px;
+    border:1.5px solid var(--gray-200);background:var(--white);
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .16s ease, background .16s ease}
+  .opt--radio .opt__mark{border-radius:50%}
+  .opt--check .opt__mark{border-radius:5px}
+  .opt__mark svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .16s ease}
+  .opt__txt{flex:1 1 auto;min-width:0}
 
-  /* dòng nhắc hạn — NGÀY CỤ THỂ, không đếm ngược (proof_prohibited) */
-  .deadline{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
-    color:var(--black);background:var(--blue-50);border:1px solid #d3e6ef;
-    border-radius:10px;padding:10px 14px;margin-top:16px}
-  .deadline svg{width:14px;height:14px;color:var(--blue-500);flex:0 0 auto}
+  /* CHỌN */
+  .opt:has(input:checked){border-color:var(--green-500);background:var(--white);
+    box-shadow:0 0 0 2px rgba(8,144,108,.12)}
+  .opt:has(input:checked) .opt__mark{background:var(--green-500);border-color:var(--green-500)}
+  .opt:has(input:checked) .opt__mark svg{opacity:1}
+  /* FOCUS bàn phím — viền nhìn thấy được quanh cả thẻ, không chỉ quanh input ẩn */
+  .opt:has(input:focus-visible){outline:3px solid var(--green-500);
+    outline-offset:2px;border-radius:12px}
+
+  /* câu vượt giới hạn (Q4 > 2) — báo bằng CHỮ, không chỉ màu */
+  .opts.is-over .opt:not(:has(input:checked)){opacity:.5}
+  .q.has-err .opts .opt{border-color:var(--coral-300,#e8aba2)}
+  .q.has-err .q__legend{color:var(--coral-600)}
+
+  /* lỗi chung của câu / của ô */
+  .q .err,.field .err{display:none;font-size:12.5px;color:var(--coral-600);
+    margin:8px 0 0;line-height:1.5;font-weight:500}
+  .q.has-err .err,.field.has-err .err{display:block}
+
+  /* ── câu 6 — 3 ô liên hệ ── */
+  .contact-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width:560px){ .contact-grid{grid-template-columns:1fr 1fr}
+    .contact-grid .field:first-child{grid-column:1 / -1} }
 
   @media (max-width:900px){
-    .two,.cards3,.kit,.reg,.paths{grid-template-columns:1fr}
+    .two,.cards3,.kit,.reg{grid-template-columns:1fr}
     .speaker{grid-template-columns:1fr;text-align:center;justify-items:center}
     .sec{padding:70px 0}
     .final{padding:80px 0}
-    .path{padding:22px}
-  }
-  @media (max-width:520px){
-    .reg__form{padding:20px}
-    .hint{display:none}
   }
 
   /* ═══ REDUCED MOTION — tôn trọng a11y không can thiệp layout 2 cột hay ẩn cá ═══
@@ -1198,332 +1199,322 @@
   </div>
 </div></section>
 
-<!-- ══════════ HAI ĐƯỜNG THAM GIA ══════════
-     Online = primary (miễn phí, không rào). Offline = qualified secondary
-     (2.000.000đ, 20–24 chỗ, phải ứng tuyển). Hai đường KHÔNG ngang hàng.
-     Số liệu: docs/GO4AI-WORK-LAB-CAMPAIGN-2026-09-14.md — không suy đoán. -->
+<!-- ══════════ ĐĂNG KÝ CHƯƠNG TRÌNH 90 PHÚT ══════════
+     Chốt 2026-09-26 (owner):
+       · Trang này KHÔNG bán membership. Nó là MÁY TẠO + SÀNG LỌC LEAD.
+       · Chỉ tập trung đăng ký CHƯƠNG TRÌNH 90 PHÚT MIỄN PHÍ.
+       · XOÁ toàn bộ nội dung thu 2.000.000đ và nhánh "Buổi thực hành trực tiếp".
+       · Form RẤT NGẮN, KHÔNG có ô văn bản tự do. Không ép khách mô tả dài.
+     Luồng: Quảng cáo → Landing 90 phút → Đăng ký FREE → Form 6 câu →
+            90-minute AI journey qua 6 cấp độ → GO4AI ecosystem reveal →
+            Follow-up → Tư vấn → Brochure phù hợp → 10M / 30M / 100M.
+     ⛔ Giá KHÔNG hiển thị ở đây. Phân hạng chỉ dùng nội bộ (routeLeadTier). -->
 <section class="sec" id="tham-gia"><div class="wrap">
-  <p class="sec-eyebrow">Tham gia</p>
-  <h2>Hai cách tham gia — chọn cách phù hợp với bạn</h2>
+  <p class="sec-eyebrow">Đăng ký</p>
+  <h2>Đăng ký chương trình 90 phút — miễn phí</h2>
   <p class="lede" style="max-width:720px;margin-bottom:34px">
-    Buổi trực tuyến miễn phí để bạn xem việc thật chạy và tự chọn việc của mình.
-    Buổi trực tiếp là một ngày làm việc cùng nhau, có giới hạn chỗ.
+    Chương trình 90 phút đưa bạn đi qua 6 cấp độ ứng dụng Claude: từ một cửa sổ chat
+    đến hệ điều hành AI vận hành doanh nghiệp. Đăng ký bằng 6 câu hỏi ngắn —
+    để chúng tôi biết bạn đang ở đâu và chuẩn bị đúng thứ cho bạn.
   </p>
 
-  <div class="paths" role="group" aria-label="Chọn cách tham gia">
-
-    <!-- ── ONLINE — primary ── -->
-    <button type="button" class="path" id="path-online" data-path="online"
-            aria-pressed="true" aria-controls="form-online">
-      <span class="path__pick" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"
-          stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </span>
-      <p class="path__tag"><b>●</b> Đang mở đăng ký</p>
-      <h3>Hội thảo trực tuyến</h3>
-      <p class="path__when">Thứ Sáu 30/10/2026 · 20:00–21:30 · 90 phút<br>Học trực tuyến, có bản ghi</p>
-      <p class="path__price">Miễn phí
-        <small>Không cần thẻ, không cần duyệt hồ sơ</small></p>
-      <ul class="path__gets">
-        <li class="is-star">Xem <b>3 việc thật</b> chạy xong, có đồng hồ bấm giờ</li>
-        <li>Nhận <b>Quy trình phiếu thực hành</b> để tự chọn việc của bạn</li>
-        <li>Bản ghi buổi học sau khi kết thúc</li>
-      </ul>
-    </button>
-
-    <!-- ── OFFLINE — qualified secondary ── -->
-    <button type="button" class="path" id="path-offline" data-path="offline"
-            aria-pressed="false" aria-controls="form-offline">
-      <span class="path__pick" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"
-          stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </span>
-      <p class="path__tag path__tag--soon" id="offTag"><b>●</b> Mở sau buổi trực tuyến</p>
-      <h3>Buổi thực hành trực tiếp</h3>
-      <p class="path__when">Lịch công bố trong buổi trực tuyến 30/10 · 8:30–17:00<br>Một ngày, làm việc trên việc thật của bạn</p>
-      <p class="path__price">2.000.000đ
-        <small>Một ngày, có người cùng làm cho xong</small></p>
-      <ul class="path__gets">
-        <li class="is-star"><b>Quy trình đã chạy</b> trên chính việc của bạn</li>
-        <li>Câu lệnh + mô tả kết quả cần đạt · Danh sách kiểm tra kết quả</li>
-        <li>Quy trình 1 trang để người khác trong nhóm làm lại</li>
-        <li>Bộ tài liệu đề xuất — mẫu 1 trang để trình bày với cấp trên</li>
-      </ul>
-      <span class="path__seats">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  <div class="reg">
+    <!-- ── CỘT TRÁI: nội dung chương trình ── -->
+    <div class="reg__info">
+      <div class="path-form__head">
+        <h3>Chương trình 90 phút: Claude không chỉ để hỏi</h3>
+        <p>Miễn phí · 90 phút · có bản ghi</p>
+      </div>
+      <ul class="reg__meta">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>90 phút, có bản ghi để xem lại</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>Đi qua <b>6 cấp độ</b> ứng dụng Claude — từ hỏi đáp đến hệ điều hành AI</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/></svg>
+          <span>Nhận <b>Quy trình phiếu thực hành</b> để tự chọn việc của bạn</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
           <circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-        20–24 chỗ — mỗi người được rà soát kết quả trực tiếp
-      </span>
-    </button>
-  </div>
-
-  <!-- ══ FORM ONLINE (mặc định hiện) ══ -->
-  <div class="path-form on" id="form-online">
-    <div class="reg">
-      <div class="reg__info">
-        <div class="path-form__head">
-          <h3>Đăng ký hội thảo trực tuyến</h3>
-          <p>Miễn phí · 90 phút · Thứ Sáu 30/10/2026, 20:00–21:30</p>
-        </div>
-        <ul class="reg__meta">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span>Thứ Sáu 30/10/2026, bắt đầu 20:00</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span>Ba việc thật chạy xong, có đồng hồ bấm giờ — không dùng slide minh hoạ</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/></svg>
-            <span>Nhận bản ghi và Quy trình phiếu thực hành sau buổi</span></li>
-        </ul>
-        <p class="hintx" style="font-size:13.5px;line-height:1.65;color:var(--gray-500);margin:0">
-          Chương trình tập trung 100% vào nội dung thực hành và giải quyết bài toán chuyên môn.
-        </p>
-      </div>
-
-      <div class="reg__form">
-        <form id="form" novalidate>
-          <div class="form-fail" id="formFail" role="alert">
-            Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.
-          </div>
-
-          <div class="field" id="f-name">
-            <label for="name">Họ và tên <span class="req" aria-hidden="true">*</span></label>
-            <input type="text" id="name" name="name" autocomplete="name"
-                   aria-describedby="e-name" required>
-            <p class="hintx" id="e-name"></p>
-            <p class="err" id="err-name" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-email">
-            <label for="email">Email công việc <span class="req" aria-hidden="true">*</span></label>
-            <input type="email" id="email" name="email" autocomplete="email"
-                   inputmode="email" aria-describedby="e-email" required>
-            <p class="hintx" id="e-email"></p>
-            <p class="err" id="err-email" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-company">
-            <label for="company">Doanh nghiệp <span class="req" aria-hidden="true">*</span></label>
-            <input type="text" id="company" name="company" autocomplete="organization"
-                   aria-describedby="e-company" required>
-            <p class="hintx" id="e-company"></p>
-            <p class="err" id="err-company" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-phone">
-            <label for="phone">Điện thoại</label>
-            <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel">
-          </div>
-
-          <div class="field" id="f-role">
-            <label for="role">Vai trò</label>
-            <select id="role" name="role">
-              <option value="">— Chọn vai trò —</option>
-              <option>Chủ doanh nghiệp / Ban giám đốc</option>
-              <option>Quản lý phòng ban / trưởng nhóm</option>
-              <option>Chuyên viên / nhân viên</option>
-              <option>Nhân sự / Đào tạo nội bộ</option>
-              <option>Khác</option>
-            </select>
-          </div>
-
-          <div class="field" id="f-level">
-            <label for="level">Mức độ dùng AI hiện tại</label>
-            <select id="level" name="level" aria-describedby="e-level">
-              <option value="">Chưa rõ — nhờ tư vấn</option>
-              <option value="1">1 · Hỏi đáp — tôi hỏi, AI trả lời</option>
-              <option value="2">2 · Trợ lý riêng — AI đã hiểu doanh nghiệp tôi</option>
-              <option value="3">3 · Giao việc — AI thao tác trên hệ thống</option>
-              <option value="4">4 · Tự động hóa — có quy trình tự chạy</option>
-              <option value="5">5 · Ứng dụng AI — đã có công cụ AI riêng</option>
-              <option value="6">6 · Hệ điều hành AI — nhiều AI cùng vận hành</option>
-            </select>
-            <p class="hintx" id="e-level">Trường có cấu trúc — để việc phân loại dựa trên lựa chọn,
-            không dựa trên suy đoán từ văn bản tự do.</p>
-            <p class="err" id="err-level" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-want">
-            <label for="want">Điều bạn muốn xem nhất</label>
-            <select id="want" name="want">
-              <option value="">— Chọn một —</option>
-              <option>Hỏi đáp → Trợ lý riêng: AI hiểu tài liệu doanh nghiệp</option>
-              <option>Giao việc: AI thao tác trên file / hệ thống</option>
-              <option>Tự động hóa: quy trình tự chạy</option>
-              <option>Ứng dụng AI: đóng gói thành công cụ cho nhóm</option>
-              <option>Hệ điều hành AI: nhiều AI cùng vận hành</option>
-              <option>Cách đo hiệu quả trước–sau</option>
-            </select>
-          </div>
-
-          <div id="claude-turnstile" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
-
-          <button type="submit" class="cta-btn submit" id="submit">
-            <span class="spin" aria-hidden="true"></span>
-            <span class="submit__t">Đăng ký tham gia</span>
-          </button>
-
-          <p class="form-note">Chúng tôi chỉ dùng thông tin này để liên hệ về buổi hội thảo.
-          Không chia sẻ cho bên thứ ba.</p>
-        </form>
-
-        <div class="form-ok" id="formOk" role="status" aria-live="polite">
-          <div class="form-ok__ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <p class="form-ok__t">Đã ghi nhận đăng ký</p>
-          <p class="form-ok__d">Chúng tôi sẽ gửi thông tin buổi hội thảo và đường dẫn tham gia
-          qua email bạn vừa để lại.</p>
-          <span class="form-ok__badge">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
-              stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/></svg>
-            ĐÃ ĐĂNG KÝ · TRỰC TUYẾN 30/10
-          </span>
-        </div>
-      </div>
+          <span>Gợi ý lộ trình và cách GO4AI đồng hành tiếp theo — theo đúng mục tiêu bạn chọn</span></li>
+      </ul>
+      <p class="hintx" style="font-size:13.5px;line-height:1.65;color:var(--gray-500);margin:0">
+        Sáu câu hỏi giúp chúng tôi chuẩn bị đúng nội dung cho bạn — không có câu nào
+        yêu cầu bạn viết mô tả dài.
+      </p>
     </div>
-  </div>
 
-  <!-- ══ FORM OFFLINE ══ -->
-  <div class="path-form" id="form-offline">
-    <div class="reg">
-      <div class="reg__info">
-        <div class="path-form__head">
-          <h3>Ứng tuyển Buổi thực hành trực tiếp</h3>
-          <p>2.000.000đ · một ngày · 8:30–17:00 · lịch công bố trong buổi trực tuyến 30/10</p>
+    <!-- ── CỘT PHẢI: form 6 câu ── -->
+    <div class="reg__form">
+      <form id="form" novalidate>
+        <div class="form-fail" id="formFail" role="alert">
+          Chưa gửi được đăng ký. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.
         </div>
 
-        <!-- trạng thái MỞ: chỉ hiện sau 21:30 ngày 30/10 -->
-        <div class="gate" id="offOpen">
-          <ol class="steps">
-            <li class="is-now"><b>Bạn đang ở đây.</b> Điền việc lặp lại bạn muốn làm xong.</li>
-            <li>Chúng tôi xem hồ sơ và xác nhận còn chỗ <b>trong 24 giờ</b>.</li>
-            <li>Thanh toán để giữ chỗ. <b>20–24 chỗ</b>, xếp theo thứ tự xác nhận.</li>
-            <li>Ngày Buổi thực hành: bạn ra về với <b>quy trình đã chạy trên việc của chính bạn</b>.</li>
-          </ol>
-          <span class="deadline">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/></svg>
-            Hạn ứng tuyển: công bố cùng lịch Buổi thực hành
-          </span>
-          <p class="hintx" style="font-size:13px;line-height:1.65;color:var(--gray-400);margin:14px 0 0">
-            Hạn này là thật: bạn cần 3–5 ngày để mang việc thật và quyền truy cập dữ liệu.
-            Chúng tôi không mở thêm sau hạn.
-          </p>
+        <!-- ── CÂU 1 — chọn 1 ── -->
+        <fieldset class="q" id="q-q1" data-q="1">
+          <legend class="q__legend">
+            <span class="q__n">1.</span>Bạn quan tâm nhất điều gì?
+            <span class="req" aria-hidden="true">*</span>
+          </legend>
+          <p class="q__hint">Chọn 1</p>
+          <div class="opts">
+            <label class="opt opt--radio">
+              <input type="radio" name="q1" value="Học AI và phát triển bản thân">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Học AI và phát triển bản thân</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q1" value="Tìm project, cơ hội việc làm hoặc tăng thu nhập">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Tìm project, cơ hội việc làm hoặc tăng thu nhập</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q1" value="Ứng dụng AI cho doanh nghiệp">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Ứng dụng AI cho doanh nghiệp</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q1" value="Hợp tác kinh doanh / phát triển sản phẩm cùng GO4AI">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Hợp tác kinh doanh / phát triển sản phẩm cùng GO4AI</span>
+            </label>
+          </div>
+          <p class="err" id="err-q1" role="alert"></p>
+        </fieldset>
+
+        <!-- ── CÂU 2 — chọn 1 ── -->
+        <fieldset class="q" id="q-q2" data-q="2">
+          <legend class="q__legend">
+            <span class="q__n">2.</span>Hiện tại bạn là?
+            <span class="req" aria-hidden="true">*</span>
+          </legend>
+          <div class="opts">
+            <label class="opt opt--radio">
+              <input type="radio" name="q2" value="Sinh viên / mới đi làm">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Sinh viên / mới đi làm</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q2" value="Người đi làm / chuyên viên">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Người đi làm / chuyên viên</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q2" value="Freelancer / Trainer / Consultant">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Freelancer / Trainer / Consultant</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q2" value="Quản lý">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Quản lý</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q2" value="Founder / Chủ doanh nghiệp / CEO">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Founder / Chủ doanh nghiệp / CEO</span>
+            </label>
+          </div>
+          <p class="err" id="err-q2" role="alert"></p>
+        </fieldset>
+
+        <!-- ── CÂU 3 — chọn 1 ── -->
+        <fieldset class="q" id="q-q3" data-q="3">
+          <legend class="q__legend">
+            <span class="q__n">3.</span>Kết quả bạn muốn đạt được nhất trong 12 tháng tới?
+            <span class="req" aria-hidden="true">*</span>
+          </legend>
+          <p class="q__hint">Chọn 1</p>
+          <div class="opts">
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Có kỹ năng AI và portfolio rõ ràng">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Có kỹ năng AI và portfolio rõ ràng</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Có cơ hội việc làm / internship tốt hơn">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Có cơ hội việc làm / internship tốt hơn</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Có thêm project hoặc nguồn thu nhập mới">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Có thêm project hoặc nguồn thu nhập mới</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Xây thương hiệu chuyên môn cá nhân">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Xây thương hiệu chuyên môn cá nhân</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Tăng doanh thu / cải thiện bán hàng">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Tăng doanh thu / cải thiện bán hàng</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Tăng năng suất / tối ưu vận hành bằng AI">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Tăng năng suất / tối ưu vận hành bằng AI</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Xây sản phẩm / giải pháp AI">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Xây sản phẩm / giải pháp AI</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q3" value="Mở rộng network / khách hàng / partnership">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Mở rộng network / khách hàng / partnership</span>
+            </label>
+          </div>
+          <p class="err" id="err-q3" role="alert"></p>
+        </fieldset>
+
+        <!-- ── CÂU 4 — chọn TỐI ĐA 2 ── -->
+        <fieldset class="q" id="q-q4" data-q="4">
+          <legend class="q__legend">
+            <span class="q__n">4.</span>Bạn muốn GO4AI hỗ trợ theo cách nào nhất?
+            <span class="req" aria-hidden="true">*</span>
+          </legend>
+          <p class="q__hint" id="q4Hint">Chọn tối đa 2</p>
+          <div class="opts" id="q4Opts">
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Training và workshop">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Training và workshop</span>
+            </label>
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Project thực tế">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Project thực tế</span>
+            </label>
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Kết nối Founder / chuyên gia / doanh nghiệp">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Kết nối Founder / chuyên gia / doanh nghiệp</span>
+            </label>
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Cơ hội nghề nghiệp / internship">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Cơ hội nghề nghiệp / internship</span>
+            </label>
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Cơ hội project / thu nhập">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Cơ hội project / thu nhập</span>
+            </label>
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Tư vấn ứng dụng AI cho doanh nghiệp">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Tư vấn ứng dụng AI cho doanh nghiệp</span>
+            </label>
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Cùng xây sản phẩm / giải pháp AI">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Cùng xây sản phẩm / giải pháp AI</span>
+            </label>
+            <label class="opt opt--check">
+              <input type="checkbox" name="q4" value="Kết nối khách hàng / đối tác / giao thương">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Kết nối khách hàng / đối tác / giao thương</span>
+            </label>
+          </div>
+          <p class="err" id="err-q4" role="alert"></p>
+        </fieldset>
+
+        <!-- ── CÂU 5 — chọn 1 ── -->
+        <fieldset class="q" id="q-q5" data-q="5">
+          <legend class="q__legend">
+            <span class="q__n">5.</span>Bạn muốn bắt đầu khi nào?
+            <span class="req" aria-hidden="true">*</span>
+          </legend>
+          <div class="opts">
+            <label class="opt opt--radio">
+              <input type="radio" name="q5" value="Ngay">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Ngay</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q5" value="Trong 1 tháng">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Trong 1 tháng</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q5" value="Trong 1–3 tháng">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Trong 1–3 tháng</span>
+            </label>
+            <label class="opt opt--radio">
+              <input type="radio" name="q5" value="Đang tìm hiểu">
+              <span class="opt__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="opt__txt">Đang tìm hiểu</span>
+            </label>
+          </div>
+          <p class="err" id="err-q5" role="alert"></p>
+        </fieldset>
+
+        <!-- ── CÂU 6 — thông tin liên hệ (3 ô chữ DUY NHẤT của form) ── -->
+        <fieldset class="q" id="q-q6" data-q="6">
+          <legend class="q__legend">
+            <span class="q__n">6.</span>Thông tin liên hệ
+          </legend>
+          <p class="q__hint">Chỉ để gửi thông tin chương trình cho bạn.</p>
+          <div class="contact-grid">
+            <div class="field" id="f-name">
+              <label for="name">Họ tên <span class="req" aria-hidden="true">*</span></label>
+              <input type="text" id="name" name="name" autocomplete="name"
+                     aria-describedby="e-name" required>
+              <p class="err" id="err-name" role="alert"></p>
+            </div>
+
+            <div class="field" id="f-phone">
+              <label for="phone">Số điện thoại / Zalo <span class="req" aria-hidden="true">*</span></label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel"
+                     aria-describedby="e-phone" required>
+              <p class="err" id="err-phone" role="alert"></p>
+            </div>
+
+            <div class="field" id="f-email">
+              <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input type="email" id="email" name="email" autocomplete="email"
+                     inputmode="email" aria-describedby="e-email" required>
+              <p class="err" id="err-email" role="alert"></p>
+            </div>
+          </div>
+          <p class="err" id="err-q6" role="alert"></p>
+        </fieldset>
+
+        <div id="claude-turnstile" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
+
+        <button type="submit" class="cta-btn submit" id="submit">
+          <span class="spin" aria-hidden="true"></span>
+          <span class="submit__t">Nhận tư vấn chương trình phù hợp</span>
+        </button>
+
+        <p class="form-note">Chúng tôi chỉ dùng thông tin này để liên hệ về chương trình 90 phút.
+        Không chia sẻ cho bên thứ ba.</p>
+      </form>
+
+      <div class="form-ok" id="formOk" role="status" aria-live="polite">
+        <div class="form-ok__ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-
-        <!-- trạng thái CHƯA MỞ -->
-        <div class="gate" id="offBefore">
-          <div class="gate__box">
-            <strong>Chưa mở ứng tuyển</strong>
-            Chúng tôi mở phiếu ứng tuyển <b>sau buổi trực tuyến ngày 30/10</b>, khi bạn đã có
-            Quy trình phiếu thực hành trong tay. Đăng ký trực tuyến trước — chúng tôi sẽ gửi bạn đường dẫn
-            ứng tuyển ngay sau buổi.
-          </div>
-          <span class="deadline">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/></svg>
-            Hạn ứng tuyển: công bố cùng lịch Buổi thực hành
-          </span>
-        </div>
-
-        <!-- trạng thái ĐÃ ĐÓNG -->
-        <div class="gate" id="offClosed">
-          <div class="gate__box">
-            <strong>Đã đóng ứng tuyển</strong>
-            Đợt Buổi thực hành này đã đóng nhận hồ sơ.
-            Để lại email để nhận thông báo buổi tiếp theo.
-          </div>
-        </div>
-      </div>
-
-      <div class="reg__form">
-        <form id="formOff" novalidate>
-          <div class="form-fail" id="formOffFail" role="alert">
-            Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.
-          </div>
-
-          <div class="field" id="f-ona">
-            <label for="ona">Họ và tên <span class="req" aria-hidden="true">*</span></label>
-            <input type="text" id="ona" name="ona" autocomplete="name"
-                   aria-describedby="e-ona" required>
-            <p class="hintx" id="e-ona"></p>
-            <p class="err" id="err-ona" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-oem">
-            <label for="oem">Email công việc <span class="req" aria-hidden="true">*</span></label>
-            <input type="email" id="oem" name="oem" autocomplete="email"
-                   inputmode="email" aria-describedby="e-oem" required>
-            <p class="hintx" id="e-oem"></p>
-            <p class="err" id="err-oem" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-ocom">
-            <label for="ocom">Doanh nghiệp <span class="req" aria-hidden="true">*</span></label>
-            <input type="text" id="ocom" name="ocom" autocomplete="organization"
-                   aria-describedby="e-ocom" required>
-            <p class="hintx" id="e-ocom"></p>
-            <p class="err" id="err-ocom" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-task">
-            <label for="task">Việc lặp lại bạn muốn làm xong <span class="req" aria-hidden="true">*</span></label>
-            <textarea id="task" name="task" aria-describedby="e-task" required
-              placeholder="Ví dụ: mỗi thứ Hai tôi tổng hợp báo cáo tuần từ 4 file của nhóm, mất khoảng 3 giờ"></textarea>
-            <p class="hintx" id="e-task">Đây là điều kiện quan trọng nhất. Việc càng cụ thể,
-            buổi thực hành càng chắc có kết quả. Mô tả giúp chúng tôi biết bạn có việc thật để làm.</p>
-            <p class="err" id="err-task" role="alert"></p>
-          </div>
-
-          <div class="field" id="f-freq">
-            <label for="freq">Việc đó lặp lại bao lâu một lần? <span class="req" aria-hidden="true">*</span></label>
-            <select id="freq" name="freq" aria-describedby="e-freq" required>
-              <option value="">— Chọn tần suất —</option>
-              <option value="daily">Hằng ngày</option>
-              <option value="weekly">Hằng tuần</option>
-              <option value="monthly">Hằng tháng</option>
-              <option value="quarterly">Hằng quý</option>
-            </select>
-            <p class="hintx" id="e-freq">Việc lặp càng thường xuyên, thời gian tiết kiệm được càng rõ.</p>
-            <p class="err" id="err-freq" role="alert"></p>
-          </div>
-
-          <div id="claude-off-turnstile" style="margin: 1.25rem 0 0.75rem; min-height: 65px; display: flex; justify-content: center;"></div>
-
-          <button type="submit" class="cta-btn submit" id="submitOff">
-            <span class="spin" aria-hidden="true"></span>
-            <span class="submit__t">Gửi hồ sơ ứng tuyển</span>
-          </button>
-
-          <p class="form-note">Gửi hồ sơ chưa phải là đã có chỗ. Chúng tôi xác nhận từng hồ sơ
-          trong 24 giờ, và chỉ nhận 20–24 người để mỗi người được rà soát trực tiếp.</p>
-        </form>
-
-        <div class="form-ok" id="formOffOk" role="status" aria-live="polite">
-          <div class="form-ok__ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <p class="form-ok__t">Đã nhận hồ sơ ứng tuyển</p>
-          <p class="form-ok__d">Chúng tôi xem hồ sơ và trả lời trong vòng 24 giờ, gửi tới email
-          bạn vừa để lại. Nếu còn chỗ, bạn sẽ nhận hướng dẫn thanh toán để giữ chỗ.</p>
-          <span class="form-ok__badge">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
-              stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/></svg>
-            ĐÃ GỬI · BUỔI THỰC HÀNH TRỰC TIẾP
-          </span>
-        </div>
+        <p class="form-ok__t">Đã ghi nhận đăng ký</p>
+        <p class="form-ok__d">Chúng tôi sẽ gửi thông tin chương trình 90 phút và đường dẫn tham gia
+        qua email bạn vừa để lại.</p>
+        <span class="form-ok__badge">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/></svg>
+          ĐÃ ĐĂNG KÝ · CHƯƠNG TRÌNH 90 PHÚT
+        </span>
       </div>
     </div>
   </div>
@@ -2279,6 +2270,16 @@
       intent:        payload.intent || '',
       program:       payload.program || '',
       message:       payload.message || '',
+      // ── 6 câu của form landing 90 phút (chốt 2026-09-26) ──
+      // Cả 5 câu đầu là lựa chọn có cấu trúc; câu 6 là 3 ô liên hệ.
+      // leadTier do routeLeadTier() suy TẤT ĐỊNH từ lựa chọn — không đọc văn bản tự do.
+      q1_interested: payload.q1_interested || '',
+      q2_persona:    payload.q2_persona || '',
+      q3_goal:       payload.q3_goal || '',
+      q4_support:    payload.q4_support || '',
+      q5_timing:     payload.q5_timing || '',
+      leadTier:      payload.leadTier || '',
+      tierReason:    payload.tierReason || '',
       turnstileToken: turnstileToken,
       clientTimestamp: pageLoadTime,
       // UTM
@@ -2313,8 +2314,12 @@
   }
   window.gemSendLead = sendLead;
 
-  /* ③ FORM — 6 trạng thái bắt buộc của brain/02 §12:
-     loading · empty · error · success · disabled · partial */
+  /* ③ FORM LEAD 6 CÂU — 6 trạng thái bắt buộc của brain/02 §12:
+     loading · empty · error · success · disabled · partial
+     ─────────────────────────────────────────────────────────────────────
+     Form KHÔNG có ô văn bản tự do. Câu 1,2,3,5 chọn 1; câu 4 chọn TỐI ĐA 2;
+     câu 6 là 3 ô liên hệ (tên / điện thoại-Zalo / email).
+     Phân hạng MEMBER / PRO / STRATEGIC PARTNER suy TẤT ĐỊNH từ lựa chọn. */
   var form = d.getElementById('form'),
       okBox = d.getElementById('formOk'),
       failBox = d.getElementById('formFail'),
@@ -2322,40 +2327,114 @@
 
   if(!form) return;
 
-  var RULES = {
-    name:    {el:'#name',    f:'#f-name',
-              test:function(v){ return v.trim().length >= 2; },
-              msg:'Bạn nhập họ tên để chúng tôi biết đang liên hệ với ai.'},
-    email:   {el:'#email',   f:'#f-email',
-              test:function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); },
-              /* lỗi phải NÓI ĐƯỢC LÀM GÌ TIẾP, không chỉ báo sai */
-              msg:'Email chưa đúng định dạng. Ví dụ: ten@congty.vn'},
-    company: {el:'#company', f:'#f-company',
-              test:function(v){ return v.trim().length >= 2; },
-              msg:'Bạn nhập tên doanh nghiệp — chúng tôi dùng để xếp nhóm phù hợp.'}
-  };
+  /* Câu chọn 1: radio theo name. Câu 4: checkbox tối đa 2. */
+  var CHOICE_Q = ['q1','q2','q3','q5'];
 
-  function setErr(key, on){
-    var r = RULES[key];
-    var field = d.querySelector(r.f);
-    var err = d.getElementById('err-' + key);
-    if(on){
-      field.classList.add('has-err');
-      err.textContent = r.msg;
-      d.querySelector(r.el).setAttribute('aria-invalid','true');
-    } else {
-      field.classList.remove('has-err');
-      err.textContent = '';
-      d.querySelector(r.el).removeAttribute('aria-invalid');
-    }
+  function picked(name){
+    var el = form.querySelector('input[name="'+name+'"]:checked');
+    return el ? el.value : '';
+  }
+  function pickedAll(name){
+    return [].map.call(form.querySelectorAll('input[name="'+name+'"]:checked'),
+      function(el){ return el.value; });
   }
 
-  /* xoá lỗi ngay khi người dùng sửa — không bắt họ bấm lại mới biết đã đúng */
-  Object.keys(RULES).forEach(function(k){
-    var el = d.querySelector(RULES[k].el);
-    el.addEventListener('input', function(){ setErr(k, false); });
-    el.addEventListener('blur', function(){
-      if(el.value.trim() !== '') setErr(k, !RULES[k].test(el.value));
+  /* ── LUẬT PHÂN HẠNG (VIII + VII của brief — suy tất định, không đoán) ──
+     MEMBER            : sinh viên/người trẻ  + Học AI / portfolio / internship
+     PRO               : professional / freelancer / trainer + project / thu nhập / thương hiệu
+     STRATEGIC PARTNER : Founder/CEO/quản lý + doanh thu / vận hành / sản phẩm / hợp tác
+     Mặc định khi tín hiệu lẫn lộn: PRO (mức phổ biến nhất, không phóng đại tier). */
+  function routeLeadTier(q2, q3, q1){
+    var s = (q2 + ' | ' + q3 + ' | ' + q1).toLowerCase();
+
+    var isExec = /founder|chủ doanh nghiệp|ceo|quản lý/.test(q2.toLowerCase());
+    var isYoung = /sinh viên|mới đi làm/.test(q2.toLowerCase());
+    var isProP  = /freelancer|trainer|consultant|chuyên viên|người đi làm/.test(q2.toLowerCase());
+
+    var bizGoal = /doanh thu|bán hàng|vận hành|năng suất|sản phẩm|giải pháp ai|network|khách hàng|partnership/.test(q3.toLowerCase());
+    var proGoal = /project|thu nhập|thương hiệu|portfolio|việc làm|internship/.test(q3.toLowerCase());
+
+    if(isExec)   return { tier:'STRATEGIC PARTNER', reason:'Vai trò lãnh đạo/chủ doanh nghiệp + mục tiêu kinh doanh.' };
+    if(isYoung && /học ai|portfolio|internship|việc làm/.test(s))
+                 return { tier:'MEMBER',  reason:'Sinh viên/người mới + mục tiêu học & portfolio.' };
+    if(isProP || proGoal)
+                 return { tier:'PRO',     reason:'Chuyên môn tự do/đi làm + mục tiêu project & thu nhập.' };
+    if(bizGoal)  return { tier:'STRATEGIC PARTNER', reason:'Mục tiêu vận hành/kinh doanh cấp tổ chức.' };
+    return { tier:'PRO', reason:'Tín hiệu lẫn lộn — xếp PRO để tư vấn, nâng hạng sau khi phỏng vấn.' };
+  }
+
+  function setQErr(qid, on, msg){
+    /* qid là 'q1'..'q6' — id phần tử là 'q-q1' và 'err-q1' (KHÔNG phải 'q-1') */
+    var q = d.getElementById('q-'+qid);
+    var err = d.getElementById('err-'+qid);
+    if(!q || !err) return;
+    q.classList.toggle('has-err', !!on);
+    err.textContent = on ? (msg || '') : '';
+  }
+  function setFieldErr(key, on, msg){
+    var f = d.getElementById('f-'+key);
+    var err = d.getElementById('err-'+key);
+    var el = d.getElementById(key);
+    if(!f || !err) return;
+    f.classList.toggle('has-err', !!on);
+    err.textContent = on ? (msg || '') : '';
+    if(el){ if(on) el.setAttribute('aria-invalid','true'); else el.removeAttribute('aria-invalid'); }
+  }
+
+  /* ── GIỚI HẠN 2 LỰA CHỌN Ở CÂU 4 ──
+     Khi chạm trần: KHÔNG chặn cứng bằng cách undo (gây "checkbox tự bật tắt" khó hiểu).
+     Thay vào đó: bỏ tick ô vừa chọn thứ 3 + báo bằng CHỮ; các ô CHƯA chọn mờ đi
+     (tín hiệu phi-màu: opacity) để người dùng thấy ngay còn bao nhiêu lượt. */
+  var q4Box  = d.getElementById('q4Opts');
+  var q4Hint = d.getElementById('q4Hint');
+  var Q4_MAX = 2;
+  function syncQ4(){
+    var sel = pickedAll('q4');
+    if(q4Box) q4Box.classList.toggle('is-over', sel.length >= Q4_MAX);
+    if(q4Hint){
+      q4Hint.textContent = sel.length >= Q4_MAX
+        ? 'Đã chọn tối đa 2 — bỏ chọn một ô để đổi'
+        : 'Chọn tối đa 2 (còn ' + (Q4_MAX - sel.length) + ')';
+    }
+    if(sel.length) setQErr('q4', false);
+  }
+  if(q4Box){
+    [].forEach.call(q4Box.querySelectorAll('input[name="q4"]'), function(inp){
+      inp.addEventListener('change', function(){
+        var sel = pickedAll('q4');
+        if(sel.length > Q4_MAX){
+          inp.checked = false; /* undo ô vừa chọn */
+          setQErr('q4', true, 'Chỉ chọn tối đa 2 mục. Bạn bỏ chọn một ô rồi chọn ô khác.');
+          return;
+        }
+        syncQ4();
+      });
+    });
+    syncQ4();
+  }
+  /* các câu chọn 1: xoá lỗi ngay khi đổi */
+  CHOICE_Q.concat(['q4']).forEach(function(name){
+    [].forEach.call(form.querySelectorAll('input[name="'+name+'"]'), function(inp){
+      inp.addEventListener('change', function(){ setQErr(name, false); });
+    });
+  });
+
+  /* câu 6 — 3 ô liên hệ */
+  var CONTACT = {
+    name : { test:function(v){ return v.trim().length >= 2; },
+             msg:'Bạn nhập họ tên để chúng tôi biết đang liên hệ với ai.' },
+    phone: { test:function(v){ return /^[0-9+()\s.\-]{8,}$/.test(v.trim()); },
+             msg:'Số điện thoại/Zalo chưa hợp lệ. Ví dụ: 0901 234 567' },
+    email: { test:function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); },
+             msg:'Email chưa đúng định dạng. Ví dụ: ten@congty.vn' }
+  };
+  Object.keys(CONTACT).forEach(function(k){
+    var el = d.getElementById(k);
+    if(!el) return;
+    el.addEventListener('input',  function(){ setFieldErr(k, false); });
+    el.addEventListener('change', function(){ setFieldErr(k, false); });
+    el.addEventListener('blur',   function(){
+      if(el.value.trim() !== '') setFieldErr(k, !CONTACT[k].test(el.value), CONTACT[k].msg);
     });
   });
 
@@ -2363,21 +2442,41 @@
     e.preventDefault();
     failBox.classList.remove('on');
 
-    /* empty + error: kiểm hết rồi mới báo, không dừng ở lỗi đầu tiên */
-    var bad = [];
-    Object.keys(RULES).forEach(function(k){
-      var el = d.querySelector(RULES[k].el);
-      var ok = RULES[k].test(el.value);
-      setErr(k, !ok);
-      if(!ok) bad.push(k);
+    var badFirst = null;
+
+    /* 5 câu lựa chọn — kiểm hết rồi mới báo (name là 'q1'..'q5' = id 'q-'+name) */
+    CHOICE_Q.forEach(function(name){
+      var v = picked(name);
+      var ok = v !== '';
+      setQErr(name, !ok, 'Bạn chọn một mục để chúng tôi chuẩn bị đúng nội dung.');
+      if(!ok && !badFirst) badFirst = form.querySelector('input[name="'+name+'"]');
+    });
+    /* câu 4: 1..2 lựa chọn */
+    var q4 = pickedAll('q4');
+    if(q4.length === 0){
+      setQErr('q4', true, 'Bạn chọn ít nhất 1 mục (tối đa 2).');
+      if(!badFirst) badFirst = form.querySelector('input[name="q4"]');
+    } else if(q4.length > Q4_MAX){
+      setQErr('q4', true, 'Chỉ chọn tối đa 2 mục.');
+      if(!badFirst) badFirst = form.querySelector('input[name="q4"]');
+    } else {
+      setQErr('q4', false);
+    }
+    /* câu 6 */
+    Object.keys(CONTACT).forEach(function(k){
+      var el = d.getElementById(k);
+      var ok = el && CONTACT[k].test(el.value);
+      setFieldErr(k, !ok, CONTACT[k].msg);
+      if(!ok && !badFirst) badFirst = el;
     });
 
-    if(bad.length){
-      /* focus vào ô sai ĐẦU TIÊN — bàn phím và screen reader phải tới được */
-      var first = d.querySelector(RULES[bad[0]].el);
-      first.focus();
+    if(badFirst){
+      badFirst.focus();
       return;
     }
+
+    var q1 = picked('q1'), q2 = picked('q2'), q3 = picked('q3'), q5 = picked('q5');
+    var tier = routeLeadTier(q2, q3, q1);
 
     /* loading */
     btn.disabled = true;                    /* disabled */
@@ -2385,26 +2484,24 @@
     btn.querySelector('.submit__t').textContent = 'Đang gửi đăng ký…';
     form.setAttribute('aria-busy','true');
 
-    var lv = d.getElementById('level'), wt = d.getElementById('want');
-    sendLead({
+    (window.gemSendLead ? window.gemSendLead({
       full_name: d.getElementById('name').value.trim(),
-      email: d.getElementById('email').value.trim(),
-      phone: d.getElementById('phone').value.trim(),
-      company: d.getElementById('company').value.trim(),
-      job_title: d.getElementById('role').value,
-      aiLevel: lv.value ? lv.options[lv.selectedIndex].text : '',
-      mostInterested: wt.options[wt.selectedIndex] ? wt.options[wt.selectedIndex].text : '',
-      program: 'claude_workshop',
-      intent: 'Workshop Claude online 90 phút — 30/10/2026'
-    }, 'online').then(function(){
+      phone:     d.getElementById('phone').value.trim(),
+      email:     d.getElementById('email').value.trim(),
+      program:   'claude_90min_free',
+      q1_interested: q1,
+      q2_persona:    q2,
+      q3_goal:       q3,
+      q4_support:    q4.join(' · '),
+      q5_timing:     q5,
+      leadTier:      tier.tier,
+      tierReason:    tier.reason
+    }, 'online') : Promise.reject(new Error('no-endpoint'))).then(function(){
       form.style.display = 'none';
       okBox.classList.add('on');
-      /* đưa tiêu điểm tới thông báo thành công — không để người dùng bàn phím bị mắc */
       okBox.setAttribute('tabindex','-1');
       okBox.focus();
     }).catch(function(error){
-      /* error: giữ nguyên dữ liệu đã nhập, cho phép gửi lại.
-         Token Turnstile là dùng-một-lần ⇒ làm mới ĐÚNG widget của form này. */
       if (window.gemTs) window.gemTs.reset('online');
       failBox.textContent = window.gemLeadErrorCopy
         ? window.gemLeadErrorCopy(error, 'đăng ký')
@@ -2412,250 +2509,13 @@
       failBox.classList.add('on');
       btn.disabled = false;
       btn.classList.remove('is-loading');
-      btn.querySelector('.submit__t').textContent = 'Đăng ký tham gia';
+      btn.querySelector('.submit__t').textContent = 'Nhận tư vấn chương trình phù hợp';
       form.removeAttribute('aria-busy');
     });
   });
 })();
 </script>
 
-<script>
-/* ══════════════════════════════════════════════════════════════════════════
-   HAI ĐƯỜNG THAM GIA — chuyển form + cổng thời gian + form ứng tuyển offline
-   Nguồn mốc thời gian: docs/GO4AI-WORK-LAB-CAMPAIGN-2026-09-14.md §4.1
-   ⛔ Mốc ngày nằm ở ĐÚNG MỘT chỗ. Không rải ngày khắp markup — sửa một nơi.
-   ══════════════════════════════════════════════════════════════════════════ */
-(function(){
-  var d = document;
-
-  /* ── MỐC THỜI GIAN (giờ VN = UTC+7) ─────────────────────────────────────
-     (2026-09-24: dời sang 30/10 — ngày hiển thị khớp gemglobal_event_claude())
-     Online:  Thứ Sáu 30/10/2026, 20:00 → 21:30 (90 phút)
-     Offline mở ứng tuyển: 21:30 ngày 30/10 (ngay sau buổi online)
-     Hạn ứng tuyển + ngày Work Lab: CHƯA CHỐT ⇒ offlineClose = null (không tự đóng).
-     Khi chốt: đặt offlineClose + sửa chữ "Hạn ứng tuyển" và "lịch công bố" trong markup.
-     Dạng chuỗi có offset +07:00 để KHÔNG phụ thuộc múi giờ máy người xem. */
-  var T = {
-    offlineOpen : new Date('2026-10-30T21:30:00+07:00'),
-    offlineClose: null
-  };
-
-  /* Cho phép ép trạng thái khi QA/thử: ?gate=before|open|closed */
-  var forced = (location.search.match(/[?&]gate=(before|open|closed)/) || [])[1] || null;
-  function gateState(){
-    if(forced) return forced;
-    var now = new Date();
-    if(now < T.offlineOpen)  return 'before';
-    if(T.offlineClose && now > T.offlineClose) return 'closed';
-    return 'open';
-  }
-
-  /* ── ① CỔNG THỜI GIAN: chỉ MỘT khối .gate mang .on ── */
-  var st = gateState();
-  var gates = {
-    before: d.getElementById('offBefore'),
-    open  : d.getElementById('offOpen'),
-    closed: d.getElementById('offClosed')
-  };
-  Object.keys(gates).forEach(function(k){
-    if(gates[k]) gates[k].classList.toggle('on', k === st);
-  });
-
-  /* Nhãn trên thẻ offline phải nói ĐÚNG trạng thái — không hứa "đang mở" khi chưa mở */
-  var offTag = d.getElementById('offTag');
-  var TAG = {
-    before: '● Mở sau buổi online',
-    open  : '● Đang nhận ứng tuyển',
-    closed: '● Đã đóng ứng tuyển'
-  };
-  if(offTag){
-    offTag.innerHTML = '<b>' + TAG[st].slice(0,1) + '</b>' + TAG[st].slice(1);
-    if(st !== 'open') offTag.classList.add('path__tag--soon');
-    else offTag.classList.remove('path__tag--soon');
-  }
-
-  /* ── ② CHUYỂN ĐƯỜNG: chọn thẻ ⇒ hiện form tương ứng ── */
-  var cards = d.querySelectorAll('.path');
-  var panes = { online: d.getElementById('form-online'), offline: d.getElementById('form-offline') };
-
-  function selectPath(which, moveFocus){
-    [].forEach.call(cards, function(c){
-      c.setAttribute('aria-pressed', c.getAttribute('data-path') === which ? 'true' : 'false');
-    });
-    Object.keys(panes).forEach(function(k){
-      if(panes[k]) panes[k].classList.toggle('on', k === which);
-    });
-    /* Đổi đường: chỉ làm mới xác thực khi đường mới CHƯA có token dùng được.
-       Reset vô điều kiện sẽ xoá một token còn hạn và bắt người dùng chờ thêm một lượt
-       giải challenge — đúng lúc họ vừa bấm chọn đường và chuẩn bị gửi. */
-    if(window.gemTs && (which === 'online' || which === 'offline') && !window.gemTs.token(which)){
-      window.gemTs.reset(which);
-    }
-    /* ⛔ brain/02 §13: trạng thái không chỉ truyền đạt bằng MÀU.
-       aria-pressed + đổi form hiển thị là hai tín hiệu phi-màu. */
-    if(moveFocus && panes[which]){
-      var first = panes[which].querySelector('input,select,textarea');
-      if(first) first.focus();
-    }
-  }
-
-  [].forEach.call(cards, function(c){
-    c.addEventListener('click', function(){
-      selectPath(c.getAttribute('data-path'), false);
-    });
-    /* hỗ trợ bàn phím trên thẻ dạng button là mặc định của trình duyệt,
-       nhưng Enter/Space phải KHÔNG cuộn trang — button đã lo, không cần chặn thêm */
-  });
-
-  /* Nếu offline CHƯA mở: bấm thẻ offline vẫn xem được thông tin (hạn, quy trình)
-     nhưng KHÔNG cho gửi. Đây là "disabled" của brain/02 §12 — phải NÓI VÌ SAO.
-     ⛔⛔ LỖI THẬT ĐÃ ĐO (diag-gate.mjs): bản đầu chỉ khoá NÚT GỬI, còn 5 trường
-     vẫn nhập được ⇒ người dùng điền cả hồ sơ rồi mới biết không gửi được.
-     Đo được ở cả 3 cổng: interactive=5 · disabledAttr=0. Sửa: khi khoá thì
-     VÔ HIỆU HOÁ toàn bộ trường và ẨN form, chỉ để lại khối giải thích. */
-  var offForm = d.getElementById('formOff');
-  var offBtn  = d.getElementById('submitOff');
-  function syncOffDisabled(){
-    if(!offForm || !offBtn) return;
-    var locked = (st !== 'open');
-
-    /* vô hiệu hoá MỌI trường — không để người ta điền rồi mất */
-    [].forEach.call(offForm.querySelectorAll('input,select,textarea'), function(el){
-      el.disabled = locked;
-      if(locked) el.setAttribute('tabindex','-1');
-      else el.removeAttribute('tabindex');
-    });
-
-    /* ẩn hẳn form khi khoá: khối .gate bên trái đã giải thích lý do rồi.
-       Giữ form trống bên cạnh chỉ tạo cảm giác "điền được" — sai. */
-    offForm.style.display = locked ? 'none' : '';
-    offForm.setAttribute('aria-hidden', locked ? 'true' : 'false');
-
-    offBtn.disabled = locked;
-    offForm.setAttribute('aria-disabled', locked ? 'true' : 'false');
-    var t = offBtn.querySelector('.submit__t');
-    if(t){
-      t.textContent = locked
-        ? (st === 'before' ? 'Chưa mở — xem thông tin bên cạnh'
-                           : 'Đã đóng ứng tuyển')
-        : 'Gửi hồ sơ ứng tuyển';
-    }
-    /* disabled phải nói được MỞ KHOÁ BẰNG CÁCH NÀO */
-    offBtn.setAttribute('title', locked
-      ? (st === 'before' ? 'Mở sau buổi online ngày 30/10/2026'
-                         : 'Đợt Work Lab này đã đóng nhận hồ sơ')
-      : '');
-  }
-
-  /* ── ③ FORM OFFLINE — cùng hợp đồng 6 trạng thái như form online ── */
-  if(offForm){
-    var okOff   = d.getElementById('formOffOk');
-    var failOff = d.getElementById('formOffFail');
-
-    var R2 = {
-      ona : {el:'#ona',  f:'#f-ona',
-             test:function(v){ return v.trim().length >= 2; },
-             msg:'Bạn nhập họ tên để chúng tôi biết đang xét hồ sơ của ai.'},
-      oem : {el:'#oem',  f:'#f-oem',
-             test:function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); },
-             msg:'Email chưa đúng định dạng. Ví dụ: ten@congty.vn'},
-      ocom: {el:'#ocom', f:'#f-ocom',
-             test:function(v){ return v.trim().length >= 2; },
-             msg:'Bạn nhập tên doanh nghiệp.'},
-      task: {el:'#task', f:'#f-task',
-             /* ⛔ Ngưỡng 40 ký tự là CHỦ Ý: điều kiện ứng tuyển là "một việc lặp lại
-                CỤ THỂ" (doc §579). "báo cáo" không phải một việc tả được. */
-             test:function(v){ return v.trim().length >= 40; },
-             msg:'Bạn mô tả cụ thể hơn một chút — việc gì, mất bao lâu, dữ liệu lấy từ đâu. Khoảng 2 câu.'},
-      freq: {el:'#freq', f:'#f-freq',
-             test:function(v){ return v.trim() !== ''; },
-             msg:'Bạn chọn tần suất để chúng tôi biết mức độ lặp lại.'}
-    };
-
-    function setErr2(key, on){
-      var r = R2[key];
-      var field = d.querySelector(r.f);
-      var err = d.getElementById('err-' + key);
-      if(on){
-        field.classList.add('has-err');
-        err.textContent = r.msg;
-        d.querySelector(r.el).setAttribute('aria-invalid','true');
-      } else {
-        field.classList.remove('has-err');
-        err.textContent = '';
-        d.querySelector(r.el).removeAttribute('aria-invalid');
-      }
-    }
-
-    Object.keys(R2).forEach(function(k){
-      var el = d.querySelector(R2[k].el);
-      el.addEventListener('input',  function(){ setErr2(k, false); });
-      el.addEventListener('change', function(){ setErr2(k, false); });
-      el.addEventListener('blur',   function(){
-        if(el.value.trim() !== '') setErr2(k, !R2[k].test(el.value));
-      });
-    });
-
-    offForm.addEventListener('submit', function(e){
-      e.preventDefault();
-      failOff.classList.remove('on');
-
-      /* Nếu cổng đang khoá: không xử lý, chỉ nhắc lý do */
-      if(st !== 'open'){ syncOffDisabled(); return; }
-
-      var bad = [];
-      Object.keys(R2).forEach(function(k){
-        var ok = R2[k].test(d.querySelector(R2[k].el).value);
-        setErr2(k, !ok);
-        if(!ok) bad.push(k);
-      });
-
-      if(bad.length){
-        var first = d.querySelector(R2[bad[0]].el);
-        first.focus();
-        return;
-      }
-
-      offBtn.disabled = true;
-      offBtn.classList.add('is-loading');
-      offBtn.querySelector('.submit__t').textContent = 'Đang gửi hồ sơ…';
-      offForm.setAttribute('aria-busy','true');
-
-      var fq = d.getElementById('freq');
-      (window.gemSendLead ? window.gemSendLead({
-        full_name: d.getElementById('ona').value.trim(),
-        email: d.getElementById('oem').value.trim(),
-        company: d.getElementById('ocom').value.trim(),
-        program: 'ai_work_lab',
-        intent: 'AI Work Lab offline — sau workshop 30/10/2026',
-        message: 'Việc lặp lại muốn giải: ' + d.getElementById('task').value.trim() +
-                 '\nTần suất: ' + (fq.value ? fq.options[fq.selectedIndex].text : '')
-      }, 'offline') : Promise.reject()).then(function(){
-        offForm.style.display = 'none';
-        okOff.classList.add('on');
-        okOff.setAttribute('tabindex','-1');
-        okOff.focus();
-      }).catch(function(error){
-        /* Token dùng-một-lần ⇒ làm mới ĐÚNG widget của hồ sơ offline. */
-        if (window.gemTs) window.gemTs.reset('offline');
-        failOff.textContent = window.gemLeadErrorCopy
-          ? window.gemLeadErrorCopy(error, 'hồ sơ', 'đăng ký')
-          : 'Chưa gửi được hồ sơ. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
-        failOff.classList.add('on');
-        offBtn.disabled = false;
-        offBtn.classList.remove('is-loading');
-        offBtn.querySelector('.submit__t').textContent = 'Gửi lại hồ sơ';
-        offForm.removeAttribute('aria-busy');
-      });
-    });
-  }
-
-  syncOffDisabled();
-
-  /* Cho QA đọc được trạng thái đã chọn mà không phải đoán */
-  d.documentElement.setAttribute('data-gate', st);
-})();
-</script>
 
 </body>
 </html>

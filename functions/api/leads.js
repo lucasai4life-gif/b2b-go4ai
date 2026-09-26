@@ -116,7 +116,13 @@ export async function onRequestPost(context) {
     const allowedExtra = [
       'companySize', 'interest', 'problem', 'privacyConsent',
       'aiLevel', 'mostInterested', 'intent', 'job_title',
-      'program', 'message', 'full_name'
+      'program', 'message', 'full_name',
+      // ── Form 6 câu của landing 90 phút (chốt 2026-09-26) ──────────────
+      // Không có trường nào là văn bản tự do do khách viết: cả 5 câu đầu là
+      // lựa chọn có cấu trúc, câu 6 là 3 ô liên hệ. Nhờ vậy phân hạng dưới
+      // đây là suy diễn tất định từ lựa chọn, KHÔNG phải đoán từ văn bản.
+      'q1_interested', 'q2_persona', 'q3_goal', 'q4_support', 'q5_timing',
+      'leadTier', 'tierReason'
     ];
     for (const k of allowedExtra) {
       if (body[k] !== undefined && body[k] !== null && body[k] !== '') {
@@ -523,20 +529,39 @@ function buildTelegramMessage(data) {
   }
 
   if (leadType === 'claude_workshop_registration') {
+    /* ── PHÂN HẠNG TỰ ĐỘNG (chốt 2026-09-26) ─────────────────────────────
+       Tier đến từ routeLeadTier() phía client — suy TẤT ĐỊNH từ 5 câu chọn,
+       không đọc văn bản tự do (form không có ô tự do nào).
+       Tier là thông tin NỘI BỘ: dùng để chọn brochure + thứ tự follow-up.
+       ⛔ KHÔNG hiển thị giá cho khách ở landing; ở thông báo nội bộ thì được,
+       vì người nhận là đội GO4AI đang phân loại lead. */
+    const tierMap = {
+      'MEMBER': '🟢 MEMBER — 10M (sinh viên / người trẻ)',
+      'PRO': '🔵 PRO — 30M (professional / freelancer / trainer)',
+      'STRATEGIC PARTNER': '🔴 STRATEGIC PARTNER — 100M + cơ hội chiến lược',
+    };
+    const tier = payloadExtra.leadTier || '';
+    const tierLine = tier
+      ? `\n🎯 <b>PHÂN HẠNG TỰ ĐỘNG</b>: ${esc(tierMap[tier] || tier)}`
+      : '';
+
     return [
-      '🔵 <b>NEW CLAUDE WORKSHOP REGISTRATION</b>',
-      `\nNguồn: Claude Landing Page (/claude/)`,
+      '🔵 <b>NEW CLAUDE 90-MIN REGISTRATION</b>',
+      `\nNguồn: Landing 90 phút (/claude/)`,
       '\n──────────────',
       line('Họ tên', name),
+      line('Điện thoại / Zalo', phone),
       line('Email', email),
-      line('Điện thoại', phone),
-      line('Doanh nghiệp', company),
-      line('Vai trò', role || payloadExtra.job_title),
-      line('Mức độ dùng AI', payloadExtra.aiLevel),
-      line('Muốn xem nhất', payloadExtra.mostInterested),
+      '\n──────────────',
+      '\n<b>6 CÂU TRẢ LỜI</b>',
+      line('1 · Quan tâm nhất', payloadExtra.q1_interested),
+      line('2 · Hiện tại là', payloadExtra.q2_persona),
+      line('3 · Kết quả 12 tháng', payloadExtra.q3_goal),
+      line('4 · Muốn hỗ trợ', payloadExtra.q4_support),
+      line('5 · Bắt đầu', payloadExtra.q5_timing),
       line('Chương trình', payloadExtra.program),
-      line('Mục tiêu', payloadExtra.intent),
-      line('Ghi chú / Việc cụ thể', payloadExtra.message),
+      tierLine,
+      payloadExtra.tierReason ? `\n<i>Vì: ${esc(payloadExtra.tierReason)}</i>` : '',
       `\nTrang: ${esc(sourcePage || '/claude/')}`,
       `\n──────────────`,
       `\n<i>${dt}</i>`,
