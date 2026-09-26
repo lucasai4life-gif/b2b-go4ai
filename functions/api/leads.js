@@ -132,7 +132,7 @@ export async function onRequestPost(context) {
       });
 
       const tgRes = await fetch(
-        `https://api.telegram.org/bot\${botToken}/sendMessage`,
+        `https://api.telegram.org/bot${botToken}/sendMessage`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -198,7 +198,7 @@ function esc(val) {
 
 function line(label, val) {
   if (!val || String(val).trim() === '') return '';
-  return `\n<b>\${esc(label)}:</b> \${esc(val)}`;
+  return `\n<b>${esc(label)}:</b> ${esc(val)}`;
 }
 
 function buildTelegramMessage(data) {
@@ -226,7 +226,7 @@ function buildTelegramMessage(data) {
       line('Nhu cầu', interestList),
       line('Bài toán', payloadExtra.problem),
       `\n──────────────`,
-      `\n<i>\${dt}</i>`,
+      `\n<i>${dt}</i>`,
     ].filter(Boolean).join('');
   }
 
@@ -244,10 +244,10 @@ function buildTelegramMessage(data) {
       line('Muốn xem nhất', payloadExtra.mostInterested),
       `\nTrang: /claude/`,
       `\n──────────────`,
-      `\n<i>\${dt}</i>`,
+      `\n<i>${dt}</i>`,
     ].filter(Boolean).join('');
   }
 
   // Generic fallback
-  return `📋 <b>NEW LEAD</b>\nType: \${esc(leadType)}\nSource: \${esc(source)}\nEmail: \${esc(email)}\n<i>\${dt}</i>`;
+  return `📋 <b>NEW LEAD</b>\nType: ${esc(leadType)}\nSource: ${esc(source)}\nEmail: ${esc(email)}\n<i>${dt}</i>`;
 }
