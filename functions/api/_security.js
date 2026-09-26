@@ -366,9 +366,15 @@ export function evaluateSpam({ payload, turnstileResult }) {
 
   // Check 3: Email domain inspection
   const emailDomain = (payload.email || '').split('@')[1]?.toLowerCase();
-  if (emailDomain && DISPOSABLE_EMAIL_DOMAINS.has(emailDomain)) {
-    score += 50;
-    reasons.push('disposable_email');
+  if (emailDomain) {
+    if (DISPOSABLE_EMAIL_DOMAINS.has(emailDomain)) {
+      score += 50;
+      reasons.push('disposable_email');
+    }
+    if (SPAM_TLD_REGEX.test(emailDomain)) {
+      score += 75;
+      reasons.push('spam_tld_email');
+    }
   }
 
   // Check 4: Character repetition / meaningless gibberish

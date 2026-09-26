@@ -17,8 +17,7 @@
          - 0.80 -> 1.00: Hold final converged composition.
       3. Reverse scroll: Reverses smoothly frame-for-frame.
       4. Text & numbers: Always sharp, opaque, no blur, high contrast.
-   B. TABLET (768–991px) — legacy vertical active sequence (auto-loop, unchanged).
-   C. MOBILE (<= 767px) — scroll-driven evidence reveal, NO auto-loop:
+   B. MOBILE / TABLET (<= 991px) — scroll-driven evidence reveal, NO auto-loop:
       story order is question -> 3.000+ -> 14+ -> 10+ -> ~70% (CSS `order`, DOM
       untouched). Each circle reveals once when it crosses ~70% of the viewport
       height, then stays visible. Metrics 3.000+ / 14+ / 10+ count up exactly
@@ -26,6 +25,10 @@
       IntersectionObserver + CSS classes — deliberately independent of GSAP so
       the mobile experience survives a GSAP load failure. If anything is
       missing, no CSS hides anything and the section stays static & visible.
+   991px is the real breakpoint: from there down the section is already a
+   single vertical column of 5 full-width circles (see the page's
+   "Mobile Evidence Layout" block), so the whole <= 991px range shares the
+   new experience and no auto-loop remains anywhere.
    ============================================================================ */
 (function () {
   'use strict';
@@ -355,96 +358,11 @@
     };
   });
 
-  /* Tablet Viewport (768–991px) — VERTICAL ACTIVE SEQUENCE
-     Ở dải này bố cục vẫn là lưới 2×2 + đĩa accent ở giữa, nên giữ nguyên
-     trải nghiệm cũ: 5 vòng lần lượt "active" rồi loop:
-       1 → 2 → 3 → 4 → 5 → (nghỉ ngắn) → 1 …
-     Mỗi thời điểm CHỈ 1 vòng active. Toàn bộ phần "da" của trạng thái active
-     (border emerald sáng, glow, scale 1.03, số nổi hơn, transition 260ms) nằm
-     trong CSS của `assets/css/go4ai.css` — JS chỉ bật/tắt class `.is--active`,
-     nên không có inline style nào tranh chấp với các theme `!important` của
-     trang.
-
-     Dải ≤767px KHÔNG vào nhánh này nữa — mobile dùng scroll-driven reveal ở
-     khối phía trên. Hai dải loại trừ nhau nên không chồng lấn.
-
-     Vì sao KHÔNG dùng GSAP cho transform ở nhánh này: theme gốc của từng vòng
-     (`border` / `box-shadow` / `background` trong <style> của trang) đều
-     `!important`, mà inline style do GSAP ghi thì KHÔNG thắng được `!important`
-     của stylesheet. Class + CSS là cách duy nhất ghi đè an toàn.
-
-     Motion chỉ chạy khi section Bằng chứng nằm trong viewport (onToggle).
-     Desktop/laptop KHÔNG bị ảnh hưởng: nhánh này chỉ áp dụng ≤991px. */
-  mm.add('(min-width: 768px) and (max-width: 991px) and (prefers-reduced-motion: no-preference)', function () {
-    root.classList.remove('motion-impact');
-
-    var section = document.querySelector('.impact-section');
-    var seq = [item1, item2, item3, item4, accent].filter(Boolean);
-
-    seq.forEach(function (el) {
-      el.style.pointerEvents = '';
-      /* Bỏ transform/opacity inline còn sót lại (do nhánh desktop ghi khi
-         resize desktop → mobile) để CSS `.is--active` điều khiển được
-         transform. Base CSS của go4ai.css đã lo scale(1) cho accent nên
-         clearProps không làm vòng thứ 5 biến mất. */
-      gsap.set(el, { clearProps: 'transform,opacity' });
-    });
-    gsap.set(labels, { opacity: 1, filter: 'none' });
-    if (accentText) gsap.set(accentText, { opacity: 1 });
-
-    /* Nhịp: mỗi vòng active 1500ms (spec 1200–1600ms), transition do CSS lo
-       (260ms, spec 220–320ms). Vòng cuối giữ thêm 400ms rồi mới loop về vòng
-       đầu (spec 300–500ms). */
-    var STEP = 1500;
-    var TAIL = 400;
-
-    var idx = 0;
-    var timer = null;
-
-    function paint(active) {
-      for (var k = 0; k < seq.length; k++) {
-        seq[k].classList.toggle('is--active', k === active);
-      }
-    }
-
-    function tick() {
-      paint(idx);
-      var hold = STEP + (idx === seq.length - 1 ? TAIL : 0);
-      idx = (idx + 1) % seq.length;
-      timer = setTimeout(tick, hold);
-    }
-
-    function startSeq() { if (!timer) tick(); }
-    function stopSeq() { if (timer) { clearTimeout(timer); timer = null; } }
-
-    var st = ScrollTrigger.create({
-      trigger: section || list,
-      start: 'top bottom',
-      end: 'bottom top',
-      onToggle: function (self) {
-        if (self.isActive) { startSeq(); } else { stopSeq(); }
-      }
-    });
-
-    // Section đã nằm trong viewport ngay lúc khởi tạo (reload giữa trang).
-    if (st.isActive) startSeq();
-
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
-    }
-
-    return function () {
-      stopSeq();
-      if (st) st.kill();
-      idx = 0;
-      seq.forEach(function (el) {
-        el.classList.remove('is--active');
-        el.style.pointerEvents = '';
-      });
-      gsap.set(labels, { opacity: 1, filter: 'none' });
-      if (accentText) gsap.set(accentText, { opacity: 1 });
-    };
-  });
+  /* (Đã xoá nhánh "Tablet Viewport (768–991px) — VERTICAL ACTIVE SEQUENCE".
+     Auto-loop 5 vòng tròn không còn tồn tại ở bất kỳ breakpoint nào: toàn dải
+     ≤991px do nhánh scroll-driven reveal phía trên đảm nhiệm, nên section chỉ
+     còn đúng hai chế độ — desktop ≥992px (pin + converge, không đổi) và
+     ≤991px (reveal theo cuộn). */
 
   /* Prefers-reduced-motion: Instant 100% visibility, completely static */
   mm.add('(prefers-reduced-motion: reduce)', function () {

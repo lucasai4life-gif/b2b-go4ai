@@ -157,7 +157,36 @@ export async function onRequestPost(context) {
       });
     }
 
-    // ─── 6. CLOUDFLARE TURNSTILE SERVER-SIDE VERIFICATION ─────────────
+    // ─── 6. SPAM & MALICIOUS CONTENT PRE-CHECK ────────────────────────
+    // Reject explicit attacks (gambling, malicious links, script injection)
+    // BEFORE making external network calls to Cloudflare Turnstile.
+    const preSpamEval = evaluateSpam({
+      payload: { ...body, name, email, phone, company, role, ...payloadExtra },
+      turnstileResult: { success: true }, // isolate content evaluation
+    });
+
+    if (preSpamEval.isBlocked) {
+      recordIpFailure(clientIp);
+      logSecurityEvent({
+        action: 'spam_blocked',
+        clientIp,
+        leadType,
+        score: preSpamEval.score,
+        reasons: preSpamEval.reasons,
+        status: 400,
+      });
+
+      return new Response(JSON.stringify({
+        success: false,
+        code: 'SPAM_CONTENT_REJECTED',
+        error: 'Nội dung không hợp lệ hoặc chứa liên kết không được chấp nhận.'
+      }), {
+        status: 400,
+        headers,
+      });
+    }
+
+    // ─── 7. CLOUDFLARE TURNSTILE SERVER-SIDE VERIFICATION ─────────────
     const turnstileToken = body.turnstileToken || body['cf-turnstile-response'];
     const turnstileRes = await verifyTurnstile({
       token: turnstileToken,
@@ -178,6 +207,7 @@ export async function onRequestPost(context) {
 
       return new Response(JSON.stringify({
         success: false,
+        code: turnstileRes.reason === 'missing_token' ? 'TURNSTILE_REQUIRED' : 'TURNSTILE_FAILED',
         error: turnstileRes.error || 'Xác thực bảo mật không thành công. Vui lòng thử lại.'
       }), {
         status: 403,
@@ -185,31 +215,11 @@ export async function onRequestPost(context) {
       });
     }
 
-    // ─── 7. SPAM & MALICIOUS CONTENT SCORING ──────────────────────────
+    // ─── 8. FINAL SPAM SCORING ─────────────────────────────────────────
     const spamEval = evaluateSpam({
       payload: { ...body, name, email, phone, company, role, ...payloadExtra },
       turnstileResult: turnstileRes,
     });
-
-    if (spamEval.isBlocked) {
-      recordIpFailure(clientIp);
-      logSecurityEvent({
-        action: 'spam_blocked',
-        clientIp,
-        leadType,
-        score: spamEval.score,
-        reasons: spamEval.reasons,
-        status: 400,
-      });
-
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'Nội dung không hợp lệ hoặc chứa liên kết không được chấp nhận.'
-      }), {
-        status: 400,
-        headers,
-      });
-    }
 
     // ─── 8. DUPLICATE & REPLAY PROTECTION ─────────────────────────────
     const payloadHash = await computePayloadHash({
