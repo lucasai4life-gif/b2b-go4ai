@@ -34,14 +34,7 @@
   --acs-rail-left:    max(6px, calc((100vw - 85rem) / 2 - 46px));
 }
 
-/* ── 1. HEADER / NOTICE — DARK SYSTEM SYNC ──────────────────────────────── */
-.notice {
-  background-color: #030b09;
-  border-bottom: 1px solid rgba(52, 211, 153, 0.1);
-}
-.notice__inner { color: rgba(226, 240, 236, 0.62); }
-.notice__inner strong { color: #a7f3d0; }
-
+/* ── 1. HEADER — DARK SYSTEM SYNC ───────────────────────────────────────── */
 /* Header styles for ung-dung-thuc-te are handled in go4ai.css */
 
 

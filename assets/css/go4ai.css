@@ -346,22 +346,6 @@ dl, dd, dt { margin: 0; }
 .section--dark .link-arrow:hover, .section--green .link-arrow:hover { border-color: var(--white); }
 
 /* ------------------------------------------------------- 6. HEADER / NAV */
-.notice {
-  background-color: var(--black);
-  color: var(--gray-200);
-  font-size: var(--text-s);
-  letter-spacing: -0.01em;
-}
-.notice__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-8);
-  padding: 10px 0;
-  text-align: center;
-}
-.notice a { color: var(--green-300); border-bottom: 1px solid currentColor; }
 
 /* ==========================================================================
    SITE HEADER — COMPACT HIGH-TECH ENTERPRISE (CORE SHARED)
@@ -8580,7 +8564,7 @@ body.lucas-page {
   }
 }
 
-@media (max-width: 639px) {
+@media (max-width: 767px) {
   .go4ai-footer-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -8590,6 +8574,36 @@ body.lucas-page {
   }
   .go4ai-footer-container {
     padding-top: 2.5rem;
+  }
+  .go4ai-footer-col--brand {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    max-width: 320px !important;
+    width: 100% !important;
+  }
+  .go4ai-footer-logo-link {
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto 16px !important;
+  }
+  .go4ai-footer-logo-img {
+    margin: 0 auto !important;
+  }
+  .go4ai-footer-tagline {
+    text-align: center !important;
+    margin: 0 auto 20px !important;
+    max-width: 290px !important;
+  }
+  .go4ai-footer-social {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
   }
 }
 
