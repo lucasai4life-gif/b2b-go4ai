@@ -1405,13 +1405,11 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   gap: 7px;
   min-width: 0;
   padding: 20px 22px 22px;
-  border-radius: 16px;
-  background: #fff;
-  border: 1px solid rgba(8, 144, 108, 0.16);
-  box-shadow: 0 1px 2px rgba(6, 17, 14, 0.04);
-  transition:
-    border-color 0.5s var(--acs-ease),
-    box-shadow 0.5s var(--acs-ease);
+  border-radius: 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid rgba(8, 144, 108, 0.2);
+  transition: border-color 0.5s var(--acs-ease);
 }
 .jp-node__port {
   position: absolute;
@@ -1466,12 +1464,9 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.12em;
-  color: var(--gray-500);
+  color: var(--gray-600);
 }
-.jp-node.is--active {
-  border-color: rgba(8, 144, 108, 0.46);
-  box-shadow: 0 12px 28px rgba(6, 17, 14, 0.09);
-}
+.jp-node.is--active { border-top-color: var(--acs-emerald); }
 .jp-node.is--active .jp-node__idx { color: var(--acs-emerald); }
 .jp-node.is--active .jp-node__port {
   background: var(--acs-emerald);
@@ -1655,7 +1650,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.12em;
-  color: var(--gray-500);
+  color: var(--gray-600);
 }
 .cs-visual--design .cs-flow {
   display: flex;
@@ -1678,29 +1673,37 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.14em;
-  line-height: 1;
-  padding: 7px 11px;
-  border-radius: 7px;
+  line-height: 1.35;
+  padding: 0;
+  border-radius: 0;
   white-space: nowrap;
-  color: rgba(167, 243, 208, 0.8);
-  background: rgba(52, 211, 153, 0.06);
-  border: 1px solid rgba(52, 211, 153, 0.24);
-  transition:
-    background-color 0.45s var(--acs-ease),
-    border-color 0.45s var(--acs-ease),
-    color 0.45s var(--acs-ease),
-    box-shadow 0.45s var(--acs-ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(167, 243, 208, 0.75);
+  background: none;
+  border: 0;
+  transition: color 0.45s var(--acs-ease);
 }
-.cs-flowstep.is--on {
-  background: rgba(52, 211, 153, 0.2);
-  border-color: var(--acs-emerald-lt);
-  color: #fff;
-  box-shadow: 0 0 12px rgba(52, 211, 153, 0.32);
+/* node marker, same language as the module labels */
+.cs-flowstep::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  background: rgba(52, 211, 153, 0.4);
+  transition: background-color 0.45s var(--acs-ease), box-shadow 0.45s var(--acs-ease);
 }
-.cs-flowstep--qc.is--on { animation: csQcPulse 1.9s var(--acs-ease) infinite; }
+.cs-flowstep.is--on { color: #ffffff; }
+.cs-flowstep.is--on::before {
+  background: var(--acs-emerald-lt);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+}
+/* the QC gate is the only step that keeps a pulse — it is the human checkpoint */
+.cs-flowstep--qc.is--on::before { animation: csQcPulse 1.9s var(--acs-ease) infinite; }
 @keyframes csQcPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.44), 0 0 12px rgba(52, 211, 153, 0.3); }
-  55%      { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0), 0 0 12px rgba(52, 211, 153, 0.3); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55), 0 0 8px rgba(52, 211, 153, 0.6); }
+  55%      { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0), 0 0 8px rgba(52, 211, 153, 0.6); }
 }
 .cs-visual--architect { display: grid; place-items: center; }
 .cs-core {
@@ -1817,6 +1820,11 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
 .cs-stage--design    { --cs-mod-cols: 3; }
 .cs-stage--architect { --cs-mod-cols: 2; }
 
+/* Modules are SYSTEM NODES on the bus, not cards. The brief rules out the
+   screenshot's card layout and "excessive rectangular cards", so the panel
+   chrome is gone: what remains is a hairline top rule that the rail's stub
+   drops onto, plus the port dot as the node marker. Markup and content order
+   are untouched — only the chrome. */
 .cs-mod {
   position: relative;
   display: flex;
@@ -1824,25 +1832,20 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   gap: 10px;
   min-width: 0;
   padding: 22px 20px 20px;
-  border-radius: 16px;
-  background: #fff;
-  border: 1px solid rgba(8, 144, 108, 0.16);
-  transition:
-    border-color 0.5s var(--acs-ease),
-    box-shadow 0.5s var(--acs-ease),
-    background-color 0.5s var(--acs-ease);
+  border-radius: 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid rgba(8, 144, 108, 0.2);
+  transition: border-color 0.5s var(--acs-ease);
 }
 .cs-stage--design .cs-mod,
 .cs-stage--architect .cs-mod {
-  background: rgba(4, 22, 16, 0.66);
-  border-color: rgba(52, 211, 153, 0.18);
+  background: none;
+  border-top-color: rgba(52, 211, 153, 0.22);
 }
-.cs-mod.is--on { border-color: rgba(8, 144, 108, 0.5); box-shadow: 0 12px 30px rgba(6, 17, 14, 0.1); }
+.cs-mod.is--on { border-top-color: var(--acs-emerald); }
 .cs-stage--design .cs-mod.is--on,
-.cs-stage--architect .cs-mod.is--on {
-  border-color: rgba(52, 211, 153, 0.5);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
-}
+.cs-stage--architect .cs-mod.is--on { border-top-color: var(--acs-emerald-lt); }
 .cs-mod__port {
   position: absolute;
   left: 50%;
@@ -1885,26 +1888,47 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   background: var(--acs-emerald-lt);
   border-color: #a7f3d0;
 }
+/* the eyebrow is a mono system label, not a pill — pills read as card chrome */
 .cs-mod__eyebrow {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   line-height: 1.4;
-  padding: 5px 11px;
-  border-radius: 999px;
-  color: var(--gray-700);
-  background: #f4f8f6;
-  border: 1px solid rgba(8, 144, 108, 0.18);
+  padding: 0;
+  border-radius: 0;
+  color: var(--gray-600);
+  background: none;
+  border: 0;
   overflow-wrap: anywhere;
 }
+/* small square marker before the label — a node marker, echoing the port */
+.cs-mod__eyebrow::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  background: rgba(8, 144, 108, 0.42);
+  transition: background-color 0.45s var(--acs-ease);
+}
+.cs-mod.is--on .cs-mod__eyebrow { color: var(--acs-emerald-dk); }
+.cs-mod.is--on .cs-mod__eyebrow::before { background: var(--acs-emerald); }
 .cs-stage--design .cs-mod__eyebrow,
 .cs-stage--architect .cs-mod__eyebrow {
-  color: rgba(167, 243, 208, 0.82);
-  background: rgba(52, 211, 153, 0.07);
-  border-color: rgba(52, 211, 153, 0.2);
+  color: rgba(167, 243, 208, 0.75);
+  background: none;
+  border: 0;
 }
+.cs-stage--design .cs-mod__eyebrow::before,
+.cs-stage--architect .cs-mod__eyebrow::before { background: rgba(52, 211, 153, 0.4); }
+.cs-stage--design .cs-mod.is--on .cs-mod__eyebrow,
+.cs-stage--architect .cs-mod.is--on .cs-mod__eyebrow { color: #a7f3d0; }
+.cs-stage--design .cs-mod.is--on .cs-mod__eyebrow::before,
+.cs-stage--architect .cs-mod.is--on .cs-mod__eyebrow::before { background: var(--acs-emerald-lt); }
 .cs-mod__badge {
   align-self: flex-start;
   font-family: var(--font-mono);
@@ -2015,7 +2039,9 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   }
   .jp-map__packet { left: 50%; top: calc(var(--jp-p) * 100%); margin: -4px 0 0 -4px; }
   .jp-node { padding: 18px 18px 20px; }
-  .jp-node__port { left: 0; top: 24px; margin: -3.5px 0 0 -3.5px; }
+  /* the port sits on the node's top rule at every breakpoint; only the stub
+     direction changes (up to the bus on desktop, left to the rail on mobile) */
+  .jp-node__port { left: 0; top: -4px; margin: -3.5px 0 0 -3.5px; }
   .jp-node__port::before {
     left: auto;
     right: 100%;
@@ -2052,7 +2078,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   .cs-core__stem { display: none; }
   .cs-mods { margin-top: 20px; gap: 14px; }
   .cs-mod { padding: 20px 18px 18px; }
-  .cs-mod__port { left: 0; top: 26px; margin: -3.5px 0 0 -3.5px; }
+  .cs-mod__port { left: 0; top: -4px; margin: -3.5px 0 0 -3.5px; }
   .cs-mod__port::before {
     left: auto;
     right: 100%;
@@ -2083,8 +2109,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   .cs-stage--train .cs-mod { padding: 18px 16px 16px; gap: 9px; }
   .cs-stage--train .cs-mod__eyebrow {
     font-size: 0.5625rem;
-    letter-spacing: 0.06em;
-    padding: 4px 9px;
+    letter-spacing: 0.08em;
   }
   .cs-stage--train .cs-mod__badge {
     font-size: 0.5625rem;
@@ -2104,7 +2129,9 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   .cs-stage { --cs-p: 1; }
   .jp-journey .jp-map__packet,
   .cs-stage .cs-rail__packet { opacity: 0; }
-  .cs-flowstep--qc.is--on,
+  /* the QC pulse lives on the marker's ::before — targeting the element would
+     silently leave the loop running for exactly the users who asked it not to */
+  .cs-flowstep--qc.is--on::before,
   .cs-stage.is--running .cs-core__ring,
   .cs-stage.is--done .cs-core__ring { animation: none; }
 }
@@ -2115,3 +2142,4 @@ html.app-motion-fallback .cs-stage .cs-rail__packet { opacity: 0 !important; }
 html.app-motion-fallback .jp-node,
 html.app-motion-fallback .cs-mod { opacity: 1 !important; visibility: visible !important; }
 html.app-motion-fallback .cs-flowstep { opacity: 1 !important; visibility: visible !important; }
+html.app-motion-fallback .cs-flowstep--qc.is--on::before { animation: none !important; }
