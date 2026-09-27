@@ -140,7 +140,9 @@
     var list    = qs('.acs-rail__list', rail);
     var items   = qsa('.acs-rail__item', rail);
     var countEl = qs('.acs-rail__count', rail);
-    var cases   = qsa('.cs-case', library);
+    /* The rail indexes the three journey stages, not the case list — case
+       numbering was removed so cases can be added without renumbering. */
+    var cases   = qsa('.cs-stage', library);
     if (!items.length || !cases.length) return;
 
     var total = cases.length;
@@ -158,7 +160,10 @@
         it.setAttribute('aria-current', i === idx ? 'true' : 'false');
       });
 
-      if (countEl) countEl.textContent = 'CASE ' + pad(idx + 1) + ' / ' + pad(total);
+      if (countEl) {
+        var code = items[idx] ? items[idx].getAttribute('data-rail-code') : '';
+        countEl.textContent = code || ('STAGE ' + pad(idx + 1) + ' / ' + pad(total));
+      }
 
       var item = items[idx];
       if (item && list) {
@@ -410,18 +415,105 @@
   }
 
   /* ==========================================================================
-     F. CASE NUMBER PARALLAX — decorative system index
+     F. ENTERPRISE AI JOURNEY — MATURITY MAP + 3 STAGE SYSTEMS
+     --------------------------------------------------------------------------
+     Self-contained: no GSAP, no ScrollTrigger. Drives two progress variables
+     (`--jp-p`, `--cs-p`, both 0 -> 1) that the CSS turns into rail fill, data
+     packet travel and sequential module activation.
+
+     · starts when the system scrolls into view
+     · pauses when it leaves the viewport, resumes from where it stopped
+     · runs once, then holds a quiet idle state (QC pulse / core rings)
+     · `prefers-reduced-motion: reduce` -> never runs; initStatic() paints the
+       final state instead, and the CSS media query already pins --p to 1.
      ========================================================================== */
-  function initCaseIndexParallax(gsap) {
+  function initStages() {
+    var journey = qs('.jp-journey');
+    var stages  = qsa('.cs-stage');
+    if (!journey && !stages.length) return;
     if (reduce) return;
-    qsa('.cs-case').forEach(function (caseEl) {
-      var badge = qs('.cs-case__num-badge', caseEl);
-      if (!badge) return;
-      gsap.fromTo(badge, { y: 16 }, {
-        y: -24,
-        ease: 'none',
-        scrollTrigger: { trigger: caseEl, start: 'top bottom', end: 'bottom top', scrub: true }
-      });
+
+    /* A generic runner over one progress variable + N activation lists. */
+    function makeRunner(root, prop, lists, watch) {
+      var groups = lists.map(function (l) {
+        return { els: qsa(l.sel, root), cls: l.cls, at: -1 };
+      }).filter(function (g) { return g.els.length; });
+      if (!groups.length || !root) return null;
+
+      var DUR = 2600;
+      var st = { p: 0, p0: 0, raf: null, t0: 0, running: false, done: false };
+
+      function paint() {
+        root.style.setProperty(prop, String(st.p));
+        groups.forEach(function (g) {
+          var n = g.els.length;
+          var idx = clamp(Math.floor(st.p * n + 0.0001), 0, n - 1);
+          if (idx === g.at) return;
+          for (var i = g.at + 1; i <= idx; i++) g.els[i].classList.add(g.cls);
+          g.at = idx;
+        });
+      }
+
+      function frame(now) {
+        if (!st.t0) st.t0 = now;
+        var t = clamp((now - st.t0) / DUR, 0, 1);
+        st.p = st.p0 + (1 - st.p0) * (1 - Math.pow(1 - t, 2.2));
+        paint();
+        if (t < 1) { st.raf = requestAnimationFrame(frame); return; }
+        st.p = 1;
+        paint();
+        st.running = false;
+        st.done = true;
+        root.classList.remove('is--running');
+        root.classList.add('is--done');
+      }
+
+      function start() {
+        if (st.done || st.running) return;
+        st.running = true;
+        st.p0 = st.p;
+        st.t0 = 0;
+        root.classList.add('is--running');
+        st.raf = requestAnimationFrame(frame);
+      }
+
+      function pause() {
+        if (st.raf) cancelAnimationFrame(st.raf);
+        st.raf = null;
+        st.running = false;
+        if (!st.done) root.classList.remove('is--running');
+      }
+
+      if (watch && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) start();
+            else pause();
+          });
+        }, { threshold: 0, rootMargin: '-8% 0px -8% 0px' });
+        io.observe(watch);
+      } else {
+        start();
+      }
+
+      return { start: start, pause: pause };
+    }
+
+    /* journey maturity map: 01 TRAIN -> 02 DESIGN -> 03 ARCHITECT */
+    var map = journey ? qs('[data-jp-map]', journey) : null;
+    if (journey && map) {
+      makeRunner(journey, '--jp-p',
+        [{ sel: '[data-jp-node]', cls: 'is--active' }], map);
+    }
+
+    /* each stage: rail + sequential module activation */
+    stages.forEach(function (stage) {
+      var system = qs('.cs-stage__system', stage);
+      if (!system) return;
+      makeRunner(stage, '--cs-p', [
+        { sel: '[data-cs-mod]', cls: 'is--on' },
+        { sel: '.cs-flowstep', cls: 'is--on' }
+      ], system);
     });
   }
 
@@ -740,6 +832,20 @@
       qsa('.cs-sales-metric-card', caseEl).forEach(function (c) { c.classList.add('is--active'); });
     });
 
+    /* journey map + stage systems: fully drawn, every node live, packet parked */
+    qsa('.jp-journey').forEach(function (el) {
+      el.style.setProperty('--jp-p', '1');
+      el.classList.add('is--done');
+      qsa('[data-jp-node]', el).forEach(function (n) { n.classList.add('is--active'); });
+    });
+    qsa('.cs-stage').forEach(function (el) {
+      el.style.setProperty('--cs-p', '1');
+      el.classList.add('is--done');
+      qsa('[data-cs-mod], .cs-flowstep', el).forEach(function (n) {
+        n.classList.add('is--on');
+      });
+    });
+
     /* metrics must show their final values */
     qsa('[data-acs-count]').forEach(function (el) {
       var target = parseFloat(el.getAttribute('data-acs-count'));
@@ -757,6 +863,7 @@
       initVideoCards();
       initRail();
       initPipeline();
+      initStages();
     } catch (e) {
       /* never let a decoration break the page */
       if (window.console && console.warn) console.warn('[app-case-system] non-motion init:', e);
@@ -785,7 +892,6 @@
 
       initHeroBoot(gsap);
       initHeroParallax();
-      initCaseIndexParallax(gsap);
       initCaseReveal(gsap);
       initTimelineScrub(gsap, ST);
       initWorkflowFlow(gsap);

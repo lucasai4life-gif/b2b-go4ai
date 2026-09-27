@@ -466,6 +466,19 @@
 }
 .acs-rail__status { color: rgba(8, 144, 108, 0.8); }
 
+/* 17.0 The rail now indexes 3 stages, so `__count` carries a short code
+   ("TRAIN" / "DESIGN" / "ARCHITECT") instead of "CASE 01 / 07". In vertical
+   writing mode the code and the status read as one run-on sentence, so the
+   code gets its own tinted chip to separate the two labels. */
+.acs-rail__meta { gap: 12px; }
+.acs-rail__count {
+  padding: 6px 3px;
+  border-radius: 999px;
+  background: rgba(8, 144, 108, 0.1);
+  color: var(--acs-emerald-dk);
+}
+.acs-rail__status { color: rgba(8, 144, 108, 0.62); }
+
 /* ============================================================================
    5. CASE LIBRARY — SCENE RHYTHM & DIVIDERS
    ========================================================================= */
@@ -1274,3 +1287,831 @@ html.app-motion-fallback .acs-rail {
 }
 html.app-motion-fallback .acs-rail__list { --acs-rail-fill: 1; }
 html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: visible !important; }
+
+/* ============================================================================
+   17. ENTERPRISE AI JOURNEY — JOURNEY OPENER + 3 STAGE SYSTEMS
+   ----------------------------------------------------------------------------
+   Presentation + motion only. Structure now shipped by the page:
+     .jp-journey  →  .cs-stage--train  →  .cs-stage--design  →  .cs-stage--architect
+   Each stage = __band (mood: light / deep emerald / near-black) + __cases
+   (the existing case articles, byte-identical apart from removed numbering).
+
+   Motion contract: every element below is visible in its final form with no
+   JS and with no motion gate. `--jp-p` / `--cs-p` are progress values 0→1 that
+   only the motion layer writes; at 0 the rail simply reads as "not started",
+   nothing is hidden, nothing shifts.
+   ========================================================================= */
+
+/* the case library is a plain wrapper now — stages carry their own rhythm */
+.cs-library { padding: 0; }
+
+/* ── 17.1 JOURNEY OPENER — AI MATURITY MAP ─────────────────────────────── */
+.jp-journey {
+  --jp-p: 0;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(60px, 7.2vw, 104px) 0 clamp(52px, 5.8vw, 82px);
+  background: linear-gradient(180deg, #f8fbfa 0%, #eef5f2 56%, var(--gray-50) 100%);
+  border-bottom: 1px solid rgba(8, 144, 108, 0.14);
+}
+.jp-journey__bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.jp-journey__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(8, 144, 108, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8, 144, 108, 0.055) 1px, transparent 1px);
+  background-size: 52px 52px;
+  -webkit-mask-image: radial-gradient(ellipse 86% 76% at 20% 22%, #000 10%, transparent 80%);
+  mask-image: radial-gradient(ellipse 86% 76% at 20% 22%, #000 10%, transparent 80%);
+}
+.jp-journey__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 44% 50% at 10% 8%, rgba(8, 144, 108, 0.1) 0%, transparent 70%);
+}
+.jp-journey__head { position: relative; z-index: 1; max-width: 60rem; }
+.jp-journey__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1.875rem, 4.4vw, 3.125rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--black);
+}
+.jp-journey__desc {
+  margin: 18px 0 0;
+  max-width: 62ch;
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  line-height: 1.62;
+  color: var(--gray-600);
+}
+
+.jp-map {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 1.7vw, 22px);
+  margin-top: clamp(34px, 4.2vw, 56px);
+  padding-top: 44px;
+}
+.jp-map__rail { position: absolute; left: 0; right: 0; top: 21px; height: 2px; pointer-events: none; }
+.jp-map__track {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg,
+    rgba(8, 144, 108, 0.08) 0%,
+    rgba(8, 144, 108, 0.3) 14%,
+    rgba(8, 144, 108, 0.3) 86%,
+    rgba(8, 144, 108, 0.08) 100%);
+}
+.jp-map__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--acs-emerald), var(--acs-emerald-lt));
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.45);
+  transform: scaleX(var(--jp-p));
+  transform-origin: left center;
+}
+.jp-map__packet {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--jp-p) * 100%);
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--acs-emerald);
+  box-shadow: 0 0 0 4px rgba(8, 144, 108, 0.16), 0 0 14px rgba(52, 211, 153, 0.7);
+  opacity: 0;
+  transition: opacity 0.35s var(--acs-ease);
+}
+.jp-journey.is--running .jp-map__packet,
+.jp-journey.is--done .jp-map__packet { opacity: 1; }
+
+.jp-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: 20px 22px 22px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(8, 144, 108, 0.16);
+  box-shadow: 0 1px 2px rgba(6, 17, 14, 0.04);
+  transition:
+    border-color 0.5s var(--acs-ease),
+    box-shadow 0.5s var(--acs-ease);
+}
+.jp-node__port {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(8, 144, 108, 0.4);
+  transition:
+    background-color 0.45s var(--acs-ease),
+    border-color 0.45s var(--acs-ease),
+    box-shadow 0.45s var(--acs-ease);
+}
+.jp-node__port::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 40px;
+  margin-left: -0.5px;
+  background: linear-gradient(180deg, rgba(8, 144, 108, 0.05), rgba(8, 144, 108, 0.4));
+}
+.jp-node__top { display: flex; align-items: baseline; gap: 10px; }
+.jp-node__idx {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(8, 144, 108, 0.48);
+  transition: color 0.45s var(--acs-ease);
+}
+.jp-node__code {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--acs-emerald);
+}
+.jp-node__label {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  overflow-wrap: anywhere;
+}
+.jp-node__scope {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  color: var(--gray-500);
+}
+.jp-node.is--active {
+  border-color: rgba(8, 144, 108, 0.46);
+  box-shadow: 0 12px 28px rgba(6, 17, 14, 0.09);
+}
+.jp-node.is--active .jp-node__idx { color: var(--acs-emerald); }
+.jp-node.is--active .jp-node__port {
+  background: var(--acs-emerald);
+  border-color: var(--acs-emerald-lt);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.7);
+}
+.jp-node:focus-visible { outline: 2px solid var(--acs-emerald); outline-offset: 3px; }
+
+/* ── 17.2 STAGE BAND — one mood per stage ──────────────────────────────── */
+.cs-stage {
+  --cs-p: 0;
+  --cs-stub: 34px;
+  position: relative;
+  isolation: isolate;
+}
+.cs-stage__band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(52px, 6.2vw, 88px) 0 clamp(46px, 5.4vw, 74px);
+}
+.cs-stage__bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.cs-stage__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--cs-grid-c, rgba(8, 144, 108, 0.055)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cs-grid-c, rgba(8, 144, 108, 0.055)) 1px, transparent 1px);
+  background-size: 52px 52px;
+  -webkit-mask-image: radial-gradient(ellipse 88% 92% at 50% 0%, #000 8%, transparent 84%);
+  mask-image: radial-gradient(ellipse 88% 92% at 50% 0%, #000 8%, transparent 84%);
+}
+.cs-stage__band > .padding-global { position: relative; z-index: 1; }
+
+/* STAGE 01 — light / technical */
+.cs-stage--train .cs-stage__band {
+  background: linear-gradient(180deg, #ffffff 0%, #f4faf7 54%, #edf4f1 100%);
+}
+/* STAGE 02 — dark / deep emerald */
+.cs-stage--design .cs-stage__band {
+  --cs-grid-c: rgba(52, 211, 153, 0.055);
+  --cs-track: rgba(52, 211, 153, 0.2);
+  background:
+    radial-gradient(ellipse 68% 58% at 78% 6%, rgba(8, 144, 108, 0.3) 0%, transparent 62%),
+    radial-gradient(ellipse 58% 50% at 4% 92%, rgba(6, 105, 79, 0.24) 0%, transparent 60%),
+    linear-gradient(155deg, #03170f 0%, #06301f 52%, #04190f 100%);
+  color: #e8f5f0;
+}
+/* STAGE 03 — near-black */
+.cs-stage--architect .cs-stage__band {
+  --cs-grid-c: rgba(52, 211, 153, 0.05);
+  --cs-track: rgba(52, 211, 153, 0.18);
+  background:
+    radial-gradient(ellipse 64% 56% at 50% 0%, rgba(8, 144, 108, 0.22) 0%, transparent 64%),
+    linear-gradient(180deg, #050f0c 0%, #081613 56%, #030c09 100%);
+  color: #e8f5f0;
+}
+
+/* ── 17.3 STAGE HEAD ───────────────────────────────────────────────────── */
+.cs-stage__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(26px, 3.2vw, 58px);
+  align-items: start;
+}
+.cs-stage__headmain {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(14px, 1.9vw, 28px);
+  align-items: start;
+}
+.cs-stage__num {
+  font-family: var(--font-sans);
+  font-size: clamp(2.25rem, 3.5vw, 3.125rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--acs-emerald);
+}
+.cs-stage--design .cs-stage__num,
+.cs-stage--architect .cs-stage__num { color: var(--acs-emerald-lt); }
+.cs-stage__headtext { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.cs-stage__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--acs-emerald-dk);
+}
+.cs-stage--design .cs-stage__eyebrow,
+.cs-stage--architect .cs-stage__eyebrow { color: #6ee7b7; }
+.cs-stage__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 2.45vw, 2.125rem);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+  color: var(--black);
+}
+.cs-stage--design .cs-stage__title,
+.cs-stage--architect .cs-stage__title { color: #e8f5f0; }
+.cs-stage__desc {
+  margin: 1px 0 0;
+  max-width: 60ch;
+  font-size: clamp(0.9375rem, 1.02vw, 1.03125rem);
+  line-height: 1.62;
+  color: var(--gray-600);
+}
+.cs-stage--design .cs-stage__desc,
+.cs-stage--architect .cs-stage__desc { color: rgba(232, 245, 240, 0.74); }
+
+/* ── 17.4 STAGE PANEL — CẤP ĐỘ AI / ĐI TỪ / CA THỰC TẾ ─────────────────── */
+.cs-stage__panel {
+  display: grid;
+  gap: 15px;
+  padding: 21px 22px 23px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(8, 144, 108, 0.18);
+  box-shadow: 0 1px 2px rgba(6, 17, 14, 0.04);
+}
+.cs-stage--design .cs-stage__panel,
+.cs-stage--architect .cs-stage__panel {
+  background: rgba(4, 20, 15, 0.62);
+  border-color: rgba(52, 211, 153, 0.24);
+  box-shadow: none;
+}
+.cs-stage__panel-row { display: grid; gap: 5px; min-width: 0; }
+.cs-stage__panel-key {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(8, 144, 108, 0.72);
+}
+.cs-stage--design .cs-stage__panel-key,
+.cs-stage--architect .cs-stage__panel-key { color: rgba(110, 231, 183, 0.78); }
+.cs-stage__panel-val {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--black);
+  overflow-wrap: anywhere;
+}
+.cs-stage--design .cs-stage__panel-val,
+.cs-stage--architect .cs-stage__panel-val { color: #e8f5f0; }
+.cs-stage__panel-link {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--green-700);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.3s var(--acs-ease);
+}
+.cs-stage__panel-link:hover { color: var(--acs-emerald); }
+.cs-stage--design .cs-stage__panel-link,
+.cs-stage--architect .cs-stage__panel-link { color: #6ee7b7; }
+.cs-stage--design .cs-stage__panel-link:hover,
+.cs-stage--architect .cs-stage__panel-link:hover { color: #a7f3d0; }
+.cs-stage__panel-link:focus-visible { outline: 2px solid var(--acs-emerald-lt); outline-offset: 3px; }
+
+/* ── 17.5 STAGE SYSTEM — visual + shared rail + modules ────────────────── */
+.cs-stage__system { position: relative; margin-top: clamp(30px, 3.4vw, 46px); }
+
+.cs-visual { position: relative; }
+.cs-visual--train { display: flex; align-items: center; gap: 12px; }
+.cs-visual__tag {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--acs-emerald);
+}
+.cs-visual__rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(8, 144, 108, 0.34), rgba(8, 144, 108, 0.04));
+}
+.cs-visual__note {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  color: var(--gray-500);
+}
+.cs-visual--design .cs-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+/* on desktop the six steps span the same width as the rail below them, so the
+   process reads as one system rather than a cluster on the left */
+@media (min-width: 992px) {
+  .cs-visual--design .cs-flow {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .cs-flowstep { justify-self: stretch; text-align: center; }
+}
+.cs-flowstep {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  padding: 7px 11px;
+  border-radius: 7px;
+  white-space: nowrap;
+  color: rgba(167, 243, 208, 0.8);
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.24);
+  transition:
+    background-color 0.45s var(--acs-ease),
+    border-color 0.45s var(--acs-ease),
+    color 0.45s var(--acs-ease),
+    box-shadow 0.45s var(--acs-ease);
+}
+.cs-flowstep.is--on {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: var(--acs-emerald-lt);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.32);
+}
+.cs-flowstep--qc.is--on { animation: csQcPulse 1.9s var(--acs-ease) infinite; }
+@keyframes csQcPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.44), 0 0 12px rgba(52, 211, 153, 0.3); }
+  55%      { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0), 0 0 12px rgba(52, 211, 153, 0.3); }
+}
+.cs-visual--architect { display: grid; place-items: center; }
+.cs-core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  background: radial-gradient(circle at 50% 42%, rgba(8, 144, 108, 0.34) 0%, rgba(4, 20, 15, 0.24) 62%, transparent 100%);
+}
+.cs-core__label {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #6ee7b7;
+}
+.cs-core__ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(52, 211, 153, 0.32);
+  opacity: 0;
+  transform: scale(0.72);
+}
+.cs-stage.is--running .cs-core__ring,
+.cs-stage.is--done .cs-core__ring { animation: csCoreRing 3.6s var(--acs-ease) infinite; }
+.cs-stage.is--running .cs-core__ring--b,
+.cs-stage.is--done .cs-core__ring--b { animation-delay: 1.8s; }
+@keyframes csCoreRing {
+  0%   { opacity: 0.5; transform: scale(0.72); }
+  70%  { opacity: 0;   transform: scale(1.16); }
+  100% { opacity: 0;   transform: scale(1.16); }
+}
+.cs-core__stem {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 22px;
+  margin-left: -0.5px;
+  background: linear-gradient(180deg, rgba(52, 211, 153, 0.5), rgba(52, 211, 153, 0.06));
+}
+
+/* shared rail — horizontal line above the module row on desktop */
+.cs-rail {
+  position: relative;
+  height: 2px;
+  margin-top: 22px;
+}
+.cs-rail__track {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: var(--cs-track, rgba(8, 144, 108, 0.14));
+}
+.cs-rail__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--acs-emerald), var(--acs-emerald-lt));
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+  transform: scaleX(var(--cs-p));
+  transform-origin: left center;
+}
+.cs-rail__packet {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--cs-p) * 100%);
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--acs-emerald);
+  box-shadow: 0 0 0 4px rgba(8, 144, 108, 0.14), 0 0 14px rgba(52, 211, 153, 0.65);
+  opacity: 0;
+  transition: opacity 0.35s var(--acs-ease);
+}
+.cs-stage.is--running .cs-rail__packet,
+.cs-stage.is--done .cs-rail__packet { opacity: 1; }
+.cs-stage--design .cs-rail__packet,
+.cs-stage--architect .cs-rail__packet {
+  background: #06231a;
+  border-color: var(--acs-emerald-lt);
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.16), 0 0 14px rgba(52, 211, 153, 0.7);
+}
+.cs-stage--architect .cs-rail::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: #6ee7b7;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
+}
+
+/* ── 17.6 PROGRAM MODULES ──────────────────────────────────────────────── */
+.cs-mods {
+  display: grid;
+  grid-template-columns: repeat(var(--cs-mod-cols, 3), minmax(0, 1fr));
+  gap: clamp(12px, 1.3vw, 18px);
+  margin-top: var(--cs-stub);
+}
+.cs-stage--train     { --cs-mod-cols: 5; }
+.cs-stage--design    { --cs-mod-cols: 3; }
+.cs-stage--architect { --cs-mod-cols: 2; }
+
+.cs-mod {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 22px 20px 20px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(8, 144, 108, 0.16);
+  transition:
+    border-color 0.5s var(--acs-ease),
+    box-shadow 0.5s var(--acs-ease),
+    background-color 0.5s var(--acs-ease);
+}
+.cs-stage--design .cs-mod,
+.cs-stage--architect .cs-mod {
+  background: rgba(4, 22, 16, 0.66);
+  border-color: rgba(52, 211, 153, 0.18);
+}
+.cs-mod.is--on { border-color: rgba(8, 144, 108, 0.5); box-shadow: 0 12px 30px rgba(6, 17, 14, 0.1); }
+.cs-stage--design .cs-mod.is--on,
+.cs-stage--architect .cs-mod.is--on {
+  border-color: rgba(52, 211, 153, 0.5);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+}
+.cs-mod__port {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(8, 144, 108, 0.4);
+  z-index: 3;
+  transition:
+    background-color 0.45s var(--acs-ease),
+    border-color 0.45s var(--acs-ease),
+    box-shadow 0.45s var(--acs-ease);
+}
+.cs-mod__port::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: var(--cs-stub);
+  margin-left: -0.5px;
+  background: linear-gradient(180deg, rgba(8, 144, 108, 0.05), rgba(8, 144, 108, 0.42));
+}
+.cs-stage--design .cs-mod__port,
+.cs-stage--architect .cs-mod__port { background: #05130f; border-color: rgba(52, 211, 153, 0.4); }
+.cs-stage--design .cs-mod__port::before,
+.cs-stage--architect .cs-mod__port::before {
+  background: linear-gradient(180deg, rgba(52, 211, 153, 0.04), rgba(52, 211, 153, 0.45));
+}
+.cs-mod.is--on .cs-mod__port {
+  background: var(--acs-emerald);
+  border-color: var(--acs-emerald-lt);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.75);
+}
+.cs-stage--design .cs-mod.is--on .cs-mod__port,
+.cs-stage--architect .cs-mod.is--on .cs-mod__port {
+  background: var(--acs-emerald-lt);
+  border-color: #a7f3d0;
+}
+.cs-mod__eyebrow {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  padding: 5px 11px;
+  border-radius: 999px;
+  color: var(--gray-700);
+  background: #f4f8f6;
+  border: 1px solid rgba(8, 144, 108, 0.18);
+  overflow-wrap: anywhere;
+}
+.cs-stage--design .cs-mod__eyebrow,
+.cs-stage--architect .cs-mod__eyebrow {
+  color: rgba(167, 243, 208, 0.82);
+  background: rgba(52, 211, 153, 0.07);
+  border-color: rgba(52, 211, 153, 0.2);
+}
+.cs-mod__badge {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  padding: 5px 11px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--acs-emerald-dk);
+  border: 1px solid var(--acs-emerald);
+}
+.cs-stage--design .cs-mod__badge,
+.cs-stage--architect .cs-mod__badge {
+  background: rgba(8, 144, 108, 0.9);
+  border-color: var(--acs-emerald-lt);
+  color: #ecfdf5;
+}
+.cs-mod__title {
+  margin: 2px 0 0;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  overflow-wrap: anywhere;
+}
+.cs-stage--design .cs-mod__title,
+.cs-stage--architect .cs-mod__title { color: #e8f5f0; }
+.cs-mod__desc { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--gray-600); }
+.cs-stage--design .cs-mod__desc,
+.cs-stage--architect .cs-mod__desc { color: rgba(232, 245, 240, 0.68); }
+.cs-mod__list { margin: 2px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.cs-mod__list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--gray-700);
+}
+.cs-mod__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.48em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--acs-emerald);
+}
+.cs-stage--design .cs-mod__list li,
+.cs-stage--architect .cs-mod__list li { color: rgba(232, 245, 240, 0.78); }
+.cs-stage--design .cs-mod__list li::before,
+.cs-stage--architect .cs-mod__list li::before { background: var(--acs-emerald-lt); }
+.cs-mod__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--green-700);
+  transition: color 0.3s var(--acs-ease);
+}
+.cs-mod__cta svg { flex: 0 0 auto; transition: transform 0.3s var(--acs-ease-out); }
+.cs-mod__cta:hover { color: var(--acs-emerald); }
+.cs-mod__cta:hover svg { transform: translateX(3px); }
+.cs-stage--design .cs-mod__cta,
+.cs-stage--architect .cs-mod__cta { color: #6ee7b7; }
+.cs-stage--design .cs-mod__cta:hover,
+.cs-stage--architect .cs-mod__cta:hover { color: #a7f3d0; }
+.cs-mod__cta:focus-visible { outline: 2px solid var(--acs-emerald); outline-offset: 3px; border-radius: 4px; }
+
+/* ── 17.7 CASE GROUP INSIDE A STAGE ────────────────────────────────────── */
+.cs-stage__cases { position: relative; padding-bottom: clamp(30px, 3.6vw, 52px); }
+.cs-stage__cases > .acs-divider { height: 44px; }
+@media (min-width: 992px) {
+  .cs-stage__cases > .acs-divider { height: 62px; }
+}
+
+/* ── 17.8 TABLET / MOBILE — vertical journey, same logic ───────────────── */
+@media (max-width: 991px) {
+  .cs-stage--train,
+  .cs-stage--design,
+  .cs-stage--architect { --cs-mod-cols: 1; }
+
+  .cs-stage__head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+
+  .jp-map { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-top: 0; padding-left: 32px; }
+  .jp-map__rail { left: 0; top: 0; bottom: 0; width: 2px; height: auto; }
+  .jp-map__track {
+    background: linear-gradient(180deg,
+      rgba(8, 144, 108, 0.08) 0%,
+      rgba(8, 144, 108, 0.3) 12%,
+      rgba(8, 144, 108, 0.3) 88%,
+      rgba(8, 144, 108, 0.08) 100%);
+  }
+  .jp-map__fill {
+    width: 100%;
+    height: 100%;
+    transform: scaleY(var(--jp-p));
+    transform-origin: top center;
+    background: linear-gradient(180deg, var(--acs-emerald), var(--acs-emerald-lt));
+  }
+  .jp-map__packet { left: 50%; top: calc(var(--jp-p) * 100%); margin: -4px 0 0 -4px; }
+  .jp-node { padding: 18px 18px 20px; }
+  .jp-node__port { left: 0; top: 24px; margin: -3.5px 0 0 -3.5px; }
+  .jp-node__port::before {
+    left: auto;
+    right: 100%;
+    bottom: auto;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    margin: -0.5px 0 0 0;
+    background: linear-gradient(270deg, rgba(8, 144, 108, 0.4), rgba(8, 144, 108, 0.05));
+  }
+
+  .cs-stage__system { padding-left: 32px; }
+  .cs-rail {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
+    margin-top: 0;
+  }
+  .cs-rail__fill {
+    width: 100%;
+    height: 100%;
+    transform: scaleY(var(--cs-p));
+    transform-origin: top center;
+    background: linear-gradient(180deg, var(--acs-emerald), var(--acs-emerald-lt));
+  }
+  .cs-rail__packet { left: 50%; top: calc(var(--cs-p) * 100%); margin: -4px 0 0 -4px; }
+  .cs-visual--architect { justify-items: start; }
+  .cs-core { width: 72px; height: 72px; }
+  /* the vertical rail carries the connection on small screens — the stem
+     would dangle in empty space next to the core */
+  .cs-core__stem { display: none; }
+  .cs-mods { margin-top: 20px; gap: 14px; }
+  .cs-mod { padding: 20px 18px 18px; }
+  .cs-mod__port { left: 0; top: 26px; margin: -3.5px 0 0 -3.5px; }
+  .cs-mod__port::before {
+    left: auto;
+    right: 100%;
+    bottom: auto;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    margin: -0.5px 0 0 0;
+    background: linear-gradient(270deg, rgba(8, 144, 108, 0.42), rgba(8, 144, 108, 0.05));
+  }
+  .cs-stage--design .cs-mod__port::before,
+  .cs-stage--architect .cs-mod__port::before {
+    background: linear-gradient(270deg, rgba(52, 211, 153, 0.45), rgba(52, 211, 153, 0.04));
+  }
+  .cs-mod__cta { padding-top: 12px; }
+}
+
+@media (max-width: 479px) {
+  .cs-stage__headmain { gap: 12px; }
+  .cs-stage__num { font-size: 2rem; }
+  .cs-flowstep { font-size: 0.5625rem; padding: 6px 9px; letter-spacing: 0.1em; }
+  .jp-journey__desc { font-size: 0.9375rem; }
+}
+
+/* 992–1199px: stage 01 still holds its five modules in a single row (the rail
+   only makes sense as one row), so the cards get tighter type to breathe. */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .cs-stage--train .cs-mod { padding: 18px 16px 16px; gap: 9px; }
+  .cs-stage--train .cs-mod__eyebrow {
+    font-size: 0.5625rem;
+    letter-spacing: 0.06em;
+    padding: 4px 9px;
+  }
+  .cs-stage--train .cs-mod__badge {
+    font-size: 0.5625rem;
+    letter-spacing: 0.02em;
+    padding: 4px 9px;
+  }
+  .cs-stage--train .cs-mod__title { font-size: 0.9375rem; }
+  .cs-stage--train .cs-mod__desc,
+  .cs-stage--train .cs-mod__list li,
+  .cs-stage--train .cs-mod__cta { font-size: 0.8125rem; }
+  .cs-stage--train .cs-mod__cta svg { width: 14px; height: 14px; }
+}
+
+/* ── 17.9 STATIC FINAL STATE (reduced motion + motion fallback) ────────── */
+@media (prefers-reduced-motion: reduce) {
+  .jp-journey { --jp-p: 1; }
+  .cs-stage { --cs-p: 1; }
+  .jp-journey .jp-map__packet,
+  .cs-stage .cs-rail__packet { opacity: 0; }
+  .cs-flowstep--qc.is--on,
+  .cs-stage.is--running .cs-core__ring,
+  .cs-stage.is--done .cs-core__ring { animation: none; }
+}
+html.app-motion-fallback .jp-journey { --jp-p: 1; }
+html.app-motion-fallback .cs-stage { --cs-p: 1; }
+html.app-motion-fallback .jp-journey .jp-map__packet,
+html.app-motion-fallback .cs-stage .cs-rail__packet { opacity: 0 !important; }
+html.app-motion-fallback .jp-node,
+html.app-motion-fallback .cs-mod { opacity: 1 !important; visibility: visible !important; }
+html.app-motion-fallback .cs-flowstep { opacity: 1 !important; visibility: visible !important; }
