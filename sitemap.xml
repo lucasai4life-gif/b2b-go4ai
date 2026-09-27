@@ -17,6 +17,10 @@
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
   </url>
   <url>
+    <loc>https://b2b.go4ai.org/doi-ngu-giang-vien</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://b2b.go4ai.org/claude/</loc>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
   </url>
