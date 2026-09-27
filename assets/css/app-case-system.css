@@ -1442,7 +1442,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: rgba(8, 144, 108, 0.48);
+  color: var(--gray-600);
   transition: color 0.45s var(--acs-ease);
 }
 .jp-node__code {
@@ -1450,8 +1450,10 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--acs-emerald);
+  color: var(--gray-600);
+  transition: color 0.45s var(--acs-ease);
 }
+.jp-node.is--active .jp-node__code { color: var(--green-700); }
 .jp-node__label {
   font-size: 1.0625rem;
   font-weight: 600;
@@ -1467,7 +1469,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   color: var(--gray-600);
 }
 .jp-node.is--active { border-top-color: var(--acs-emerald); }
-.jp-node.is--active .jp-node__idx { color: var(--acs-emerald); }
+.jp-node.is--active .jp-node__idx { color: var(--green-700); }
 .jp-node.is--active .jp-node__port {
   background: var(--acs-emerald);
   border-color: var(--acs-emerald-lt);
@@ -1601,7 +1603,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  color: rgba(8, 144, 108, 0.72);
+  color: var(--green-700);
 }
 .cs-stage--design .cs-stage__panel-key,
 .cs-stage--architect .cs-stage__panel-key { color: rgba(110, 231, 183, 0.78); }
@@ -1639,7 +1641,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--acs-emerald);
+  color: var(--green-700);
 }
 .cs-visual__rule {
   flex: 1 1 auto;
