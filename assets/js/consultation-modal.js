@@ -11,7 +11,7 @@
   'use strict';
 
   /* ── Constants ─────────────────────────────────────────────────────── */
-  var POLICY_URL  = 'chinh-sach-bao-ve-du-lieu.html';
+  var POLICY_URL  = '/chinh-sach-bao-ve-du-lieu';
   var OVERLAY_ID  = 'consult-overlay';
   var OPEN_CLASS  = 'is--open';
   var ERROR_CLASS = 'is--error';
