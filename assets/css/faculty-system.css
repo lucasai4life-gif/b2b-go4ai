@@ -493,6 +493,25 @@ html.fc-motion .fc-wire__flow { animation: fcWireFlow 5s linear infinite; }
 .fc-map__bar { padding: .75rem clamp(1rem, 2vw, 1.75rem); border-bottom: 1px solid rgba(21, 23, 26, .12); }
 .fc-map__rail { position: relative; padding: 1.25rem clamp(1rem, 2vw, 1.75rem) 2.25rem; }
 .fc-map__wire { position: absolute; left: clamp(1rem, 2vw, 1.75rem); right: clamp(1rem, 2vw, 1.75rem); top: 2.375rem; }
+/* The map's wire carries the 01→06 scan, so its own ambient dash loop is
+   switched off and the line becomes a full faint rail. `stroke-dasharray: none`
+   matters for the no-JS / reduced-motion case too: the inherited `7 93` pattern
+   would otherwise render as one stray dash with no animation to explain it. */
+.fc-map__wire .fc-wire__flow { stroke-dasharray: none; stroke-opacity: .3; }
+html.fc-motion .fc-map__wire .fc-wire__flow { animation: none; }
+/* Scan progress. A dedicated bar rather than the SVG dash: `non-scaling-stroke`
+   makes dasharray units ambiguous, while a scaleX transform is exact and is one
+   of the properties the motion contract already allows. */
+.fc-map__progress {
+  position: absolute;
+  left: clamp(1rem, 2vw, 1.75rem); right: clamp(1rem, 2vw, 1.75rem);
+  top: 2.375rem; height: 2px;
+  pointer-events: none;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(52, 211, 153, .25) 0%, var(--fc-em-hi) 100%);
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .55s var(--fc-ease);
+}
 .fc-map__nodes {
   position: relative; z-index: 1;
   display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -515,6 +534,17 @@ html.fc-motion .fc-wire__flow { animation: fcWireFlow 5s linear infinite; }
   box-shadow: 0 0 0 5px rgba(8, 144, 108, .14);
 }
 .fc-map__node.is--active .fc-map__name { color: var(--fc-ink-3); font-weight: 600; }
+/* Levels the scan has already passed stay marked — dimmer than the live one,
+   brighter than the untouched ones — so the run leaves a trail. */
+.fc-map__node.is--done .fc-map__idx {
+  background: rgba(8, 144, 108, .14); border-color: rgba(8, 144, 108, .38);
+  color: var(--fc-em-deep);
+}
+.fc-map__node.is--done .fc-map__name { color: var(--fc-text-body); }
+/* Level 06 is the end of the run, so its active state reads as completion. */
+.fc-map.is--complete .fc-map__node:last-child .fc-map__idx {
+  box-shadow: 0 0 0 6px rgba(8, 144, 108, .16), 0 0 16px rgba(52, 211, 153, .34);
+}
 
 /* Subsystem lanes -------------------------------------------------------- */
 .fc-map__lanes {
@@ -787,11 +817,41 @@ html.fc-motion .fc-wire__flow { animation: fcWireFlow 5s linear infinite; }
   background: rgba(10, 26, 21, .55);
   transition: border-color .4s var(--fc-ease), background-color .4s var(--fc-ease), transform .4s var(--fc-ease);
 }
+/* Hover and the auto-active state share one look, so hovering a card that is
+   not currently lit reads exactly like the lit one. Lift is capped at 1px to
+   keep the row from shifting. */
 .fc-mod:hover {
-  border-color: rgba(52, 211, 153, .42);
-  background: rgba(10, 26, 21, .92);
-  transform: translateY(-2px);
+  border-color: rgba(52, 211, 153, .55);
+  background: rgba(10, 26, 21, .95);
+  transform: translateY(-1px);
 }
+/* --- SYSTEM LAYER auto-active --------------------------------------------
+   The four cards cycle while the section is in view. Only the card chrome
+   dims when idle — the copy keeps its own colours so every card stays
+   readable at every moment. */
+.fc-arch__grid.is--scanning .fc-mod {
+  border-color: rgba(52, 211, 153, .08);
+  background: rgba(10, 26, 21, .42);
+}
+.fc-arch__grid.is--scanning .fc-mod.is--active,
+.fc-arch__grid.is--scanning .fc-mod:hover {
+  border-color: rgba(52, 211, 153, .55);
+  background: rgba(10, 26, 21, .95);
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(52, 211, 153, .10),
+              inset 0 0 26px rgba(8, 144, 108, .16);
+}
+.fc-arch__grid.is--scanning .fc-mod.is--active .fc-mod__title,
+.fc-arch__grid.is--scanning .fc-mod:hover .fc-mod__title { color: #fff; }
+.fc-arch__grid.is--scanning .fc-mod.is--active .fc-mod__kind,
+.fc-arch__grid.is--scanning .fc-mod:hover .fc-mod__kind { color: var(--fc-em-hi); }
+.fc-arch__grid.is--scanning .fc-mod.is--active .fc-mod__link .fc-link,
+.fc-arch__grid.is--scanning .fc-mod:hover .fc-mod__link .fc-link {
+  color: var(--fc-em-hi); border-bottom-color: var(--fc-em-hi);
+}
+/* The fan drop that feeds the lit card pulses with it. */
+.fc-arch__drop { transition: stroke .4s var(--fc-ease), stroke-width .4s var(--fc-ease); }
+.fc-arch__drop.is--active { stroke: var(--fc-em-hi); stroke-width: 1.6; }
 .fc-mod__kind {
   font-family: var(--fc-mono); font-size: .5625rem; font-weight: 600;
   letter-spacing: .14em; text-transform: uppercase; color: var(--fc-text-mute);
@@ -1003,15 +1063,6 @@ html.fc-motion .fc-expert::after { animation: fcNodePulse 3.6s ease-in-out infin
   display: block; width: 100%; height: 100%;
   object-fit: cover; object-position: 50% 25%;
 }
-.fc-expert__ph {
-  margin: 1rem 0 0;
-  display: inline-flex; align-items: center; gap: .5rem;
-  padding: .375rem .625rem;
-  border: 1px dashed rgba(52, 211, 153, .34);
-  border-radius: .375rem;
-  font-family: var(--fc-mono); font-size: .625rem; font-weight: 500;
-  letter-spacing: .06em; color: var(--fc-em-hi);
-}
 
 /* ============================================================== 7. FINAL CTA */
 .fc-cta {
@@ -1065,12 +1116,37 @@ html.fc-motion .fc-boot {
   html.fc-motion .fc-panel__bar i,
   html.fc-motion .fc-wire__flow { animation: none !important; transition: none !important; }
   html.fc-motion .fc-wire__flow { stroke-dasharray: none !important; stroke-opacity: .55 !important; }
+  /* No scan runs here, so the map rail should read as a complete line. */
+  .fc-map__progress { display: none; }
+  .fc-map__wire .fc-wire__flow { stroke-dasharray: none; stroke-opacity: .55; }
   .fc-map__node, .fc-map__idx, .fc-map__name, .fc-lane, .fc-flow__step, .fc-flow__dot,
   .fc-flow__name, .fc-flow__desc, .fc-wf__node, .fc-wf__letter, .fc-frame, .fc-mod,
   .fc-dep__node { transition: none !important; }
 }
 
 /* ============================================================ 10. RESPONSIVE */
+
+/* Sticky lead -------------------------------------------------------------
+   On desktop Lucas pins while the three expert cards scroll past him. Two
+   things make that work:
+     · `align-self: start` un-stretches him, so the card ends right after its
+       CTA instead of matching the experts column — that gap IS the travel.
+     · the grid area still spans the whole row, so sticky releases exactly at
+       the end of the faculty content and never bleeds into the next section.
+   `top` clears the 81px sticky header plus a little breathing room. Mobile
+   stacks the grid, so this is desktop-only and the flow stays
+   Lucas → Hiệp → Triều → Tùng.
+   NOTE: this lives in the responsive section on purpose. A media query adds no
+   specificity, so keeping it beside `.fc-faculty__grid` lost to the base
+   `.fc-lead { position: relative }` declared further down and silently stayed
+   `relative`. Keep it after the lead rules. */
+@media (min-width: 992px) {
+  .fc-lead {
+    align-self: start;
+    position: sticky;
+    top: calc(81px + 1.25rem);
+  }
+}
 
 /* --- 1200px ------------------------------------------------------------- */
 @media (max-width: 1199px) {
@@ -1100,6 +1176,7 @@ html.fc-motion .fc-boot {
   /* capability map: rail becomes a vertical stack, lanes stack under it */
   .fc-map__rail { padding-bottom: 1.5rem; }
   .fc-map__wire { display: none; }
+  .fc-map__progress { display: none; }
   .fc-map__nodes { grid-template-columns: minmax(0, 1fr); }
   .fc-map__nodes::before {
     content: ''; position: absolute; left: 1.125rem; top: 1.125rem; bottom: 1.125rem;
@@ -1204,8 +1281,9 @@ html.fc-motion .fc-boot {
 .fc-dep__link { margin-top: auto; padding-top: 1.125rem; }
 .fc-lead__cta { position: relative; z-index: 2; margin-top: 1.5rem; }
 /* Two experts link to a real profile (one internal page, one PDF). The third
-   has no route yet and renders `.fc-expert__ph` instead, so no expert ever
-   points at an invented URL or a dead `href="#"`. */
+   has no route yet, so its CTA is an inert <span> with the same resting look —
+   no invented URL, no dead `href="#"`, and attaching a real link later is just
+   swapping the tag. */
 .fc-expert__cta {
   display: inline-flex; align-items: center; gap: .4rem;
   align-self: flex-start;
@@ -1216,4 +1294,7 @@ html.fc-motion .fc-boot {
   border-bottom: 1px solid rgba(52, 211, 153, .34);
   transition: border-color .25s var(--fc-ease), gap .25s var(--fc-ease);
 }
-.fc-expert__cta:hover { border-bottom-color: var(--fc-em-hi); gap: .7rem; }
+/* The hover affordance belongs to the experts that actually link somewhere;
+   the inert span keeps the resting look and no pointer cursor. */
+a.fc-expert__cta:hover { border-bottom-color: var(--fc-em-hi); gap: .7rem; }
+span.fc-expert__cta { cursor: default; }

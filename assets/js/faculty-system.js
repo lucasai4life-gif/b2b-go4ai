@@ -15,10 +15,11 @@
 
    MOTION SYSTEMS
      1. Hero boot reveal      — staggered `fcBoot` on the hero stack
-     2. Capability system map — one subsystem lane active at a time
-     3. Enablement flow       — ROLE → … → AI PASSPORT walk
-     4. PROVE workflow        — P → R → O → V → E walk with the QC gate at V
-     5. Faculty node pulse    — handled in CSS, gated on `html.fc-motion`
+     2. Capability system map — sequential 01 → 06 scan, lane follows
+     3. System layer          — the four platform cards auto-cycle
+     4. Enablement flow       — ROLE → … → AI PASSPORT walk
+     5. PROVE workflow        — P → R → O → V → E walk with the QC gate at V
+     6. Faculty node pulse    — handled in CSS, gated on `html.fc-motion`
    ========================================================================= */
 (function () {
   'use strict';
@@ -46,11 +47,16 @@
     return t;
   }
 
+  function motionOn() { return root.classList.contains('fc-motion'); }
+
   function onVisible(el, enter, leave) {
-    if (!hasIO) { enter(); return null; }
+    if (!hasIO) { if (motionOn()) enter(); return null; }
     var io = new IntersectionObserver(function (entries) {
       for (var i = 0; i < entries.length; i++) {
-        if (entries[i].isIntersecting) enter();
+        /* The watchdog can drop the motion layer after load. Once it has, a
+           section scrolling back into view must not restart its loop — the
+           motion contract is that nothing animates without `html.fc-motion`. */
+        if (entries[i].isIntersecting) { if (motionOn()) enter(); }
         else if (leave) leave();
       }
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
@@ -110,40 +116,54 @@
     }
   }
 
-  /* ── 2. CAPABILITY SYSTEM MAP — one subsystem lane active at a time ─────
-     The 6 rail nodes and the 3 subsystem lanes share `data-fc-stage`, so a
-     single toggle lights the pair of levels and the lane that owns them. */
-  function capabilityMap() {
+  /* ── 2. CAPABILITY SYSTEM MAP — sequential 01 → 06 scan ────────────────
+     Walks the six levels one at a time. The lane that owns the current level
+     lights with it (the nodes and lanes share `data-fc-stage`), the progress
+     bar fills left → right, and levels already passed keep `is--done` so the
+     run leaves a trail. Level 06 holds roughly twice a step before looping, so
+     the end of the run reads as a completion rather than a jump cut. */
+  function capabilityScan() {
     var map = document.querySelector('[data-fc-map]');
     if (!map) return;
 
-    var members = map.querySelectorAll('[data-fc-stage]');
-    if (!members.length) return;
+    var nodes = map.querySelectorAll('.fc-map__node');
+    var lanes = map.querySelectorAll('.fc-lane');
+    var bar = map.querySelector('.fc-map__progress');
+    if (!nodes.length) return;
 
-    var zones = [[], [], []];
-    for (var i = 0; i < members.length; i++) {
-      var s = parseInt(members[i].getAttribute('data-fc-stage'), 10);
-      if (s >= 0 && s < 3) zones[s].push(members[i]);
+    var STEP = 900;          /* per level; 06 then holds for two steps ≈1.8s */
+    var at = -1, hold = false, tick = null;
+
+    function stageOf(el) {
+      var v = parseInt(el.getAttribute('data-fc-stage'), 10);
+      return isNaN(v) ? -1 : v;
     }
 
-    var current = -1;
-
-    function paint(next) {
-      if (next === current) return;
-      current = next;
-      for (var z = 0; z < 3; z++) {
-        var on = (z === next);
-        for (var k = 0; k < zones[z].length; k++) {
-          zones[z][k].classList.toggle('is--active', on);
-        }
+    function paint(i) {
+      at = i;
+      var last = nodes.length - 1;
+      for (var k = 0; k < nodes.length; k++) {
+        nodes[k].classList.toggle('is--active', k === i);
+        nodes[k].classList.toggle('is--done', k < i);
       }
+      var st = stageOf(nodes[i]);
+      for (var l = 0; l < lanes.length; l++) {
+        lanes[l].classList.toggle('is--active', stageOf(lanes[l]) === st);
+      }
+      if (bar) bar.style.transform = 'scaleX(' + ((i + 1) / nodes.length) + ')';
+      map.classList.toggle('is--complete', i === last);
     }
 
-    var tick = null;
     function start() {
       if (tick) return;
+      hold = false;
       paint(0);
-      tick = every(3000, function () { paint((current + 1) % 3); });
+      tick = every(STEP, function () {
+        if (hold) { hold = false; paint(0); return; }
+        var next = at + 1;
+        if (next >= nodes.length) { hold = true; return; }
+        paint(next);
+      });
     }
     function stop() {
       if (!tick) return;
@@ -155,21 +175,72 @@
     if (!hasIO) start();
   }
 
-  /* ── 3. ENABLEMENT FLOW — ROLE → … → AI PASSPORT ─────────────────────── */
+  /* ── 3. SYSTEM LAYER — the four platform cards cycle while in view ─────
+     Each card holds ~1.2s and the last holds an extra beat before the run
+     restarts. Hover lives in CSS so it can override the lit card without
+     stopping the loop. The fan drop feeding the lit card pulses with it. */
+  function systemLayer() {
+    var grid = document.querySelector('.fc-arch__grid');
+    if (!grid) return;
+
+    var cards = grid.querySelectorAll('.fc-mod');
+    if (!cards.length) return;
+    var drops = document.querySelectorAll('.fc-arch__fan .fc-arch__drop');
+
+    var STEP = 1200;
+    var at = -1, hold = false, tick = null;
+
+    function paint(i) {
+      at = i;
+      for (var k = 0; k < cards.length; k++) {
+        cards[k].classList.toggle('is--active', k === i);
+      }
+      for (var d = 0; d < drops.length; d++) {
+        drops[d].classList.toggle('is--active', d === i);
+      }
+    }
+
+    function start() {
+      if (tick) return;
+      hold = false;
+      grid.classList.add('is--scanning');
+      paint(0);
+      tick = every(STEP, function () {
+        if (hold) { hold = false; paint(0); return; }
+        var next = at + 1;
+        if (next >= cards.length) { hold = true; return; }
+        paint(next);
+      });
+    }
+    function stop() {
+      if (!tick) return;
+      window.clearInterval(tick);
+      tick = null;
+      /* leave nothing lit once the section is out of view */
+      grid.classList.remove('is--scanning');
+      for (var k = 0; k < cards.length; k++) cards[k].classList.remove('is--active');
+      for (var d = 0; d < drops.length; d++) drops[d].classList.remove('is--active');
+    }
+
+    onVisible(grid, start, stop);
+    if (!hasIO) start();
+  }
+
+  /* ── 4. ENABLEMENT FLOW — ROLE → … → AI PASSPORT ─────────────────────── */
   function enablementFlow() {
     var flow = document.querySelector('[data-fc-flow]');
     if (!flow) return;
     walker(flow, flow.querySelectorAll('.fc-flow__step'), { step: 1250 });
   }
 
-  /* ── 4. PROVE WORKFLOW — P → R → O → V → E, QC gate at V ─────────────── */
+  /* ── 5. PROVE WORKFLOW — P → R → O → V → E, QC gate at V ─────────────── */
   function proveWorkflow() {
     var wf = document.querySelector('[data-fc-prove]');
     if (!wf) return;
     walker(wf, wf.querySelectorAll('.fc-wf__node'), { step: 1500 });
   }
 
-  /* ── 5. SCROLL REVEAL ────────────────────────────────────────────────── */
+  /* ── 6. SCROLL REVEAL ────────────────────────────────────────────────── */
   function reveals() {
     var items = document.querySelectorAll('.fc-reveal');
     if (!items.length) return;
@@ -216,19 +287,33 @@
      blank section behind. */
   function failsafe() {
     window.setTimeout(function () {
-      var probe = document.querySelector('.fc-reveal');
-      if (!probe) return;
-      var op = window.getComputedStyle(probe).opacity;
-      if (op !== '0') return;
+      /* Judge only what the visitor can actually see right now.
+         This used to probe `document.querySelector('.fc-reveal')` — but the
+         first `.fc-reveal` lives in a section below the fold, so on a normal
+         visit (hero still on screen at 3.2s) it legitimately reads opacity 0.
+         The watchdog misread "not scrolled to yet" as "motion is broken" and
+         tore the whole layer down, killing every loop on the page. Off-screen
+         elements now get no vote; if nothing on screen can be judged, we keep
+         the layer. */
+      var probes = document.querySelectorAll('.fc-reveal, .fc-boot');
+      var judged = 0;
+      for (var i = 0; i < probes.length; i++) {
+        var r = probes[i].getBoundingClientRect();
+        if (r.bottom <= 0 || r.top >= window.innerHeight) continue;
+        judged++;
+        if (window.getComputedStyle(probes[i]).opacity !== '0') return;
+      }
+      if (!judged) return;
       root.classList.remove('fc-motion');
       root.classList.add('fc-motion-fallback');
-      for (var i = 0; i < timers.length; i++) window.clearInterval(timers[i]);
+      for (var j = 0; j < timers.length; j++) window.clearInterval(timers[j]);
     }, 3200);
   }
 
   function init() {
     try { bootPanel(); } catch (e) {}
-    try { capabilityMap(); } catch (e) {}
+    try { capabilityScan(); } catch (e) {}
+    try { systemLayer(); } catch (e) {}
     try { enablementFlow(); } catch (e) {}
     try { proveWorkflow(); } catch (e) {}
     try { reveals(); } catch (e) {}
