@@ -1,5 +1,7 @@
 /* Claude 90 phút: quảng bá tạm thời, trong luồng nội dung. */
-html.claude-promo-ended .claude-promo,
+/* Sau sự kiện: ẩn mọi khối quảng bá, TRỪ thẻ trang chủ đã được claude-promo.js
+   chuyển thành thẻ bền "Sau Claude 90 phút" (trỏ về /opp/). */
+html.claude-promo-ended .claude-promo:not(.claude-promo--evergreen),
 html.claude-promo-ended .ev-spot { display: none !important; }
 
 .claude-promo-bar {

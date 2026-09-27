@@ -123,7 +123,10 @@ export async function onRequestPost(context) {
       // lựa chọn có cấu trúc, câu 6 là 3 ô liên hệ. Nhờ vậy phân hạng dưới
       // đây là suy diễn tất định từ lựa chọn, KHÔNG phải đoán từ văn bản.
       'q1_interested', 'q2_persona', 'q3_goal', 'q4_support', 'q5_timing',
-      'leadTier', 'tierReason'
+      'leadTier', 'tierReason',
+      // ── Trang /opp/ — quan tâm gói thành viên 12 tháng ─────────────────
+      // `message` là ô tự do DUY NHẤT, chỉ bắt buộc cho tầng hợp tác (PARTNER).
+      'package', 'startTimeline', 'partnerHave', 'pageState', 'claude90Registered'
     ];
     for (const k of allowedExtra) {
       if (body[k] !== undefined && body[k] !== null && body[k] !== '') {
@@ -154,9 +157,17 @@ export async function onRequestPost(context) {
       });
     }
 
-    if (!leadType || !['enterprise_consultation', 'claude_workshop_registration'].includes(leadType)) {
+    if (!leadType || !['enterprise_consultation', 'claude_workshop_registration', 'membership_interest'].includes(leadType)) {
       recordIpFailure(clientIp);
       return new Response(JSON.stringify({ success: false, error: 'Loại yêu cầu không hợp lệ.' }), {
+        status: 422,
+        headers,
+      });
+    }
+
+    if (leadType === 'membership_interest' && !MEMBERSHIP_PACKAGES.includes(payloadExtra.package)) {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({ success: false, error: 'Vui lòng chọn con đường bạn quan tâm.' }), {
         status: 422,
         headers,
       });
@@ -254,7 +265,10 @@ export async function onRequestPost(context) {
     // ─── 8. DUPLICATE & REPLAY PROTECTION ─────────────────────────────
     const payloadHash = await computePayloadHash({
       leadType, email, phone, name, company,
-      problem: payloadExtra.problem,
+      // Cùng một người quan tâm LEARN rồi EARN trong 10 phút là HAI nhu cầu, không phải replay.
+      problem: leadType === 'membership_interest'
+        ? `${payloadExtra.package}|${payloadExtra.message || ''}`
+        : payloadExtra.problem,
       message: payloadExtra.message,
     });
 
@@ -499,6 +513,15 @@ function getCorsHeaders(request) {
   };
 }
 
+// PARTNER là tầng 03 BÊN TRONG BUILD, không phải gói thứ tư — nhãn nội bộ phải nói đúng điều đó.
+const MEMBERSHIP_PACKAGES = ['LEARN', 'EARN', 'BUILD', 'PARTNER'];
+const MEMBERSHIP_LABELS = {
+  LEARN: '🟢 LEARN — 10M/năm (cá nhân)',
+  EARN: '🔵 EARN — 30M/năm (chuyên môn)',
+  BUILD: '🔴 BUILD — 100M/năm (doanh nghiệp)',
+  PARTNER: '🔴 BUILD · tầng 03 — trao đổi hợp tác',
+};
+
 // ─── TELEGRAM MESSAGE BUILDER ────────────────────────────────────────────
 function esc(val) {
   return String(val || '')
@@ -586,6 +609,28 @@ function buildTelegramMessage(data) {
       tierLine,
       payloadExtra.tierReason ? `\n<i>Vì: ${esc(payloadExtra.tierReason)}</i>` : '',
       `\nTrang: ${esc(sourcePage || '/claude/')}`,
+      `\n──────────────`,
+      `\n<i>${dt}</i>`,
+    ].filter(Boolean).join('');
+  }
+
+  if (leadType === 'membership_interest') {
+    const have = Array.isArray(payloadExtra.partnerHave) ? payloadExtra.partnerHave.join(', ') : '';
+    return [
+      '🟣 <b>QUAN TÂM GÓI THÀNH VIÊN</b>',
+      `\nNguồn: /opp/`,
+      `\n🎯 <b>${esc(MEMBERSHIP_LABELS[payloadExtra.package] || payloadExtra.package)}</b>`,
+      '\n──────────────',
+      line('Họ tên', name),
+      line('Điện thoại / Zalo', phone),
+      line('Email', email),
+      line('Doanh nghiệp', company),
+      line('Bắt đầu', payloadExtra.startTimeline),
+      line('Có sẵn', have),
+      line('Mô tả hợp tác', payloadExtra.message),
+      payloadExtra.claude90Registered ? '\n✅ Đã đăng ký Claude 90 phút (cùng thiết bị)' : '',
+      line('Trạng thái trang', payloadExtra.pageState),
+      line('CTA', sourceCta),
       `\n──────────────`,
       `\n<i>${dt}</i>`,
     ].filter(Boolean).join('');

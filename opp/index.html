@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sau Claude 90 phút: LEARN · EARN · BUILD | GO4AI</title>
+<link rel="icon" href="/claude/assets/go4ai-badge.png" type="image/png">
+<meta name="description" content="Ba con đường thành viên 12 tháng của GO4AI sau chương trình Claude 90 phút: LEARN cho năng lực cá nhân, EARN cho project và thu nhập, BUILD cho doanh nghiệp.">
+<link rel="canonical" href="https://b2b.go4ai.org/opp/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GO4AI">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:title" content="Sau Claude 90 phút: LEARN · EARN · BUILD | GO4AI">
+<meta property="og:description" content="Bạn muốn AI tạo ra giá trị cho ai? Ba con đường thành viên 12 tháng của GO4AI.">
+<meta property="og:url" content="https://b2b.go4ai.org/opp/">
+<meta property="og:image" content="https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg">
+<meta property="og:image:alt" content="Lucas Đặng, nhà sáng lập GO4AI">
+<meta name="twitter:card" content="summary">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<style>@font-face{font-family:Archivo;src:url("/claude/assets/fonts/Archivo-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}@font-face{font-family:Archivo;src:url("/claude/assets/fonts/Archivo-Medium.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}@font-face{font-family:Archivo;src:url("/claude/assets/fonts/Archivo-Bold.woff2") format("woff2");font-style:normal;font-weight:600 700;font-display:swap}</style>
+<style>
+  /* Cùng bảng màu với /claude/ để người đi từ trang 90 phút sang không thấy "trang khác". */
+  :root{
+    --white:#fff; --gray-50:#f4f7f8; --gray-100:#dbe7ea; --gray-200:#bec9c6; --gray-500:#5a666e;
+    --black:#0a1620; --green-500:#08906c; --green-700:#06694f; --green-100:#c4ece1; --green-50:#eef8f4;
+    --coral-500:#9F161D; --coral-600:#7E1217; --coral-100:#f8d7da; --coral-50:#fdf2f3;
+    --blue-700:#1e3545; --blue-500:#2b4d60; --blue-100:#d8ebf4; --blue-50:#f1f7fa;
+    --learn:#08906c; --earn:#2b4d60; --build:#9F161D;
+    --line:var(--gray-100); --muted:var(--gray-500);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  html,body{margin:0;padding:0;background:var(--white);color:var(--black);
+    font-family:Archivo,Arial,sans-serif;overflow-x:clip;letter-spacing:-.01em;line-height:1.55}
+  a{color:var(--green-700)}
+  img{max-width:100%}
+  h1,h2,h3,h4{letter-spacing:-.03em;line-height:1.15;margin:0}
+  p{margin:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  .wrap--narrow{max-width:820px}
+  .sec{padding:clamp(56px,8vw,96px) 0}
+  .sec--alt{background:var(--gray-50)}
+  .eyebrow{color:var(--green-500);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+  .h2{font-size:clamp(26px,3.4vw,40px);font-weight:700;margin-bottom:14px}
+  .lede{color:var(--muted);font-size:17px;max-width:680px}
+  .skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:16px;z-index:99;background:#fff;padding:8px 12px;border-radius:6px}
+  :focus-visible{outline:3px solid var(--green-500);outline-offset:2px}
+
+  /* ---------- NAV ---------- */
+  .navbar{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:24px;
+    padding:8px 8px 8px 18px;border-radius:5rem;background:rgba(255,255,255,.9);border:1px solid var(--line);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 6px 24px rgba(21,23,26,.08);
+    width:max-content;max-width:calc(100vw - 24px)}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--black);text-decoration:none;flex-shrink:0}
+  .brand img{height:24px;width:auto}
+  .navbar nav{display:flex;gap:18px}
+  .navbar nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap}
+  .navbar nav a:hover{color:var(--black)}
+  .nav-cta{background:var(--green-500);color:#fff;font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:5rem;text-decoration:none;white-space:nowrap}
+  @media (max-width:820px){.navbar nav{display:none}}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;font-size:15px;
+    padding:13px 24px;border-radius:5rem;border:1.5px solid transparent;cursor:pointer;text-decoration:none;text-align:center;
+    transition:transform .15s ease, box-shadow .15s ease}
+  .btn:hover{transform:translateY(-1px)}
+  .btn--primary{background:var(--green-500);color:#fff;box-shadow:0 8px 20px rgba(8,144,108,.22)}
+  .btn--coral{background:var(--coral-500);color:#fff;box-shadow:0 8px 20px rgba(159,22,29,.2)}
+  .btn--ghost{background:#fff;color:var(--black);border-color:var(--gray-200)}
+  .btn[disabled]{opacity:.6;cursor:wait;transform:none}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:120px 0 64px;background:
+      radial-gradient(circle at 12% 20%, rgba(8,144,108,.08), transparent 50%),
+      radial-gradient(circle at 88% 80%, rgba(159,22,29,.06), transparent 50%), var(--white)}
+  .crumbs{font-size:13px;color:var(--muted);margin-bottom:22px;display:flex;flex-wrap:wrap;gap:6px}
+  .crumbs a{color:var(--muted)}
+  .hero h1{font-size:clamp(32px,5vw,60px);font-weight:700;max-width:860px;margin-bottom:18px}
+  .hero h1 .accent{color:var(--coral-500)}
+  .hero .lede{font-size:18px;margin-bottom:28px}
+  .status{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px 20px;max-width:760px;
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;box-shadow:0 10px 30px rgba(10,22,32,.05)}
+  .status__dot{width:10px;height:10px;border-radius:50%;background:var(--green-500);box-shadow:0 0 0 5px var(--green-100);flex-shrink:0}
+  .status__text{flex:1 1 280px;font-size:15px}
+  .status__text strong{display:block;font-size:16px}
+  .status__actions{display:flex;flex-wrap:wrap;gap:10px}
+  .status__actions .btn{padding:10px 18px;font-size:14px}
+
+  /* ---------- 6 LEVELS ---------- */
+  .levels{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:26px}
+  .level{border:1px solid var(--line);border-radius:14px;padding:14px 12px;background:#fff;text-decoration:none;color:var(--black);position:relative}
+  .level b{display:block;font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.08em}
+  .level span{font-size:14.5px;font-weight:600}
+  .level-bands{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px;font-size:12.5px;font-weight:600}
+  .band{border-radius:8px;padding:6px 10px;color:#fff}
+  .band--learn{grid-column:1 / span 3;background:var(--learn)}
+  .band--earn{grid-column:3 / span 3;background:var(--earn);margin-top:30px}
+  .band--build{grid-column:5 / span 2;background:var(--build);margin-top:60px}
+  .levels-note{font-size:14px;color:var(--muted);margin-top:14px}
+  @media (max-width:760px){
+    .levels{grid-template-columns:repeat(3,1fr)}
+    .level-bands{grid-template-columns:1fr;gap:6px}
+    .band--learn,.band--earn,.band--build{grid-column:auto;margin-top:0}
+  }
+
+  /* ---------- ROUTER ---------- */
+  .router{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:26px}
+  .route{display:flex;gap:14px;align-items:flex-start;text-align:left;font:inherit;color:var(--black);background:#fff;
+    border:1.5px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;text-decoration:none;transition:border-color .15s, box-shadow .15s}
+  .route:hover{border-color:var(--gray-200);box-shadow:0 8px 22px rgba(10,22,32,.06)}
+  .route[aria-pressed="true"]{border-color:var(--green-500);box-shadow:0 0 0 3px var(--green-100)}
+  .route__radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--gray-200);flex-shrink:0;margin-top:3px;position:relative}
+  .route[aria-pressed="true"] .route__radio{border-color:var(--green-500)}
+  .route[aria-pressed="true"] .route__radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--green-500)}
+  .route strong{display:block;font-size:16.5px;margin-bottom:3px}
+  .route small{display:block;color:var(--muted);font-size:14px}
+  .route em{display:inline-block;font-style:normal;font-size:12px;font-weight:700;letter-spacing:.08em;margin-top:8px;padding:3px 8px;border-radius:5px;background:var(--gray-50)}
+  @media (max-width:700px){.router{grid-template-columns:1fr}}
+
+  /* ---------- PATH CARDS (no price) ---------- */
+  .paths{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  .path{border:1px solid var(--line);border-radius:20px;padding:24px;background:#fff;display:flex;flex-direction:column;gap:12px;border-top:5px solid var(--c)}
+  .path.is-picked{box-shadow:0 0 0 3px var(--c), 0 16px 34px rgba(10,22,32,.08)}
+  .path__tag{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--c)}
+  .path h3{font-size:21px}
+  .path p{color:var(--muted);font-size:15px}
+  .path ul{margin:0;padding-left:18px;font-size:14.5px}
+  .path li{margin:4px 0}
+  .path__more{margin-top:auto;font-weight:600;color:var(--c);text-decoration:none}
+  .path__sub{border-radius:12px;background:var(--coral-50);border:1px dashed var(--coral-100);padding:12px 14px;font-size:14px}
+  .path__sub a{color:var(--coral-600);font-weight:600}
+  @media (max-width:900px){.paths{grid-template-columns:1fr}}
+
+  /* ---------- PANELS ---------- */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 0}
+  .tab{font:inherit;font-weight:700;font-size:14px;letter-spacing:.06em;padding:10px 18px;border-radius:5rem;border:1.5px solid var(--gray-200);background:#fff;cursor:pointer;color:var(--black)}
+  .tab[aria-selected="true"]{background:var(--c);border-color:var(--c);color:#fff}
+  .tabs,.panel-empty{display:none}
+  .js-on .tabs{display:flex}
+  .js-on .panel-empty{display:block}
+  .js-on .panel-empty[hidden]{display:none}
+  .panel-empty{margin-top:18px;padding:26px;border:1.5px dashed var(--gray-200);border-radius:18px;color:var(--muted);text-align:center}
+  .panel{margin-top:22px;border:1px solid var(--line);border-radius:24px;background:#fff;overflow:hidden}
+  .js-on .panel[hidden]{display:none}
+  /* Nền đặc trước: trình duyệt không hỗ trợ color-mix() bỏ dòng gradient và vẫn giữ chữ trắng trên nền màu. */
+  .panel__head{padding:28px clamp(20px,4vw,40px);background:var(--c);background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 70%,#000));color:#fff;
+    display:grid;grid-template-columns:1fr auto;gap:18px 30px;align-items:end}
+  .panel__head .path__tag{color:rgba(255,255,255,.8)}
+  .panel__head h3{font-size:clamp(24px,3vw,34px);margin:6px 0 8px}
+  .panel__head p{opacity:.9;max-width:560px}
+  .fee{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:14px 18px;min-width:230px}
+  .fee small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+  .fee strong{display:block;font-size:26px;letter-spacing:-.02em;margin:2px 0}
+  .fee span{font-size:13px;opacity:.9}
+  @media (max-width:760px){.panel__head{grid-template-columns:1fr}.fee{min-width:0}}
+  .panel__body{padding:28px clamp(20px,4vw,40px);display:grid;grid-template-columns:1.25fr 1fr;gap:28px}
+  @media (max-width:860px){.panel__body{grid-template-columns:1fr}}
+  .panel h4{font-size:17px;margin-bottom:10px}
+  .ticks{list-style:none;margin:0;padding:0}
+  .ticks li{position:relative;padding:8px 0 8px 28px;border-bottom:1px solid var(--gray-50);font-size:15px}
+  .ticks li::before{content:"";position:absolute;left:2px;top:13px;width:14px;height:8px;border-left:2.5px solid var(--c);border-bottom:2.5px solid var(--c);transform:rotate(-45deg)}
+  .ticks li b{display:block}
+  .ticks li span{color:var(--muted);font-size:14px}
+  .inherit{border-radius:12px;background:var(--gray-50);padding:12px 14px;font-size:14.5px;margin-bottom:12px}
+  .box{border-radius:16px;padding:18px;background:var(--gray-50);margin-bottom:14px}
+  .box--warn{background:var(--coral-50);border:1px solid var(--coral-100)}
+  .box--principle{background:var(--blue-50);border:1px solid var(--blue-100)}
+  .box p+p{margin-top:8px}
+  .box ul{margin:6px 0 0;padding-left:18px;font-size:14.5px}
+  /* "Trải nghiệm trước" — dùng thử sản phẩm thật trước khi quyết định trả phí. */
+  .try{border-radius:16px;padding:18px;margin-bottom:14px;border:1.5px solid var(--c);background:#fff;background:color-mix(in srgb,var(--c) 6%,#fff)}
+  .try h4{display:flex;align-items:center;gap:8px}
+  .try h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 20%,#fff)}
+  .try p{font-size:14.5px;margin-bottom:12px}
+  .try__actions{display:flex;flex-wrap:wrap;gap:8px}
+  .try__actions .btn{padding:10px 16px;font-size:14px}
+  .btn--solid{background:var(--c);color:#fff}
+  .btn--line{background:#fff;color:var(--c);border-color:var(--c)}
+  .try small{display:block;margin-top:10px;font-size:12.5px;color:var(--muted)}
+  .steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px;font-weight:600}
+  .steps span{background:#fff;border:1px solid var(--line);border-radius:5rem;padding:5px 11px}
+  .steps i{font-style:normal;color:var(--muted)}
+  .panel__cta{padding:0 clamp(20px,4vw,40px) 28px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .panel__cta p{font-size:14px;color:var(--muted);flex:1 1 260px}
+  .others{border-top:1px solid var(--line);padding:18px clamp(20px,4vw,40px);font-size:14.5px;display:flex;flex-wrap:wrap;gap:8px 18px;background:var(--gray-50)}
+  .others a{font-weight:600}
+
+  /* BUILD tiers */
+  .tiers{display:grid;gap:12px}
+  .tier{border:1px solid var(--line);border-radius:16px;padding:18px}
+  .tier__n{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--build)}
+  .tier h5{font-size:17px;margin:4px 0 8px;letter-spacing:-.02em}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips span{font-size:13px;border-radius:5rem;padding:4px 10px;background:var(--gray-50);border:1px solid var(--line)}
+  .tier--partner{border:2px solid var(--build);background:var(--coral-50)}
+  .formula{font-weight:700;letter-spacing:.02em;font-size:14px;background:#fff;border-radius:8px;padding:8px 10px;display:inline-block;margin:6px 0}
+
+  /* ---------- COMPARE ---------- */
+  .table-wrap{overflow-x:auto;margin-top:26px;border:1px solid var(--line);border-radius:18px;background:#fff}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px}
+  th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{font-size:13px;letter-spacing:.1em}
+  thead th:nth-child(2){color:var(--learn)} thead th:nth-child(3){color:var(--earn)} thead th:nth-child(4){color:var(--build)}
+  tbody th{font-weight:600;color:var(--muted);width:22%}
+  tr:last-child td,tr:last-child th{border-bottom:0}
+
+  /* ---------- POLICY ---------- */
+  .policy{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:26px;counter-reset:p}
+  .policy article{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 20px 20px 62px;position:relative;counter-increment:p}
+  .policy article::before{content:counter(p,decimal-leading-zero);position:absolute;left:20px;top:20px;font-weight:700;color:var(--green-500);font-size:15px}
+  .policy h3{font-size:17px;margin-bottom:6px}
+  .policy p{font-size:14.5px;color:var(--muted)}
+  .policy-meta{font-size:13.5px;color:var(--muted);margin-top:18px}
+  @media (max-width:760px){.policy{grid-template-columns:1fr}}
+
+  /* ---------- FORM ---------- */
+  .form-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:clamp(20px,4vw,36px);margin-top:26px;box-shadow:0 14px 40px rgba(10,22,32,.06)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr}}
+  .field{margin-bottom:16px}
+  .field label,.field legend{display:block;font-weight:600;font-size:14.5px;margin-bottom:6px}
+  .field fieldset{border:0;padding:0;margin:0}
+  .req{color:var(--coral-500)}
+  input[type=text],input[type=tel],input[type=email],select,textarea{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--gray-200);border-radius:12px;background:#fff;color:var(--black)}
+  textarea{min-height:110px;resize:vertical}
+  input:focus,select:focus,textarea:focus{border-color:var(--green-500);outline:none;box-shadow:0 0 0 3px var(--green-100)}
+  .checks{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:14.5px}
+  .checks label{display:flex;gap:8px;align-items:center;font-weight:400;margin:0}
+  @media (max-width:520px){.checks{grid-template-columns:1fr}}
+  .hint{font-size:13px;color:var(--muted);margin-top:5px}
+  .err{color:var(--coral-500);font-size:13.5px;margin-top:5px;min-height:0}
+  .err:empty{display:none}
+  .form-fail{display:none;background:var(--coral-50);border:1px solid var(--coral-100);color:var(--coral-600);padding:12px 14px;border-radius:12px;margin-bottom:16px;font-size:14.5px}
+  .form-fail.on{display:block}
+  .form-note{font-size:13px;color:var(--muted);margin-top:12px}
+  .only-build,.only-partner{display:none}
+  .form-card[data-pkg="BUILD"] .only-build,.form-card[data-pkg="PARTNER"] .only-build,.form-card[data-pkg="PARTNER"] .only-partner{display:block}
+  .done{text-align:center;padding:20px 0}
+  .done h3{font-size:24px;margin-bottom:10px}
+  .done p{color:var(--muted);max-width:520px;margin:0 auto 18px}
+  .turnstile-host{margin:6px 0 14px;min-height:65px}
+
+  /* ---------- FAQ ---------- */
+  .faq{margin-top:22px}
+  .faq details{border-bottom:1px solid var(--line);padding:16px 0}
+  .faq summary{cursor:pointer;font-weight:600;font-size:16.5px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+  .faq summary::after{content:"+";color:var(--green-500);font-size:22px;line-height:1}
+  .faq details[open] summary::after{content:"–"}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq details p{color:var(--muted);margin-top:10px;font-size:15px}
+
+  /* ---------- CONTACT + FOOT ---------- */
+  .contact{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+  .foot{background:var(--black);color:#c9d3d6;padding:40px 0;font-size:14px}
+  .foot a{color:#fff}
+  .foot__in{display:flex;flex-wrap:wrap;gap:14px 28px;justify-content:space-between}
+  .foot nav{display:flex;flex-wrap:wrap;gap:10px 20px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Bỏ qua điều hướng</a>
+
+<div class="navbar">
+  <a href="/" class="brand"><img src="/claude/assets/go4ai-badge.png" alt="" width="26" height="24"><span>Go4ai</span></a>
+  <nav aria-label="Trong trang">
+    <a href="#chon">Chọn con đường</a>
+    <a href="#goi">Quyền lợi &amp; phí</a>
+    <a href="#chinh-sach">Chính sách</a>
+    <a href="#hoi-dap">Hỏi đáp</a>
+    <a href="/claude/">Claude 90 phút</a>
+  </nav>
+  <a class="nav-cta" href="#dang-ky">Trao đổi với GO4AI</a>
+</div>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Vị trí">
+      <a href="/">GO4AI</a><span aria-hidden="true">›</span>
+      <a href="/claude/">Claude 90 phút</a><span aria-hidden="true">›</span>
+      <span aria-current="page">Sau 90 phút</span>
+    </nav>
+    <p class="eyebrow">Sau chương trình Claude 90 phút</p>
+    <h1>Bạn muốn AI tạo ra giá trị <span class="accent">cho ai</span>?</h1>
+    <p class="lede">Cho chính bạn, cho khách hàng của bạn, hay cho doanh nghiệp bạn điều hành. GO4AI có ba con đường thành viên 12 tháng tương ứng: <strong>LEARN</strong>, <strong>EARN</strong> và <strong>BUILD</strong>.</p>
+
+    <!-- Nội dung mặc định (không JS): trung tính — không nói "đã kết thúc", không nói "bạn đã giữ chỗ".
+         JS thay nội dung theo trạng thái: chưa đăng ký / đã đăng ký / sau sự kiện. -->
+    <div class="status" id="status" role="status">
+      <span class="status__dot" aria-hidden="true"></span>
+      <div class="status__text" id="statusText">
+        <strong>Claude 90 phút · 20:00 thứ Sáu 30/10/2026</strong>
+        Trực tuyến, miễn phí, có bản ghi. Tham gia chương trình không bắt buộc chọn con đường nào.
+      </div>
+      <div class="status__actions" id="statusActions">
+        <a class="btn btn--primary" href="/claude/#tham-gia">Giữ chỗ miễn phí</a>
+        <a class="btn btn--ghost" href="#chon">Chọn con đường ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6 CẤP ĐỘ → 3 CON ĐƯỜNG ================= -->
+<section class="sec sec--alt" id="cap-do" aria-labelledby="cap-do-title">
+  <div class="wrap">
+    <p class="eyebrow">Nối tiếp 90 phút</p>
+    <h2 class="h2" id="cap-do-title">Sáu cấp độ bạn đã thấy — và bạn muốn dừng ở đâu</h2>
+    <p class="lede">Cùng một công cụ, nhưng mỗi người cần đi tới một cấp độ khác nhau. Con đường phù hợp phụ thuộc vào cấp độ bạn muốn đạt tới trong 12 tháng.</p>
+    <div class="levels">
+      <a class="level" href="/claude/#level-1"><b>01</b><span>Hỏi đáp</span></a>
+      <a class="level" href="/claude/#level-2"><b>02</b><span>Trợ lý riêng</span></a>
+      <a class="level" href="/claude/#level-3"><b>03</b><span>Giao việc</span></a>
+      <a class="level" href="/claude/#level-4"><b>04</b><span>Tự động hóa</span></a>
+      <a class="level" href="/claude/#level-5"><b>05</b><span>Ứng dụng AI</span></a>
+      <a class="level" href="/claude/#level-6"><b>06</b><span>Hệ điều hành AI</span></a>
+    </div>
+    <div class="level-bands" aria-label="Gợi ý cấp độ theo con đường">
+      <span class="band band--learn">LEARN · làm chủ 01 → 03 cho công việc của bạn</span>
+      <span class="band band--earn">EARN · dùng 03 → 05 để làm project cho khách hàng</span>
+      <span class="band band--build">BUILD · đưa tổ chức tới 05 → 06</span>
+    </div>
+    <p class="levels-note">Đây là gợi ý để định hướng, không phải giới hạn. Bấm vào từng cấp độ để xem lại phần trình bày trên trang Claude 90 phút.</p>
+  </div>
+</section>
+
+<!-- ================= BỘ CHỌN + 3 THẺ ================= -->
+<section class="sec" id="chon" aria-labelledby="chon-title">
+  <div class="wrap">
+    <p class="eyebrow">Chọn trong 10 giây</p>
+    <h2 class="h2" id="chon-title">Bạn muốn AI tạo ra giá trị cho ai trước?</h2>
+    <p class="lede">Chọn một câu gần đúng nhất. Không cần gửi thông tin — trang chỉ mở phần quyền lợi phù hợp để bạn đọc.</p>
+
+    <div class="router" role="group" aria-label="Bạn muốn AI tạo ra giá trị cho ai trước?">
+      <a class="route" href="#learn" data-route="LEARN" aria-pressed="false">
+        <span class="route__radio" aria-hidden="true"></span>
+        <span><strong>Cho chính tôi</strong><small>Tôi muốn năng lực AI trở thành lợi thế trong công việc và sự nghiệp của mình.</small><em style="color:var(--learn)">→ LEARN</em></span>
+      </a>
+      <a class="route" href="#earn" data-route="EARN" aria-pressed="false">
+        <span class="route__radio" aria-hidden="true"></span>
+        <span><strong>Cho khách hàng của tôi</strong><small>Tôi muốn biến năng lực AI và chuyên môn hiện có thành project, dịch vụ, thu nhập.</small><em style="color:var(--earn)">→ EARN</em></span>
+      </a>
+      <a class="route" href="#build" data-route="BUILD" aria-pressed="false">
+        <span class="route__radio" aria-hidden="true"></span>
+        <span><strong>Cho doanh nghiệp tôi điều hành</strong><small>Tôi muốn AI trở thành năng lực của tổ chức, không chỉ của vài cá nhân.</small><em style="color:var(--build)">→ BUILD</em></span>
+      </a>
+      <a class="route" href="#partner" data-route="PARTNER" aria-pressed="false">
+        <span class="route__radio" aria-hidden="true"></span>
+        <span><strong>Tôi đã có thị trường, network, sản phẩm hoặc vốn</strong><small>Tôi muốn cùng GO4AI tạo ra cơ hội lớn hơn.</small><em style="color:var(--build)">→ BUILD · tầng 03 Hợp tác</em></span>
+      </a>
+    </div>
+
+    <div class="paths">
+      <article class="path" style="--c:var(--learn)" data-card="LEARN">
+        <span class="path__tag">LEARN</span>
+        <h3>Đầu tư nghiêm túc cho năng lực của chính bạn</h3>
+        <p>Cho người đi làm, chuyên viên, sinh viên muốn chứng minh được mình làm gì với AI.</p>
+        <ul><li>Đào tạo AI ở cấp độ công việc</li><li>Workshop với Founder, chuyên gia, doanh nghiệp</li><li>AI Passport — hồ sơ năng lực có xác minh</li></ul>
+        <a class="path__more" href="#learn">Xem quyền lợi &amp; phí →</a>
+      </article>
+      <article class="path" style="--c:var(--earn)" data-card="EARN">
+        <span class="path__tag">EARN</span>
+        <h3>Biến năng lực AI thành project và thu nhập</h3>
+        <p>Cho professional, freelancer, trainer, consultant muốn có dịch vụ mới với AI làm đòn bẩy.</p>
+        <ul><li>Toàn bộ quyền lợi LEARN</li><li>Opportunity Network với 6 vai trò</li><li>Cơ chế ghi nhận contribution minh bạch</li></ul>
+        <a class="path__more" href="#earn">Xem quyền lợi &amp; phí →</a>
+      </article>
+      <article class="path" style="--c:var(--build)" data-card="BUILD">
+        <span class="path__tag">BUILD</span>
+        <h3>Biến AI thành lợi thế cạnh tranh của doanh nghiệp</h3>
+        <p>Cho CEO, Founder, chủ doanh nghiệp muốn sở hữu năng lực AI, không chỉ dùng AI.</p>
+        <ul><li>01 · AI Business Capability</li><li>02 · Business Opportunity Network</li><li>03 · Từ thành viên đến đối tác chiến lược</li></ul>
+        <div class="path__sub">Đã có thị trường, network hoặc vốn? Tầng 03 nằm <strong>bên trong BUILD</strong>. <a href="#partner">Trao đổi hợp tác →</a></div>
+        <a class="path__more" href="#build">Xem quyền lợi &amp; phí →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUYỀN LỢI & PHÍ — mỗi lần chỉ mở MỘT gói ================= -->
+<!-- Có JS: dạng tab, mỗi lần một gói — người đọc BUILD không thấy 10M đứng cạnh 100M và ngược lại.
+     Không JS: ba gói hiện nối tiếp, đủ nội dung. -->
+<section class="sec sec--alt" id="goi" aria-labelledby="goi-title">
+  <div class="wrap">
+    <p class="eyebrow">Thành viên 12 tháng</p>
+    <h2 class="h2" id="goi-title">Quyền lợi và phí tham gia</h2>
+    <p class="lede">Mỗi gói là phí tham gia cố định cho 12 tháng. Quyền lợi của gói cao hơn bao gồm gói thấp hơn.</p>
+
+    <div class="tabs" role="tablist" aria-label="Chọn gói">
+      <button class="tab" role="tab" id="tab-learn" aria-controls="learn" aria-selected="false" data-tab="LEARN" style="--c:var(--learn)">LEARN</button>
+      <button class="tab" role="tab" id="tab-earn" aria-controls="earn" aria-selected="false" data-tab="EARN" style="--c:var(--earn)">EARN</button>
+      <button class="tab" role="tab" id="tab-build" aria-controls="build" aria-selected="false" data-tab="BUILD" style="--c:var(--build)">BUILD</button>
+    </div>
+    <p class="panel-empty" id="panelEmpty">Chọn một con đường ở phía trên, hoặc bấm LEARN · EARN · BUILD để xem quyền lợi và phí.</p>
+
+    <!-- ---------- LEARN ---------- -->
+    <article class="panel" id="learn" role="tabpanel" aria-labelledby="tab-learn" style="--c:var(--learn)" data-panel="LEARN">
+      <header class="panel__head">
+        <div>
+          <span class="path__tag">LEARN · Thành viên cá nhân</span>
+          <h3>Chứng minh bạn làm được gì với AI — không chỉ đã học gì</h3>
+          <p>Dành cho người đi làm, chuyên viên, sinh viên và người mới đi làm muốn đầu tư nghiêm túc cho năng lực và sự nghiệp của mình.</p>
+        </div>
+        <div class="fee"><small>Phí tham gia</small><strong>10.000.000đ</strong><span>/ người / 12 tháng · ≈ 27.400đ mỗi ngày</span></div>
+      </header>
+      <div class="panel__body">
+        <div>
+          <h4>Bạn nhận được trong 12 tháng</h4>
+          <ul class="ticks">
+            <li><b>Lộ trình đào tạo AI ở cấp độ công việc</b><span>Từ hỏi đáp, trợ lý riêng tới giao việc và workflow — trên bài toán công việc thật.</span></li>
+            <li><b>Workshop cùng Founder, chuyên gia, doanh nghiệp</b><span>Tiếp xúc trực tiếp với người đang triển khai AI, không chỉ người giảng về AI.</span></li>
+            <li><b>Challenge thực hành</b><span>Nộp đầu ra, không nộp bài lý thuyết.</span></li>
+            <li><b>Portfolio có bằng chứng</b><span>Mỗi sản phẩm gồm OUTPUT + EVIDENCE + KPI + VERIFICATION.</span></li>
+            <li><b>AI Passport</b><span>Hồ sơ năng lực AI được GO4AI xác minh trên <a href="https://passport.go4ai.org/?utm_source=b2b_site&amp;utm_medium=opp&amp;utm_campaign=claude_90m_20261030&amp;utm_content=learn_benefit" target="_blank" rel="noopener">passport.go4ai.org</a>, dùng được khi ứng tuyển hoặc đề xuất dự án.</span></li>
+            <li><b>Cộng đồng và network thành viên GO4AI</b></li>
+          </ul>
+        </div>
+        <div>
+          <div class="try">
+            <h4>Trải nghiệm AI Passport ngay</h4>
+            <p>Xem AI Passport ghi nhận năng lực của bạn thế nào — miễn phí, trước khi quyết định tham gia LEARN.</p>
+            <div class="try__actions">
+              <a class="btn btn--solid" href="https://play.google.com/store/apps/details?id=org.go4ai.passport" target="_blank" rel="noopener" data-track="passport_android">Tải app Android</a>
+              <a class="btn btn--line" href="https://passport.go4ai.org/?utm_source=b2b_site&amp;utm_medium=opp&amp;utm_campaign=claude_90m_20261030&amp;utm_content=learn_try" target="_blank" rel="noopener" data-track="passport_web">Dùng trên web ↗</a>
+            </div>
+            <small>Không cài app? Mở trực tiếp tại passport.go4ai.org trên mọi trình duyệt.</small>
+          </div>
+          <div class="box">
+            <h4>Hành trình 12 tháng</h4>
+            <div class="steps"><span>Training</span><i>→</i><span>Workshop</span><i>→</i><span>Challenge</span><i>→</i><span>Portfolio</span><i>→</i><span>AI Passport</span></div>
+          </div>
+          <div class="box">
+            <h4>Đầu ra cuối năm</h4>
+            <p>Một AI Passport và một portfolio cho thấy bạn đã dùng AI để tạo ra kết quả gì, đo bằng gì, ai xác nhận.</p>
+          </div>
+          <div class="box box--warn">
+            <h4>Không bao gồm</h4>
+            <ul><li>Cam kết việc làm hay mức lương.</li><li>Giao project có thu nhập — đó là quyền lợi của EARN.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="panel__cta">
+        <a class="btn btn--primary" href="#dang-ky" data-pick="LEARN">Đăng ký tham gia LEARN</a>
+        <p>GO4AI liên hệ trong 1 ngày làm việc để xác nhận và gửi thỏa thuận tham gia. Chưa thanh toán ở bước này.</p>
+      </div>
+      <nav class="others" aria-label="Con đường khác">Không phải con đường của bạn? <a href="#earn">EARN — biến năng lực thành thu nhập</a><a href="#build">BUILD — cho doanh nghiệp</a></nav>
+    </article>
+
+    <!-- ---------- EARN ---------- -->
+    <article class="panel" id="earn" role="tabpanel" aria-labelledby="tab-earn" style="--c:var(--earn)" data-panel="EARN">
+      <header class="panel__head">
+        <div>
+          <span class="path__tag">EARN · Thành viên chuyên môn</span>
+          <h3>Biến năng lực AI thành project và cơ hội thu nhập</h3>
+          <p>Dành cho professional, freelancer, trainer, consultant — hoặc người muốn biến chuyên môn hiện tại thành một dịch vụ mới có AI làm đòn bẩy.</p>
+        </div>
+        <div class="fee"><small>Phí tham gia</small><strong>30.000.000đ</strong><span>/ người / 12 tháng</span></div>
+      </header>
+      <div class="panel__body">
+        <div>
+          <p class="inherit"><strong>Bao gồm toàn bộ quyền lợi LEARN</strong> (đào tạo, workshop, challenge, portfolio, AI Passport), cộng thêm:</p>
+          <h4>Bạn nhận được trong 12 tháng</h4>
+          <ul class="ticks">
+            <li><b>Tham gia Opportunity Network của GO4AI</b><span>Theo 6 vai trò: AI Project · Training Partner · AI Builder · Agent / Referral · Business Connector · Market-entry.</span></li>
+            <li><b>Cơ chế thương mại rõ ràng cho từng loại đóng góp</b><span>Delivery · Training · Consulting · Referral · Business Development · Co-selling · Project Partner.</span></li>
+            <li><b>GO4AI OS</b><span>Tài khoản thành viên trên <a href="https://app.go4ai.org/?utm_source=b2b_site&amp;utm_medium=opp&amp;utm_campaign=claude_90m_20261030&amp;utm_content=earn_benefit" target="_blank" rel="noopener">app.go4ai.org</a> để nhận cơ hội, theo dõi project và ghi nhận contribution.</span></li>
+            <li><b>Đóng gói chuyên môn thành dịch vụ</b><span>Biến cách bạn đang làm việc thành một chuỗi có AI tham gia — thứ doanh nghiệp phải thuê ngoài.</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="try">
+            <h4>Trải nghiệm GO4AI OS</h4>
+            <p>Nền tảng nơi thành viên EARN nhận cơ hội, theo dõi project và ghi nhận contribution. Xem trước trước khi quyết định.</p>
+            <div class="try__actions">
+              <a class="btn btn--solid" href="https://app.go4ai.org/?utm_source=b2b_site&amp;utm_medium=opp&amp;utm_campaign=claude_90m_20261030&amp;utm_content=earn_try" target="_blank" rel="noopener" data-track="os_earn">Mở app.go4ai.org ↗</a>
+            </div>
+          </div>
+          <div class="box box--principle">
+            <h4>Nguyên tắc</h4>
+            <p><strong>GO4AI không trả thưởng vì tuyển thêm thành viên.</strong></p>
+            <p>Giá trị kinh tế chỉ phát sinh khi có project thật, khách hàng thật, deal thật, contribution thật.</p>
+          </div>
+          <div class="box">
+            <h4>Đầu ra cuối năm</h4>
+            <p>Các project và contribution đã được ghi nhận, cùng AI Passport chứng minh năng lực đứng sau chúng.</p>
+          </div>
+          <div class="box box--warn">
+            <h4>Không bao gồm</h4>
+            <ul><li>Cam kết số project hay mức thu nhập.</li><li>Commission cho mọi lượt giới thiệu — chỉ trả cho giới thiệu thành deal thật.</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="panel__cta">
+        <a class="btn btn--primary" href="#dang-ky" data-pick="EARN" style="background:var(--earn);box-shadow:none">Đăng ký tham gia EARN</a>
+        <p>GO4AI liên hệ trong 1 ngày làm việc để trao đổi vai trò phù hợp với bạn trước khi gửi thỏa thuận.</p>
+      </div>
+      <nav class="others" aria-label="Con đường khác">Không phải con đường của bạn? <a href="#learn">LEARN — xây năng lực trước</a><a href="#build">BUILD — cho doanh nghiệp</a></nav>
+    </article>
+
+    <!-- ---------- BUILD (gồm tầng 03 Partnership) ---------- -->
+    <article class="panel" id="build" role="tabpanel" aria-labelledby="tab-build" style="--c:var(--build)" data-panel="BUILD">
+      <header class="panel__head">
+        <div>
+          <span class="path__tag">BUILD · Thành viên doanh nghiệp</span>
+          <h3>Không phải học thêm một công cụ. Là thiết kế lại cách doanh nghiệp vận hành.</h3>
+          <p>Dành cho CEO, Founder, chủ doanh nghiệp muốn AI trở thành năng lực của tổ chức — có quy trình, context dùng chung và tài sản tái sử dụng được, không phụ thuộc vào một cá nhân.</p>
+        </div>
+        <div class="fee"><small>Phí tham gia</small><strong>100.000.000đ</strong><span>/ doanh nghiệp / 12 tháng</span></div>
+      </header>
+      <div class="panel__body">
+        <div>
+          <p class="inherit"><strong>Bao gồm quyền lợi EARN cho 1 người đại diện doanh nghiệp</strong>, cộng thêm ba tầng:</p>
+          <div class="tiers">
+            <section class="tier">
+              <span class="tier__n">01</span>
+              <h5>AI Business Capability</h5>
+              <div class="chips"><span>AI Business Review</span><span>Brand Intelligence</span><span>Market Intelligence</span><span>Sales AI</span><span>Workflow / Agent / AI Application</span></div>
+            </section>
+            <section class="tier">
+              <span class="tier__n">02</span>
+              <h5>Business Opportunity Network</h5>
+              <p style="font-size:14.5px;color:var(--muted);margin-bottom:8px">Kết nối doanh nghiệp, trường học, chuyên gia, AI Builder, trainer, agent và đối tác quốc tế.</p>
+              <div class="chips"><span>K-Brand / International Market Entry</span><span>Education Partner Network</span><span>Training Partner</span><span>AI Agent / Solution Partner</span><span>Business Matching</span></div>
+            </section>
+            <section class="tier tier--partner" id="partner" tabindex="-1">
+              <span class="tier__n">03 · PARTNERSHIP</span>
+              <h5>Từ thành viên đến đối tác chiến lược</h5>
+              <p style="font-size:14.5px"><strong>Tham gia BUILD không tự động biến doanh nghiệp thành Strategic Partner.</strong> Cơ hội được xác định dựa trên:</p>
+              <span class="formula">FIT × CAPABILITY × CONTRIBUTION × BUSINESS VALUE</span>
+              <div class="chips" style="margin:6px 0 10px"><span>Co-sell</span><span>Co-build</span><span>Market Expansion</span><span>Product Partnership</span><span>Revenue Share</span><span>SPV / JV</span></div>
+              <p style="font-size:14px;color:var(--muted)">SPV / JV chỉ xem xét với cơ hội chiến lược phù hợp và có thỏa thuận riêng. Nếu bạn đã có thị trường, network, khách hàng, sản phẩm, công nghệ, distribution hoặc vốn, có thể trao đổi hợp tác trước khi trở thành thành viên.</p>
+              <p style="margin-top:12px"><a class="btn btn--coral" href="#dang-ky" data-pick="PARTNER" style="padding:10px 18px;font-size:14px">Trao đổi hợp tác</a></p>
+            </section>
+          </div>
+        </div>
+        <div>
+          <div class="try">
+            <h4>Trải nghiệm GO4AI Work OS</h4>
+            <p>Hệ điều hành AI-first cho doanh nghiệp — nơi năng lực AI của tổ chức được vận hành, không nằm rải rác ở từng cá nhân.</p>
+            <div class="try__actions">
+              <a class="btn btn--solid" href="https://app.go4ai.org/?utm_source=b2b_site&amp;utm_medium=opp&amp;utm_campaign=claude_90m_20261030&amp;utm_content=build_try" target="_blank" rel="noopener" data-track="os_build">Mở app.go4ai.org ↗</a>
+            </div>
+          </div>
+          <div class="box">
+            <h4>Một bài toán thật</h4>
+            <p>Một doanh nghiệp sản xuất rút thời gian báo giá từ 15–30 phút xuống dưới 60 giây; bản vẽ kỹ thuật từ 15–20 phút xuống gần như tức thì. <a href="/ung-dung-thuc-te">Xem case thực tế →</a></p>
+          </div>
+          <div class="box">
+            <h4>Một cơ hội thật</h4>
+            <p>Jably gặp GO4AI tại chương trình mentoring K-BRAND và trở thành khách hàng nước ngoài đầu tiên của GO4AI — qua một chuỗi research, phân tích, thảo luận và thiết kế hướng triển khai vào thị trường Việt Nam.</p>
+          </div>
+          <div class="box box--principle">
+            <h4>Ranh giới trung thực</h4>
+            <p>Không xây AI Agent chỉ vì AI Agent đang là xu hướng. Không tự động hóa một quy trình chưa được hiểu rõ.</p>
+            <p>Chỉ triển khai sâu hơn khi bài toán và giá trị đủ rõ. Phần triển khai vượt quyền lợi của gói là thỏa thuận riêng, báo trước, không phát sinh ngầm.</p>
+          </div>
+        </div>
+      </div>
+      <div class="panel__cta">
+        <a class="btn btn--coral" href="#dang-ky" data-pick="BUILD">Đặt lịch trao đổi BUILD</a>
+        <p>Buổi trao đổi 45 phút, không tính phí: xác định doanh nghiệp đang ở cấp độ nào và BUILD có đáng đầu tư lúc này hay không.</p>
+      </div>
+      <nav class="others" aria-label="Con đường khác">Không phải con đường của bạn? <a href="#learn">LEARN — cho năng lực cá nhân</a><a href="#earn">EARN — cho người làm dịch vụ</a></nav>
+    </article>
+  </div>
+</section>
+
+<!-- ================= SO SÁNH (không giá) ================= -->
+<section class="sec" id="so-sanh" aria-labelledby="so-sanh-title">
+  <div class="wrap">
+    <p class="eyebrow">Khác nhau ở đâu</p>
+    <h2 class="h2" id="so-sanh-title">Ba con đường, ba loại người quyết định</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col"><span class="skip">Tiêu chí</span></th><th scope="col">LEARN</th><th scope="col">EARN</th><th scope="col">BUILD</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Giá trị tạo ra cho</th><td>Chính bạn</td><td>Khách hàng của bạn</td><td>Doanh nghiệp của bạn</td></tr>
+          <tr><th scope="row">Thường phù hợp với</th><td>Người đi làm, chuyên viên, sinh viên</td><td>Freelancer, trainer, consultant, professional</td><td>CEO, Founder, chủ doanh nghiệp</td></tr>
+          <tr><th scope="row">Đầu ra sau 12 tháng</th><td>AI Passport + portfolio</td><td>Project và contribution được ghi nhận</td><td>Năng lực AI của tổ chức + cơ hội kinh doanh mới</td></tr>
+          <tr><th scope="row">Cấp độ AI hướng tới</th><td>01 → 03</td><td>03 → 05</td><td>05 → 06</td></tr>
+          <tr><th scope="row">Bước đầu tiên</th><td>Đăng ký, GO4AI xác nhận</td><td>Trao đổi vai trò, rồi đăng ký</td><td>Buổi trao đổi 45 phút</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CHÍNH SÁCH ================= -->
+<section class="sec sec--alt" id="chinh-sach" aria-labelledby="chinh-sach-title">
+  <div class="wrap">
+    <p class="eyebrow">Rõ ràng trước khi quyết định</p>
+    <h2 class="h2" id="chinh-sach-title">Chính sách thành viên</h2>
+    <div class="policy">
+      <article><h3>Phí cố định cho 12 tháng</h3><p>Mỗi gói có một mức phí tham gia duy nhất, thanh toán một lần, nêu ở phần quyền lợi của gói. Không có "từ…", không tăng theo phạm vi, không phí ẩn.</p></article>
+      <article><h3>Thời hạn tính từ ngày kích hoạt</h3><p>12 tháng bắt đầu từ ngày GO4AI xác nhận thanh toán và gửi thông tin tham gia — không phải từ ngày bạn gửi đăng ký.</p></article>
+      <article><h3>Quyền lợi cộng dồn</h3><p>EARN bao gồm toàn bộ quyền lợi LEARN. BUILD bao gồm quyền lợi EARN cho 1 người đại diện doanh nghiệp, cộng ba tầng dành cho tổ chức.</p></article>
+      <article><h3>Nâng cấp bất kỳ lúc nào</h3><p>Chỉ trả phần chênh lệch phí giữa hai gói. Thời hạn giữ nguyên theo ngày kích hoạt ban đầu.</p></article>
+      <article><h3>Đổi gói trong 14 ngày đầu</h3><p>Nếu gói chưa phù hợp, bạn có thể chuyển sang gói khác trong 14 ngày đầu kể từ ngày kích hoạt. Chuyển xuống gói thấp hơn được hoàn phần chênh lệch.</p></article>
+      <article><h3>Không tự động gia hạn</h3><p>GO4AI nhắc bạn trước 30 ngày khi sắp hết hạn. Bạn quyết định gia hạn, đổi gói hoặc dừng.</p></article>
+      <article><h3>Không trả thưởng vì tuyển thành viên</h3><p>Giá trị kinh tế trong EARN và BUILD chỉ phát sinh từ project, khách hàng, deal và contribution thật.</p></article>
+      <article><h3>BUILD không mặc định là đối tác chiến lược</h3><p>Tầng 03 mở ra khi hai bên đủ phù hợp (FIT × CAPABILITY × CONTRIBUTION × BUSINESS VALUE). SPV / JV luôn có thỏa thuận riêng.</p></article>
+      <article><h3>Đăng ký không phải thanh toán</h3><p>Gửi đăng ký trên trang này không phát sinh nghĩa vụ thanh toán. GO4AI liên hệ trong 1 ngày làm việc, gửi thỏa thuận tham gia và thông tin thanh toán; bạn đọc xong mới quyết định. Trang này không thu tiền trực tuyến.</p></article>
+      <article><h3>90 phút vẫn miễn phí, độc lập</h3><p>Tham gia chương trình Claude 90 phút không bắt buộc chọn gói nào. Dữ liệu bạn gửi được xử lý theo <a href="/chinh-sach-bao-ve-du-lieu">Chính sách bảo vệ dữ liệu</a>.</p></article>
+    </div>
+    <p class="policy-meta">Phiên bản chính sách 09/2026. Điều khoản chi tiết nằm trong thỏa thuận tham gia GO4AI gửi cho từng thành viên; khi có khác biệt, thỏa thuận đã ký được áp dụng.</p>
+  </div>
+</section>
+
+<!-- ================= ĐĂNG KÝ / TRAO ĐỔI ================= -->
+<section class="sec" id="dang-ky" aria-labelledby="dang-ky-title">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow">Bước tiếp theo, nếu bạn muốn</p>
+    <h2 class="h2" id="dang-ky-title">Trao đổi với GO4AI về con đường bạn chọn</h2>
+    <p class="lede">Không thanh toán ở bước này. GO4AI liên hệ trong 1 ngày làm việc qua số điện thoại / Zalo hoặc email bạn để lại.</p>
+
+    <div class="form-card" id="formCard" data-pkg="">
+      <form id="oppForm" novalidate>
+        <div class="form-fail" id="formFail" role="alert"></div>
+        <div class="field">
+          <label for="pkg">Con đường bạn quan tâm <span class="req" aria-hidden="true">*</span></label>
+          <select id="pkg" name="pkg" required>
+            <option value="">Chọn một mục</option>
+            <option value="LEARN">LEARN — năng lực cá nhân</option>
+            <option value="EARN">EARN — project và thu nhập</option>
+            <option value="BUILD">BUILD — cho doanh nghiệp</option>
+            <option value="PARTNER">BUILD · tầng 03 — trao đổi hợp tác</option>
+          </select>
+          <p class="err" id="err-pkg"></p>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="name">Họ và tên <span class="req" aria-hidden="true">*</span></label><input type="text" id="name" name="name" autocomplete="name" required><p class="err" id="err-name"></p></div>
+          <div class="field"><label for="phone">Số điện thoại / Zalo <span class="req" aria-hidden="true">*</span></label><input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" required><p class="err" id="err-phone"></p></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="email">Email <span class="req" aria-hidden="true">*</span></label><input type="email" id="email" name="email" autocomplete="email" inputmode="email" required><p class="err" id="err-email"></p></div>
+          <div class="field">
+            <label for="timeline">Bạn muốn bắt đầu khi nào?</label>
+            <select id="timeline" name="timeline"><option value="">Chọn một mục</option><option>Ngay</option><option>Trong 1 tháng</option><option>Trong 1–3 tháng</option><option>Đang tìm hiểu</option></select>
+          </div>
+        </div>
+        <div class="field only-build"><label for="company">Tên doanh nghiệp <span class="req" aria-hidden="true">*</span></label><input type="text" id="company" name="company" autocomplete="organization"><p class="err" id="err-company"></p></div>
+        <div class="field only-partner">
+          <fieldset>
+            <legend>Bạn có gì để cùng tạo ra cơ hội?</legend>
+            <div class="checks" id="partnerHave">
+              <label><input type="checkbox" value="Thị trường"> Thị trường</label>
+              <label><input type="checkbox" value="Network"> Network</label>
+              <label><input type="checkbox" value="Khách hàng"> Khách hàng</label>
+              <label><input type="checkbox" value="Sản phẩm"> Sản phẩm</label>
+              <label><input type="checkbox" value="Công nghệ"> Công nghệ</label>
+              <label><input type="checkbox" value="Distribution"> Distribution</label>
+              <label><input type="checkbox" value="Vốn"> Vốn</label>
+              <label><input type="checkbox" value="Chuyên môn"> Chuyên môn</label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="field only-partner">
+          <label for="message">Mô tả ngắn hướng hợp tác bạn nghĩ tới <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="message" name="message" maxlength="1000"></textarea>
+          <p class="hint">Ví dụ: thị trường bạn đang có, sản phẩm muốn co-sell, hoặc cơ hội muốn cùng khai thác. Không cần gửi đường link.</p>
+          <p class="err" id="err-message"></p>
+        </div>
+        <div id="opp-turnstile" class="turnstile-host"></div>
+        <button type="submit" class="btn btn--primary" id="submit" style="width:100%">Gửi cho GO4AI</button>
+        <p class="form-note">Bằng việc gửi, bạn đồng ý để GO4AI liên hệ về con đường đã chọn theo <a href="/chinh-sach-bao-ve-du-lieu">Chính sách bảo vệ dữ liệu</a>. Gửi thông tin không phát sinh nghĩa vụ thanh toán.</p>
+      </form>
+      <div class="done" id="done" hidden tabindex="-1">
+        <h3>GO4AI đã nhận thông tin của bạn</h3>
+        <p id="doneText">Chúng tôi sẽ liên hệ trong 1 ngày làm việc.</p>
+        <a class="btn btn--ghost" href="/claude/">Về trang Claude 90 phút</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HỎI ĐÁP ================= -->
+<section class="sec sec--alt" id="hoi-dap" aria-labelledby="hoi-dap-title">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow">Hỏi đáp</p>
+    <h2 class="h2" id="hoi-dap-title">Câu hỏi thường gặp</h2>
+    <div class="faq">
+      <details><summary>Tôi có phải chọn gói mới được tham gia Claude 90 phút?</summary><p>Không. Chương trình 90 phút miễn phí và độc lập. Ba con đường ở đây chỉ dành cho người muốn đi tiếp sau đó.</p></details>
+      <details><summary>PARTNER có phải gói thứ tư?</summary><p>Không. Partnership là tầng 03 bên trong BUILD, không có giá riêng và không mua được. Nó mở ra khi hai bên đủ phù hợp. Nếu bạn đã có thị trường, network, sản phẩm hoặc vốn, bạn có thể trao đổi hợp tác ngay.</p></details>
+      <details><summary>Tôi chưa chắc mình thuộc con đường nào?</summary><p>Chọn con đường gần nhất trong form và ghi "Đang tìm hiểu" ở câu thời điểm. GO4AI sẽ hỏi thêm vài câu trước khi gợi ý — không gửi thỏa thuận khi bạn chưa sẵn sàng.</p></details>
+      <details><summary>Tham gia LEARN rồi, giữa năm muốn lên EARN thì sao?</summary><p>Bạn nâng cấp bất kỳ lúc nào và chỉ trả phần chênh lệch phí giữa hai gói. Thời hạn vẫn tính theo ngày kích hoạt ban đầu.</p></details>
+      <details><summary>Công ty tôi có nhiều người muốn học thì chọn gói nào?</summary><p>BUILD là gói cho tổ chức, kèm quyền lợi EARN cho 1 người đại diện. Nếu doanh nghiệp muốn đào tạo cả đội ngũ, hãy nói trong buổi trao đổi — GO4AI có chương trình đào tạo doanh nghiệp riêng, báo giá theo thỏa thuận.</p></details>
+      <details><summary>EARN có đảm bảo tôi có thu nhập không?</summary><p>Không. GO4AI không cam kết số project hay mức thu nhập, và không trả thưởng vì tuyển thành viên. Thu nhập chỉ phát sinh từ project, khách hàng, deal và contribution thật.</p></details>
+      <details><summary>Tôi bỏ lỡ buổi 90 phút thì sao?</summary><p>Chương trình có bản ghi. Xem thông tin trên <a href="/claude/">trang Claude 90 phút</a>. Bạn vẫn có thể trao đổi về con đường phù hợp mà không cần xem xong.</p></details>
+    </div>
+    <div class="contact">
+      <a class="btn btn--ghost" href="tel:0988846503">Hotline 0988 846 503</a>
+      <a class="btn btn--ghost" href="mailto:hocvien@go4ai.life?subject=Sau%20Claude%2090%20ph%C3%BAt">hocvien@go4ai.life</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span>© 2026 GO4AI — Đào tạo và ứng dụng AI cho doanh nghiệp</span>
+    <nav aria-label="Liên kết cuối trang">
+      <a href="/claude/">← Claude 90 phút</a>
+      <a href="/">Trang chủ GO4AI</a>
+      <a href="/ung-dung-thuc-te">Ứng dụng thực tế</a>
+      <a href="/lucas">Lucas Đặng</a>
+      <a href="/dieu-khoan-su-dung">Điều khoản</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var d = document, root = d.documentElement;
+  root.classList.add('js-on');
+  /* Khai báo form trước: open() được gọi ngay lúc tải (từ #hash) và cần pkgSel. */
+  var form = d.getElementById('oppForm'), card = d.getElementById('formCard'), pkgSel = d.getElementById('pkg');
+  var failBox = d.getElementById('formFail'), btn = d.getElementById('submit');
+
+  /* ---------- LƯU TRỮ CỤC BỘ: chỉ cờ, KHÔNG lưu tên/SĐT/email ---------- */
+  function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch(e){ return null; } }
+
+  /* ---------- TRẠNG THÁI THEO THỜI ĐIỂM + ĐĂNG KÝ ----------
+     ?state=default|registered|live|ended chỉ để kiểm thử trước ngày 30/10. */
+  var EVENT_START = Date.parse('2026-10-30T20:00:00+07:00');
+  var EVENT_END   = Date.parse('2026-10-30T21:30:00+07:00');
+  var params = new URLSearchParams(location.search);
+  var now = Date.now();
+  var registered = !!store('go4ai_claude90');
+  var state = params.get('state') ||
+    (now >= EVENT_END ? 'ended' : now >= EVENT_START ? 'live' : registered ? 'registered' : 'default');
+  var CAL = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' +
+    encodeURIComponent('Claude 90 phút — GO4AI') + '&dates=20261030T130000Z/20261030T143000Z&details=' +
+    encodeURIComponent('Chương trình trực tuyến miễn phí cùng Lucas Đặng. Thông tin: https://b2b.go4ai.org/claude/');
+
+  function el(tag, attrs, text){
+    var n = d.createElement(tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text) n.textContent = text;
+    return n;
+  }
+  function renderStatus(title, body, actions){
+    var t = d.getElementById('statusText'), a = d.getElementById('statusActions');
+    t.textContent = '';
+    t.appendChild(el('strong', {}, title));
+    t.appendChild(d.createTextNode(body));
+    a.textContent = '';
+    actions.forEach(function(x){ a.appendChild(el('a', { 'class': 'btn ' + x[2], href: x[1] }, x[0])); });
+  }
+  if (state === 'registered') {
+    renderStatus('Bạn đã giữ chỗ · 20:00 thứ Sáu 30/10/2026',
+      'Link tham gia được gửi qua kênh đăng ký. Trong lúc chờ, bạn có thể xem trước con đường phù hợp.',
+      [['Thêm vào Google Calendar', CAL, 'btn--ghost'], ['Chọn con đường ↓', '#chon', 'btn--primary']]);
+  } else if (state === 'live') {
+    renderStatus('Chương trình Claude 90 phút đang diễn ra',
+      'Sau buổi, đây là nơi bạn quay lại để chọn bước tiếp theo.',
+      [['Chọn con đường ↓', '#chon', 'btn--primary']]);
+  } else if (state === 'ended') {
+    renderStatus('Bạn đã thấy 6 cấp độ. Giờ là bước tiếp theo.',
+      'Chương trình Claude 90 phút đã diễn ra ngày 30/10/2026. Nếu bạn muốn đi tiếp, chọn con đường phù hợp bên dưới.',
+      [['Chọn con đường ↓', '#chon', 'btn--primary'], ['Thông tin xem lại', '/claude/', 'btn--ghost']]);
+  }
+
+  /* ---------- BỘ CHỌN + TAB: mỗi lần chỉ mở MỘT gói ---------- */
+  var panels = { LEARN: d.getElementById('learn'), EARN: d.getElementById('earn'), BUILD: d.getElementById('build') };
+  var tabs = [].slice.call(d.querySelectorAll('[data-tab]'));
+  var routes = [].slice.call(d.querySelectorAll('[data-route]'));
+  var cards = [].slice.call(d.querySelectorAll('[data-card]'));
+  var empty = d.getElementById('panelEmpty');
+
+  function open(pkg, opts){
+    opts = opts || {};
+    var panelKey = pkg === 'PARTNER' ? 'BUILD' : pkg;
+    if (!panels[panelKey]) return;
+    Object.keys(panels).forEach(function(k){ panels[k].hidden = k !== panelKey; });
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', t.getAttribute('data-tab') === panelKey ? 'true' : 'false'); t.tabIndex = t.getAttribute('data-tab') === panelKey ? 0 : -1; });
+    routes.forEach(function(r){ r.setAttribute('aria-pressed', r.getAttribute('data-route') === pkg ? 'true' : 'false'); });
+    cards.forEach(function(c){ c.classList.toggle('is-picked', c.getAttribute('data-card') === panelKey); });
+    empty.hidden = true;
+    store('go4ai_opp_path', pkg);
+    setPkg(pkg, true);
+    if (opts.scroll) {
+      /* Cuộn tới hàng tab (không phải panel) để tab đang chọn không nằm dưới thanh menu cố định. */
+      var target = pkg === 'PARTNER' ? d.getElementById('partner') : d.querySelector('.tabs');
+      target.scrollIntoView({ block: 'start' });
+    }
+  }
+  /* Không JS thì ba panel hiện nối tiếp. Có JS thì ẩn hết tới khi người đọc chọn. */
+  Object.keys(panels).forEach(function(k){ panels[k].hidden = true; });
+
+  routes.forEach(function(r){ r.addEventListener('click', function(e){ e.preventDefault(); open(r.getAttribute('data-route'), { scroll: true }); history.replaceState(null, '', '#' + r.getAttribute('data-route').toLowerCase()); }); });
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ open(t.getAttribute('data-tab')); history.replaceState(null, '', '#' + t.getAttribute('data-tab').toLowerCase()); });
+    t.addEventListener('keydown', function(e){
+      var dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!dir) return;
+      var next = tabs[(i + dir + tabs.length) % tabs.length];
+      next.focus(); next.click();
+    });
+  });
+
+  function fromHash(){
+    var h = (location.hash || '').slice(1).toUpperCase();
+    if (h === 'LEARN' || h === 'EARN' || h === 'BUILD' || h === 'PARTNER') { open(h, { scroll: true }); return true; }
+    return false;
+  }
+  window.addEventListener('hashchange', fromHash);
+  if (!fromHash()) {
+    var remembered = store('go4ai_opp_path');
+    if (remembered && /^(LEARN|EARN|BUILD|PARTNER)$/.test(remembered)) open(remembered);
+  }
+
+  /* Nút CTA trong panel: chọn sẵn gói trong form rồi cuộn xuống. */
+  [].forEach.call(d.querySelectorAll('[data-pick]'), function(a){
+    a.addEventListener('click', function(){ setPkg(a.getAttribute('data-pick')); });
+  });
+
+  /* ---------- FORM ---------- */
+  function setPkg(pkg, onlyIfEmpty){
+    if (onlyIfEmpty && pkgSel.value) return;
+    pkgSel.value = pkg; card.setAttribute('data-pkg', pkg);
+  }
+  pkgSel.addEventListener('change', function(){ card.setAttribute('data-pkg', pkgSel.value); });
+
+  var TS_SITEKEY = '0x4AAAAAAFEKUSpRYiMMOJsg', ts = { id: null, token: '' };
+  function tsRender(){
+    if (!window.turnstile || ts.id !== null) return;
+    try {
+      ts.id = window.turnstile.render('#opp-turnstile', {
+        sitekey: TS_SITEKEY, theme: 'light',
+        callback: function(t){ ts.token = t || ''; },
+        'expired-callback': function(){ ts.token = ''; },
+        'timeout-callback': function(){ ts.token = ''; },
+        'error-callback': function(){ ts.token = ''; }
+      });
+    } catch(e){ ts.id = null; }
+  }
+  function tsToken(){
+    if (window.turnstile && ts.id !== null) { try { var r = window.turnstile.getResponse(ts.id); if (r) return r; } catch(e){} }
+    return ts.token;
+  }
+  function tsReset(){ ts.token = ''; if (window.turnstile && ts.id !== null) { try { window.turnstile.reset(ts.id); } catch(e){} } }
+  (function waitTs(n){ if (window.turnstile) { tsRender(); return; } if (n < 200) setTimeout(function(){ waitTs(n + 1); }, 100); })(0);
+
+  function err(id, msg){ d.getElementById('err-' + id).textContent = msg || ''; }
+  ['pkg','name','phone','email','company','message'].forEach(function(id){
+    var f = d.getElementById(id); f.addEventListener('input', function(){ err(id, ''); }); f.addEventListener('change', function(){ err(id, ''); });
+  });
+  function val(id){ return d.getElementById(id).value.trim(); }
+  function validate(){
+    var pkg = pkgSel.value, orgNeeded = pkg === 'BUILD' || pkg === 'PARTNER';
+    err('pkg', pkg ? '' : 'Vui lòng chọn con đường bạn quan tâm.');
+    err('name', val('name').length >= 2 ? '' : 'Vui lòng nhập họ và tên.');
+    err('phone', /^[0-9+()\s.\-]{8,}$/.test(val('phone')) ? '' : 'Số điện thoại/Zalo chưa hợp lệ.');
+    err('email', /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val('email')) ? '' : 'Email chưa đúng định dạng.');
+    err('company', !orgNeeded || val('company').length >= 2 ? '' : 'Vui lòng nhập tên doanh nghiệp.');
+    err('message', pkg !== 'PARTNER' || val('message').length >= 20 ? '' : 'Vui lòng mô tả ngắn hướng hợp tác (ít nhất 20 ký tự).');
+    var first = form.querySelector('.err:not(:empty)');
+    if (first) { var input = first.parentNode.querySelector('input,select,textarea'); if (input) input.focus(); return false; }
+    return true;
+  }
+  function errorCopy(e){
+    var s = (e && e.status) || 0;
+    if (s === 503) return 'Hệ thống xác thực bảo mật chưa sẵn sàng. Bạn gọi hotline 0988 846 503 để được hỗ trợ — dữ liệu đã nhập vẫn còn nguyên.';
+    if (s === 403) return 'Xác thực bảo mật không hợp lệ hoặc đã hết hạn. Bạn bấm vào ô xác thực để xác thực lại rồi gửi lại.';
+    if (s === 429) return (e && e.message) || 'Bạn đã gửi quá nhiều lần trong thời gian ngắn. Vui lòng thử lại sau ít phút.';
+    if (e && e.message && e.message !== 'rejected') return e.message;
+    return 'Chưa gửi được. Bạn kiểm tra kết nối rồi thử lại — dữ liệu đã nhập vẫn còn nguyên.';
+  }
+  var DONE = {
+    LEARN: 'GO4AI sẽ liên hệ trong 1 ngày làm việc để xác nhận và gửi thỏa thuận tham gia LEARN.',
+    EARN: 'GO4AI sẽ liên hệ trong 1 ngày làm việc để trao đổi vai trò phù hợp với bạn trong EARN.',
+    BUILD: 'GO4AI sẽ liên hệ trong 1 ngày làm việc để hẹn buổi trao đổi 45 phút về BUILD.',
+    PARTNER: 'GO4AI sẽ đọc mô tả của bạn và liên hệ trong 1 ngày làm việc để trao đổi hướng hợp tác.'
+  };
+  var loadedAt = Date.now();
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    failBox.classList.remove('on');
+    if (!validate()) return;
+    var token = tsToken();
+    if (!token) { failBox.textContent = 'Vui lòng hoàn thành xác thực bảo mật trước khi gửi.'; failBox.classList.add('on'); return; }
+    var pkg = pkgSel.value;
+    var have = [].map.call(d.querySelectorAll('#partnerHave input:checked'), function(i){ return i.value; });
+    btn.disabled = true; btn.textContent = 'Đang gửi…';
+    fetch('/api/leads', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        leadType: 'membership_interest', source: 'opp_landing_page', sourcePage: '/opp/',
+        sourceCta: 'opp_form_' + pkg.toLowerCase(),
+        name: val('name'), phone: val('phone'), email: val('email'),
+        company: (pkg === 'BUILD' || pkg === 'PARTNER') ? val('company') : '',
+        package: pkg, startTimeline: val('timeline'),
+        message: pkg === 'PARTNER' ? val('message') : '',
+        partnerHave: pkg === 'PARTNER' ? have : [],
+        pageState: state, claude90Registered: registered,
+        turnstileToken: token, clientTimestamp: loadedAt,
+        utm_source: params.get('utm_source') || undefined, utm_medium: params.get('utm_medium') || undefined,
+        utm_campaign: params.get('utm_campaign') || undefined, utm_content: params.get('utm_content') || undefined,
+        referrer: d.referrer || undefined
+      })
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(data){
+        if (!r.ok || !data.success) { var x = new Error(data.error || 'rejected'); x.status = r.status; throw x; }
+        form.hidden = true;
+        d.getElementById('doneText').textContent = DONE[pkg];
+        var done = d.getElementById('done'); done.hidden = false; done.focus();
+      });
+    }).catch(function(error){
+      tsReset();
+      failBox.textContent = errorCopy(error); failBox.classList.add('on');
+      btn.disabled = false; btn.textContent = 'Gửi cho GO4AI';
+    });
+  });
+})();
+</script>
+</body>
+</html>

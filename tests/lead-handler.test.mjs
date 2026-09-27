@@ -216,3 +216,41 @@ test('Claude registration persists three contact fields, then qualifies the same
     db.sqlite.close();
   }
 });
+
+test('membership interest from /opp/ stores the package, and two packages are two leads', async () => {
+  const oldFetch = globalThis.fetch;
+  const telegramTexts = [];
+  globalThis.fetch = async (url, init) => {
+    if (String(url).includes('/siteverify')) {
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    }
+    telegramTexts.push(JSON.parse(init.body).text);
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  };
+  const db = createDb();
+  try {
+    const env = { TELEGRAM_BOT_TOKEN: 'test-token', TELEGRAM_CHAT_ID: 'test-chat' };
+    const base = { leadType: 'membership_interest', source: 'opp_landing_page', company: '' };
+    const learn = await submit(db, 'member@example.com', { ...base, package: 'LEARN', startTimeline: 'Ngay' }, env);
+    assert.equal(learn.status, 201);
+    const partner = await submit(db, 'member@example.com', {
+      ...base, package: 'PARTNER', company: 'Example Co',
+      message: 'Chúng tôi có kênh phân phối giáo dục tại miền Trung.', partnerHave: ['Network', 'Distribution'],
+    }, env);
+    assert.equal(partner.status, 201);
+    const rows = db.sqlite.prepare("SELECT payload_json FROM leads WHERE lead_type = 'membership_interest' ORDER BY id").all()
+      .map(row => JSON.parse(row.payload_json));
+    assert.deepEqual(rows.map(row => row.package), ['LEARN', 'PARTNER']);
+    assert.deepEqual(rows[1].partnerHave, ['Network', 'Distribution']);
+    assert.match(telegramTexts[0], /LEARN — 10M\/năm/);
+    assert.match(telegramTexts[1], /BUILD · tầng 03/);
+
+    const invalid = await submit(db, 'other@example.com', { ...base, package: 'GOLD' });
+    assert.equal(invalid.status, 422);
+    const missing = await submit(db, 'other2@example.com', { ...base });
+    assert.equal(missing.status, 422);
+  } finally {
+    globalThis.fetch = oldFetch;
+    db.sqlite.close();
+  }
+});

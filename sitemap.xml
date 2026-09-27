@@ -25,6 +25,10 @@
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
   </url>
   <url>
+    <loc>https://b2b.go4ai.org/opp/</loc>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://b2b.go4ai.org/chinh-sach-bao-ve-du-lieu</loc>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
   </url>
