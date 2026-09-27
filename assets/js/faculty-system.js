@@ -9,13 +9,16 @@
      · If anything in here throws, the inline watchdog drops `fc-motion` and
        the page renders as a complete static document.
      · Every loop pauses when its section leaves the viewport.
+     · Animation is limited to transform, opacity and SVG stroke-dashoffset.
+       No blur, filter or shadow animation.
      · No hover-only affordance on touch, no touch freezing, no layout shift.
 
-   FOUR MOTION SYSTEMS
+   MOTION SYSTEMS
      1. Hero boot reveal      — staggered `fcBoot` on the hero stack
-     2. 6-level auto-active   — capability path cycles TRAIN → DESIGN → ARCHITECT
-     3. PROVE sequence        — P → R → O → V → E highlight walk
-     4. Faculty node pulse    — handled in CSS, gated on `html.fc-motion`
+     2. Capability system map — one subsystem lane active at a time
+     3. Enablement flow       — ROLE → … → AI PASSPORT walk
+     4. PROVE workflow        — P → R → O → V → E walk with the QC gate at V
+     5. Faculty node pulse    — handled in CSS, gated on `html.fc-motion`
    ========================================================================= */
 (function () {
   'use strict';
@@ -37,14 +40,14 @@
   var hasIO = typeof window.IntersectionObserver === 'function';
   var timers = [];
 
-  function every(ms, fn, key) {
+  function every(ms, fn) {
     var t = window.setInterval(fn, ms);
     timers.push(t);
     return t;
   }
 
   function onVisible(el, enter, leave) {
-    if (!hasIO) { enter(); return; }
+    if (!hasIO) { enter(); return null; }
     var io = new IntersectionObserver(function (entries) {
       for (var i = 0; i < entries.length; i++) {
         if (entries[i].isIntersecting) enter();
@@ -53,6 +56,44 @@
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
     io.observe(el);
     return io;
+  }
+
+  /* Cycles a list of elements through active / done states, pausing whenever
+     the host section scrolls out of view. */
+  function walker(host, items, opts) {
+    if (!host || !items.length) return;
+    var step = opts.step || 1400;
+    var loop = opts.loop !== false;
+    var at = -1;
+    var tick = null;
+
+    function paint(next) {
+      if (next === at) return;
+      at = next;
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.toggle('is--active', i === next);
+        items[i].classList.toggle('is--done', i < next);
+      }
+    }
+
+    function start() {
+      if (tick) return;
+      paint(0);
+      tick = every(step, function () {
+        if (!loop && at >= items.length - 1) {
+          window.clearInterval(tick); tick = null; return;
+        }
+        paint((at + 1) % items.length);
+      });
+    }
+    function stop() {
+      if (!tick) return;
+      window.clearInterval(tick);
+      tick = null;
+    }
+
+    onVisible(host, start, stop);
+    if (!hasIO) start();
   }
 
   /* ── 1. HERO BOOT REVEAL ────────────────────────────────────────────────
@@ -69,20 +110,20 @@
     }
   }
 
-  /* ── 2. CAPABILITY PATH — AUTO-ACTIVE 01-02 → 03-04 → 05-06 ──────────── */
-  function capabilityPath() {
-    var rail = document.querySelector('[data-fc-path]');
-    if (!rail) return;
+  /* ── 2. CAPABILITY SYSTEM MAP — one subsystem lane active at a time ─────
+     The 6 rail nodes and the 3 subsystem lanes share `data-fc-stage`, so a
+     single toggle lights the pair of levels and the lane that owns them. */
+  function capabilityMap() {
+    var map = document.querySelector('[data-fc-map]');
+    if (!map) return;
 
-    var nodes = rail.querySelectorAll('[data-fc-stage]');
-    var track = rail.querySelector('.fc-path__track i');
-    if (!nodes.length) return;
+    var members = map.querySelectorAll('[data-fc-stage]');
+    if (!members.length) return;
 
-    var zones = [];
-    for (var z = 0; z < 3; z++) zones.push([]);
-    for (var i = 0; i < nodes.length; i++) {
-      var s = parseInt(nodes[i].getAttribute('data-fc-stage'), 10);
-      if (s >= 0 && s < 3) zones[s].push(nodes[i]);
+    var zones = [[], [], []];
+    for (var i = 0; i < members.length; i++) {
+      var s = parseInt(members[i].getAttribute('data-fc-stage'), 10);
+      if (s >= 0 && s < 3) zones[s].push(members[i]);
     }
 
     var current = -1;
@@ -90,17 +131,15 @@
     function paint(next) {
       if (next === current) return;
       current = next;
-      for (var s = 0; s < 3; s++) {
-        var on = (s === next);
-        for (var k = 0; k < zones[s].length; k++) {
-          zones[s][k].classList.toggle('is--active', on);
+      for (var z = 0; z < 3; z++) {
+        var on = (z === next);
+        for (var k = 0; k < zones[z].length; k++) {
+          zones[z][k].classList.toggle('is--active', on);
         }
       }
-      if (track) track.style.transform = 'translateX(' + (next * 100) + '%)';
     }
 
     var tick = null;
-
     function start() {
       if (tick) return;
       paint(0);
@@ -112,44 +151,25 @@
       tick = null;
     }
 
-    onVisible(rail, start, stop);
+    onVisible(map, start, stop);
     if (!hasIO) start();
   }
 
-  /* ── 3. PROVE SEQUENCE — P → R → O → V → E ───────────────────────────── */
-  function proveSequence() {
-    var list = document.querySelector('[data-fc-prove]');
-    if (!list) return;
-
-    var steps = list.querySelectorAll('li');
-    if (!steps.length) return;
-
-    var at = -1;
-    function paint(next) {
-      if (next === at) return;
-      at = next;
-      for (var i = 0; i < steps.length; i++) {
-        steps[i].classList.toggle('is--active', i === next);
-      }
-    }
-
-    var tick = null;
-    function start() {
-      if (tick) return;
-      paint(0);
-      tick = every(1400, function () { paint((at + 1) % steps.length); });
-    }
-    function stop() {
-      if (!tick) return;
-      window.clearInterval(tick);
-      tick = null;
-    }
-
-    onVisible(list, start, stop);
-    if (!hasIO) start();
+  /* ── 3. ENABLEMENT FLOW — ROLE → … → AI PASSPORT ─────────────────────── */
+  function enablementFlow() {
+    var flow = document.querySelector('[data-fc-flow]');
+    if (!flow) return;
+    walker(flow, flow.querySelectorAll('.fc-flow__step'), { step: 1250 });
   }
 
-  /* ── 4. SCROLL REVEAL ────────────────────────────────────────────────── */
+  /* ── 4. PROVE WORKFLOW — P → R → O → V → E, QC gate at V ─────────────── */
+  function proveWorkflow() {
+    var wf = document.querySelector('[data-fc-prove]');
+    if (!wf) return;
+    walker(wf, wf.querySelectorAll('.fc-wf__node'), { step: 1500 });
+  }
+
+  /* ── 5. SCROLL REVEAL ────────────────────────────────────────────────── */
   function reveals() {
     var items = document.querySelectorAll('.fc-reveal');
     if (!items.length) return;
@@ -163,10 +183,18 @@
       for (var i = 0; i < entries.length; i++) {
         if (!entries[i].isIntersecting) continue;
         var el = entries[i].target;
-        var stagger = parseInt(el.getAttribute('data-fc-delay') || '0', 10);
-        if (stagger > 0) window.setTimeout(function () { el.classList.add('is--in'); }, stagger);
-        else el.classList.add('is--in');
         io.unobserve(el);
+        var stagger = parseInt(el.getAttribute('data-fc-delay') || '0', 10);
+        /* `el` must be captured per iteration. A closure straight over the loop
+           variable resolves to whatever element the callback last touched, so a
+           staggered node would light up a sibling and stay hidden itself. */
+        if (stagger > 0) {
+          (function (node, delay) {
+            window.setTimeout(function () { node.classList.add('is--in'); }, delay);
+          })(el, stagger);
+        } else {
+          el.classList.add('is--in');
+        }
       }
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
 
@@ -200,8 +228,9 @@
 
   function init() {
     try { bootPanel(); } catch (e) {}
-    try { capabilityPath(); } catch (e) {}
-    try { proveSequence(); } catch (e) {}
+    try { capabilityMap(); } catch (e) {}
+    try { enablementFlow(); } catch (e) {}
+    try { proveWorkflow(); } catch (e) {}
     try { reveals(); } catch (e) {}
     try { failsafe(); } catch (e) {}
   }

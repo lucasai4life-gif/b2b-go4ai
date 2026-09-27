@@ -68,7 +68,12 @@ body.faculty-page {
 }
 
 /* Sections --------------------------------------------------------------- */
-.fc-sec { position: relative; width: 100%; }
+/* Sections clip on the x axis only. The decorative `.fc-glow` blobs are
+   positioned partly outside their section, and without this a right-hand glow
+   adds its full offset to the document scroll width. `clip` (not `hidden`)
+   keeps the y axis visible so shadows are not cut off, and it does not create
+   a scroll container. */
+.fc-sec { position: relative; width: 100%; overflow-x: clip; }
 .fc-sec--dark  { background-color: var(--fc-ink);  color: var(--fc-text-dark); }
 .fc-sec--deep  { background-color: #04100c;        color: var(--fc-text-dark); }
 .fc-sec--paper { background-color: var(--fc-paper); color: var(--fc-ink-3); }
@@ -393,276 +398,409 @@ html.fc-motion .fc-panel__bar i { width: 0; transition: width .9s var(--fc-ease)
 html.fc-motion .fc-panel__level.is--on .fc-panel__bar i { width: var(--fc-w, 100%); }
 .fc-panel__level.is--on { color: var(--fc-em-hi); }
 
-/* ================================================= 4. AI CAPABILITY PATH */
-.fc-path__rail {
-  margin-top: clamp(2rem, 3.5vw, 3rem);
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0;
-  border-top: 1px solid var(--fc-line-soft);
-  border-bottom: 1px solid var(--fc-line-soft);
+/* ==================================================================== 4. SHARED SYSTEM PRIMITIVES
+   The four redesigned sections share one visual grammar: a system bar, an
+   SVG wire that carries a data packet, open "system fields" instead of a
+   bordered table, and node frames instead of rectangular cards.
+   ===================================================================== */
+
+/* --- System bar: names the subsystem, sits at the top of each block ------ */
+.fc-sysbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: .5rem 1rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid rgba(21, 23, 26, .14);
 }
-.fc-node {
+.fc-sec--dark .fc-sysbar, .fc-sec--deep .fc-sysbar { border-bottom-color: var(--fc-line); }
+.fc-sysbar__name {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-em-deep);
+}
+.fc-sec--dark .fc-sysbar__name, .fc-sec--deep .fc-sysbar__name { color: var(--fc-em-hi); }
+.fc-sysbar__name::before {
+  content: ''; width: 7px; height: 7px; border-radius: 2px; flex: none;
+  background: currentColor;
+}
+.fc-sysbar__meta {
+  font-family: var(--fc-mono); font-size: .625rem; font-weight: 500;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-text-body2);
+}
+.fc-sec--dark .fc-sysbar__meta, .fc-sec--deep .fc-sysbar__meta { color: var(--fc-text-mute); }
+
+/* --- Wire: an SVG connector that carries a travelling emerald packet -----
+   viewBox is 0 0 100 1 with preserveAspectRatio="none", so one element
+   stretches to any width while `vector-effect: non-scaling-stroke` keeps the
+   stroke exactly 1px. Animation is stroke-dashoffset only. */
+.fc-wire { display: block; width: 100%; height: 1px; overflow: visible; }
+.fc-wire__base { stroke: rgba(21, 23, 26, .16); stroke-width: 1; vector-effect: non-scaling-stroke; fill: none; }
+.fc-sec--dark .fc-wire__base, .fc-sec--deep .fc-wire__base { stroke: rgba(52, 211, 153, .26); }
+.fc-wire__flow {
+  stroke: var(--fc-em-hi); stroke-width: 1.6; vector-effect: non-scaling-stroke; fill: none;
+  stroke-dasharray: 7 93; stroke-dashoffset: 0;
+}
+html.fc-motion .fc-wire__flow { animation: fcWireFlow 5s linear infinite; }
+@keyframes fcWireFlow { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+
+/* --- Open system fields (replaces the bordered fact table) --------------- */
+.fc-fields { display: flex; flex-direction: column; margin: 0; }
+.fc-field {
+  display: grid; grid-template-columns: 8.75rem minmax(0, 1fr); gap: .5rem 1.25rem;
+  padding: .8125rem 0;
+  border-top: 1px solid rgba(21, 23, 26, .1);
+}
+.fc-sec--dark .fc-field, .fc-sec--deep .fc-field { border-top-color: var(--fc-hair); }
+.fc-field:last-child { border-bottom: 1px solid rgba(21, 23, 26, .1); }
+.fc-sec--dark .fc-field:last-child, .fc-sec--deep .fc-field:last-child { border-bottom-color: var(--fc-hair); }
+.fc-field dt {
+  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
+  letter-spacing: .06em; color: var(--fc-text-body2);
+}
+.fc-sec--dark .fc-field dt, .fc-sec--deep .fc-field dt { color: var(--fc-text-mute); }
+.fc-field dd { margin: 0; font-size: .9375rem; line-height: 1.55; font-weight: 500; color: var(--fc-ink-3); }
+.fc-sec--dark .fc-field dd, .fc-sec--deep .fc-field dd { color: var(--fc-text-dark); }
+
+/* --- Node frame: open frame, hairline, no heavy card chrome -------------- */
+.fc-frame {
   position: relative;
-  padding: 1.125rem .75rem 1.25rem;
-  border-right: 1px solid var(--fc-line-soft);
-  display: flex; flex-direction: column; gap: .35rem;
-  transition: background-color .4s var(--fc-ease);
-}
-.fc-node:last-child { border-right: 0; }
-.fc-node__num {
-  font-family: var(--fc-mono); font-size: .75rem; font-weight: 600;
-  letter-spacing: .1em; color: var(--fc-text-body2);
-  display: flex; align-items: center; gap: .4rem;
-}
-.fc-node__num::before {
-  content: ''; width: 7px; height: 7px; border-radius: 50%; flex: none;
-  background: rgba(21, 23, 26, .22);
-  transition: background-color .4s var(--fc-ease), box-shadow .4s var(--fc-ease);
-}
-.fc-node__label {
-  font-size: .8125rem; font-weight: 500; line-height: 1.35;
-  letter-spacing: -0.01em; color: var(--fc-text-body2);
-  transition: color .4s var(--fc-ease);
-}
-.fc-node.is--active { background: rgba(8, 144, 108, .06); }
-.fc-node.is--active .fc-node__num { color: var(--fc-em-deep); }
-.fc-node.is--active .fc-node__num::before {
-  background: var(--fc-em-hi);
-  box-shadow: 0 0 0 4px rgba(8, 144, 108, .16);
-}
-.fc-node.is--active .fc-node__label { color: var(--fc-ink-3); font-weight: 600; }
-
-/* Rail connector progress line */
-.fc-path__track {
-  position: relative; height: 2px; margin: 0;
-  background: rgba(21, 23, 26, .10);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.fc-path__track i {
-  position: absolute; top: 0; bottom: 0; left: 0; width: 33.33%;
-  background: linear-gradient(90deg, var(--fc-em), var(--fc-em-hi));
-  border-radius: 2px;
-}
-html.fc-motion .fc-path__track i { transition: transform .55s var(--fc-ease); }
-html:not(.fc-motion) .fc-path__track i { width: 100%; }
-
-/* Stage segments */
-.fc-seg-row {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem; margin-top: 1.25rem;
-}
-.fc-seg {
-  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
-  padding: .75rem 1rem;
   border: 1px solid rgba(21, 23, 26, .12);
   border-radius: .625rem;
   background: rgba(255, 255, 255, .5);
-  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-text-body2);
-  transition: border-color .4s var(--fc-ease), background-color .4s var(--fc-ease), color .4s var(--fc-ease);
+  transition: border-color .45s var(--fc-ease), background-color .45s var(--fc-ease);
 }
-.fc-seg__lv {
-  font-size: .625rem; font-weight: 500; letter-spacing: .1em;
-  color: var(--fc-text-body2); opacity: .8;
+.fc-sec--dark .fc-frame, .fc-sec--deep .fc-frame {
+  border-color: var(--fc-line-soft);
+  background: rgba(10, 26, 21, .55);
 }
-.fc-seg.is--active {
-  border-color: rgba(8, 144, 108, .45);
-  background: rgba(8, 144, 108, .08);
-  color: var(--fc-em-deep);
+.fc-frame.is--active { border-color: rgba(8, 144, 108, .45); background: #fff; }
+.fc-sec--dark .fc-frame.is--active, .fc-sec--deep .fc-frame.is--active {
+  border-color: rgba(52, 211, 153, .42);
+  background: rgba(8, 144, 108, .09);
 }
-.fc-seg.is--active .fc-seg__lv { color: var(--fc-em-deep); opacity: 1; }
 
-/* Stage cards */
-.fc-stage-grid {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.25rem; margin-top: 2rem;
-}
-.fc-stage {
-  position: relative;
-  display: flex; flex-direction: column;
-  padding: 1.5rem 1.5rem 1.625rem;
-  border: 1px solid rgba(21, 23, 26, .12);
-  border-top: 2px solid rgba(21, 23, 26, .12);
+/* ==================================================== 5. AI CAPABILITY SYSTEM MAP
+   One frame containing the 6-level rail AND the 3 subsystem lanes, divided by
+   internal hairlines. Deliberately not "6 boxes above 3 cards". */
+.fc-map {
+  margin-top: clamp(1.75rem, 3vw, 2.75rem);
+  border: 1px solid rgba(21, 23, 26, .14);
   border-radius: .75rem;
-  background: rgba(255, 255, 255, .62);
-  transition: border-color .45s var(--fc-ease), background-color .45s var(--fc-ease),
-              box-shadow .45s var(--fc-ease), transform .45s var(--fc-ease);
-}
-.fc-stage.is--active {
-  border-color: rgba(8, 144, 108, .34);
-  border-top-color: var(--fc-em);
-  background: #fff;
-  box-shadow: 0 18px 40px rgba(6, 17, 14, .09);
-  transform: translateY(-2px);
-}
-.fc-stage__lv {
-  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
-  letter-spacing: .06em; color: var(--fc-em-deep);
-}
-.fc-stage__title {
-  margin: .875rem 0 0;
-  font-family: var(--fc-sans); font-size: 1.125rem; font-weight: 700;
-  letter-spacing: .02em; text-transform: uppercase; line-height: 1.25;
-  color: var(--fc-ink-3);
-}
-.fc-stage__desc { margin: .75rem 0 0; font-size: .9375rem; line-height: 1.62; color: var(--fc-text-body); }
-.fc-stage__maturity {
-  margin: 1.25rem 0 0;
-  padding: .625rem .75rem;
-  border-radius: .5rem;
-  background: rgba(8, 144, 108, .07);
-  border: 1px dashed rgba(8, 144, 108, .3);
-  font-family: var(--fc-mono); font-size: .625rem; font-weight: 500;
-  letter-spacing: .08em; line-height: 1.6; text-transform: none;
-  color: var(--fc-em-deep);
-}
-.fc-stage__link { margin-top: 1.25rem; }
-
-
-/* ================================================================ 5. PILLARS */
-.fc-pillar__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
-  gap: clamp(2rem, 4vw, 4rem);
-  /* stretch, so the case column fills the row instead of leaving a pool of
-     white space beside a taller intro column */
-  align-items: stretch;
-}
-.fc-pillar__intro { display: flex; flex-direction: column; align-items: flex-start; }
-.fc-pillar__title { margin: .875rem 0 0; }
-.fc-pillar__claim { margin: 1rem 0 0; max-width: 46ch; }
-
-.fc-facts {
-  width: 100%; margin: 1.75rem 0 0;
-  display: flex; flex-direction: column; gap: 1px;
-  background: rgba(21, 23, 26, .1);
-  border: 1px solid rgba(21, 23, 26, .1);
-  border-radius: .625rem;
+  background: rgba(255, 255, 255, .55);
   overflow: hidden;
 }
-.fc-facts__row {
-  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr);
-  gap: 1rem;
-  padding: .875rem 1rem;
-  background: var(--fc-white);
-}
-.fc-sec--paper .fc-facts__row { background: #fff; }
-.fc-facts dt {
-  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
-  letter-spacing: .06em; color: var(--fc-text-body2);
-  padding-top: .2rem;
-}
-.fc-facts dd { margin: 0; font-size: .875rem; line-height: 1.55; color: var(--fc-ink-3); font-weight: 500; }
 
-.fc-out-head {
-  margin: 2rem 0 .875rem;
+/* Rail ------------------------------------------------------------------- */
+.fc-map__bar { padding: .75rem clamp(1rem, 2vw, 1.75rem); border-bottom: 1px solid rgba(21, 23, 26, .12); }
+.fc-map__rail { position: relative; padding: 1.25rem clamp(1rem, 2vw, 1.75rem) 2.25rem; }
+.fc-map__wire { position: absolute; left: clamp(1rem, 2vw, 1.75rem); right: clamp(1rem, 2vw, 1.75rem); top: 2.375rem; }
+.fc-map__nodes {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.fc-map__node { display: flex; flex-direction: column; align-items: center; gap: .5rem; text-align: center; }
+.fc-map__idx {
+  width: 2.25rem; height: 2.25rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fff; border: 1px solid rgba(21, 23, 26, .18);
   font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-em-deep);
+  color: var(--fc-text-body2);
+  transition: background-color .45s var(--fc-ease), border-color .45s var(--fc-ease), color .45s var(--fc-ease);
 }
-.fc-outs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .625rem; }
-.fc-outs li {
-  position: relative; padding-left: 1.5rem;
-  font-size: .9375rem; line-height: 1.6; color: var(--fc-text-body);
+.fc-map__name {
+  font-size: .75rem; line-height: 1.3; color: var(--fc-text-body2);
+  transition: color .45s var(--fc-ease);
 }
-.fc-outs li::before {
-  content: ''; position: absolute; left: 0; top: .55rem;
-  width: 8px; height: 8px; border-radius: 2px;
-  border: 1.5px solid var(--fc-em); background: rgba(8, 144, 108, .12);
+.fc-map__node.is--active .fc-map__idx {
+  background: var(--fc-em); border-color: var(--fc-em); color: #fff;
+  box-shadow: 0 0 0 5px rgba(8, 144, 108, .14);
 }
-.fc-pillar__link { margin-top: 1.75rem; }
+.fc-map__node.is--active .fc-map__name { color: var(--fc-ink-3); font-weight: 600; }
 
-/* PROVE strip ------------------------------------------------------------ */
-.fc-prove-head {
-  margin: 2rem 0 .875rem;
-  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-em-deep);
+/* Subsystem lanes -------------------------------------------------------- */
+.fc-map__lanes {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid rgba(21, 23, 26, .12);
 }
-.fc-prove {
-  width: 100%; list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px; background: rgba(21, 23, 26, .1);
-  border: 1px solid rgba(21, 23, 26, .1);
-  border-radius: .625rem; overflow: hidden;
+.fc-lane {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start;
+  padding: 1.5rem clamp(1rem, 2vw, 1.75rem) 1.625rem;
+  border-left: 1px solid rgba(21, 23, 26, .12);
+  transition: background-color .45s var(--fc-ease);
 }
-.fc-prove li {
-  background: var(--fc-white);
-  padding: .875rem .75rem 1rem;
-  display: flex; flex-direction: column; gap: .35rem;
-  transition: background-color .4s var(--fc-ease);
+.fc-lane:first-child { border-left: 0; }
+/* stub rising from the lane back up to the rail it belongs to */
+.fc-lane::before {
+  content: ''; position: absolute; left: 50%; top: -2.25rem;
+  width: 1px; height: 2.25rem; background: rgba(21, 23, 26, .14);
 }
-/* Opaque tint on purpose: a translucent tint here lets the rail's dark base
-   colour bleed through and drops `.fc-prove small` to 4.01:1 — below the 4.5:1
-   AA floor for 12px text. `#eaf5f1` measures 5.2:1. */
-.fc-prove li.is--active { background: #eaf5f1; }
-.fc-prove b {
-  font-family: var(--fc-mono); font-size: .875rem; font-weight: 700;
-  color: var(--fc-em-deep); line-height: 1;
+.fc-lane.is--active::after {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 2px;
+  background: linear-gradient(90deg, var(--fc-em), var(--fc-em-hi));
 }
-.fc-prove span { font-size: .8125rem; font-weight: 600; line-height: 1.3; color: var(--fc-ink-3); }
-.fc-prove small { font-size: .75rem; line-height: 1.45; color: var(--fc-text-body2); }
-
-/* Case cards ------------------------------------------------------------- */
-.fc-cases { display: flex; flex-direction: column; gap: 1rem; height: 100%; }
-.fc-cases__head {
+.fc-lane.is--active { background: rgba(8, 144, 108, .06); }
+.fc-lane.is--active::before { background: var(--fc-em); }
+.fc-lane__sys {
   font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
   letter-spacing: .14em; text-transform: uppercase; color: var(--fc-text-body2);
-  margin: 0 0 .25rem;
+  transition: color .45s var(--fc-ease);
 }
-/* The intro column is usually the taller one. Rather than stretching a short
-   case card to fill (which leaves the card mostly hollow), centre the group of
-   cards in the space below the heading. */
-.fc-cases:not(.fc-cases--grid) > .fc-case:first-of-type { margin-top: auto; }
-.fc-cases:not(.fc-cases--grid) > .fc-case:last-of-type { margin-bottom: auto; }
-.fc-case {
-  position: relative;
-  display: flex; flex-direction: column;
-  flex: 0 1 auto;
-  padding: 1.25rem 1.375rem 1.375rem;
-  border: 1px solid rgba(21, 23, 26, .12);
+.fc-lane.is--active .fc-lane__sys { color: var(--fc-em-deep); }
+.fc-lane__lv {
+  margin-top: .375rem;
+  font-family: var(--fc-mono); font-size: .625rem; font-weight: 500;
+  letter-spacing: .1em; color: var(--fc-text-body2);
+}
+.fc-lane__title {
+  margin: .75rem 0 0; font-family: var(--fc-sans);
+  font-size: 1.125rem; font-weight: 700; letter-spacing: .01em;
+  text-transform: uppercase; line-height: 1.25; color: var(--fc-ink-3);
+}
+.fc-lane__desc { margin: .625rem 0 0; font-size: .9375rem; line-height: 1.6; color: var(--fc-text-body); }
+.fc-lane__maturity {
+  margin: .875rem 0 0; padding-left: .75rem;
+  border-left: 2px solid rgba(8, 144, 108, .35);
+  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 500;
+  line-height: 1.55; color: var(--fc-em-deep);
+}
+.fc-lane__link { margin-top: auto; padding-top: 1.25rem; }
+
+/* ================================================== 6. AI ENABLEMENT ENGINE
+   Dark. Head + open fields, then the six-step chain that ends in the three
+   deliverables, then the deployment evidence panel. */
+.fc-eng__top {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(1.75rem, 3.5vw, 3.5rem);
+  align-items: start;
+}
+.fc-eng__flowhead { margin-top: clamp(2.25rem, 4vw, 3.25rem); }
+
+/* Six-step chain --------------------------------------------------------- */
+.fc-flow { position: relative; margin-top: 1.5rem; }
+.fc-flow__list {
+  position: relative; list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.fc-flow__wire { position: absolute; left: 0; right: 0; top: .8125rem; }
+.fc-flow__step {
+  position: relative; display: flex; flex-direction: column;
+  padding-right: 1.25rem;
+}
+.fc-flow__dot {
+  position: relative; z-index: 1;
+  width: 1.75rem; height: 1.75rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #0a1a15; border: 1px solid var(--fc-line);
+  font-family: var(--fc-mono); font-size: .625rem; font-weight: 600;
+  color: var(--fc-em-hi);
+  transition: background-color .45s var(--fc-ease), border-color .45s var(--fc-ease), color .45s var(--fc-ease);
+}
+.fc-flow__step.is--active .fc-flow__dot {
+  background: var(--fc-em); border-color: var(--fc-em-hi); color: #fff;
+  box-shadow: 0 0 0 5px rgba(52, 211, 153, .14);
+}
+.fc-flow__step.is--done .fc-flow__dot { border-color: rgba(52, 211, 153, .55); }
+.fc-flow__name {
+  margin-top: .875rem;
+  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--fc-text-mute);
+  transition: color .45s var(--fc-ease);
+}
+.fc-flow__step.is--active .fc-flow__name { color: var(--fc-em-hi); }
+.fc-flow__step.is--done .fc-flow__name { color: var(--fc-text-dark); }
+.fc-flow__body { display: flex; flex-direction: column; }
+.fc-flow__desc { margin: .5rem 0 0; font-size: .8125rem; line-height: 1.55; color: var(--fc-text-mute); }
+.fc-flow__step.is--active .fc-flow__desc { color: var(--fc-text-dark); }
+
+/* Deployment evidence ---------------------------------------------------- */
+.fc-evidence {
+  margin-top: clamp(2rem, 3.5vw, 3rem);
+  padding: clamp(1.25rem, 2.4vw, 2rem);
+  border: 1px solid var(--fc-line-soft);
   border-radius: .75rem;
-  background: var(--fc-white);
-  text-decoration: none;
-  color: inherit;
-  transition: border-color .3s var(--fc-ease), box-shadow .3s var(--fc-ease), transform .3s var(--fc-ease);
+  background: linear-gradient(155deg, rgba(8, 144, 108, .1) 0%, rgba(6, 17, 14, 0) 46%);
 }
-.fc-case:hover {
-  border-color: rgba(8, 144, 108, .42);
-  box-shadow: 0 16px 36px rgba(6, 17, 14, .1);
+.fc-evidence__grid {
+  display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem); align-items: start;
+}
+.fc-evidence__status {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .3125rem .6875rem; border-radius: 5rem;
+  border: 1px solid rgba(52, 211, 153, .35);
+  background: rgba(8, 144, 108, .14);
+  font-family: var(--fc-mono); font-size: .625rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-em-hi);
+}
+.fc-evidence__title {
+  margin: 1rem 0 0; font-family: var(--fc-sans);
+  font-size: clamp(1.125rem, 1.8vw, 1.5rem); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.28; color: var(--fc-white);
+}
+.fc-evidence__desc { margin: .75rem 0 0; font-size: .9375rem; line-height: 1.65; color: var(--fc-text-mute); }
+.fc-evidence__link { margin-top: 1.25rem; }
+.fc-evidence__facts { display: flex; flex-direction: column; margin: 0; }
+.fc-evidence__fact {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding: .6875rem 0; border-top: 1px solid var(--fc-hair);
+}
+.fc-evidence__fact:last-child { border-bottom: 1px solid var(--fc-hair); }
+.fc-evidence__fact dt {
+  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
+  letter-spacing: .06em; color: var(--fc-text-mute);
+}
+.fc-evidence__fact dd { margin: 0; font-size: .8125rem; font-weight: 600; color: var(--fc-em-hi); text-align: right; }
+
+/* ==================================================== 7. PROVE WORKFLOW SYSTEM
+   Light. PROVE is the focal point: five nodes on a wire with the QC Gate
+   called out at V, and the two deployments hanging off the workflow. */
+.fc-wfs__top {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(1.75rem, 3.5vw, 3.5rem); align-items: start;
+}
+.fc-wfs__deliv { display: flex; flex-direction: column; margin: 0; list-style: none; padding: 0; }
+.fc-wfs__deliv li {
+  display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .875rem;
+  padding: .75rem 0; border-top: 1px solid rgba(21, 23, 26, .1);
+  font-size: .9375rem; line-height: 1.55; color: var(--fc-text-body);
+}
+.fc-wfs__deliv li:last-child { border-bottom: 1px solid rgba(21, 23, 26, .1); }
+.fc-wfs__deliv b {
+  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 600;
+  color: var(--fc-em-deep); padding-top: .15rem;
+}
+
+/* PROVE chain ------------------------------------------------------------ */
+.fc-wf {
+  position: relative; margin-top: clamp(2rem, 3.5vw, 3rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem) clamp(1.75rem, 3vw, 2.5rem);
+  border: 1px solid rgba(21, 23, 26, .14);
+  border-radius: .75rem;
+  background: rgba(255, 255, 255, .6);
+}
+.fc-wf__flow { position: relative; margin-top: 1.25rem; }
+.fc-wf__list { position: relative; list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.fc-wf__wire { position: absolute; left: 0; right: 0; top: 1.375rem; }
+.fc-wf__node { position: relative; display: flex; flex-direction: column; padding-right: 1.25rem; }
+.fc-wf__letter {
+  position: relative; z-index: 1;
+  width: 2.75rem; height: 2.75rem; border-radius: .625rem;
+  display: grid; place-items: center;
+  background: #fff; border: 1px solid rgba(21, 23, 26, .18);
+  font-family: var(--fc-mono); font-size: 1rem; font-weight: 700;
+  color: var(--fc-text-body2);
+  transition: background-color .45s var(--fc-ease), border-color .45s var(--fc-ease),
+              color .45s var(--fc-ease), transform .45s var(--fc-ease);
+}
+.fc-wf__node.is--active .fc-wf__letter {
+  background: var(--fc-em); border-color: var(--fc-em); color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(8, 144, 108, .28);
+}
+.fc-wf__node.is--done .fc-wf__letter { border-color: rgba(8, 144, 108, .5); color: var(--fc-em-deep); }
+.fc-wf__name {
+  margin: .875rem 0 0; font-family: var(--fc-sans);
+  font-size: .9375rem; font-weight: 600; letter-spacing: -0.01em; color: var(--fc-ink-3);
+}
+.fc-wf__body { display: flex; flex-direction: column; align-items: flex-start; }
+.fc-wf__desc { margin: .375rem 0 0; font-size: .8125rem; line-height: 1.55; color: var(--fc-text-body); }
+.fc-wf__gate {
+  display: inline-flex; align-items: center; gap: .375rem;
+  margin-top: .625rem; align-self: flex-start;
+  padding: .25rem .5rem; border-radius: .3125rem;
+  border: 1px solid rgba(201, 59, 43, .38);
+  background: rgba(201, 59, 43, .07);
+  font-family: var(--fc-mono); font-size: .5625rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: #b8351f;
+}
+
+/* Deployment nodes hanging off the workflow ------------------------------ */
+.fc-dep { margin-top: clamp(2rem, 3.5vw, 3rem); }
+.fc-dep__rail { position: relative; height: 2.25rem; }
+.fc-dep__rail svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.fc-dep__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.fc-dep__node {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start;
+  padding: 1.375rem 1.5rem 1.5rem;
+  border: 1px solid rgba(21, 23, 26, .13);
+  border-radius: .625rem;
+  background: #fff;
+  transition: border-color .35s var(--fc-ease), box-shadow .35s var(--fc-ease), transform .35s var(--fc-ease);
+}
+.fc-dep__node:hover {
+  border-color: rgba(8, 144, 108, .45);
+  box-shadow: 0 16px 34px rgba(6, 17, 14, .1);
   transform: translateY(-2px);
 }
-.fc-case__kind {
-  display: inline-flex; align-items: center; gap: .4rem;
+.fc-dep__head { display: flex; align-items: center; gap: .625rem; }
+.fc-dep__kind {
   font-family: var(--fc-mono); font-size: .625rem; font-weight: 600;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--fc-text-body2);
-  margin-bottom: .625rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-text-body2);
 }
-.fc-case__kind::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%; background: rgba(21,23,26,.25);
-}
-.fc-case__kind.is--done { color: var(--fc-em-deep); }
-.fc-case__kind.is--done::before { background: var(--fc-em-hi); }
-.fc-case__title {
-  margin: 0; font-family: var(--fc-sans); font-size: 1.0625rem;
-  font-weight: 600; letter-spacing: -0.022em; line-height: 1.32; color: var(--fc-ink-3);
-}
-.fc-case__desc { margin: .625rem 0 0; font-size: .875rem; line-height: 1.6; color: var(--fc-text-body); }
-.fc-case__more {
-  display: inline-flex; align-items: center; gap: .4rem;
-  align-self: flex-start;
-  margin-top: auto;
-  padding-top: .875rem;
-  font-family: var(--fc-mono); font-size: .625rem; font-weight: 600;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--fc-em-deep);
-}
-.fc-case__more svg { transition: transform .3s var(--fc-ease); }
-.fc-case:hover .fc-case__more svg { transform: translateX(3px); }
+.fc-dep__kind.is--done { color: var(--fc-em-deep); }
+.fc-dep__link { margin-top: auto; padding-top: 1.125rem; }
 
-/* Pillar 03 case list (2 columns on wide) -------------------------------- */
-.fc-cases--grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-.fc-cases--grid .fc-cases__head { grid-column: 1 / -1; }
+/* ============================================ 8. GO4AI ENTERPRISE AI ARCHITECTURE
+   Dark. Core node with a fan-out to the four systems. */
+.fc-arch__core {
+  position: relative; margin: clamp(2rem, 3.5vw, 3rem) auto 0;
+  max-width: 30rem; text-align: center;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid rgba(52, 211, 153, .38);
+  border-radius: .75rem;
+  background:
+    radial-gradient(120% 140% at 50% 0%, rgba(8, 144, 108, .28) 0%, rgba(6, 17, 14, 0) 70%),
+    rgba(10, 26, 21, .9);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+}
+.fc-arch__core-label {
+  font-family: var(--fc-mono); font-size: .625rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--fc-text-mute);
+}
+.fc-arch__core-name {
+  margin: .625rem 0 0; font-family: var(--fc-sans);
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem); font-weight: 700;
+  letter-spacing: .02em; text-transform: uppercase; color: #fff;
+}
+.fc-arch__fan { position: relative; height: clamp(2.5rem, 4vw, 3.5rem); }
+.fc-arch__fan svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.fc-arch__grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem; align-items: stretch;
+}
+.fc-mod {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start;
+  padding: 1.25rem 1.25rem 1.375rem;
+  border: 1px solid var(--fc-line-soft);
+  border-radius: .625rem;
+  background: rgba(10, 26, 21, .55);
+  transition: border-color .4s var(--fc-ease), background-color .4s var(--fc-ease), transform .4s var(--fc-ease);
+}
+.fc-mod:hover {
+  border-color: rgba(52, 211, 153, .42);
+  background: rgba(10, 26, 21, .92);
+  transform: translateY(-2px);
+}
+.fc-mod__kind {
+  font-family: var(--fc-mono); font-size: .5625rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fc-text-mute);
+}
+.fc-mod__kind.is--done { color: var(--fc-em-hi); }
+.fc-mod__name {
+  margin: .75rem 0 0; font-family: var(--fc-mono); font-size: .75rem;
+  font-weight: 600; letter-spacing: .02em; color: var(--fc-em-hi);
+}
+.fc-mod__title {
+  margin: .5rem 0 0; font-family: var(--fc-sans);
+  font-size: .9375rem; font-weight: 600; letter-spacing: -0.02em;
+  line-height: 1.32; color: var(--fc-text-dark);
+}
+.fc-mod__desc { margin: .625rem 0 0; font-size: .8125rem; line-height: 1.6; color: var(--fc-text-mute); }
+.fc-mod__link { margin-top: auto; padding-top: 1.125rem; }
+.fc-arch__fields { margin-top: clamp(2rem, 3.5vw, 3rem); }
 
 /* ================================================================ 6. FACULTY */
 .fc-faculty__grid {
@@ -860,7 +998,7 @@ html.fc-motion .fc-expert::after { animation: fcNodePulse 3.6s ease-in-out infin
 .fc-cta__desc { margin: 1.25rem 0 0; max-width: 52rem; }
 .fc-cta__row { margin-top: 2rem; }
 
-/* =============================================================== 8. MOTION */
+/* =============================================================== 9. MOTION */
 html.fc-motion .fc-reveal {
   opacity: 0; transform: translateY(20px);
   transition: opacity .7s var(--fc-ease), transform .7s var(--fc-ease);
@@ -875,7 +1013,8 @@ html.fc-motion .fc-boot {
   to   { opacity: 1; transform: none; }
 }
 
-/* Hard stop: any motion, everywhere, the moment the visitor asks for less. */
+/* Hard stop: any motion, everywhere, the moment the visitor asks for less.
+   The wires stay drawn as a solid line so the topology still reads. */
 @media (prefers-reduced-motion: reduce) {
   html.fc-motion .fc-reveal,
   html.fc-motion .fc-boot { opacity: 1 !important; transform: none !important; animation: none !important; }
@@ -883,48 +1022,99 @@ html.fc-motion .fc-boot {
   html.fc-motion .fc-scan,
   html.fc-motion .fc-experts::before,
   html.fc-motion .fc-expert::after,
-  html.fc-motion .fc-panel__bar i { animation: none !important; transition: none !important; }
-  html.fc-motion .fc-path__track i { transition: none !important; }
-  .fc-stage, .fc-seg, .fc-node { transition: none !important; }
+  html.fc-motion .fc-panel__bar i,
+  html.fc-motion .fc-wire__flow { animation: none !important; transition: none !important; }
+  html.fc-motion .fc-wire__flow { stroke-dasharray: none !important; stroke-opacity: .55 !important; }
+  .fc-map__node, .fc-map__idx, .fc-map__name, .fc-lane, .fc-flow__step, .fc-flow__dot,
+  .fc-flow__name, .fc-flow__desc, .fc-wf__node, .fc-wf__letter, .fc-frame, .fc-mod,
+  .fc-dep__node { transition: none !important; }
 }
 
-/* ============================================================ 9. RESPONSIVE */
+/* ============================================================ 10. RESPONSIVE */
 
-/* --- 1200px: tighten the capability rail ------------------------------- */
+/* --- 1200px ------------------------------------------------------------- */
 @media (max-width: 1199px) {
-  .fc-node { padding: .875rem .5rem 1rem; }
-  .fc-node__label { font-size: .75rem; }
   .fc-h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+  .fc-map__name { font-size: .6875rem; }
+  .fc-lane { padding-left: 1.125rem; padding-right: 1.125rem; }
+  .fc-flow__step { padding-right: .875rem; }
+  .fc-wf__node { padding-right: .875rem; }
+  .fc-mod { padding: 1.125rem 1.0625rem 1.25rem; }
 }
 
-/* --- 992px: single-column the wide grids -------------------------------- */
+/* --- 992px: drop the two-column tops ------------------------------------ */
 @media (max-width: 991px) {
   .fc-hero__grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
   .fc-panel { max-width: 30rem; }
-  .fc-pillar__grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+  .fc-eng__top,
+  .fc-wfs__top,
+  .fc-evidence__grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .fc-faculty__grid { grid-template-columns: minmax(0, 1fr); gap: 2.25rem; }
   .fc-experts { padding-left: 2rem; }
   .fc-expert { flex: 0 0 auto; }
   .fc-lead__desc { max-width: none; }
+  .fc-arch__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* --- 767px: stack the capability path and the case grid ----------------- */
+/* --- 767px: every topology turns vertical ------------------------------- */
 @media (max-width: 767px) {
-  .fc-path__rail {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-bottom: 0;
+  /* capability map: rail becomes a vertical stack, lanes stack under it */
+  .fc-map__rail { padding-bottom: 1.5rem; }
+  .fc-map__wire { display: none; }
+  .fc-map__nodes { grid-template-columns: minmax(0, 1fr); }
+  .fc-map__nodes::before {
+    content: ''; position: absolute; left: 1.125rem; top: 1.125rem; bottom: 1.125rem;
+    width: 1px; background: rgba(21, 23, 26, .14);
   }
-  .fc-node { border-bottom: 1px solid var(--fc-line-soft); }
-  .fc-node:nth-child(3n) { border-right: 0; }
-  .fc-node:nth-child(3) { border-right: 0; }
-  .fc-seg-row { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
-  .fc-stage-grid { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-  .fc-stage.is--active { transform: none; }
-  .fc-prove { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .fc-prove li:last-child { grid-column: 1 / -1; }
-  .fc-cases--grid { grid-template-columns: minmax(0, 1fr); }
-  .fc-facts__row { grid-template-columns: minmax(0, 1fr); gap: .375rem; }
-  .fc-facts dt { padding-top: 0; }
+  .fc-map__node {
+    flex-direction: row; align-items: center; gap: .875rem;
+    text-align: left; padding: .5rem 0;
+  }
+  .fc-map__idx { flex: none; }
+  .fc-map__lanes { grid-template-columns: minmax(0, 1fr); }
+  .fc-lane {
+    border-left: 0; border-top: 1px solid rgba(21, 23, 26, .12);
+    padding: 1.375rem 1.125rem 1.5rem;
+  }
+  .fc-lane::before { display: none; }
+  .fc-lane.is--active::after { inset: 0 auto 0 0; width: 2px; height: auto; }
+
+  /* six-step chain becomes a vertical lane */
+  .fc-flow__list { grid-template-columns: minmax(0, 1fr); }
+  .fc-flow__wire { display: none; }
+  .fc-flow__step { flex-direction: row; gap: .875rem; padding: 0 0 1.375rem; }
+  .fc-flow__dot { flex: none; }
+  .fc-flow__name { margin-top: .25rem; }
+  .fc-flow__step:not(:last-child)::after {
+    content: ''; position: absolute; left: .875rem; top: 1.75rem; bottom: 0;
+    width: 1px; background: var(--fc-line);
+  }
+
+  /* PROVE chain becomes a vertical lane */
+  .fc-wf__list { grid-template-columns: minmax(0, 1fr); }
+  .fc-wf__wire { display: none; }
+  .fc-wf__node { flex-direction: row; gap: .875rem; padding: 0 0 1.5rem; }
+  .fc-wf__letter { flex: none; }
+  .fc-wf__name { margin-top: .25rem; }
+  .fc-wf__node:not(:last-child)::after {
+    content: ''; position: absolute; left: 1.375rem; top: 2.75rem; bottom: 0;
+    width: 1px; background: rgba(21, 23, 26, .14);
+  }
+  .fc-wf__node.is--active .fc-wf__letter { transform: none; }
+
+  .fc-dep__rail { display: none; }
+  .fc-dep__grid { grid-template-columns: minmax(0, 1fr); }
+  /* the fan-out draws a horizontal rail with four drops — meaningless once the
+     modules stack, so swap it for a single vertical connector */
+  .fc-arch__fan { height: 2rem; }
+  .fc-arch__fan svg { display: none; }
+  .fc-arch__fan::before {
+    content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 1px; background: rgba(52, 211, 153, .26);
+  }
+  .fc-arch__grid { grid-template-columns: minmax(0, 1fr); }
+  .fc-arch__core { margin-top: 1.75rem; }
+  .fc-field { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
   .fc-lead__rail { grid-template-columns: minmax(0, 1fr); }
   .fc-lead__top { flex-direction: column-reverse; align-items: flex-start; }
   .fc-lead__portrait { width: 6rem; height: 7.5rem; }
@@ -938,12 +1128,43 @@ html.fc-motion .fc-boot {
   .fc-btn-row { gap: .625rem; }
   .fc-hero__cta .fc-btn-row,
   .fc-cta__row .fc-btn-row { width: 100%; }
-  .fc-path__rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .fc-node:nth-child(3n) { border-right: 1px solid var(--fc-line-soft); }
-  .fc-node:nth-child(2n) { border-right: 0; }
-  .fc-prove { grid-template-columns: minmax(0, 1fr); }
-  .fc-prove li:last-child { grid-column: auto; }
   .fc-lead__portrait { width: 5.25rem; height: 6.5rem; }
   .fc-caps li { font-size: .5625rem; padding: .4375rem .6875rem; }
   .fc-panel__head { padding: .75rem .875rem; }
+  .fc-lane { padding-left: .875rem; padding-right: .875rem; }
+  .fc-wf { padding-left: .875rem; padding-right: .875rem; }
+  .fc-evidence { padding: 1.125rem; }
+  .fc-map__rail { padding-left: .875rem; padding-right: .875rem; }
+  .fc-map__nodes::before { left: 1.125rem; }
+}
+
+/* --------------------------------------------------------- 11. SMALL UTILITIES */
+.fc-blocktitle { margin: 1rem 0 0; }
+.fc-blockclaim { margin: 1rem 0 0; max-width: 46ch; }
+.fc-linkrow { margin-top: 1.5rem; }
+.fc-arch__head { margin-top: 1.25rem; }
+.fc-arch__layer {
+  margin: clamp(1.5rem, 2.5vw, 2rem) 0 .875rem;
+  font-family: var(--fc-mono); font-size: .625rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--fc-text-mute);
+}
+.fc-dep__title {
+  margin: .75rem 0 0; font-family: var(--fc-sans); font-size: 1.0625rem;
+  font-weight: 600; letter-spacing: -0.022em; line-height: 1.32; color: var(--fc-ink-3);
+}
+.fc-dep__desc { margin: .625rem 0 0; font-size: .875rem; line-height: 1.6; color: var(--fc-text-body); }
+.fc-dep__link { margin-top: auto; padding-top: 1.125rem; }
+.fc-lead__cta { position: relative; z-index: 2; margin-top: 1.5rem; }
+/* No expert profile route exists yet. The affordance is rendered but inert —
+   dashed and muted — rather than pointing at an invented URL. */
+.fc-expert__cta {
+  display: inline-flex; align-items: center; gap: .4rem;
+  align-self: flex-start;
+  margin-top: .875rem; padding-bottom: .15rem;
+  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 500;
+  letter-spacing: .02em; color: var(--fc-text-mute);
+}
+.fc-expert__cta.is--disabled {
+  border-bottom: 1px dashed rgba(159, 180, 174, .42);
+  cursor: not-allowed;
 }
