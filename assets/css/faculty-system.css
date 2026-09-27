@@ -658,6 +658,14 @@ html.fc-motion .fc-wire__flow { animation: fcWireFlow 5s linear infinite; }
   display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
   gap: clamp(1.75rem, 3.5vw, 3.5rem); align-items: start;
 }
+/* The right column starts level with the left column's field area instead of
+   the eyebrow, so the two halves read as balanced. The offset tracks the left
+   column's intro height across the desktop range (measured within ~2px of the
+   "Cấp độ AI" field at 992–1536px). Below 992px the grid stacks, so it resets
+   to 0 and adds no dead space. */
+@media (min-width: 992px) {
+  .fc-wfs__aside { padding-top: calc(6.5rem + 3.7vw); }
+}
 .fc-wfs__deliv { display: flex; flex-direction: column; margin: 0; list-style: none; padding: 0; }
 .fc-wfs__deliv li {
   display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .875rem;
@@ -906,7 +914,7 @@ html.fc-motion .fc-wire__flow { animation: fcWireFlow 5s linear infinite; }
 /* Expert nodes ----------------------------------------------------------- */
 .fc-experts {
   position: relative;
-  display: flex; flex-direction: column; gap: 1rem;
+  display: grid; grid-auto-rows: auto; gap: 1rem;
   padding-left: 2.25rem;
 }
 .fc-experts::before {
@@ -919,8 +927,10 @@ html.fc-motion .fc-experts::before { animation: fcFlow 3.2s ease-in-out infinite
 
 .fc-expert {
   position: relative;
-  flex: 1 1 0;
-  display: flex; flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(4.75rem, 28%);
+  align-items: start;
+  gap: 1rem 1.125rem;
   padding: 1.25rem 1.375rem;
   border: 1px solid var(--fc-line-soft);
   border-radius: .75rem;
@@ -959,8 +969,39 @@ html.fc-motion .fc-expert::after { animation: fcNodePulse 3.6s ease-in-out infin
   letter-spacing: -0.02em; line-height: 1.3; color: var(--fc-text-dark);
 }
 .fc-expert__role {
-  margin: .375rem 0 0; font-size: .875rem; line-height: 1.5;
-  color: var(--fc-text-mute); font-style: italic;
+  margin: .375rem 0 0; font-size: .8125rem; font-weight: 500; line-height: 1.5;
+  color: var(--fc-em-hi); letter-spacing: -0.01em;
+}
+
+/* Text left, portrait right. On desktop the portrait stretches to the card's
+   full height (a fixed ratio would leave dead space under it); on phones it
+   falls back to a 4:5 frame, where stretching would collapse it to a sliver.
+   Either way it carries a light hairline and no glow, so the lead card stays
+   the loudest element in the section. */
+.fc-expert__main { min-width: 0; }
+.fc-expert__desc {
+  margin: .625rem 0 0;
+  font-size: .8125rem; line-height: 1.6;
+  color: var(--fc-text-mute);
+}
+.fc-expert__caps { margin-top: .875rem; gap: .375rem; }
+.fc-expert__caps li {
+  padding: .3125rem .5rem;
+  font-size: .625rem;
+  letter-spacing: .04em;
+}
+.fc-expert__portrait {
+  position: relative;
+  align-self: stretch;
+  min-height: 7.5rem;
+  border-radius: .5rem;
+  overflow: hidden;
+  border: 1px solid var(--fc-line);
+  background: rgba(6, 17, 14, .55);
+}
+.fc-expert__portrait img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 25%;
 }
 .fc-expert__ph {
   margin: 1rem 0 0;
@@ -968,9 +1009,8 @@ html.fc-motion .fc-expert::after { animation: fcNodePulse 3.6s ease-in-out infin
   padding: .375rem .625rem;
   border: 1px dashed rgba(52, 211, 153, .34);
   border-radius: .375rem;
-  font-family: var(--fc-mono); font-size: .5625rem; font-weight: 500;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--fc-em-hi);
-  align-self: flex-start;
+  font-family: var(--fc-mono); font-size: .625rem; font-weight: 500;
+  letter-spacing: .06em; color: var(--fc-em-hi);
 }
 
 /* ============================================================== 7. FINAL CTA */
@@ -1050,8 +1090,7 @@ html.fc-motion .fc-boot {
   .fc-wfs__top,
   .fc-evidence__grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .fc-faculty__grid { grid-template-columns: minmax(0, 1fr); gap: 2.25rem; }
-  .fc-experts { padding-left: 2rem; }
-  .fc-expert { flex: 0 0 auto; }
+  .fc-experts { grid-auto-rows: auto; padding-left: 2rem; }
   .fc-lead__desc { max-width: none; }
   .fc-arch__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -1118,6 +1157,11 @@ html.fc-motion .fc-boot {
   .fc-lead__rail { grid-template-columns: minmax(0, 1fr); }
   .fc-lead__top { flex-direction: column-reverse; align-items: flex-start; }
   .fc-lead__portrait { width: 6rem; height: 7.5rem; }
+  /* the expert card keeps text-left / portrait-right on phones — the column
+     split just narrows so the copy still has a readable measure */
+  .fc-expert { grid-template-columns: minmax(0, 1fr) minmax(3.75rem, 24%); gap: .875rem; }
+  /* a stretched portrait would collapse into a sliver at this width */
+  .fc-expert__portrait { aspect-ratio: 4 / 5; align-self: start; min-height: 0; }
   .fc-panel__labels { grid-template-columns: minmax(0, 1fr); }
 }
 
@@ -1136,6 +1180,10 @@ html.fc-motion .fc-boot {
   .fc-evidence { padding: 1.125rem; }
   .fc-map__rail { padding-left: .875rem; padding-right: .875rem; }
   .fc-map__nodes::before { left: 1.125rem; }
+  .fc-expert { grid-template-columns: minmax(0, 1fr) minmax(3.5rem, 22%); gap: .75rem; padding: 1rem; }
+  /* more specific than `.fc-caps li` above, which would otherwise inflate the
+     expert chips on the narrowest screens */
+  .fc-expert .fc-expert__caps li { font-size: .5625rem; padding: .25rem .4375rem; }
 }
 
 /* --------------------------------------------------------- 11. SMALL UTILITIES */
@@ -1155,16 +1203,17 @@ html.fc-motion .fc-boot {
 .fc-dep__desc { margin: .625rem 0 0; font-size: .875rem; line-height: 1.6; color: var(--fc-text-body); }
 .fc-dep__link { margin-top: auto; padding-top: 1.125rem; }
 .fc-lead__cta { position: relative; z-index: 2; margin-top: 1.5rem; }
-/* No expert profile route exists yet. The affordance is rendered but inert —
-   dashed and muted — rather than pointing at an invented URL. */
+/* Two experts link to a real profile (one internal page, one PDF). The third
+   has no route yet and renders `.fc-expert__ph` instead, so no expert ever
+   points at an invented URL or a dead `href="#"`. */
 .fc-expert__cta {
   display: inline-flex; align-items: center; gap: .4rem;
   align-self: flex-start;
   margin-top: .875rem; padding-bottom: .15rem;
   font-family: var(--fc-mono); font-size: .6875rem; font-weight: 500;
-  letter-spacing: .02em; color: var(--fc-text-mute);
+  letter-spacing: .02em; color: var(--fc-em-hi);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(52, 211, 153, .34);
+  transition: border-color .25s var(--fc-ease), gap .25s var(--fc-ease);
 }
-.fc-expert__cta.is--disabled {
-  border-bottom: 1px dashed rgba(159, 180, 174, .42);
-  cursor: not-allowed;
-}
+.fc-expert__cta:hover { border-bottom-color: var(--fc-em-hi); gap: .7rem; }
