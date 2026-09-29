@@ -2179,6 +2179,28 @@ html.app-motion-fallback .cs-mod { opacity: 1 !important; visibility: visible !i
 html.app-motion-fallback .cs-flowstep { opacity: 1 !important; visibility: visible !important; }
 html.app-motion-fallback .cs-flowstep--qc.is--on::before { animation: none !important; }
 
+/* Cross-page deep links land here: the faculty page's "Chương trình: Chặng 0X"
+   CTAs point at #chang-0X. Without a scroll margin the browser puts the stage's
+   top edge at viewport y=0, which is underneath the sticky `.site-header`
+   (measured 81px desktop / 65px mobile), so the stage number, eyebrow and title
+   were all hidden on arrival. */
+.cs-stage { scroll-margin-top: 96px; }
+@media (max-width: 767px) {
+  .cs-stage { scroll-margin-top: 80px; }
+}
+
+/* The Notebook AI case ships three impact metrics, not two. `.cs-sales-metrics-grid`
+   in go4ai.css is `repeat(2, 1fr)`, so the third card would drop onto a row of its
+   own and the block would read as 2 + 1. `minmax(0, 1fr)` (not bare `1fr`) matters:
+   the labels are long sentences and a plain `1fr` track floors at min-content,
+   which would push the card past its column and add horizontal scroll.
+   Below 767px the case body is full-bleed but three tracks would be ~120px wide,
+   so the metrics stack instead. */
+.cs-sales-metrics-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 767px) {
+  .cs-sales-metrics-grid--3 { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ============================================================================
    18. CLOSING CTA BAND — priority + breathing room
    ----------------------------------------------------------------------------

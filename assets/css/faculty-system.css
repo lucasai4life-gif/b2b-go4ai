@@ -211,12 +211,15 @@ html.fc-motion .fc-dot { animation: fcPulse 2.4s ease-in-out infinite; }
    copy. It is now a real button surface with one shared geometry, split into
    two roles so the hierarchy is readable at rest:
 
-     button.fc-link  → consultation / program   (coral, filled)
+     .fc-link--program  → consultation / program   (coral, filled)
      a.fc-link       → navigation / detail      (emerald, outlined high-contrast)
 
-   Tag-based split, not a new class: all three program CTAs are already
-   `<button data-consultation-open>` and every detail/profile CTA is already an
-   `<a>`, so no markup had to change and the hrefs/behaviour are untouched. */
+   The split started out purely tag-based (`button.fc-link` vs `a.fc-link`),
+   which needed no markup change. It is no longer: the three
+   "Chương trình: Chặng 0X" CTAs became `<a href="/ung-dung-thuc-te#chang-0X">`
+   when the brief supplied explicit URLs for them, so the coral role now keys
+   off the `.fc-link--program` class and the emerald rules exclude it via
+   `:not()`. */
 .fc-link {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   min-height: 2.875rem;
@@ -240,38 +243,51 @@ html.fc-motion .fc-dot { animation: fcPulse 2.4s ease-in-out infinite; }
               transform .25s var(--fc-ease);
 }
 
-/* Navigation / detail / profile — emerald outlined action. */
-a.fc-link {
+/* Navigation / detail / profile — emerald outlined action.
+   `:not(.fc-link--program)` keeps the three "Chương trình: Chặng 0X" links out
+   of this role. They are `<a>` now (the brief gives explicit URLs) but must stay
+   CORAL, and `.fc-sec--dark a.fc-link` (0,2,1) would otherwise out-specify a
+   plain `.fc-link--program` (0,1,0) and repaint them emerald. Excluding them here
+   removes the specificity contest instead of trying to win it. */
+a.fc-link:not(.fc-link--program) {
   background: rgba(8, 144, 108, .08);
   border-color: rgba(8, 144, 108, .42);
 }
-a.fc-link:hover {
+a.fc-link:not(.fc-link--program):hover {
   background: rgba(8, 144, 108, .15);
   border-color: var(--fc-em);
   color: var(--fc-em-deep);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(8, 144, 108, .16);
 }
-.fc-sec--dark a.fc-link, .fc-sec--deep a.fc-link {
+.fc-sec--dark a.fc-link:not(.fc-link--program),
+.fc-sec--deep a.fc-link:not(.fc-link--program) {
   background: rgba(52, 211, 153, .12);
   border-color: rgba(52, 211, 153, .48);
   color: var(--fc-em-hi);
 }
-.fc-sec--dark a.fc-link:hover, .fc-sec--deep a.fc-link:hover {
+.fc-sec--dark a.fc-link:not(.fc-link--program):hover,
+.fc-sec--deep a.fc-link:not(.fc-link--program):hover {
   background: rgba(52, 211, 153, .2);
   border-color: var(--fc-em-hi);
   color: #a7f3d0;
   box-shadow: 0 6px 18px rgba(8, 144, 108, .28);
 }
 
-/* Consultation / program — coral filled, the top of the CTA hierarchy. */
-button.fc-link {
+/* Consultation / program — coral filled, the top of the CTA hierarchy.
+   `--program` exists because the three "Chương trình: Chặng 0X" CTAs became
+   `<a href="/ung-dung-thuc-te#chang-0X">` (the brief gives explicit URLs), and
+   the coral role used to be keyed off the `<button>` tag. Without this they
+   would silently fall back to the emerald navigation role. */
+button.fc-link,
+.fc-link--program {
   background: var(--fc-coral);
   border-color: rgba(255, 107, 74, .38);
   color: #fff;
   box-shadow: 0 8px 22px rgba(201, 59, 43, .26);
 }
-button.fc-link:hover {
+button.fc-link:hover,
+.fc-link--program:hover {
   background: var(--fc-coral-hi);
   transform: translateY(-1px);
   box-shadow: 0 12px 28px rgba(201, 59, 43, .34);
