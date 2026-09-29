@@ -1360,12 +1360,17 @@ html.fc-motion .fc-boot {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   align-self: flex-start;
   margin-top: 1rem;
-  min-height: 2.625rem;
-  padding: .625rem 1.25rem;
+  /* Same geometry as `.fc-link` (46px / .875rem / 22px side padding). The brief
+     asks for the CTAs to share border-radius, height and typography, and these
+     two emerald roles sit in the same section — Lucas's card uses `a.fc-link`
+     while the other two use `.fc-expert__cta`, so a 42-vs-46px height and a
+     13-vs-14px size were visible side by side. */
+  min-height: 2.875rem;
+  padding: .6875rem 1.375rem;
   border: 1.5px solid rgba(52, 211, 153, .48);
   border-radius: 5rem;
   background: rgba(52, 211, 153, .12);
-  font-family: var(--fc-sans); font-size: .8125rem; font-weight: 700;
+  font-family: var(--fc-sans); font-size: .875rem; font-weight: 700;
   letter-spacing: -0.01em; line-height: 1.25;
   text-wrap: balance;
   color: var(--fc-em-hi);
