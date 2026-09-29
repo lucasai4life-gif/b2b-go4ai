@@ -74,6 +74,18 @@ body.faculty-page {
    keeps the y axis visible so shadows are not cut off, and it does not create
    a scroll container. */
 .fc-sec { position: relative; width: 100%; overflow-x: clip; }
+
+/* Every in-page anchor on this page targets a `.fc-sec` (#nang-luc-dao-tao,
+   #nang-luc-tu-van, #nang-luc-nen-tang, #doi-ngu, #lien-he-ai) and the lane CTAs
+   "Chặng 01/02/03 →" are the primary navigation. Without a scroll margin the
+   browser puts the section's top edge at viewport y=0, i.e. underneath the
+   sticky header — measured top=0 against headerBottom=81, so the eyebrow and
+   title of the destination were hidden on arrival. Same defect the application
+   page's #chang-0X links had; `scroll-margin-top` does not change layout. */
+.fc-sec { scroll-margin-top: 96px; }
+@media (max-width: 767px) {
+  .fc-sec { scroll-margin-top: 80px; }
+}
 .fc-sec--dark  { background-color: var(--fc-ink);  color: var(--fc-text-dark); }
 .fc-sec--deep  { background-color: #04100c;        color: var(--fc-text-dark); }
 .fc-sec--paper { background-color: var(--fc-paper); color: var(--fc-ink-3); }
