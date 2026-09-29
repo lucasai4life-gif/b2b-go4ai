@@ -2004,6 +2004,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.25;
+  text-wrap: balance;
   text-decoration: none;
   border: 1.5px solid rgba(8, 144, 108, 0.42);
   border-radius: 999px;

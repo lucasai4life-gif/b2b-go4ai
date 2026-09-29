@@ -227,6 +227,12 @@ html.fc-motion .fc-dot { animation: fcPulse 2.4s ease-in-out infinite; }
   font-size: .875rem; font-weight: 700; letter-spacing: -0.01em;
   line-height: 1.25;
   text-decoration: none; text-align: center;
+  /* The arrow is part of the label text, not a separate flex item, so at the
+     768-991px three-column lane width the label wraps and the "→" is left
+     ALONE on the second line. Balancing the wrap keeps it attached to the last
+     words. Progressive enhancement: unsupported engines fall back to the
+     current greedy wrap, which is what the fallback already looked like. */
+  text-wrap: balance;
   color: var(--fc-em-deep);
   cursor: pointer;
   transition: background-color .25s var(--fc-ease), border-color .25s var(--fc-ease),
@@ -1361,6 +1367,7 @@ html.fc-motion .fc-boot {
   background: rgba(52, 211, 153, .12);
   font-family: var(--fc-sans); font-size: .8125rem; font-weight: 700;
   letter-spacing: -0.01em; line-height: 1.25;
+  text-wrap: balance;
   color: var(--fc-em-hi);
   text-decoration: none;
   transition: background-color .25s var(--fc-ease), border-color .25s var(--fc-ease),
