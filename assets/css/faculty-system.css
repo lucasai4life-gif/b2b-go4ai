@@ -205,24 +205,72 @@ html.fc-motion .fc-dot { animation: fcPulse 2.4s ease-in-out infinite; }
 }
 .fc-btn-row { display: flex; flex-wrap: wrap; gap: .875rem; }
 
-/* Text link with arrow --------------------------------------------------- */
+/* Action link / button ---------------------------------------------------
+   `.fc-link` used to be a bare underlined text link in every context, so the
+   program CTAs and the "Xem chi tiết" links carried the same weight as body
+   copy. It is now a real button surface with one shared geometry, split into
+   two roles so the hierarchy is readable at rest:
+
+     button.fc-link  → consultation / program   (coral, filled)
+     a.fc-link       → navigation / detail      (emerald, outlined high-contrast)
+
+   Tag-based split, not a new class: all three program CTAs are already
+   `<button data-consultation-open>` and every detail/profile CTA is already an
+   `<a>`, so no markup had to change and the hrefs/behaviour are untouched. */
 .fc-link {
-  display: inline-flex; align-items: center; gap: .5rem;
-  font-size: .875rem; font-weight: 600; letter-spacing: -0.01em;
-  color: var(--fc-em-deep); text-decoration: none;
-  padding-bottom: .25rem;
-  border-bottom: 1px solid rgba(8, 144, 108, .28);
-  transition: gap .25s var(--fc-ease), border-color .25s var(--fc-ease), color .25s var(--fc-ease);
-  background: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 2.875rem;
+  padding: .6875rem 1.375rem;
+  border: 1.5px solid transparent;
+  border-radius: 5rem;
   font-family: var(--fc-sans);
-  text-align: left;
+  font-size: .875rem; font-weight: 700; letter-spacing: -0.01em;
+  line-height: 1.25;
+  text-decoration: none; text-align: center;
+  color: var(--fc-em-deep);
+  cursor: pointer;
+  transition: background-color .25s var(--fc-ease), border-color .25s var(--fc-ease),
+              color .25s var(--fc-ease), box-shadow .25s var(--fc-ease),
+              transform .25s var(--fc-ease);
 }
-.fc-link:hover { gap: .8rem; border-color: var(--fc-em); }
-.fc-sec--dark .fc-link, .fc-sec--deep .fc-link {
+
+/* Navigation / detail / profile — emerald outlined action. */
+a.fc-link {
+  background: rgba(8, 144, 108, .08);
+  border-color: rgba(8, 144, 108, .42);
+}
+a.fc-link:hover {
+  background: rgba(8, 144, 108, .15);
+  border-color: var(--fc-em);
+  color: var(--fc-em-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(8, 144, 108, .16);
+}
+.fc-sec--dark a.fc-link, .fc-sec--deep a.fc-link {
+  background: rgba(52, 211, 153, .12);
+  border-color: rgba(52, 211, 153, .48);
   color: var(--fc-em-hi);
-  border-bottom-color: rgba(52, 211, 153, .3);
 }
-.fc-sec--dark .fc-link:hover, .fc-sec--deep .fc-link:hover { border-color: var(--fc-em-hi); }
+.fc-sec--dark a.fc-link:hover, .fc-sec--deep a.fc-link:hover {
+  background: rgba(52, 211, 153, .2);
+  border-color: var(--fc-em-hi);
+  color: #a7f3d0;
+  box-shadow: 0 6px 18px rgba(8, 144, 108, .28);
+}
+
+/* Consultation / program — coral filled, the top of the CTA hierarchy. */
+button.fc-link {
+  background: var(--fc-coral);
+  border-color: rgba(255, 107, 74, .38);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(201, 59, 43, .26);
+}
+button.fc-link:hover {
+  background: var(--fc-coral-hi);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(201, 59, 43, .34);
+}
+.fc-link:focus-visible { outline: 2px solid var(--fc-em-hi); outline-offset: 3px; }
 
 /* ================================================================ 3. HERO */
 .fc-hero {
@@ -603,6 +651,19 @@ html.fc-motion .fc-map__wire .fc-wire__flow { animation: none; }
   gap: clamp(1.75rem, 3.5vw, 3.5rem);
   align-items: start;
 }
+/* The right column used to start flush with the system bar (measured gap to the
+   sysbar: 0px at every desktop width) while the left column began with an
+   eyebrow + title + claim, so the block read top-heavy: the fields sat ~87px
+   ABOVE the title's baseline. Dropping them puts the first field row level with
+   the title and brings the two column bottoms together — measured
+   |left.bottom - fields.bottom|: 31px @1536, 28px @1440, 4px @1280, 3px @1024,
+   3px @992 (it was 87px in the other direction before).
+   `align-items: start` on the grid means this is a plain offset, no structure
+   change. Below 992px the grid collapses to one column and the fields flow
+   after the left column naturally, so the offset must not apply there. */
+@media (min-width: 992px) {
+  .fc-eng__top > .fc-fields { margin-top: clamp(1.75rem, 3.4vw, 3rem); }
+}
 .fc-eng__flowhead { margin-top: clamp(2.25rem, 4vw, 3.25rem); }
 
 /* Six-step chain --------------------------------------------------------- */
@@ -845,9 +906,14 @@ html.fc-motion .fc-map__wire .fc-wire__flow { animation: none; }
 .fc-arch__grid.is--scanning .fc-mod:hover .fc-mod__title { color: #fff; }
 .fc-arch__grid.is--scanning .fc-mod.is--active .fc-mod__kind,
 .fc-arch__grid.is--scanning .fc-mod:hover .fc-mod__kind { color: var(--fc-em-hi); }
+/* The lit card's CTA brightens with it. `border-bottom-color` was the old
+   text-link affordance; the action is a bordered button now, so the whole
+   surface lifts instead. */
 .fc-arch__grid.is--scanning .fc-mod.is--active .fc-mod__link .fc-link,
 .fc-arch__grid.is--scanning .fc-mod:hover .fc-mod__link .fc-link {
-  color: var(--fc-em-hi); border-bottom-color: var(--fc-em-hi);
+  background: rgba(52, 211, 153, .2);
+  border-color: var(--fc-em-hi);
+  color: #a7f3d0;
 }
 /* The fan drop that feeds the lit card pulses with it. */
 .fc-arch__drop { transition: stroke .4s var(--fc-ease), stroke-width .4s var(--fc-ease); }
@@ -1285,16 +1351,29 @@ html.fc-motion .fc-boot {
    no invented URL, no dead `href="#"`, and attaching a real link later is just
    swapping the tag. */
 .fc-expert__cta {
-  display: inline-flex; align-items: center; gap: .4rem;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   align-self: flex-start;
-  margin-top: .875rem; padding-bottom: .15rem;
-  font-family: var(--fc-mono); font-size: .6875rem; font-weight: 500;
-  letter-spacing: .02em; color: var(--fc-em-hi);
+  margin-top: 1rem;
+  min-height: 2.625rem;
+  padding: .625rem 1.25rem;
+  border: 1.5px solid rgba(52, 211, 153, .48);
+  border-radius: 5rem;
+  background: rgba(52, 211, 153, .12);
+  font-family: var(--fc-sans); font-size: .8125rem; font-weight: 700;
+  letter-spacing: -0.01em; line-height: 1.25;
+  color: var(--fc-em-hi);
   text-decoration: none;
-  border-bottom: 1px solid rgba(52, 211, 153, .34);
-  transition: border-color .25s var(--fc-ease), gap .25s var(--fc-ease);
+  transition: background-color .25s var(--fc-ease), border-color .25s var(--fc-ease),
+              color .25s var(--fc-ease), box-shadow .25s var(--fc-ease),
+              transform .25s var(--fc-ease);
 }
 /* The hover affordance belongs to the experts that actually link somewhere;
    the inert span keeps the resting look and no pointer cursor. */
-a.fc-expert__cta:hover { border-bottom-color: var(--fc-em-hi); gap: .7rem; }
+a.fc-expert__cta:hover {
+  background: rgba(52, 211, 153, .2);
+  border-color: var(--fc-em-hi);
+  color: #a7f3d0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(8, 144, 108, .28);
+}
 span.fc-expert__cta { cursor: default; }

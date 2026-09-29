@@ -1987,26 +1987,55 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
 .cs-stage--architect .cs-mod__list li { color: rgba(232, 245, 240, 0.78); }
 .cs-stage--design .cs-mod__list li::before,
 .cs-stage--architect .cs-mod__list li::before { background: var(--acs-emerald-lt); }
+/* Case CTA. This used to be a bare text link with no surface of its own, which
+   is why it read as low-priority next to the module copy. It is now an
+   OUTLINED emerald action so it stays clearly subordinate to the coral
+   consultation buttons (the conversion CTA) while still being visible without
+   hover: tinted fill + a real border + heavier weight.
+   Text, href and behaviour are untouched — only the surface is new. */
 .cs-mod__cta {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   align-self: flex-start;
   margin-top: auto;
-  padding-top: 14px;
+  padding: 11px 18px;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  text-decoration: none;
+  border: 1.5px solid rgba(8, 144, 108, 0.42);
+  border-radius: 999px;
+  background: rgba(8, 144, 108, 0.08);
   color: var(--green-700);
-  transition: color 0.3s var(--acs-ease);
+  transition: background-color 0.3s var(--acs-ease), border-color 0.3s var(--acs-ease),
+              color 0.3s var(--acs-ease), transform 0.3s var(--acs-ease),
+              box-shadow 0.3s var(--acs-ease);
 }
 .cs-mod__cta svg { flex: 0 0 auto; transition: transform 0.3s var(--acs-ease-out); }
-.cs-mod__cta:hover { color: var(--acs-emerald); }
+.cs-mod__cta:hover {
+  background: rgba(8, 144, 108, 0.15);
+  border-color: var(--acs-emerald);
+  color: var(--acs-emerald-ink);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(8, 144, 108, 0.18);
+}
 .cs-mod__cta:hover svg { transform: translateX(3px); }
 .cs-stage--design .cs-mod__cta,
-.cs-stage--architect .cs-mod__cta { color: #6ee7b7; }
+.cs-stage--architect .cs-mod__cta {
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.5);
+  color: #6ee7b7;
+}
 .cs-stage--design .cs-mod__cta:hover,
-.cs-stage--architect .cs-mod__cta:hover { color: #a7f3d0; }
-.cs-mod__cta:focus-visible { outline: 2px solid var(--acs-emerald); outline-offset: 3px; border-radius: 4px; }
+.cs-stage--architect .cs-mod__cta:hover {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: var(--acs-emerald-lt);
+  color: #a7f3d0;
+  box-shadow: 0 6px 18px rgba(8, 144, 108, 0.3);
+}
+.cs-mod__cta:focus-visible { outline: 2px solid var(--acs-emerald); outline-offset: 3px; border-radius: 999px; }
 
 /* ── 17.7 CASE GROUP INSIDE A STAGE ────────────────────────────────────── */
 .cs-stage__cases { position: relative; padding-bottom: clamp(30px, 3.6vw, 52px); }
@@ -2095,7 +2124,7 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   .cs-stage--architect .cs-mod__port::before {
     background: linear-gradient(270deg, rgba(52, 211, 153, 0.45), rgba(52, 211, 153, 0.04));
   }
-  .cs-mod__cta { padding-top: 12px; }
+  .cs-mod__cta { padding: 10px 16px; }
 }
 
 @media (max-width: 479px) {
@@ -2122,6 +2151,9 @@ html.app-motion-fallback .acs-rail__item { opacity: 1 !important; visibility: vi
   .cs-stage--train .cs-mod__desc,
   .cs-stage--train .cs-mod__list li,
   .cs-stage--train .cs-mod__cta { font-size: 0.8125rem; }
+  /* five modules still share one row here — keep the new button surface from
+     pushing the CTA onto a second line */
+  .cs-stage--train .cs-mod__cta { padding: 9px 13px; gap: 6px; }
   .cs-stage--train .cs-mod__cta svg { width: 14px; height: 14px; }
 }
 
@@ -2145,3 +2177,63 @@ html.app-motion-fallback .jp-node,
 html.app-motion-fallback .cs-mod { opacity: 1 !important; visibility: visible !important; }
 html.app-motion-fallback .cs-flowstep { opacity: 1 !important; visibility: visible !important; }
 html.app-motion-fallback .cs-flowstep--qc.is--on::before { animation: none !important; }
+
+/* ============================================================================
+   18. CLOSING CTA BAND — priority + breathing room
+   ----------------------------------------------------------------------------
+   Two separate problems, both about the band that ends the page:
+
+   (a) SPACING. `.cs-library` was reset to `padding: 0` by the journey rework,
+       so the band's wrapper had no bottom padding and the band sat flush
+       against the footer (measured gap: 0px at every viewport). The padding
+       goes on the wrapper rather than as `margin-bottom` on the band so it
+       cannot collapse through the `.container`/`.padding-global` ancestors.
+
+   (b) PRIORITY. `Tư vấn chương trình` is the page's conversion CTA and it is
+       already coral-filled, but it carried the same weight as every other
+       button on the site. Heavier weight, an arrow, a hairline rim and a
+       deeper shadow give it the top of the hierarchy without resizing it.
+   ========================================================================= */
+.cs-library > .padding-global:last-child {
+  padding-bottom: clamp(64px, 7vw, 88px);
+}
+/* The band itself stacks at 992px (see the `.app-cta-band` rule in go4ai.css),
+   so the closing space follows the same switch: 64-96px while it is a
+   side-by-side band, 40-56px once it is a stacked one. Without this the 992px
+   viewport measured 69px, which is a desktop value on a mobile layout. */
+@media (max-width: 992px) {
+  .cs-library > .padding-global:last-child {
+    padding-bottom: clamp(40px, 7vw, 56px);
+  }
+}
+
+.app-cta-band__action .button--red {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 138, 118, 0.42);
+  box-shadow: 0 8px 24px rgba(201, 59, 43, 0.4);
+}
+.app-cta-band__action .button--red svg {
+  flex: 0 0 auto;
+  transition: transform 0.3s var(--acs-ease-out);
+}
+.app-cta-band__action .button--red:hover {
+  background-color: #c93b2b;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(201, 59, 43, 0.5);
+}
+.app-cta-band__action .button--red:hover svg { transform: translateX(3px); }
+.app-cta-band__action .button--red:focus-visible {
+  outline: 2px solid #ffb4a5;
+  outline-offset: 3px;
+}
+
+/* The band stacks at <=992px (go4ai.css gives the button `width: 100%` there).
+   That rule centres the text but not the flex row, so the arrow stayed left. */
+@media (max-width: 992px) {
+  .app-cta-band__action .button--red { justify-content: center; }
+}
