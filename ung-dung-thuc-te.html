@@ -2358,5 +2358,48 @@
 <script src="assets/js/app-case-system.js"></script>
 <script src="assets/js/consultation-modal.js?v=20260926-leads2"></script>
 
+<!-- Deep links from /doi-ngu-giang-vien land here (#chang-01/02/03).
+     go4ai.css sets `html { scroll-behavior: smooth }`, so the browser's load-time
+     fragment scroll is ANIMATED and gets cancelled part-way by this page's own
+     scroll-driven scripts (ScrollTrigger / app-case-system). Measured landings
+     were scrollY 661 / 3850 / 925 against expected 1323 / 3875 / 9944 - the
+     visitor arrives at the wrong place, and it is non-deterministic. With
+     `scroll-behavior: auto` the same navigation lands EXACTLY (9944 / 3875 /
+     1323, target top = 96px), so the offset itself is correct; only the animated
+     pass is at fault.
+     Fix: re-apply the scroll with smooth temporarily off, and re-assert it a few
+     times so a late cancellation cannot leave it short. Aborts the moment the
+     visitor scrolls or presses a key, so it never fights them. No hash => no
+     work, and nothing here touches the motion layer. -->
+<script>
+(function () {
+  var id = decodeURIComponent(location.hash.slice(1));
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+
+  var interacted = false;
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { interacted = true; }, { passive: true, once: true });
+  });
+
+  var root = document.documentElement;
+  function apply() {
+    if (interacted) return;
+    var prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    el.scrollIntoView({ block: 'start' });
+    root.style.scrollBehavior = prev;
+  }
+
+  var delays = [0, 150, 400, 900];
+  function schedule() {
+    delays.forEach(function (d) { setTimeout(apply, d); });
+  }
+  if (document.readyState === 'complete') schedule();
+  else window.addEventListener('load', schedule);
+})();
+</script>
+
 </body>
 </html>
