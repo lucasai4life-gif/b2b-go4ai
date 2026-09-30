@@ -1167,25 +1167,81 @@ html.motion-on .ev-mask__i {
    04 — DARK CTA BAND
    ========================================================================== */
 .ev-cta-wrap { padding: 0 0 clamp(56px, 6vw, 84px); background: #ffffff; }
+/* Presentation only. Copy, href, section structure and the desktop
+   content-left / CTA-right layout are unchanged; the panel just reads as an
+   Enterprise AI consultation console now.
+   Motion is gated on `html.motion-on`, the class the page script only adds when
+   it can safely animate, and is switched off again in the reduced-motion block
+   at the end of this sheet. Nothing here hides content on its own. */
 .ev-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 36px;
   padding: clamp(36px, 4vw, 56px) clamp(24px, 3.4vw, 48px);
-  border: 1px solid rgba(8, 144, 108, 0.3);
+  border: 1px solid rgba(8, 144, 108, 0.38);
   border-radius: 16px;
-  background: linear-gradient(145deg, #091512 0%, #0c2018 100%);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.25);
+  background:
+    radial-gradient(ellipse 58% 120% at 88% 6%, rgba(8, 144, 108, 0.30) 0%, transparent 62%),
+    radial-gradient(ellipse 46% 88% at 2% 98%, rgba(6, 105, 79, 0.24) 0%, transparent 58%),
+    linear-gradient(145deg, #061310 0%, #0a1e17 54%, #050f0b 100%);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(52, 211, 153, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
 }
+/* very light technical grid, faded toward the edges */
+.ev-cta__grid {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(52, 211, 153, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52, 211, 153, 0.06) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse 82% 112% at 78% 28%, #000 6%, transparent 76%);
+  mask-image: radial-gradient(ellipse 82% 112% at 78% 28%, #000 6%, transparent 76%);
+}
+.ev-cta__content,
+.ev-cta__action { position: relative; z-index: 1; }
 .ev-cta__content { display: flex; flex-direction: column; gap: 12px; }
+
+/* eyebrow + status read as one system header line */
+.ev-cta__meta { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
 .ev-cta__eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #34d399;
+}
+.ev-cta__eyebrow::before {
+  content: ''; flex: 0 0 auto;
+  width: 14px; height: 1px;
+  background: linear-gradient(90deg, rgba(52, 211, 153, 0.25), #34d399);
+}
+.ev-cta__status {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 4px 10px;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  border-radius: 999px;
+  background: rgba(8, 144, 108, 0.15);
+  font-family: var(--font-mono);
+  font-size: 0.625rem; font-weight: 700; letter-spacing: 0.11em;
+  color: #a7f3d0;
+  white-space: nowrap;
+}
+.ev-cta__status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #34d399; flex: 0 0 auto;
+}
+html.motion-on .ev-cta__status-dot { animation: evCtaPulse 2.6s ease-in-out infinite; }
+@keyframes evCtaPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); opacity: 1; }
+  50%      { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); opacity: 0.6; }
 }
 .ev-cta__title {
   margin: 0;
@@ -1194,14 +1250,72 @@ html.motion-on .ev-mask__i {
   letter-spacing: -0.025em;
   color: #ffffff;
 }
+/* short accent rail under the title. The resting state has the highlight
+   centred so it still reads correctly with motion switched off; the animation
+   is what slides it. */
+.ev-cta__rule {
+  display: block;
+  width: 88px; height: 2px;
+  border-radius: 2px;
+  background-image: linear-gradient(90deg,
+    rgba(52, 211, 153, 0.18) 0%, rgba(52, 211, 153, 0.18) 32%,
+    #6ee7b7 50%,
+    rgba(52, 211, 153, 0.18) 68%, rgba(52, 211, 153, 0.18) 100%);
+  background-size: 240% 100%;
+  background-position: 50% 0;
+}
+html.motion-on .ev-cta__rule { animation: evCtaSweep 4.6s ease-in-out infinite; }
+@keyframes evCtaSweep {
+  0%   { background-position: 130% 0; }
+  100% { background-position: -130% 0; }
+}
 .ev-cta__desc {
   margin: 0;
   max-width: 540px;
   font-size: 1rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.68);
+  color: rgba(255, 255, 255, 0.78);
 }
-.ev-cta__action { flex: 0 0 auto; }
+.ev-cta__tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 2px 0 0; padding: 0; list-style: none;
+}
+.ev-cta__tag {
+  display: inline-flex; align-items: center;
+  padding: 5px 11px;
+  border: 1px solid rgba(234, 245, 241, 0.15);
+  border-radius: 6px;
+  background: rgba(234, 245, 241, 0.05);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.03em;
+  color: rgba(234, 245, 241, 0.84);
+}
+
+.ev-cta__action { position: relative; flex: 0 0 auto; }
+/* faint data rail reaching from the copy toward the CTA (desktop only) */
+.ev-cta__connector {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  width: clamp(18px, 3vw, 54px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.45));
+  pointer-events: none;
+}
+.ev-cta__btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-weight: 700;
+  box-shadow: 0 10px 26px rgba(201, 59, 43, 0.36);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease),
+              background-color 0.25s var(--ease);
+}
+.ev-cta__btn svg { flex: 0 0 auto; transition: transform 0.3s var(--ease); }
+.ev-cta__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 34px rgba(201, 59, 43, 0.46);
+}
+.ev-cta__btn:hover svg { transform: translateX(3px); }
+.ev-cta__btn:focus-visible { outline: 2px solid #ffb4a5; outline-offset: 3px; }
 
 /* ==========================================================================
    SHARED BITS (mono meta + modal, reused from the previous page build)
@@ -1449,6 +1563,7 @@ html.motion-scroll .ev-scroll.is--on {
 
   .featured-insight-card { grid-template-columns: minmax(0, 1fr); padding: 22px; }
   .ev-cta { flex-direction: column; align-items: flex-start; }
+  .ev-cta__connector { display: none; }
 }
 
 @media (max-width: 640px) {
@@ -1467,6 +1582,8 @@ html.motion-scroll .ev-scroll.is--on {
   .insight-carousel-card { flex: 0 0 86vw; width: 86vw; padding: 20px 18px; }
   .featured-insight-card { padding: 16px; border-radius: 12px; }
   .ev-cta { padding: 32px 20px; }
+  .ev-cta__tags { gap: 6px; }
+  .ev-cta__tag { padding: 4px 9px; font-size: 0.625rem; }
 }
 
 @media (max-width: 400px) {
@@ -1483,7 +1600,9 @@ html.motion-scroll .ev-scroll.is--on {
   html.motion-on .ev-fade,
   html.motion-on .ev-status__dot,
   html.motion-on .ev-status__bolt,
-  html.motion-on .ev-spot__scan {
+  html.motion-on .ev-spot__scan,
+  html.motion-on .ev-cta__status-dot,
+  html.motion-on .ev-cta__rule {
     animation: none !important;
   }
   .ev-spot__scan { display: none; }
@@ -2308,16 +2427,32 @@ html.motion-scroll .ev-scroll.is--on {
     <div class="padding-global" data-page-node-id="3IJIjxw3nLouEeAAuJFPBW">
       <div class="container" data-page-node-id="1LUFayeBZMFUkFZH6jXuMZ">
         <aside class="ev-cta ev-scroll" aria-label="Kêu gọi hành động" data-page-node-id="zfeX22ZGzlYKIxiZ1R2GI0">
+          <span class="ev-cta__grid" aria-hidden="true"></span>
           <div class="ev-cta__content" data-page-node-id="HjDf0KocjJQ46fPLoOYk1V">
-            <span class="ev-cta__eyebrow" data-page-node-id="gHH5UD0wnZl3VN6af0msY9">Tư vấn &amp; Triển khai</span>
+            <div class="ev-cta__meta">
+              <span class="ev-cta__eyebrow" data-page-node-id="gHH5UD0wnZl3VN6af0msY9">Tư vấn &amp; Triển khai</span>
+              <span class="ev-cta__status">
+                <span class="ev-cta__status-dot" aria-hidden="true"></span>
+                AI CONSULTATION / READY
+              </span>
+            </div>
             <h2 class="ev-cta__title" data-page-node-id="zwVB2tIGDbkGhtqzwXQW8y">Có một bài toán AI cần trao đổi?</h2>
+            <span class="ev-cta__rule" aria-hidden="true"></span>
             <p class="ev-cta__desc" data-page-node-id="nxTapEU34fVRqgaqPrj8L5">
               Mang bài toán thật của doanh nghiệp bạn đến — GO4AI sẽ cùng bạn khảo sát hiện trạng,
               bóc tách use-case và thiết kế giải pháp đào tạo thực chiến đo lường được KPI.
             </p>
+            <ul class="ev-cta__tags" role="list">
+              <li class="ev-cta__tag">Khảo sát hiện trạng</li>
+              <li class="ev-cta__tag">Bóc tách use-case</li>
+              <li class="ev-cta__tag">Thiết kế giải pháp</li>
+            </ul>
           </div>
           <div class="ev-cta__action" data-page-node-id="i6PcS0WSoZ5tYqYeBMry9P">
-            <a class="button button--red" href="/#lien-he" data-page-node-id="UY1hkDy0urXLCFtmIMQXQs">Tư vấn chương trình</a>
+            <span class="ev-cta__connector" aria-hidden="true"></span>
+            <a class="button button--red ev-cta__btn" href="/#lien-he" data-page-node-id="UY1hkDy0urXLCFtmIMQXQs">Tư vấn chương trình
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
           </div>
         </aside>
       </div>
