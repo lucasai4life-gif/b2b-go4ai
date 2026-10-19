@@ -94,6 +94,14 @@ export async function onRequestPost(context) {
       });
     }
 
+    // ─── 3.1 FOUNDING TALENT LANDING PAGE LEAD DISPATCH ───────────────
+    const isFoundingTalent = body.leadType === 'founding_talent' ||
+      (body.strength !== undefined && body.motivation !== undefined && (body.segment !== undefined || body.acceptTerms !== undefined));
+
+    if (isFoundingTalent) {
+      return await handleFoundingTalentLead({ context, body, clientIp, headers });
+    }
+
     // ─── 4. EXTRACT & SANITIZE FIELDS ─────────────────────────────────
     const contact    = (body.contact && typeof body.contact === 'object') ? body.contact : {};
     const name       = sanitizeField(body.name || body.full_name || contact.name, 100);
@@ -773,3 +781,354 @@ function buildTelegramMessage(data) {
 
   return `📋 <b>NEW LEAD</b>\nType: ${esc(leadType)}\nSource: ${esc(source)}\nEmail: ${esc(email)}\n<i>${dt}</i>`;
 }
+
+// ─── FOUNDING TALENT LEAD HANDLER & HELPERS ──────────────────────────────
+const FT_SEGMENTS = ['student', 'employee', 'founder', 'other'];
+const FT_STRENGTHS = ['business', 'technology', 'ecosystem', 'operations'];
+const FT_MODES = ['online', 'offline', 'hybrid'];
+const FT_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const FT_PHONE_RE = /^\+?[0-9 .-]{8,16}$/;
+
+const ftClean = (v) => (typeof v === 'string' ? v.trim().replace(/\s+/g, ' ') : '');
+const ftCleanMultiline = (v) => (typeof v === 'string' ? v.trim().replace(/\r\n/g, '\n') : '');
+
+function validateFoundingTalentLead(input = {}) {
+  const errors = {};
+  const data = {
+    fullName: ftClean(input.fullName || input.name),
+    email: ftClean(input.email).toLowerCase(),
+    phone: ftClean(input.phone),
+    segment: ftClean(input.segment),
+    segmentOther: ftClean(input.segmentOther),
+    organization: ftClean(input.organization || input.company),
+    strength: ftClean(input.strength),
+    project: ftCleanMultiline(input.project),
+    motivation: ftCleanMultiline(input.motivation),
+    mode: ftClean(input.mode),
+    hoursPerWeek: Number(input.hoursPerWeek),
+    acceptTerms: input.acceptTerms === true,
+    acceptPrivacy: input.acceptPrivacy === true,
+    source: ftClean(input.source).slice(0, 200),
+  };
+
+  if (data.fullName.length < 2 || data.fullName.length > 100) errors.fullName = 'Vui lòng nhập họ và tên (2–100 ký tự).';
+  if (!FT_EMAIL_RE.test(data.email) || data.email.length > 254) errors.email = 'Email chưa đúng định dạng.';
+  if (data.phone && !FT_PHONE_RE.test(data.phone)) errors.phone = 'Số điện thoại chưa đúng định dạng.';
+  if (!FT_SEGMENTS.includes(data.segment)) errors.segment = 'Vui lòng chọn nhóm ứng viên.';
+  if (data.segment === 'other') {
+    if (data.segmentOther.length < 2 || data.segmentOther.length > 100) errors.segmentOther = 'Vui lòng ghi rõ bạn thuộc nhóm nào (2–100 ký tự).';
+  } else {
+    data.segmentOther = '';
+  }
+  if (data.organization.length < 2 || data.organization.length > 200) errors.organization = 'Vui lòng nhập trường học / đơn vị.';
+  if (!FT_STRENGTHS.includes(data.strength)) errors.strength = 'Vui lòng chọn thế mạnh chuyên môn.';
+  if (data.project.length > 1000) errors.project = 'Tối đa 1000 ký tự.';
+  if (data.motivation.length < 20) errors.motivation = 'Chia sẻ ít nhất 20 ký tự về động lực tham gia.';
+  else if (data.motivation.length > 1000) errors.motivation = 'Tối đa 1000 ký tự.';
+  if (!FT_MODES.includes(data.mode)) errors.mode = 'Vui lòng chọn hình thức tham gia.';
+  if (!Number.isInteger(data.hoursPerWeek) || data.hoursPerWeek < 1 || data.hoursPerWeek > 80) {
+    errors.hoursPerWeek = 'Nhập số giờ nguyên từ 1 đến 80.';
+  }
+  if (!data.acceptTerms) errors.acceptTerms = 'Bạn cần đồng ý với Thể lệ chương trình.';
+  if (!data.acceptPrivacy) errors.acceptPrivacy = 'Bạn cần đồng ý với Chính sách xử lý dữ liệu cá nhân.';
+
+  return Object.keys(errors).length ? { errors } : { data };
+}
+
+function newFoundingTalentCode() {
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
+  return `FTC26-${Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+}
+
+async function hashFoundingTalentIp(ip, salt = 'go4ai-local') {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(salt + ip);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+}
+
+const FT_LABELS = {
+  segment: { student: 'Sinh viên', employee: 'Người đi làm', founder: 'Từng khởi nghiệp', other: 'Khác' },
+  strength: { business: 'Business', technology: 'Technology', ecosystem: 'Ecosystem', operations: 'Operations' },
+  mode: { online: 'Online', offline: 'Offline', hybrid: 'Hybrid' },
+};
+
+function formatFoundingTalentLeadMessage(lead) {
+  const time = new Date(lead.createdAt).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+  const clip = (s = '', n = 300) => (s.length > n ? `${s.slice(0, n)}…` : s);
+  return [
+    '<b>🟢 Lead mới — Founding Talent 2026</b>',
+    `<code>${esc(lead.code)}</code> · ${esc(time)}`,
+    '',
+    `<b>Họ tên:</b> ${esc(lead.fullName)}`,
+    `<b>Email:</b> ${esc(lead.email)}`,
+    lead.phone ? `<b>SĐT:</b> ${esc(lead.phone)}` : null,
+    `<b>Nhóm:</b> ${esc(lead.segment === 'other' && lead.segmentOther ? `Khác: ${lead.segmentOther}` : (FT_LABELS.segment[lead.segment] || lead.segment))} · ${esc(lead.organization)}`,
+    `<b>Thế mạnh:</b> ${esc(FT_LABELS.strength[lead.strength] || lead.strength)}`,
+    `<b>Hình thức:</b> ${esc(FT_LABELS.mode[lead.mode] || lead.mode)} · ${lead.hoursPerWeek} giờ/tuần`,
+    '',
+    `<b>Động lực:</b> ${esc(clip(lead.motivation))}`,
+    lead.project ? `<b>Dự án:</b> ${esc(clip(lead.project, 200))}` : null,
+    lead.source ? `<i>Nguồn: ${esc(lead.source)}</i>` : null,
+  ]
+    .filter((l) => l !== null)
+    .join('\n');
+}
+
+async function sendFoundingTalentTelegram({ token, chatId, text }) {
+  if (!token || !chatId) return { ok: false, error: 'not_configured' };
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true }),
+      signal: AbortSignal.timeout(8000),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.ok) return { ok: false, error: body.description || `HTTP ${res.status}` };
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err.name === 'TimeoutError' ? 'timeout' : err.message };
+  }
+}
+
+async function handleFoundingTalentLead({ context, body, clientIp, headers }) {
+  const { env } = context;
+  const now = new Date();
+  const registrationClosesAt = env.REGISTRATION_CLOSES_AT || '2026-11-30T16:59:59Z';
+  const seasonId = env.SEASON_ID || 'ftc-2026';
+  const termsVersion = 'the-le-ftc-2026-v1';
+  const privacyVersion = 'xu-ly-du-lieu-ftc-2026-v1';
+  const ipHashSalt = env.IP_HASH_SALT || 'go4ai-local';
+
+  // Honeypot: bot filled hidden field -> return fake success, do not save
+  if (body?.website) {
+    return new Response(
+      JSON.stringify({ ok: true, code: newFoundingTalentCode(), createdAt: now.toISOString() }),
+      {
+        status: 201,
+        headers: { ...headers, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' },
+      }
+    );
+  }
+
+  // Registration closes deadline check
+  if (now >= new Date(registrationClosesAt)) {
+    return new Response(
+      JSON.stringify({ ok: false, message: 'Đã hết hạn đăng ký mùa này.' }),
+      {
+        status: 403,
+        headers: { ...headers, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' },
+      }
+    );
+  }
+
+  // Validation
+  const { data, errors } = validateFoundingTalentLead(body);
+  if (errors) {
+    return new Response(
+      JSON.stringify({ ok: false, message: 'Vui lòng kiểm tra lại các trường được đánh dấu.', errors }),
+      {
+        status: 422,
+        headers: { ...headers, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' },
+      }
+    );
+  }
+
+  const code = newFoundingTalentCode();
+  const lead = {
+    ...data,
+    code,
+    seasonId,
+    createdAt: now.toISOString(),
+  };
+
+  const payloadJson = JSON.stringify({
+    code: lead.code,
+    seasonId: lead.seasonId,
+    fullName: lead.fullName,
+    email: lead.email,
+    phone: lead.phone,
+    segment: lead.segment,
+    segmentOther: lead.segmentOther,
+    organization: lead.organization,
+    strength: lead.strength,
+    project: lead.project,
+    motivation: lead.motivation,
+    mode: lead.mode,
+    hoursPerWeek: lead.hoursPerWeek,
+    termsVersion,
+    privacyVersion,
+    consentedAt: lead.createdAt,
+    source: lead.source,
+  });
+
+  if (!env.DB) {
+    console.error('[leads] Cơ sở dữ liệu (D1) chưa được kết nối.');
+    return new Response(
+      JSON.stringify({ ok: false, message: 'Cơ sở dữ liệu chưa sẵn sàng. Vui lòng thử lại sau.' }),
+      {
+        status: 500,
+        headers: { ...headers, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' },
+      }
+    );
+  }
+
+  // Check unique email in this season
+  try {
+    const existing = await env.DB.prepare(
+      `SELECT id FROM leads WHERE (lead_type = 'founding_talent' OR lead_type = 'foundingtalent') AND email = ?`
+    ).bind(lead.email).first();
+
+    if (existing) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          message: 'Email này đã đăng ký mùa tuyển chọn 2026. Mỗi ứng viên chỉ có một hồ sơ trong một mùa.',
+          errors: { email: 'Email đã được dùng để đăng ký mùa này.' },
+        }),
+        {
+          status: 409,
+          headers: { ...headers, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' },
+        }
+      );
+    }
+
+    // Insert into unified leads table
+    await env.DB.prepare(`
+      INSERT INTO leads (
+        lead_type, source, source_page, source_cta,
+        name, email, phone, company, role,
+        payload_json, utm_source, utm_medium, utm_campaign,
+        telegram_status, created_at, client_ip, spam_score, spam_reasons, payload_hash
+      ) VALUES (
+        'founding_talent', ?, '/foundingtalent', 'register_form',
+        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        'pending', ?, ?, 0, '', ?
+      )
+    `).bind(
+      lead.source || 'founding_talent_landing',
+      lead.fullName,
+      lead.email,
+      lead.phone || null,
+      lead.organization,
+      lead.segment === 'other' && lead.segmentOther ? `Khác: ${lead.segmentOther}` : lead.segment,
+      payloadJson,
+      body.utm_source || null,
+      body.utm_medium || null,
+      body.utm_campaign || null,
+      lead.createdAt,
+      clientIp,
+      lead.code
+    ).run();
+
+    // Also insert into dedicated founding_talent_leads table if available
+    try {
+      const ipHash = await hashFoundingTalentIp(clientIp, ipHashSalt);
+      const userAgent = String((context.request && context.request.headers ? context.request.headers.get('user-agent') : '') || '').slice(0, 300);
+      await env.DB.prepare(`
+        INSERT INTO founding_talent_leads (
+          code, season_id, full_name, email, phone, segment, segment_other, organization,
+          strength, project, motivation, mode, hours_per_week, terms_version, privacy_version,
+          consented_at, source, ip_hash, user_agent, telegram_status, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+      `).bind(
+        lead.code,
+        lead.seasonId,
+        lead.fullName,
+        lead.email,
+        lead.phone || null,
+        lead.segment,
+        lead.segmentOther || null,
+        lead.organization,
+        lead.strength,
+        lead.project || null,
+        lead.motivation,
+        lead.mode,
+        lead.hoursPerWeek,
+        termsVersion,
+        privacyVersion,
+        lead.createdAt,
+        lead.source || null,
+        ipHash,
+        userAgent,
+        lead.createdAt
+      ).run();
+    } catch (ftErr) {
+      console.warn('[leads] founding_talent_leads insert warning:', ftErr.message);
+    }
+
+  } catch (err) {
+    const msg = String(err?.message || err);
+    if (msg.includes('UNIQUE')) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          message: 'Email này đã đăng ký mùa tuyển chọn 2026. Mỗi ứng viên chỉ có một hồ sơ trong một mùa.',
+          errors: { email: 'Email đã được dùng để đăng ký mùa này.' },
+        }),
+        {
+          status: 409,
+          headers: { ...headers, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' },
+        }
+      );
+    }
+    console.error('[leads] Founding talent insert failed:', err);
+    return new Response(
+      JSON.stringify({ ok: false, message: 'Không lưu được hồ sơ. Vui lòng thử lại.' }),
+      {
+        status: 500,
+        headers: { ...headers, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' },
+      }
+    );
+  }
+
+  // Telegram notification via Bot API
+  const token = env.TELEGRAM_BOT_TOKEN;
+  const chatId = env.TELEGRAM_CHAT_ID;
+
+  if (token && chatId) {
+    const sendPromise = (async () => {
+      const text = formatFoundingTalentLeadMessage(lead);
+      const res = await sendFoundingTalentTelegram({ token, chatId, text });
+      const status = res.ok ? 'sent' : 'failed';
+      const tgError = res.ok ? null : String(res.error).slice(0, 300);
+      try {
+        await env.DB.prepare(
+          'UPDATE leads SET telegram_status = ? WHERE payload_hash = ?'
+        ).bind(status, lead.code).run();
+      } catch (e) {
+        console.error('[leads] Update telegram status in leads table error:', e);
+      }
+      try {
+        await env.DB.prepare(
+          'UPDATE founding_talent_leads SET telegram_status = ?, telegram_error = ? WHERE code = ?'
+        ).bind(status, tgError, lead.code).run();
+      } catch (e) {
+        console.error('[leads] Update telegram status in founding_talent_leads error:', e);
+      }
+    })();
+
+    if (context.waitUntil) {
+      context.waitUntil(sendPromise);
+    } else {
+      await sendPromise;
+    }
+  }
+
+  return new Response(
+    JSON.stringify({ ok: true, code: lead.code, createdAt: lead.createdAt }),
+    {
+      status: 201,
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+        'X-Content-Type-Options': 'nosniff',
+      },
+    }
+  );
+}
+

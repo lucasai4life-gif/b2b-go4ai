@@ -11,6 +11,7 @@ function createDb() {
   const sqlite = new DatabaseSync(':memory:');
   sqlite.exec(readFileSync(new URL('../migrations/0001_create_leads.sql', import.meta.url), 'utf8'));
   sqlite.exec(readFileSync(new URL('../migrations/0002_security_hardening.sql', import.meta.url), 'utf8'));
+  sqlite.exec(readFileSync(new URL('../migrations/0003_founding_talent_leads.sql', import.meta.url), 'utf8'));
   let failNextInsert = false;
   return {
     sqlite,
@@ -254,3 +255,97 @@ test('membership interest from /opp/ stores the package, and two packages are tw
     db.sqlite.close();
   }
 });
+
+test('founding talent lead captures all 10 fields, assigns FTC26 code, enforces uniqueness and notifies telegram', async () => {
+  const telegramTexts = [];
+  const oldFetch = globalThis.fetch;
+  globalThis.fetch = async (url, options) => {
+    if (url.includes('api.telegram.org')) {
+      const body = JSON.parse(options.body);
+      telegramTexts.push(body.text);
+      return new Response(JSON.stringify({ ok: true }));
+    }
+    return oldFetch(url, options);
+  };
+
+  const db = createDb();
+  try {
+    const env = { TELEGRAM_BOT_TOKEN: 'test-token', TELEGRAM_CHAT_ID: 'test-chat' };
+    const leadPayload = {
+      fullName: 'Trần Thị Tuyết Hương',
+      email: 'talent@example.com',
+      phone: '0901234567',
+      segment: 'student',
+      organization: 'Đại học Quốc gia',
+      strength: 'technology',
+      project: 'Xây dựng chatbot tuyển sinh',
+      motivation: 'Mong muốn học hỏi và tham gia đội ngũ nòng cốt GO4AI trong năm 2026.',
+      mode: 'hybrid',
+      hoursPerWeek: 12,
+      acceptTerms: true,
+      acceptPrivacy: true,
+    };
+
+    const req = new Request('https://b2b.go4ai.org/api/leads', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'cf-connecting-ip': db.clientIp },
+      body: JSON.stringify(leadPayload),
+    });
+
+    const res = await onRequestPost({
+      request: req,
+      env: { DB: db, ...env },
+    });
+
+    assert.equal(res.status, 201);
+    const body = await res.json();
+    assert.equal(body.ok, true);
+    assert.match(body.code, /^FTC26-[0-9A-F]{8}$/);
+
+    // Verify row in D1
+    const row = db.sqlite.prepare("SELECT * FROM leads WHERE lead_type = 'founding_talent'").get();
+    assert.ok(row);
+    assert.equal(row.email, 'talent@example.com');
+    assert.equal(row.name, 'Trần Thị Tuyết Hương');
+    assert.equal(row.company, 'Đại học Quốc gia');
+
+    // Verify Telegram notification
+    assert.equal(telegramTexts.length, 1);
+    assert.match(telegramTexts[0], /Founding Talent 2026/);
+    assert.match(telegramTexts[0], /Trần Thị Tuyết Hương/);
+    assert.match(telegramTexts[0], /Đại học Quốc gia/);
+
+    // Duplicate submission in same season is rejected with 409
+    const dupReq = new Request('https://b2b.go4ai.org/api/leads', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'cf-connecting-ip': db.clientIp },
+      body: JSON.stringify(leadPayload),
+    });
+    const dupRes = await onRequestPost({
+      request: dupReq,
+      env: { DB: db, ...env },
+    });
+    assert.equal(dupRes.status, 409);
+    const dupBody = await dupRes.json();
+    assert.equal(dupBody.ok, false);
+    assert.ok(dupBody.errors.email);
+
+    // Honeypot submission returns 201 fake but does not insert row
+    const hpReq = new Request('https://b2b.go4ai.org/api/leads', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'cf-connecting-ip': db.clientIp },
+      body: JSON.stringify({ ...leadPayload, email: 'bot@example.com', website: 'https://spam.bot' }),
+    });
+    const hpRes = await onRequestPost({
+      request: hpReq,
+      env: { DB: db, ...env },
+    });
+    assert.equal(hpRes.status, 201);
+    const botRow = db.sqlite.prepare("SELECT * FROM leads WHERE email = 'bot@example.com'").get();
+    assert.equal(botRow, undefined);
+  } finally {
+    globalThis.fetch = oldFetch;
+    db.sqlite.close();
+  }
+});
+
