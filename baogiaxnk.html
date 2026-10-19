@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17372f">
+<meta name="description" content="9 câu hỏi giúp lãnh đạo nhận diện nên bắt đầu từ đào tạo, quy trình và dữ liệu hay ứng dụng AI vào báo giá.">
+<title>GO4AI | Bắt đầu với AI từ đâu?</title>
+<style>
+:root{--ink:#19332d;--ink2:#38534b;--muted:#65776e;--cream:#f7f5ef;--paper:#fffefa;--line:#dddcd2;--accent:#a95336;--accent2:#dfb690;--sea:#dfece5;--amber:#faf0e1;--red:#b44836;--shadow:0 12px 38px rgba(29,48,38,.075)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #d6986c;outline-offset:2px}a{color:var(--accent);text-underline-offset:3px}.shell{max-width:1020px;margin:auto;padding:0 20px}.topbar{background:#fffefa;border-bottom:1px solid var(--line)}.topbar-inner{height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:900;font-size:20px;letter-spacing:-.055em;color:var(--ink)}.brand span{color:var(--accent)}.event{font-size:11px;letter-spacing:.08em;font-weight:700;text-align:right;color:var(--muted)}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:10px;font-weight:850;color:var(--accent)}.frame{padding:24px 0 90px}.view{display:none;animation:appear .22s ease-out}.view.active{display:block}@keyframes appear{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.hero{overflow:hidden;border-radius:26px;background:#17372f;color:#fff;padding:36px 34px 30px;position:relative;min-height:330px;isolation:isolate}.hero:before{content:"";position:absolute;width:300px;height:300px;border:1px solid #ffffff27;border-radius:100%;right:-110px;top:-80px;box-shadow:0 0 0 55px #ffffff08,0 0 0 110px #ffffff05;z-index:-1}.hero .eyebrow{color:#e0b08e}.hero h1{font-size:clamp(32px,6vw,51px);letter-spacing:-.055em;line-height:1.14;max-width:760px;margin:16px 0}.hero h1 em{color:#e5af8d;font-style:normal}.hero p{color:#dce9e0;max-width:540px;font-size:16px}.hero-meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}.meta-chip{border:1px solid #ffffff44;border-radius:100px;padding:7px 12px;font-size:12px;font-weight:750;color:#f3f6f0}.primary{border:0;border-radius:14px;min-height:52px;background:var(--accent);color:#fff;padding:12px 19px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 12px #7832181b}.primary:hover{background:#92442d}.primary.dark{background:var(--ink)}.primary.dark:hover{background:#234b3e}.secondary{border:1px solid #cfd9d2;background:#fffefa;color:var(--ink);border-radius:14px;min-height:51px;padding:11px 16px;font-weight:750}.secondary:hover{background:#f0f4ef}.plain{background:transparent;border:0;color:var(--ink2);padding:10px;font-weight:750}.full{width:100%}.action-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.action-row>*{flex:1;min-width:165px}.micro{color:var(--muted);font-size:12px}.kicker{margin:32px 0 12px;font-weight:850;font-size:17px;letter-spacing:-.025em}.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.step{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px}.step b{display:block;font-size:15px;line-height:1.3;margin:8px 0}.step p{margin:0;color:var(--muted);font-size:12px}.step-icon{width:33px;height:33px;border-radius:11px;background:var(--sea);display:grid;place-items:center;color:var(--ink);font-weight:900}.footnote{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.6}.panel{background:var(--paper);border:1px solid var(--line);border-radius:23px;padding:28px;box-shadow:var(--shadow)}.inner{max-width:720px;margin:0 auto}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px}.counter{font-size:12px;font-weight:800;color:var(--muted)}.progress{height:7px;border-radius:10px;background:#e9ede7;overflow:hidden;margin-bottom:21px}.progress>span{display:block;width:0;height:100%;border-radius:10px;background:var(--accent);transition:width .25s}.section-chip{display:inline-flex;align-items:center;border-radius:30px;background:var(--sea);font-weight:800;color:var(--ink2);padding:6px 11px;font-size:11px}.q-title{font-size:clamp(21px,4.2vw,28px);letter-spacing:-.04em;line-height:1.24;margin:14px 0 10px}.q-hint{font-size:13px;color:var(--muted);margin:0 0 18px}.options{display:grid;gap:11px}.option{border:1.5px solid #d8ded7;background:#fff;border-radius:14px;min-height:62px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;width:100%;color:var(--ink);line-height:1.35}.option:hover{border-color:#c78c70;background:#fffaf6}.option.selected{border-color:var(--accent);background:#fff2e8;box-shadow:inset 0 0 0 1px var(--accent)}.dot{height:21px;width:21px;flex:0 0 21px;border:1.5px solid #9aa9a0;border-radius:50%;display:grid;place-items:center}.option.selected .dot{background:var(--accent);border-color:var(--accent);color:white}.option-label{font-weight:670}.nav{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:22px}.nav .primary{min-width:146px}.diag-header{padding:28px;background:linear-gradient(145deg,#17372f,#245144);color:#fff;border-radius:23px;margin-bottom:17px}.diag-header .eyebrow{color:#f1bc94}.diag-header h2{font-size:clamp(26px,5vw,38px);line-height:1.13;letter-spacing:-.05em;margin:11px 0}.diag-header p{color:#d9e8de;margin:0;max-width:780px}.tag{display:inline-block;border-radius:30px;background:#eff3ef;color:#3b574a;font-size:11px;font-weight:800;padding:5px 10px}.tag.warm{background:#f9eadd;color:#985136}.summary-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:15px;margin:16px 0}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:21px;min-width:0}.card h3{font-size:17px;letter-spacing:-.025em;margin:0 0 14px}.bars{display:grid;gap:18px}.bar-row-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;font-size:12px;font-weight:750}.bar-row-top small{color:var(--muted);font-size:11px}.bar-bg{background:#e5ebe4;height:9px;border-radius:10px;margin-top:7px;overflow:hidden}.bar-fill{height:100%;background:#739d83;border-radius:10px;transition:width .5s}.bar-fill.middle{background:#bb9161}.bar-fill.high{background:#b26449}.reason-list{display:grid;gap:10px;margin:0;padding:0;list-style:none}.reason-list li{padding:12px 13px;background:#f4f5ef;border-radius:12px;font-size:13px}.reason-list li:before{content:"• ";font-weight:bold;color:var(--accent)}.reason-title{font-size:13px;font-weight:800;margin-bottom:10px}.callout{background:var(--sea);border-left:3px solid #5b8b6f;border-radius:0 13px 13px 0;padding:14px 17px;margin:14px 0}.callout p{margin:0}.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:30px 0 13px}.section-head h3{font-size:22px;letter-spacing:-.035em;line-height:1.22;margin:0}.section-head small{font-size:11px;color:var(--muted)}.investment{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.invest-stage{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:17px}.stage-count{font-weight:900;color:var(--accent);font-size:11px;letter-spacing:.05em;text-transform:uppercase}.invest-stage h4{font-size:15px;margin:8px 0;line-height:1.25}.invest-stage p{font-size:12px;line-height:1.5;color:var(--ink2);margin:0 0 10px}.invest-stage dl{margin:0;border-top:1px solid var(--line);padding-top:9px}.invest-stage dt{font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:10px 0 2px}.invest-stage dd{margin:0;font-size:12px}.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.kpi{background:#f8f6ef;border:1px solid var(--line);border-radius:13px;padding:13px}.kpi b{display:block;font-size:12px;line-height:1.3}.kpi span{display:block;font-size:11px;color:var(--muted);margin-top:6px}.day-list{display:grid;gap:7px}.day{display:flex;gap:12px;align-items:flex-start;border-bottom:1px solid var(--line);padding:10px 0}.day:last-child{border-bottom:0}.day-number{background:#e7ede6;border-radius:9px;min-width:65px;text-align:center;font-size:11px;padding:7px 5px;font-weight:850}.day p{margin:0;font-size:13px}.small-note{border:1px dashed #d6c7b7;padding:12px 14px;border-radius:12px;font-size:11px;line-height:1.5;color:#6f5d4c;background:#fbf8f3;margin-top:16px}.cta-banner{margin-top:20px;background:#17372f;border-radius:22px;padding:23px;color:#fff}.cta-banner h3{font-size:23px;line-height:1.18;margin:7px 0;letter-spacing:-.04em}.cta-banner p{color:#d9e9df;font-size:13px}.cta-banner .secondary{background:transparent;color:#fff;border-color:#ffffff66}.form-group{margin-bottom:16px}.form-group label{display:block;font-weight:790;font-size:13px;margin-bottom:6px}.form-control{width:100%;min-height:47px;border:1px solid #c9d4cb;border-radius:11px;background:white;padding:11px 13px;color:var(--ink)}textarea.form-control{min-height:82px;resize:vertical}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}.checks{display:grid;gap:12px}.checkline{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.4}.checkline input{margin-top:3px;width:17px;height:17px;accent-color:var(--accent);flex:0 0 17px}.form-error{display:none;color:#ae372b;font-size:12px;font-weight:700;padding:12px 14px;border-radius:9px;background:#fff0ef;margin:10px 0}.form-error.visible{display:block}.preview-box{padding:15px;background:#edf3ed;border-radius:13px;border:1px solid #d6e4d8;margin-bottom:20px}.preview-box b{display:block}.preview-box p{font-size:12px;color:var(--ink2);margin:5px 0 0}.success{background:var(--sea);border:1px solid #b9d3c2;padding:13px 14px;border-radius:12px;font-size:13px;margin-top:15px}.muted-link{font-size:12px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:24px 0 45px;color:var(--muted);font-size:11px}.footer-flex{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}.print-only{display:none}.no-scroll{overflow:hidden}
+@media(max-width:720px){.shell{padding:0 15px}.frame{padding:15px 0 70px}.topbar-inner{height:58px}.brand{font-size:18px}.event{font-size:9px}.hero{border-radius:19px;padding:27px 22px;min-height:0}.hero h1{font-size:35px}.hero p{font-size:14px}.hero-meta{margin-top:20px;gap:7px}.steps{grid-template-columns:1fr;gap:8px}.step{display:grid;grid-template-columns:34px 1fr;column-gap:12px;align-items:center;padding:13px 15px}.step b{margin:0}.step p{grid-column:2}.panel{border-radius:17px;padding:20px 17px}.summary-grid{grid-template-columns:1fr}.investment{grid-template-columns:1fr}.invest-stage{padding:16px}.invest-stage dl{display:grid;grid-template-columns:1fr 1fr;gap:8px}.invest-stage dl dt{margin:4px 0 0}.invest-stage dl dd{grid-column:1 / -1;margin-top:-6px}.kpi-grid{grid-template-columns:1fr 1fr}.diag-header{border-radius:18px;padding:23px 20px}.card{padding:17px}.section-head h3{font-size:20px}.cta-banner{padding:18px;border-radius:18px}.two-col{grid-template-columns:1fr}.nav{gap:6px}.nav .primary{min-width:128px}.option{min-height:58px}.action-row{flex-direction:column}.action-row>*{width:100%}}
+@media(max-width:360px){.hero h1{font-size:30px}.meta-chip{font-size:10px}.shell{padding:0 11px}.panel{padding:18px 13px}.option{padding:12px}.q-title{font-size:21px}.event{max-width:133px}.kpi-grid{grid-template-columns:1fr 1fr}}
+@media print{body{background:white;font-size:10.5px;color:#111}.topbar,.view:not(#result),#result .cta-banner,#result .action-row,footer,.small-note{display:none!important}#result{display:block!important}.shell{max-width:none;padding:0}.frame{padding:0}.diag-header{background:white!important;color:black;border:2px solid #333;padding:16px}.diag-header p{color:#333}.diag-header .eyebrow{color:#555}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.card,.invest-stage{box-shadow:none;padding:9px;border:1px solid #aaa}.investment{grid-template-columns:repeat(3,1fr)}.kpi-grid{grid-template-columns:repeat(4,1fr)}.section-head{margin:11px 0 5px}.section-head h3{font-size:15px}.card h3{font-size:13px}.invest-stage h4{font-size:12px}.invest-stage p,.invest-stage dd{font-size:10px}.reason-list li{padding:6px;font-size:10px}.day{padding:3px 0}.day p{font-size:10px}.bar-bg{-webkit-print-color-adjust:exact;print-color-adjust:exact}.footnote{font-size:9px}.print-only{display:block} @page{size:A4;margin:11mm}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="shell topbar-inner"><div class="brand">GO<span>4</span>AI<span>.</span></div><div class="event">COFFEE FOR BUSINESS · 22.10.2026<br>TỰ ĐÁNH GIÁ QUY TRÌNH VÀ AI</div></div></header>
+<main class="shell frame" id="main">
+<section id="welcome" class="view active" aria-label="Mở đầu">
+ <div class="hero">
+  <div class="eyebrow">Bản tự đánh giá nhanh dành cho lãnh đạo</div>
+  <h1>Doanh nghiệp bạn nên <em>bắt đầu với AI</em> từ đâu?</h1>
+  <p>9 câu hỏi để chọn đúng thứ tự đầu tư: <strong>đào tạo đội ngũ</strong>, <strong>chuẩn hóa quy trình và dữ liệu</strong>, hay <strong>đưa AI vào vận hành báo giá</strong>.</p>
+  <div class="hero-meta"><span class="meta-chip">⏱ Khoảng 90 giây</span><span class="meta-chip">Không cần để lại thông tin</span><span class="meta-chip">Kết quả hiển thị ngay</span></div>
+  <div class="action-row"><button type="button" class="primary" id="startBtn">Bắt đầu chẩn đoán →</button></div>
+  <p class="micro" style="color:#cadbd1;margin-bottom:0">Không yêu cầu bảng giá, doanh thu hay dữ liệu nội bộ. Kết quả chỉ mang tính định hướng ban đầu.</p>
+ </div>
+ <div class="kicker">Bạn sẽ nhận được gì sau 9 câu?</div>
+ <div class="steps">
+ <div class="step"><div class="step-icon">01</div><b>Biết nút thắt thực sự</b><p>Con người, quy trình – dữ liệu hay nhu cầu tự động hóa.</p></div>
+ <div class="step"><div class="step-icon">02</div><b>Biết nên đầu tư vào đâu trước</b><p>Công việc, người phụ trách, đầu ra và điều kiện chuyển bước.</p></div>
+ <div class="step"><div class="step-icon">03</div><b>Có kế hoạch để bắt đầu</b><p>Hành động 7 ngày, bộ KPI cần đo và hướng triển khai tiếp.</p></div>
+ </div>
+ <p class="footnote">Tư duy triển khai: Quy trình quyết định. Dữ liệu xác nhận. Công thức tính. AI tăng tốc. GO4AI không khuyến nghị mua phần mềm khi nền vận hành chưa sẵn sàng.</p>
+</section>
+<section id="quiz" class="view inner" aria-label="Khảo sát">
+ <div class="panel">
+ <div class="topline"><div id="quizGroup" class="section-chip">Bối cảnh ngành hàng</div><div id="counter" class="counter">Bước chuẩn bị</div></div>
+ <div class="progress" aria-label="Tiến độ"><span id="progressFill"></span></div>
+ <h2 id="questionTitle" class="q-title"></h2>
+ <p id="questionHint" class="q-hint"></p>
+ <div id="options" class="options" role="radiogroup" aria-label="Chọn một phương án"></div>
+ <div class="nav"><button type="button" class="plain" id="backBtn">← Quay lại</button><button type="button" class="primary" id="nextBtn" disabled>Tiếp tục →</button></div>
+ </div>
+ <p class="micro" style="text-align:center">Có thể quay lại sửa câu trả lời. Không cần nhập thông tin liên hệ.</p>
+</section>
+<section id="result" class="view" aria-label="Kết quả đánh giá">
+ <div class="diag-header"><div class="eyebrow">BẢN ĐỒ ƯU TIÊN ĐẦU TƯ · KẾT QUẢ SƠ BỘ</div><h2 id="resultTitle"></h2><p id="resultSubtitle"></p></div>
+ <div class="summary-grid">
+  <div class="card"><h3>Ba tầng năng lực vận hành</h3><div class="bars" id="scoreBars"></div><p class="micro" style="margin-bottom:0">Điểm 0–6 mỗi nhóm: càng cao càng cần xem xét. Ngưỡng do GO4AI thiết kế để định hướng, không phải chuẩn ngành.</p></div>
+  <div class="card"><h3>Vì sao có kết quả này?</h3><p class="reason-title" id="reasonsLabel"></p><ul class="reason-list" id="reasons"></ul><div class="callout"><p id="firstAction" style="font-size:13px"></p></div></div>
+ </div>
+ <div class="section-head"><h3>CEO nên đầu tư theo thứ tự nào?</h3><small>Không phải báo giá hay cam kết thời gian</small></div>
+ <div class="investment" id="investmentPlan"></div>
+ <div class="section-head"><h3>4 chỉ số cần đo trên 20 báo giá gần nhất</h3><small>Dùng số liệu thật, không ước đoán</small></div>
+ <div class="kpi-grid">
+ <div class="kpi"><b>01 · Tốc độ</b><span>Thời gian từ lúc nhận yêu cầu đến lúc gửi báo giá.</span></div>
+ <div class="kpi"><b>02 · Độ chính xác</b><span>Số báo giá cần sửa; lỗi trước và sau khi gửi khách.</span></div>
+ <div class="kpi"><b>03 · Hiệu quả thương mại</b><span>Biên lợi nhuận dự kiến và sai lệch chi phí, kiểm tra nội bộ.</span></div>
+ <div class="kpi"><b>04 · Kiểm soát</b><span>Có truy vết nguồn giá, người phê duyệt và phiên bản.</span></div>
+ </div>
+ <div class="section-head"><h3>7 ngày đầu nên làm gì?</h3><small>Kế hoạch khởi động – không thay thế khảo sát</small></div>
+ <div class="card"><div id="sevenDays" class="day-list"></div></div>
+ <div class="small-note">Đây là bài tự đánh giá định hướng, không phải kết luận kiểm toán vận hành, đánh giá tài chính hay xác nhận hệ thống đã sẵn sàng. Nếu triển khai, cần kiểm tra dữ liệu, phân quyền, khối lượng thực tế và cơ chế con người phê duyệt. Không có con số tiết kiệm mặc định.</div>
+ <div class="cta-banner">
+  <div class="eyebrow" style="color:#efb895">Bước tiếp theo, nếu phù hợp</div><h3 id="ctaTitle"></h3><p id="ctaDesc"></p>
+  <div class="action-row"><button class="primary" type="button" id="wantReview">Nhận bản 1 trang & trao đổi riêng →</button><button class="secondary" type="button" id="wantPlan">Chỉ nhận kế hoạch 7 ngày</button></div>
+  <button class="plain" style="color:#dceee0;text-decoration:underline;text-underline-offset:4px;margin-top:6px;padding-left:0" type="button" id="saveNow">Lưu kết quả ngay trên máy, không cần để lại Zalo</button>
+ </div>
+ <div class="action-row" style="margin-top:15px"><button type="button" class="secondary" id="editAnswers">← Sửa câu trả lời</button><button type="button" class="secondary" id="printReport">In / lưu PDF</button></div>
+</section>
+<section id="lead" class="view inner" aria-label="Yêu cầu nhận kết quả">
+ <div class="panel">
+  <div class="eyebrow">Tùy chọn · Không bắt buộc</div><h2 class="q-title" id="leadTitle">Nhận bản kết quả & trao đổi cùng GO4AI</h2>
+  <p id="leadIntro" class="q-hint"></p>
+  <div class="preview-box"><b id="leadOutcomeTitle"></b><p id="leadOutcomeDesc"></p></div>
+  <form id="leadForm" novalidate>
+   <div class="form-group"><label for="fullName">Họ và tên</label><input class="form-control" id="fullName" name="fullName" autocomplete="name" maxlength="100" placeholder="Tên người cần nhận kết quả"></div>
+   <div class="two-col">
+    <div class="form-group"><label for="phone">Số Zalo / điện thoại</label><input class="form-control" id="phone" name="phone" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="Số để trao đổi"></div>
+    <div class="form-group"><label for="company">Tên doanh nghiệp</label><input class="form-control" id="company" name="company" maxlength="120" autocomplete="organization" placeholder="Tên công ty"></div>
+   </div>
+   <details style="margin:1px 0 18px"><summary style="cursor:pointer;font-size:13px;font-weight:800;color:var(--ink2)">Thêm thông tin (tùy chọn)</summary>
+    <div style="padding-top:14px" class="two-col">
+     <div class="form-group"><label for="role">Vai trò</label><select class="form-control" id="role" name="role"><option value="">Không chọn</option><option>CEO / Giám đốc</option><option>Trưởng bộ phận</option><option>Khác</option></select></div>
+     <div class="form-group"><label for="callTime">Thời gian tiện liên hệ</label><select class="form-control" id="callTime" name="callTime"><option value="">Không chọn</option><option>Sáng</option><option>Chiều</option><option>Cuối ngày</option></select></div>
+     <div class="form-group"><label for="email">Email</label><input class="form-control" type="email" id="email" name="email" autocomplete="email" placeholder="email@doanhnghiep.vn"></div>
+     <div class="form-group"><label for="paperScore">Điểm phiếu tự chấm trước đó (nếu có)</label><select class="form-control" id="paperScore" name="paperScore"><option value="">Không có / không nhớ</option></select></div>
+    </div>
+    <div class="form-group"><label for="note">Điều anh/chị muốn trao đổi</label><textarea class="form-control" name="note" id="note" maxlength="500" placeholder="Có thể để trống"></textarea></div>
+   </details>
+   <div class="checks">
+    <label class="checkline"><input type="checkbox" id="want60"><span>Tôi muốn trao đổi trong buổi đo hiện trạng khoảng 60 phút (lịch hẹn xác nhận riêng).</span></label>
+    <label class="checkline"><input type="checkbox" id="want7" checked><span>Tôi muốn nhận kế hoạch 7 ngày và cách đo 4 chỉ số.</span></label>
+    <label class="checkline"><input type="checkbox" id="consent"><span>Tôi đồng ý để GO4AI sử dụng các thông tin tôi tự điền để liên hệ về kết quả đánh giá và nhu cầu tư vấn này. Không đồng ý nhận tiếp thị khác từ việc đánh dấu này.</span></label>
+   </div>
+   <p class="micro" id="privacyStatement" style="margin:13px 0">Biểu mẫu không yêu cầu bảng giá, doanh thu hoặc dữ liệu khách hàng. GO4AI cần bổ sung chính sách bảo vệ dữ liệu trước khi nhận đăng ký trực tuyến.</p>
+   <div class="form-error" id="formError" role="alert"></div>
+   <button type="submit" id="leadSubmit" class="primary full">Tiếp tục</button>
+   <p class="micro" id="backendNotice" style="margin-bottom:0"></p>
+   <div id="sendStatus" aria-live="polite"></div>
+  </form>
+  <div class="nav"><button type="button" class="plain" id="backToResult">← Quay lại kết quả</button><button type="button" class="plain" id="saveFromForm">Lưu báo cáo vào máy ↓</button></div>
+ </div>
+</section>
+<section id="done" class="view inner" aria-label="Hoàn tất">
+<div class="panel"><div class="eyebrow">Yêu cầu đã được tiếp nhận</div><h2 class="q-title">GO4AI đã nhận được yêu cầu.</h2><p>Đội ngũ sẽ liên hệ qua kênh đã cung cấp theo quy trình tiếp nhận. Lịch trao đổi 60 phút chỉ được xác nhận khi hai bên thống nhất.</p><div class="callout"><p>Trước buổi làm việc, anh/chị có thể chọn một người chịu trách nhiệm báo giá và chuẩn bị 5 báo giá gần đây. <strong>Chưa cần gửi dữ liệu nhạy cảm qua biểu mẫu.</strong></p></div><button type="button" class="primary" id="doneResult">Xem lại kết quả →</button></div>
+</section>
+</main>
+<footer><div class="shell footer-flex"><span>GO4AI · Bản chẩn đoán sơ bộ dùng tại Coffee for Business · 22/10/2026</span><span>Kết quả chỉ dùng để định hướng – không thay thế đánh giá thực tế.</span></div></footer>
+<script>
+"use strict";
+/* ================= CẤU HÌNH TRIỂN KHAI =================
+ * Chỉ chuyển sang thu lead thật khi đã cấu hình cả hai:
+ * LEAD_ENDPOINT: endpoint HTTPS chấp nhận POST JSON, lưu dữ liệu & trả 2xx
+ * PRIVACY_POLICY_URL: URL chính sách bảo vệ dữ liệu thực tế của GO4AI
+ * Giữ trống = CHẾ ĐỘ XEM THỬ: không gửi dữ liệu lên máy chủ.
+ * Lưu ý kiểm tra CORS, chống spam, xác thực đầu vào server-side, phân quyền CRM.
+ */
+const CONFIG = {
+  LEAD_ENDPOINT: "",
+  PRIVACY_POLICY_URL: "",
+  EVENT_ID: "coffee-for-business-2026-10-22",
+  UTM_SOURCE: "event_qr",
+  UTM_CAMPAIGN: "coffee_business_oct2026"
+};
+const $=id=>document.getElementById(id);
+const escapeHTML=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const qs=[
+ {group:"Đội ngũ",question:"Đội kinh doanh, thu mua, logistics đang dùng AI cho công việc ra sao?",hint:"Chọn tình trạng gần nhất với doanh nghiệp.",options:["Dùng đều, có cách làm chung","Vài người tự dùng, mỗi người một kiểu","Gần như chưa dùng"]},
+ {group:"Đội ngũ",question:"Nếu AI soạn sai một con số trong báo giá, nhân viên có biết cách phát hiện không?",hint:"Đánh giá khả năng kiểm tra kết quả AI, không phải mức độ quen dùng công cụ.",options:["Có, đã có quy tắc kiểm tra","Một vài người biết","Chưa ai được hướng dẫn"]},
+ {group:"Đội ngũ",question:"Ai trong công ty có thể tự dẫn dắt việc áp dụng AI sau này?",hint:"Người này cần có thời gian để phối hợp, kiểm tra và tiếp quản.",options:["Đã có người và có thời gian","Có người nhưng đang rất bận","Chưa có ai"]},
+ {group:"Quy trình và dữ liệu",question:"Nếu người giữ giá nghỉ phép một tuần, công ty có báo giá được không?",hint:"Câu này phản ánh mức độ phụ thuộc vào kinh nghiệm cá nhân.",options:["Được, hoạt động bình thường","Được nhưng chậm, hay phải gọi hỏi","Báo giá chậm hoặc dừng"]},
+ {group:"Quy trình và dữ liệu",question:"Giảm giá hay ngoại lệ đang được duyệt thế nào?",hint:"Quan tâm cả trách nhiệm, hạn mức và dấu vết phê duyệt.",options:["Có người duyệt rõ, lưu lại ai duyệt, mức nào, lúc nào","Có duyệt nhưng qua chat hoặc nói miệng, khó tra lại","Chưa có quy tắc duyệt rõ"]},
+ {group:"Quy trình và dữ liệu",question:"Cùng một mặt hàng, công ty đang có bao nhiêu bản giá?",hint:"Một nguồn dữ liệu chuẩn có thời điểm hiệu lực rõ ràng quan trọng hơn số lượng file.",options:["Một nguồn giá chuẩn, có ngày hiệu lực","Vài bản, nhưng biết bản nào đúng","Nhiều bản, không chắc bản nào còn hiệu lực"]},
+ {group:"Tốc độ và rủi ro",question:"Từ lúc khách gửi email hỏi giá đến lúc báo giá rời công ty, thường mất bao lâu?",hint:"Chọn trường hợp phổ biến, không phải trường hợp nhanh nhất.",options:["Dưới 1 giờ","Trong ngày","Sang ngày hôm sau trở đi"]},
+ {group:"Tốc độ và rủi ro",question:"Mỗi tháng công ty nhận khoảng bao nhiêu yêu cầu báo giá?",hint:"Các mốc 20/80 là ngưỡng phân nhóm tạm thời, không phải chuẩn ngành.",options:["Dưới 20","Từ 20 đến 80","Trên 80"]},
+ {group:"Tốc độ và rủi ro",question:"Lần gần nhất báo giá sai hoặc sót cước, điều kiện giao hàng là khi nào?",hint:"Nếu chưa từng đo, hãy chọn nhận định gần nhất có căn cứ.",options:["Chưa gặp trong 6 tháng gần đây","Có gặp, nhưng bắt được trước khi gửi khách","Có gặp, báo giá đã tới tay khách"]}
+];
+const sectors=[
+ ["coffee","Cà phê","Ví dụ: chất lượng hạt, độ ẩm, chỉ tiêu S18 (chỉ minh họa)"],
+ ["cashew","Hạt điều","Ví dụ: W240/W320, quy cách, lô hàng (chỉ minh họa)"],
+ ["pepper","Hồ tiêu","Ví dụ: cấp chất lượng, độ ẩm, điều kiện giao hàng"],
+ ["rice","Gạo","Ví dụ: 5% tấm, quy cách, chi phí giao hàng"],
+ ["farm","Nông sản / thực phẩm khác","Ví dụ: chủng loại, quy cách, thời hạn giá"],
+ ["agtech","Công nghệ nông nghiệp / nhập khẩu / phân phối","Ví dụ: mã hàng, cấu hình, bảng giá theo kênh"],
+ ["other","Ngành khác","Ví dụ: mã sản phẩm, điều kiện bán hàng, phê duyệt"]
+];
+const paths={
+ A:{
+  title:"Nên bắt đầu bằng năng lực đội ngũ",
+  subtitle:"Nền quy trình chưa phải nút thắt ưu tiên theo bài tự đánh giá. Trước khi giao việc cho AI, đội ngũ cần biết sử dụng, kiểm tra và chịu trách nhiệm với đầu ra.",
+  why:"Những dấu hiệu đáng chú ý ở nhóm con người",
+  action:"Trong 48 giờ: chỉ định người chịu trách nhiệm kiểm tra số liệu do AI đề xuất, đối chiếu với nguồn giá chính thức.",
+  cta:"Bắt đầu từ đào tạo theo vai trò, không phải mua chatbot.",
+  ctaDesc:"GO4AI có thể trao đổi chương trình 1, 2 hoặc 4 buổi (mỗi buổi 3 giờ) cho đội ngũ, hoặc một workshop giải quyết tác vụ thật. Chỉ chốt phạm vi sau khi hiểu công việc.",
+  stages:[
+   ["0–7 ngày","Chọn người dẫn dắt AI","Bổ nhiệm đầu mối và kiểm tra kỹ năng theo vai trò.","CEO / Trưởng bộ phận","Danh sách 3 tác vụ và checklist kiểm tra AI.","Có người phụ trách và tài liệu nguồn hợp lệ."],
+   ["Tuần 2–4","Đào tạo gắn với công việc","Thực hành trên báo giá, email, hồ sơ sản phẩm và kiểm tra sai sót.","Trưởng bộ phận / L&D","Quy trình mẫu, đầu ra thực tế và bằng chứng năng lực.","Nhân sự hoàn thành bài thực hành đạt chuẩn."],
+   ["Sau khi đạt chuẩn","Chuẩn hóa & tự động hóa từng phần","Chọn tác vụ lặp lại, đối chiếu quy trình và dữ liệu trước khi làm thử.","Chủ quy trình / IT","Một use case có KPI và phương án kiểm soát.","Đủ dữ liệu, có người nghiệm thu."],
+  ],
+  days:["Chỉ định người phụ trách ứng dụng AI và người kiểm tra đầu ra.","Chọn 3 tác vụ có lặp lại trong Sales, Thu mua, Logistics.","Ghi lại thời gian làm thủ công của từng tác vụ.","Soạn quy tắc: AI được gợi ý gì, con người xác nhận gì.","Thử 5 trường hợp có dữ liệu giả lập hoặc đã được phép sử dụng.","Chấm độ chính xác, lỗi và thời gian hoàn thành.","Chốt chương trình đào tạo hoặc dừng nếu chưa có bài toán rõ."]
+ },
+ B:{
+  title:"Nên ưu tiên quy trình và dữ liệu trước AI",
+  subtitle:"Dữ liệu giá, quyền phê duyệt hoặc khả năng vận hành khi thiếu người đang có rủi ro. Làm chatbot ngay có thể làm lỗi hiện hữu lan nhanh hơn.",
+  why:"Những điểm nghẽn ở nền vận hành",
+  action:"Trong 48 giờ: chỉ định một chủ quy trình có quyền phối hợp Sales, Thu mua, QC và Logistics.",
+  cta:"Đầu tư nền tảng vận hành trước khi đầu tư ứng dụng.",
+  ctaDesc:"Buổi đo hiện trạng 60 phút giúp tìm 3 lỗ hổng ưu tiên; sau đó mới xác định cần chuẩn hóa SOP, bảng giá chuẩn, ma trận duyệt hay đào tạo kết hợp.",
+  stages:[
+   ["0–7 ngày","Đo và làm rõ quyền quyết định","Vẽ luồng báo giá thực tế, nguồn giá, ngoại lệ và người duyệt.","CEO / Chủ quy trình","Sơ đồ quy trình + ma trận người quyết định.","Thống nhất một người chịu trách nhiệm cho mỗi bước."],
+   ["Tuần 2–4","Chuẩn hóa dữ liệu và SOP","Một nguồn giá có hiệu lực; quy tắc áp giá, ngoại lệ và lưu vết.","Sales / Thu mua / QC / Logistics","Bộ dữ liệu chuẩn, checklist, ma trận duyệt.","Thử được trên 20 báo giá đại diện."],
+   ["Sau khi nền ổn","Thử AI có kiểm soát","AI trích yêu cầu, đối chiếu nguồn chuẩn, tạo bản nháp để nhân viên duyệt.","Chủ quy trình / IT","Bản thử nghiệm và bộ kiểm thử có truy vết.","Qua kiểm thử, dữ liệu ổn định, có owner."],
+  ],
+  days:["Chỉ định chủ quy trình và quyền triệu tập các bộ phận.","Chọn 20 báo giá gần nhất để đo hiện trạng (chưa cần gửi GO4AI).","Liệt kê các nguồn giá và người chịu trách nhiệm từng nguồn.","Vẽ đường đi từ yêu cầu khách đến người ký duyệt.","Chọn quy tắc giải quyết khi giá hoặc điều kiện xung đột.","Chạy thử 5 tình huống ngoại lệ bằng quy trình mới.","Chốt ưu tiên chuẩn hóa trước khi chọn giải pháp AI."]
+ },
+ C:{
+  title:"Có thể khảo sát thí điểm ứng dụng AI vào báo giá",
+  subtitle:"Quy trình và người phụ trách có dấu hiệu đủ nền, trong khi khối lượng, tốc độ hoặc sai sót tạo nhu cầu tự động hóa. Đây là tín hiệu để khảo sát thử nghiệm, chưa phải chứng nhận sẵn sàng.",
+  why:"Những dấu hiệu nhu cầu tự động hóa",
+  action:"Trong 48 giờ: tập hợp 5 báo giá đã gửi gần đây và 3–5 bảng giá đang dùng để đánh giá nội bộ; chưa cần gửi lên trang này.",
+  cta:"Thử nghiệm nhỏ, đo kết quả thật, rồi mới mở rộng.",
+  ctaDesc:"Khảo sát 60 phút trên 20 báo giá gần nhất, đo 4 chỉ số. Nếu dữ liệu và quyền duyệt đạt yêu cầu, có thể đề xuất thí điểm 3–5 tuần; phạm vi tích hợp ERP phức tạp phải khảo sát riêng.",
+  stages:[
+   ["0–7 ngày","Đo hiện trạng & chốt phạm vi","Lấy mẫu 20 báo giá; xác nhận nguồn giá, ngoại lệ và tiêu chí đúng/sai.","CEO / Chủ quy trình","Baseline 4 KPI + yêu cầu đầu ra.","Có dữ liệu đại diện và quyền duyệt rõ."],
+   ["3–5 tuần, sau khảo sát","Thí điểm AI trên quy trình hẹp","AI tiếp nhận yêu cầu, truy xuất dữ liệu chuẩn, soạn nháp, trình duyệt.","Chủ quy trình / IT / Sales","Prototype + nhật ký xử lý + 5 bài test nghiệm thu.","5 bài test đạt tiêu chí trước khi cho sử dụng."],
+   ["30–90 ngày, nếu đạt","Triển khai và đào tạo sử dụng","Chuẩn hóa SOP, phân quyền, theo dõi KPI và mở rộng theo nhóm.","CEO / IT / Bộ phận","Báo cáo sau triển khai, kế hoạch nhân rộng.","Đo cải thiện bằng số liệu thật, phê duyệt ngân sách."],
+  ],
+  days:["Chọn một chủ quy trình và một người phê duyệt kết quả.","Gom 20 báo giá đại diện để đo thời gian và lỗi.","Thống nhất nguồn giá chuẩn, ngày hiệu lực và trường bắt buộc.","Liệt kê ngoại lệ: giá, chi phí vận chuyển, điều kiện giao hàng.","Định nghĩa 5 bài test dựa trên tình huống từng xảy ra.","Xác định điểm AI dừng để chờ con người phê duyệt.","Quyết định có làm thí điểm giới hạn hay chưa."]
+ },
+ D:{
+  title:"Hiện chưa cần mua gói AI cho báo giá",
+  subtitle:"Theo thông tin tự khai, nền quy trình tương đối vững và báo giá chưa cho thấy nhu cầu ưu tiên cao. Nên tự đo trước thay vì đầu tư thêm.",
+  why:"Các tín hiệu cho thấy nên tiếp tục theo dõi",
+  action:"Trong 48 giờ: chọn 20 báo giá gần nhất, tự đo tốc độ, lỗi, kiểm soát và hiệu quả thương mại.",
+  cta:"Tự đo trước. Không cần mua dịch vụ ngay.",
+  ctaDesc:"Duy trì kế hoạch 7 ngày và xem lại khi lượng yêu cầu tăng, có lỗi gửi ra khách hoặc có thay đổi nhân sự giữ giá.",
+  stages:[
+   ["0–7 ngày","Đo trạng thái hiện tại","Rà 20 báo giá đã phát hành, xác định 4 KPI và người chịu trách nhiệm.","Trưởng Sales / Vận hành","Bảng baseline và quy tắc lưu nguồn.","Có đủ dữ liệu tự kiểm chứng."],
+   ["30 ngày","Duy trì và kiểm soát","Kiểm tra tính thống nhất bảng giá, lỗi và thời gian xử lý.","Chủ quy trình","Báo cáo xu hướng và danh sách ngoại lệ.","KPI ổn định, không phát sinh lỗi nghiêm trọng."],
+   ["Khi có tín hiệu mới","Đánh giá lại cơ hội AI","Chỉ mở bài toán mới khi volume, rủi ro hoặc chi phí làm tay tăng.","CEO / Chủ quy trình","Đánh giá lại lợi ích, chi phí và nguồn lực.","Có ROI giả định dựa trên dữ liệu xác thực."],
+  ],
+  days:["Chọn chủ quy trình báo giá.","Lấy 20 báo giá gần nhất để lập baseline.","Đo thời gian từ nhận yêu cầu tới gửi khách.","Ghi nhận lỗi phát hiện trước và sau khi phát hành.","Kiểm tra nguồn giá, quyền duyệt, dấu vết thay đổi.","Tìm một điểm có thể cải tiến bằng SOP, chưa cần AI.","Chốt lịch xem xét lại sau 30–90 ngày nếu điều kiện thay đổi."]
+ }
+};
+const state={sector:null,answers:Array(9).fill(null),step:-1,result:null,leadIntent:"review"};
+function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));window.scrollTo({top:0,behavior:"instant"});}
+function sectorLabel(){return sectors.find(s=>s[0]===state.sector)?.[1]||"Doanh nghiệp";}
+function renderQuiz(){
+ const step=state.step;
+ const profile=step===-1;
+ $("quizGroup").textContent=profile?"Bối cảnh ngành hàng":qs[step].group;
+ $("counter").textContent=profile?"Bước chuẩn bị":`Câu ${step+1}/9`;
+ $("progressFill").style.width=(profile?0:((step+1)/9*100))+"%";
+ $("questionTitle").textContent=profile?"Doanh nghiệp anh/chị đang hoạt động trong lĩnh vực nào?":qs[step].question;
+ $("questionHint").textContent=profile?"Chúng tôi dùng để chọn ví dụ phù hợp. Không ảnh hưởng đến điểm.":qs[step].hint;
+ const options=profile?sectors.map(s=>({value:s[0],text:s[1]})):qs[step].options.map((t,i)=>({value:i,text:t}));
+ const selected=profile?state.sector:state.answers[step];
+ $("options").innerHTML=options.map(o=>`<button type="button" role="radio" aria-checked="${selected===o.value}" class="option ${selected===o.value?"selected":""}" data-value="${escapeHTML(o.value)}"><span class="dot">${selected===o.value?"✓":""}</span><span class="option-label">${escapeHTML(o.text)}</span></button>`).join("");
+ $("options").querySelectorAll("button").forEach(button=>button.addEventListener("click",()=>{
+  const value=button.getAttribute("data-value"); if(profile)state.sector=value;else state.answers[step]=Number(value);
+  renderQuiz();
+ }));
+ $("nextBtn").disabled=selected===null || selected===undefined;
+ $("nextBtn").textContent=step===8?"Xem bản đồ của tôi →":"Tiếp tục →";
+ $("backBtn").textContent=profile?"← Trang đầu":"← Câu trước";
+}
+function calculate(a){
+ let P=a.slice(0,3).reduce((x,y)=>x+y,0), F=a.slice(3,6).reduce((x,y)=>x+y,0), N=a.slice(6,9).reduce((x,y)=>x+y,0);
+ let code=F>=4?"B":(P>=4||a[2]===2)?"A":N>=3?"C":"D";
+ let caveat=code==="B"&&P>=3?"Nên kết hợp đào tạo ngắn cho đội ngũ.":code==="A"&&N>=3?"Sau khi đội ngũ có năng lực, hãy đánh giá khả năng thí điểm AI.":code==="C"&&P===3?"Nên đào tạo ngắn cho người vận hành.":"";
+ return {P,F,N,code,caveat};
+}
+function labelScore(n){return n<=1?"Vững":n<=3?"Cần củng cố":"Ưu tiên rà soát";}
+function findReasons(code){
+ let indexes=code==="A"?[0,1,2]:code==="B"?[3,4,5]:code==="C"?[6,7,8]:[3,4,5,0,1,2,6,7,8];
+ indexes.sort((x,y)=>code==="D"?state.answers[x]-state.answers[y]:state.answers[y]-state.answers[x]);
+ return indexes.slice(0,2).map(i=>`${qs[i].question} — ${qs[i].options[state.answers[i]]}`);
+}
+function renderResult(){
+ const r=state.result=calculate(state.answers), data=paths[r.code];
+ $("resultTitle").textContent=data.title;$("resultSubtitle").textContent=data.subtitle;
+ $("scoreBars").innerHTML=[
+  ["Đội ngũ (P)",r.P],["Quy trình & dữ liệu (F)",r.F],["Tốc độ & rủi ro (N)",r.N]
+ ].map(([name,v])=>`<div><div class="bar-row-top"><span>${name}</span><span>${v}/6 · <small>${labelScore(v)}</small></span></div><div class="bar-bg"><div class="bar-fill ${v>=4?"high":v>=2?"middle":""}" style="width:${v/6*100}%"></div></div></div>`).join("");
+ $("reasonsLabel").textContent=data.why;
+ $("reasons").innerHTML=findReasons(r.code).map(t=>`<li>${escapeHTML(t)}</li>`).join("");
+ $("firstAction").textContent=data.action+(r.caveat?" "+r.caveat:"");
+ $("investmentPlan").innerHTML=data.stages.map((s,i)=>`<div class="invest-stage"><div class="stage-count">${escapeHTML(s[0])} · BƯỚC ${i+1}</div><h4>${escapeHTML(s[1])}</h4><p>${escapeHTML(s[2])}</p><dl><dt>Người phụ trách</dt><dd>${escapeHTML(s[3])}</dd><dt>Đầu ra</dt><dd>${escapeHTML(s[4])}</dd><dt>Điều kiện chuyển bước</dt><dd>${escapeHTML(s[5])}</dd></dl></div>`).join("");
+ $("sevenDays").innerHTML=data.days.map((d,i)=>`<div class="day"><span class="day-number">Ngày ${i+1}</span><p>${escapeHTML(d)}</p></div>`).join("");
+ $("ctaTitle").textContent=data.cta;$("ctaDesc").textContent=data.ctaDesc;
+ $("wantReview").textContent=r.code==="D"?"Nhận cách tự đo & xem lại sau →":"Nhận bản 1 trang & trao đổi riêng →";
+ $("wantPlan").textContent=r.code==="D"?"Chỉ nhận kế hoạch 7 ngày":"Chỉ nhận kế hoạch 7 ngày";
+}
+function openLead(intent){
+ state.leadIntent=intent;const r=state.result;const code=r.code;
+ $("leadTitle").textContent=intent==="plan"?"Nhận kế hoạch 7 ngày qua Zalo":"Nhận bản kết quả và đề nghị trao đổi riêng";
+ const intro={A:"GO4AI gợi ý chương trình nâng năng lực đúng vai trò; không bắt buộc triển khai phần mềm.",B:"Bắt đầu bằng xác định 3 lỗ hổng của quy trình và dữ liệu giá, không chào chatbot trước.",C:"Đo 4 chỉ số trên 20 báo giá để quyết định thí điểm, không cam kết ROI trước.",D:"Chưa cần gói: có thể tự theo dõi 4 chỉ số và xem xét lại khi bài toán phát sinh."};
+ $("leadIntro").textContent=intro[code];
+ $("leadOutcomeTitle").textContent="Kết quả "+code+" · "+paths[code].title;
+ $("leadOutcomeDesc").textContent="Anh/chị đã xem kết quả ngay trên trang. Thông tin liên hệ chỉ nhằm gửi tài liệu hoặc sắp xếp cuộc trao đổi theo yêu cầu.";
+ $("want60").checked=intent==="review"&&code!=="D";
+ $("want7").checked=true;
+ $("formError").classList.remove("visible");$("sendStatus").innerHTML="";
+ const online=!!(CONFIG.LEAD_ENDPOINT&&CONFIG.PRIVACY_POLICY_URL);
+ $("leadSubmit").textContent=online?"Gửi yêu cầu để GO4AI liên hệ":"Sao chép yêu cầu để tự gửi GO4AI";
+ $("backendNotice").textContent=online?"Biểu mẫu sẽ gửi thông tin có sự đồng ý đến hệ thống GO4AI qua HTTPS.":"BẢN XEM THỬ: chưa kết nối CRM. Nút bên trên chỉ sao chép thông tin trên điện thoại; GO4AI chưa nhận được yêu cầu.";
+ if(CONFIG.PRIVACY_POLICY_URL){
+  $("privacyStatement").innerHTML=`Dữ liệu chỉ dùng để liên hệ về kết quả này. <a href="${escapeHTML(CONFIG.PRIVACY_POLICY_URL)}" rel="noopener" target="_blank">Xem chính sách bảo vệ dữ liệu của GO4AI</a>. Không gửi dữ liệu tài chính trong biểu mẫu.`;
+ }else{
+  $("privacyStatement").textContent="Biểu mẫu không yêu cầu dữ liệu kinh doanh. Trước khi tiếp nhận đăng ký trực tuyến, GO4AI phải công bố chính sách bảo vệ dữ liệu và cấu hình kênh nhận thông tin.";
+ }
+ show("lead");
+}
+function field(id){return $(id).value.trim();}
+function getLeadPayload(){
+ const urlParams=new URLSearchParams(location.search);
+ return {
+  event_id:CONFIG.EVENT_ID,
+  source:CONFIG.UTM_SOURCE,
+  campaign:CONFIG.UTM_CAMPAIGN,
+  qr_variant:urlParams.get("qr")||"stage",
+  recorded_at:new Date().toISOString(),
+  contact:{name:field("fullName"),phone:field("phone"),company:field("company"),role:field("role"),email:field("email"),preferred_contact_time:field("callTime"),message:field("note")},
+  questionnaire:{sector:state.sector,sector_name:sectorLabel(),answers:[...state.answers],paper_score:field("paperScore"),points:{P:state.result.P,F:state.result.F,N:state.result.N},route:state.result.code,advisory_note:state.result.caveat},
+  requests:{lead_intent:state.leadIntent,diagnostic_60min:$("want60").checked,seven_day_plan:$("want7").checked},
+  consent:{contact_for_this_assessment:$("consent").checked}
+ };
+}
+async function copyText(text){
+ try{
+  if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true;}
+  const t=document.createElement("textarea");t.value=text;t.style.position="fixed";t.style.left="-9999px";document.body.appendChild(t);t.select();const ok=document.execCommand("copy");t.remove();return ok;
+ }catch(e){return false;}
+}
+async function submitLead(e){
+ e.preventDefault();
+ const err=$("formError");err.classList.remove("visible");err.textContent="";
+ if(!field("fullName")||!field("phone")||!field("company")){err.textContent="Vui lòng điền họ tên, số liên hệ và tên công ty.";err.classList.add("visible");return;}
+ if(!/^[+0-9().\s-]{9,24}$/.test(field("phone"))){err.textContent="Vui lòng kiểm tra định dạng số điện thoại hoặc Zalo.";err.classList.add("visible");return;}
+ if(field("email")&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field("email"))){err.textContent="Địa chỉ email chưa đúng định dạng; có thể để trống.";err.classList.add("visible");return;}
+ if(!$("consent").checked){err.textContent="Vui lòng xác nhận đồng ý cho GO4AI liên hệ về kết quả trước khi tiếp tục.";err.classList.add("visible");return;}
+ const payload=getLeadPayload();
+ if(!(CONFIG.LEAD_ENDPOINT&&CONFIG.PRIVACY_POLICY_URL)){
+  const text=[
+  "YÊU CẦU NHẬN KẾT QUẢ GO4AI",
+  `Họ tên: ${payload.contact.name}`,`Công ty: ${payload.contact.company}`,`Zalo: ${payload.contact.phone}`,
+  `Kết quả: ${payload.questionnaire.route} — ${paths[payload.questionnaire.route].title}`,
+  `Điểm: P=${payload.questionnaire.points.P}, F=${payload.questionnaire.points.F}, N=${payload.questionnaire.points.N}`,
+  `Ngành: ${payload.questionnaire.sector_name}`,`Nhu cầu: ${payload.requests.diagnostic_60min?"Hẹn đo hiện trạng 60 phút":"Chỉ nhận tài liệu"}`,
+  `Khung giờ: ${payload.contact.preferred_contact_time||"Chưa chọn"}`,
+  `Ghi chú: ${payload.contact.message||"Không có"}`,
+  `Nguồn: ${payload.event_id}`
+  ].join("\n");
+  const copied=await copyText(text);
+  $("sendStatus").innerHTML=copied?'<div class="success"><strong>Đã sao chép vào bộ nhớ tạm, CHƯA gửi đến GO4AI.</strong><br>Hãy dán nội dung này vào Zalo/email GO4AI. File HTML này chưa cấu hình kênh tiếp nhận.</div>':'<div class="success">Không thể tự động sao chép trong trình duyệt này. Hãy mở bằng HTTPS hoặc dùng chức năng lưu kết quả vào máy.</div>';
+  return;
+ }
+ const btn=$("leadSubmit");btn.disabled=true;btn.textContent="Đang gửi yêu cầu...";
+ try{
+  const res=await fetch(CONFIG.LEAD_ENDPOINT,{method:"POST",mode:"cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),credentials:"omit"});
+  if(!res.ok)throw new Error("Máy chủ chưa xác nhận yêu cầu");
+  show("done");
+ }catch(e){err.textContent="Chưa gửi được dữ liệu. Vui lòng thử lại sau hoặc lưu kết quả trên máy; GO4AI chưa xác nhận tiếp nhận.";err.classList.add("visible");}
+ finally{btn.disabled=false;btn.textContent="Gửi yêu cầu để GO4AI liên hệ";}
+}
+function getReportHTML(){
+ const r=state.result, d=paths[r.code], a=state.answers;
+ let reasons=findReasons(r.code);
+ let doc=`<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GO4AI - Kết quả ${r.code}</title><style>body{font:14px/1.5 system-ui,Arial,sans-serif;color:#20362f;max-width:760px;margin:24px auto;padding:0 18px}h1{font-size:25px;line-height:1.2}h2{font-size:16px;border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:20px}.head{background:#17372f;color:#fff;border-radius:12px;padding:20px}.head small{color:#e6bc9d}p{margin:7px 0}li{margin:6px 0}.plan{padding:10px;border:1px solid #deded5;border-radius:10px;margin:7px 0}.muted{font-size:11px;color:#66766d}button{margin:10px 0;padding:10px;border:1px solid #999;border-radius:7px;background:#fff}@page{size:A4;margin:13mm}@media print{button{display:none}body{margin:0;font-size:11px}h1{font-size:21px}h2{margin-top:12px}.plan{padding:6px}}</style></head><body><div class="head"><small>GO4AI · COFFEE FOR BUSINESS · 22/10/2026</small><h1>${escapeHTML(d.title)}</h1><p>${escapeHTML(d.subtitle)}</p></div><p><b>Lĩnh vực:</b> ${escapeHTML(sectorLabel())}</p><p><b>Ba điểm thành phần:</b> Đội ngũ ${r.P}/6 · Quy trình và dữ liệu ${r.F}/6 · Tốc độ và rủi ro ${r.N}/6</p><h2>Vì sao đề xuất hướng này?</h2><ul>${reasons.map(x=>`<li>${escapeHTML(x)}</li>`).join("")}</ul><p><b>Hành động trong 48 giờ:</b> ${escapeHTML(d.action)}</p><h2>Thứ tự đầu tư</h2>${d.stages.map(s=>`<div class="plan"><b>${escapeHTML(s[0])} · ${escapeHTML(s[1])}</b><p>${escapeHTML(s[2])}</p><p><b>Phụ trách:</b> ${escapeHTML(s[3])}. <b>Đầu ra:</b> ${escapeHTML(s[4])}</p><p><b>Điều kiện:</b> ${escapeHTML(s[5])}</p></div>`).join("")}<h2>Kế hoạch 7 ngày</h2><ol>${d.days.map(x=>`<li>${escapeHTML(x)}</li>`).join("")}</ol><h2>4 số liệu cần đo</h2><p>Thời gian báo giá; lỗi trước/sau phát hành; biên lợi nhuận dự kiến và sai lệch chi phí (chỉ đối chiếu nội bộ); truy vết nguồn giá và người phê duyệt.</p><p class="muted">Tự đánh giá theo câu trả lời của người dùng; ngưỡng là giả định thiết kế, không phải chuẩn ngành. Cần đo thực tế trước khi xác định phạm vi, ROI và ngân sách. Thông tin về doanh nghiệp và dữ liệu nhạy cảm không được yêu cầu trong trang QR.</p><button onclick="window.print()">In / lưu PDF</button></body></html>`;
+ return doc;
+}
+function downloadReport(){
+ if(!state.result)return;
+ const blob=new Blob([getReportHTML()],{type:"text/html;charset=utf-8"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`GO4AI_Ket_qua_${state.result.code}_22-10-2026.html`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("startBtn").addEventListener("click",()=>{state.step=-1;renderQuiz();show("quiz");});
+$("backBtn").addEventListener("click",()=>{if(state.step===-1){show("welcome");return;}state.step--;renderQuiz();window.scrollTo(0,0);});
+$("nextBtn").addEventListener("click",()=>{
+ if(state.step===-1){if(!state.sector)return;state.step=0;renderQuiz();window.scrollTo(0,0);return;}
+ if(state.answers[state.step]===null)return;
+ if(state.step===8){renderResult();show("result");return;}
+ state.step++;renderQuiz();window.scrollTo(0,0);
+});
+$("editAnswers").addEventListener("click",()=>{state.step=0;renderQuiz();show("quiz");});
+$("wantReview").addEventListener("click",()=>openLead("review"));
+$("wantPlan").addEventListener("click",()=>openLead("plan"));
+$("backToResult").addEventListener("click",()=>show("result"));
+$("saveNow").addEventListener("click",downloadReport);
+$("saveFromForm").addEventListener("click",downloadReport);
+$("printReport").addEventListener("click",()=>window.print());
+$("leadForm").addEventListener("submit",submitLead);
+$("doneResult").addEventListener("click",()=>show("result"));
+for(let i=0;i<=12;i++)$("paperScore").insertAdjacentHTML("beforeend",`<option value="${i}">${i}/12</option>`);
+window.__GO4AI_DIAGNOSTIC_TEST__={calculate,qs,paths,state,renderResult,show};
+</script>
+</body>
+</html>
