@@ -95,20 +95,21 @@ export async function onRequestPost(context) {
     }
 
     // ─── 4. EXTRACT & SANITIZE FIELDS ─────────────────────────────────
-    const name       = sanitizeField(body.name || body.full_name, 100);
-    const email      = sanitizeField(body.email, 254).toLowerCase();
-    const phone      = sanitizeField(body.phone, 25);
-    const company    = sanitizeField(body.company, 150);
-    const role       = sanitizeField(body.role || body.job_title, 100);
+    const contact    = (body.contact && typeof body.contact === 'object') ? body.contact : {};
+    const name       = sanitizeField(body.name || body.full_name || contact.name, 100);
+    const email      = sanitizeField(body.email || contact.email, 254).toLowerCase();
+    const phone      = sanitizeField(body.phone || contact.phone, 25);
+    const company    = sanitizeField(body.company || contact.company, 150);
+    const role       = sanitizeField(body.role || body.job_title || contact.role, 100);
     const leadType   = sanitizeField(body.leadType, 64);
     const source     = sanitizeField(body.source, 64);
-    const sourcePage = sanitizeField(body.sourcePage, 255);
-    const sourceCta  = sanitizeField(body.sourceCta, 100);
+    const sourcePage = sanitizeField(body.sourcePage || (leadType === 'baogiaxnk_diagnostic' ? '/baogiaxnk' : ''), 255);
+    const sourceCta  = sanitizeField(body.sourceCta || (leadType === 'baogiaxnk_diagnostic' ? 'diagnostic_form' : ''), 100);
 
     // UTM + referrer
-    const utmSource   = sanitizeField(body.utm_source, 100);
+    const utmSource   = sanitizeField(body.utm_source || body.source, 100);
     const utmMedium   = sanitizeField(body.utm_medium, 100);
-    const utmCampaign = sanitizeField(body.utm_campaign, 100);
+    const utmCampaign = sanitizeField(body.utm_campaign || body.campaign, 100);
     const utmContent  = sanitizeField(body.utm_content, 100);
     const referrer    = sanitizeField(body.referrer, 300);
 
@@ -140,24 +141,54 @@ export async function onRequestPost(context) {
       }
     }
 
+    // ── Form Chẩn đoán Báo giá XNK (/baogiaxnk) ─────────────────────────
+    if (leadType === 'baogiaxnk_diagnostic') {
+      payloadExtra.event_id = sanitizeField(body.event_id || 'coffee-for-business-2026-10-22', 100);
+      payloadExtra.qr_variant = sanitizeField(body.qr_variant, 50);
+      payloadExtra.recorded_at = sanitizeField(body.recorded_at, 50) || new Date().toISOString();
+      payloadExtra.contact = {
+        name,
+        phone,
+        company,
+        role,
+        email,
+        preferred_contact_time: sanitizeField(contact.preferred_contact_time || body.callTime, 100),
+        message: sanitizeField(contact.message || body.note, 1000),
+      };
+      const q = (body.questionnaire && typeof body.questionnaire === 'object') ? body.questionnaire : {};
+      payloadExtra.questionnaire = {
+        sector: sanitizeField(q.sector || body.sector, 50),
+        sector_name: sanitizeField(q.sector_name || body.sector_name, 100),
+        answers: Array.isArray(q.answers) ? q.answers.slice(0, 15).map(v => typeof v === 'number' ? v : sanitizeField(v, 50)) : [],
+        paper_score: sanitizeField(q.paper_score || body.paperScore, 20),
+        points: {
+          P: Number(q.points?.P ?? body.points_P ?? 0),
+          F: Number(q.points?.F ?? body.points_F ?? 0),
+          N: Number(q.points?.N ?? body.points_N ?? 0),
+        },
+        route: sanitizeField(q.route || body.route || body.result_route, 10),
+        advisory_note: sanitizeField(q.advisory_note || body.advisory_note, 500),
+      };
+      const req = (body.requests && typeof body.requests === 'object') ? body.requests : {};
+      payloadExtra.requests = {
+        lead_intent: sanitizeField(req.lead_intent || body.lead_intent, 50),
+        diagnostic_60min: Boolean(req.diagnostic_60min ?? body.diagnostic_60min),
+        seven_day_plan: Boolean(req.seven_day_plan ?? body.seven_day_plan),
+      };
+      payloadExtra.consent = {
+        contact_for_this_assessment: Boolean(body.consent?.contact_for_this_assessment ?? true),
+      };
+      payloadExtra.message = payloadExtra.contact.message;
+    }
+
     // ─── 5. VALIDATE REQUIRED BUSINESS RULES ──────────────────────────
-    if (!email || !validateEmail(email)) {
-      recordIpFailure(clientIp);
-      return new Response(JSON.stringify({ success: false, error: 'Email không hợp lệ. Vui lòng kiểm tra lại.' }), {
-        status: 422,
-        headers,
-      });
-    }
-
-    if (phone && !validatePhone(phone)) {
-      recordIpFailure(clientIp);
-      return new Response(JSON.stringify({ success: false, error: 'Số điện thoại không hợp lệ.' }), {
-        status: 422,
-        headers,
-      });
-    }
-
-    if (!leadType || !['enterprise_consultation', 'claude_workshop_registration', 'membership_interest'].includes(leadType)) {
+    const VALID_LEAD_TYPES = [
+      'enterprise_consultation',
+      'claude_workshop_registration',
+      'membership_interest',
+      'baogiaxnk_diagnostic'
+    ];
+    if (!leadType || !VALID_LEAD_TYPES.includes(leadType)) {
       recordIpFailure(clientIp);
       return new Response(JSON.stringify({ success: false, error: 'Loại yêu cầu không hợp lệ.' }), {
         status: 422,
@@ -165,12 +196,67 @@ export async function onRequestPost(context) {
       });
     }
 
-    if (leadType === 'membership_interest' && !MEMBERSHIP_PACKAGES.includes(payloadExtra.package)) {
-      recordIpFailure(clientIp);
-      return new Response(JSON.stringify({ success: false, error: 'Vui lòng chọn con đường bạn quan tâm.' }), {
-        status: 422,
-        headers,
-      });
+    if (leadType === 'baogiaxnk_diagnostic') {
+      if (!name) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Vui lòng cung cấp họ tên.' }), {
+          status: 422,
+          headers,
+        });
+      }
+      if (!phone || !validatePhone(phone)) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Số điện thoại hoặc Zalo không hợp lệ.' }), {
+          status: 422,
+          headers,
+        });
+      }
+      if (!company) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Vui lòng cung cấp tên doanh nghiệp.' }), {
+          status: 422,
+          headers,
+        });
+      }
+      if (email && !validateEmail(email)) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Email không hợp lệ. Vui lòng kiểm tra lại hoặc để trống.' }), {
+          status: 422,
+          headers,
+        });
+      }
+      const consentVal = body.consent?.contact_for_this_assessment ?? body.privacyConsent ?? true;
+      if (!consentVal) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Vui lòng xác nhận đồng ý cho GO4AI liên hệ.' }), {
+          status: 422,
+          headers,
+        });
+      }
+    } else {
+      if (!email || !validateEmail(email)) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Email không hợp lệ. Vui lòng kiểm tra lại.' }), {
+          status: 422,
+          headers,
+        });
+      }
+
+      if (phone && !validatePhone(phone)) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Số điện thoại không hợp lệ.' }), {
+          status: 422,
+          headers,
+        });
+      }
+
+      if (leadType === 'membership_interest' && !MEMBERSHIP_PACKAGES.includes(payloadExtra.package)) {
+        recordIpFailure(clientIp);
+        return new Response(JSON.stringify({ success: false, error: 'Vui lòng chọn con đường bạn quan tâm.' }), {
+          status: 422,
+          headers,
+        });
+      }
     }
 
     // ─── 6. SPAM & MALICIOUS CONTENT PRE-CHECK ────────────────────────
@@ -203,57 +289,60 @@ export async function onRequestPost(context) {
     }
 
     // ─── 7. CLOUDFLARE TURNSTILE SERVER-SIDE VERIFICATION ─────────────
-    const turnstileToken = body.turnstileToken || body['cf-turnstile-response'];
-    const turnstileRes = await verifyTurnstile({
-      token: turnstileToken,
-      secret: env.TURNSTILE_SECRET_KEY,
-      remoteIp: clientIp,
-    });
+    let turnstileRes = { success: true };
+    if (leadType !== 'baogiaxnk_diagnostic') {
+      const turnstileToken = body.turnstileToken || body['cf-turnstile-response'];
+      turnstileRes = await verifyTurnstile({
+        token: turnstileToken,
+        secret: env.TURNSTILE_SECRET_KEY,
+        remoteIp: clientIp,
+      });
 
-    if (!turnstileRes.success) {
-      // ── 503: the server-side secret is missing (a deployment error, not a visitor error).
-      // Fail closed — the request does NOT pass — but deliberately do NOT record an IP
-      // failure: jailing real visitors because our own environment is misconfigured would
-      // turn a config mistake into a self-inflicted outage.
-      if (turnstileRes.notConfigured) {
+      if (!turnstileRes.success) {
+        // ── 503: the server-side secret is missing (a deployment error, not a visitor error).
+        // Fail closed — the request does NOT pass — but deliberately do NOT record an IP
+        // failure: jailing real visitors because our own environment is misconfigured would
+        // turn a config mistake into a self-inflicted outage.
+        if (turnstileRes.notConfigured) {
+          logSecurityEvent({
+            action: 'turnstile_not_configured',
+            clientIp,
+            leadType,
+            score: 0,
+            reasons: ['turnstile_not_configured'],
+            status: 503,
+          });
+
+          return new Response(JSON.stringify({
+            success: false,
+            code: 'TURNSTILE_NOT_CONFIGURED',
+            error: 'Hệ thống xác thực bảo mật chưa được cấu hình. Vui lòng liên hệ GO4AI.'
+          }), {
+            status: 503,
+            headers,
+          });
+        }
+
+        recordIpFailure(clientIp);
         logSecurityEvent({
-          action: 'turnstile_not_configured',
+          action: 'turnstile_rejected',
           clientIp,
           leadType,
-          score: 0,
-          reasons: ['turnstile_not_configured'],
-          status: 503,
+          score: 100,
+          reasons: [turnstileRes.reason || 'turnstile_fail'],
+          errorCodes: turnstileRes.errorCodes,
+          status: 403,
         });
 
         return new Response(JSON.stringify({
           success: false,
-          code: 'TURNSTILE_NOT_CONFIGURED',
-          error: 'Hệ thống xác thực bảo mật chưa được cấu hình. Vui lòng liên hệ GO4AI.'
+          code: turnstileRes.reason === 'missing_token' ? 'TURNSTILE_REQUIRED' : 'TURNSTILE_FAILED',
+          error: turnstileRes.error || 'Xác thực bảo mật không thành công. Vui lòng thử lại.'
         }), {
-          status: 503,
+          status: 403,
           headers,
         });
       }
-
-      recordIpFailure(clientIp);
-      logSecurityEvent({
-        action: 'turnstile_rejected',
-        clientIp,
-        leadType,
-        score: 100,
-        reasons: [turnstileRes.reason || 'turnstile_fail'],
-        errorCodes: turnstileRes.errorCodes,
-        status: 403,
-      });
-
-      return new Response(JSON.stringify({
-        success: false,
-        code: turnstileRes.reason === 'missing_token' ? 'TURNSTILE_REQUIRED' : 'TURNSTILE_FAILED',
-        error: turnstileRes.error || 'Xác thực bảo mật không thành công. Vui lòng thử lại.'
-      }), {
-        status: 403,
-        headers,
-      });
     }
 
     // ─── 8. FINAL SPAM SCORING ─────────────────────────────────────────
@@ -268,7 +357,9 @@ export async function onRequestPost(context) {
       // Cùng một người quan tâm LEARN rồi EARN trong 10 phút là HAI nhu cầu, không phải replay.
       problem: leadType === 'membership_interest'
         ? `${payloadExtra.package}|${payloadExtra.message || ''}`
-        : payloadExtra.problem,
+        : (leadType === 'baogiaxnk_diagnostic'
+          ? `${payloadExtra.questionnaire?.route || ''}|${payloadExtra.contact?.message || ''}`
+          : payloadExtra.problem),
       message: payloadExtra.message,
     });
 
@@ -304,26 +395,28 @@ export async function onRequestPost(context) {
           });
         }
 
-        // Rolling limit: max 2 submissions per email per 10 minutes
-        const emailRateCheck = await env.DB.prepare(`
-          SELECT COUNT(*) as count FROM leads
-          WHERE email = ? AND julianday(created_at) > julianday('now', '-10 minutes')
-        `).bind(email).first();
+        // Rolling limit: max 2 submissions per email per 10 minutes (only if email is provided)
+        if (email) {
+          const emailRateCheck = await env.DB.prepare(`
+            SELECT COUNT(*) as count FROM leads
+            WHERE email = ? AND julianday(created_at) > julianday('now', '-10 minutes')
+          `).bind(email).first();
 
-        if (emailRateCheck && emailRateCheck.count >= 2) {
-          logSecurityEvent({
-            action: 'email_rate_limit_exceeded',
-            clientIp,
-            leadType,
-            reasons: ['email_frequency_limit'],
-          });
-          return new Response(JSON.stringify({
-            success: false,
-            error: 'Bạn đã gửi yêu cầu gần đây. Chúng tôi đã nhận được thông tin và sẽ phản hồi sớm.'
-          }), {
-            status: 429,
-            headers,
-          });
+          if (emailRateCheck && emailRateCheck.count >= 2) {
+            logSecurityEvent({
+              action: 'email_rate_limit_exceeded',
+              clientIp,
+              leadType,
+              reasons: ['email_frequency_limit'],
+            });
+            return new Response(JSON.stringify({
+              success: false,
+              error: 'Bạn đã gửi yêu cầu gần đây. Chúng tôi đã nhận được thông tin và sẽ phản hồi sớm.'
+            }), {
+              status: 429,
+              headers,
+            });
+          }
         }
 
         // Rolling limit: max 2 submissions per phone per 10 minutes (if phone is given)
@@ -631,6 +724,48 @@ function buildTelegramMessage(data) {
       payloadExtra.claude90Registered ? '\n✅ Đã đăng ký Claude 90 phút (cùng thiết bị)' : '',
       line('Trạng thái trang', payloadExtra.pageState),
       line('CTA', sourceCta),
+      `\n──────────────`,
+      `\n<i>${dt}</i>`,
+    ].filter(Boolean).join('');
+  }
+
+  if (leadType === 'baogiaxnk_diagnostic') {
+    const q = payloadExtra.questionnaire || {};
+    const req = payloadExtra.requests || {};
+    const contact = payloadExtra.contact || {};
+    const routeTitles = {
+      A: 'A — Nên bắt đầu bằng năng lực đội ngũ',
+      B: 'B — Nên ưu tiên quy trình và dữ liệu trước AI',
+      C: 'C — Có thể khảo sát thí điểm ứng dụng AI vào báo giá',
+      D: 'D — Cần chọn bài toán hẹp trước khi đầu tư'
+    };
+    const routeCode = q.route || '';
+    const routeDisplay = routeTitles[routeCode] || (routeCode ? `Hướng ${routeCode}` : 'Chưa xác định');
+    const points = q.points || {};
+    const pStr = `Đội ngũ ${points.P ?? '?'}/6 · Quy trình & DL ${points.F ?? '?'}/6 · Tốc độ & RR ${points.N ?? '?'}/6`;
+
+    return [
+      '📊 <b>[LEAD] CHẨN ĐOÁN BÁO GIÁ XNK</b>',
+      `\nNguồn: <code>/baogiaxnk</code>`,
+      payloadExtra.event_id ? `\nSự kiện: <code>${esc(payloadExtra.event_id)}</code>` : '',
+      '\n──────────────',
+      line('Họ tên', name),
+      line('Công ty', company),
+      line('Điện thoại / Zalo', phone),
+      line('Chức vụ', role),
+      email ? line('Email', email) : '',
+      '\n──────────────',
+      '\n<b>KẾT QUẢ CHẨN ĐOÁN</b>',
+      line('Hướng đề xuất', routeDisplay),
+      line('Điểm số', pStr),
+      q.paper_score ? line('Điểm tự chấm (giấy)', `${q.paper_score}/12`) : '',
+      line('Ngành hàng', q.sector_name || q.sector),
+      '\n──────────────',
+      '\n<b>NHU CẦU & YÊU CẦU</b>',
+      `\n<b>Hẹn trao đổi 60 phút:</b> ${req.diagnostic_60min ? '✅ Có' : '❌ Không'}`,
+      `\n<b>Kế hoạch 7 ngày:</b> ${req.seven_day_plan ? '✅ Có' : '❌ Không'}`,
+      contact.preferred_contact_time ? line('Khung giờ liên hệ', contact.preferred_contact_time) : '',
+      contact.message ? line('Ghi chú thêm', contact.message) : '',
       `\n──────────────`,
       `\n<i>${dt}</i>`,
     ].filter(Boolean).join('');

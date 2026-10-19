@@ -119,8 +119,8 @@
  * Lưu ý kiểm tra CORS, chống spam, xác thực đầu vào server-side, phân quyền CRM.
  */
 const CONFIG = {
-  LEAD_ENDPOINT: "",
-  PRIVACY_POLICY_URL: "",
+  LEAD_ENDPOINT: "/api/leads",
+  PRIVACY_POLICY_URL: "/chinh-sach-bao-ve-du-lieu",
   EVENT_ID: "coffee-for-business-2026-10-22",
   UTM_SOURCE: "event_qr",
   UTM_CAMPAIGN: "coffee_business_oct2026"
@@ -278,6 +278,9 @@ function field(id){return $(id).value.trim();}
 function getLeadPayload(){
  const urlParams=new URLSearchParams(location.search);
  return {
+  leadType:"baogiaxnk_diagnostic",
+  sourcePage:"/baogiaxnk",
+  sourceCta:"diagnostic_form",
   event_id:CONFIG.EVENT_ID,
   source:CONFIG.UTM_SOURCE,
   campaign:CONFIG.UTM_CAMPAIGN,
