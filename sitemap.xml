@@ -44,4 +44,9 @@
     <loc>https://b2b.go4ai.org/lien-he-phan-anh</loc>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
   </url>
+  <url>
+    <loc>https://b2b.go4ai.org/tin-tuc/go4ai-hanh-trinh-1-nam</loc>
+    <lastmod>2026-10-21</lastmod>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/news/go4ai-1-nam-hero.jpg</image:loc></image:image>
+  </url>
 </urlset>
