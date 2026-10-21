@@ -36,6 +36,7 @@
       line-height: 1.5;
       font-size: 14px;
       min-height: 100vh;
+      overflow: hidden;
     }
 
     /* ─── UNLOCK SCREEN ────────────────────────────────────────── */
@@ -43,8 +44,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
       padding: 20px;
+      overflow-y: auto;
     }
     .unlock-card {
       width: 100%;
@@ -148,7 +151,9 @@
     #dashboard-view {
       display: none;
       flex-direction: column;
-      min-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
     }
     .topbar {
       background: var(--card-bg);
@@ -157,8 +162,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
+      flex-shrink: 0;
       z-index: 40;
     }
     .topbar-left {
@@ -240,7 +244,7 @@
 
     /* ─── CONTROLS & FILTER BAR ────────────────────────────────── */
     .controls-bar {
-      padding: 16px 24px;
+      padding: 14px 24px;
       background: rgba(16, 31, 26, 0.6);
       border-bottom: 1px solid var(--card-border);
       display: flex;
@@ -248,6 +252,8 @@
       gap: 12px;
       align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 30;
     }
     .filters-group {
       display: flex;
@@ -285,15 +291,19 @@
     /* ─── DATA TABLE ───────────────────────────────────────────── */
     .table-container {
       flex: 1;
-      padding: 20px 24px;
+      min-height: 0;
+      overflow-y: auto;
       overflow-x: auto;
+      padding: 0 24px 24px 24px;
+      position: relative;
     }
     .data-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
       border: 1px solid var(--card-border);
-      border-radius: var(--radius);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
       background: var(--card-bg);
       font-size: 13px;
     }
@@ -304,11 +314,12 @@
       text-align: left;
       padding: 12px 14px;
       border-bottom: 1px solid var(--card-border);
+      box-shadow: 0 1px 0 var(--card-border);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       position: sticky;
-      top: 61px;
+      top: 0;
       z-index: 20;
     }
     .data-table td {
@@ -318,6 +329,8 @@
       color: var(--text);
     }
     .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:last-child td:first-child { border-bottom-left-radius: var(--radius); }
+    .data-table tr:last-child td:last-child { border-bottom-right-radius: var(--radius); }
     .data-table tr:hover td {
       background: rgba(34, 197, 94, 0.04);
     }
@@ -847,10 +860,40 @@
     });
 
     // ─── FILTER & RENDER ───────────────────────────────────────────────
+    function findVisibleAnchorRow(container) {
+      if (!container) return null;
+      const thead = container.querySelector("thead");
+      const theadHeight = thead ? thead.offsetHeight : 0;
+      const visibleTop = container.scrollTop + theadHeight;
+
+      const rows = container.querySelectorAll("tbody tr[data-submission-id]");
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const rowTop = row.offsetTop;
+        const rowHeight = row.offsetHeight || 50;
+        // First row extending below the sticky header by at least 8px
+        if (rowTop + rowHeight > visibleTop + 8) {
+          return {
+            submissionId: row.getAttribute("data-submission-id"),
+            offsetFromHeader: rowTop - visibleTop
+          };
+        }
+      }
+      return null;
+    }
+
     function applyFilters(options = {}) {
       const { preserveScroll = false } = options;
       const tableContainer = document.querySelector(".table-container");
-      const prevScrollTop = (preserveScroll && tableContainer) ? tableContainer.scrollTop : 0;
+
+      const currentScrollTop = tableContainer ? tableContainer.scrollTop : 0;
+      const isNearTop = currentScrollTop <= 40;
+
+      // Smart anchor: if user is scrolled down reading older records, anchor to the visible row
+      let anchor = null;
+      if (preserveScroll && !isNearTop && tableContainer) {
+        anchor = findVisibleAnchorRow(tableContainer);
+      }
 
       const search = ($("filter-search").value || '').toLowerCase().trim();
       const route = $("filter-route").value;
@@ -883,8 +926,26 @@
       renderTable();
       renderStats();
 
-      if (preserveScroll && tableContainer) {
-        tableContainer.scrollTop = prevScrollTop;
+      if (tableContainer) {
+        if (!preserveScroll || isNearTop) {
+          // Requirement A & D: When at/near top (scrollTop <= 40px), unconditionally lock to 0
+          // Ensures the newly prepended row #1 is 100% visible, not clipped by sticky header
+          tableContainer.scrollTop = 0;
+        } else if (anchor && anchor.submissionId) {
+          // Requirement B: Intelligently restore position anchored to the visible record
+          const targetRow = tableContainer.querySelector(`tr[data-submission-id="${anchor.submissionId}"]`);
+          if (targetRow) {
+            const thead = tableContainer.querySelector("thead");
+            const theadHeight = thead ? thead.offsetHeight : 0;
+            // Target row offsetTop minus the header height minus previous offset from header
+            const targetScrollTop = targetRow.offsetTop - theadHeight - anchor.offsetFromHeader;
+            tableContainer.scrollTop = Math.max(0, targetScrollTop);
+          } else {
+            tableContainer.scrollTop = currentScrollTop;
+          }
+        } else {
+          tableContainer.scrollTop = currentScrollTop;
+        }
       }
     }
 
@@ -1236,10 +1297,10 @@
       btn.classList.remove("is-refreshing");
     });
 
-    $("filter-search").addEventListener("input", () => applyFilters({ preserveScroll: true }));
-    $("filter-route").addEventListener("change", () => applyFilters({ preserveScroll: true }));
-    $("filter-sector").addEventListener("change", () => applyFilters({ preserveScroll: true }));
-    $("filter-contact").addEventListener("change", () => applyFilters({ preserveScroll: true }));
+    $("filter-search").addEventListener("input", () => applyFilters({ preserveScroll: false }));
+    $("filter-route").addEventListener("change", () => applyFilters({ preserveScroll: false }));
+    $("filter-sector").addEventListener("change", () => applyFilters({ preserveScroll: false }));
+    $("filter-contact").addEventListener("change", () => applyFilters({ preserveScroll: false }));
 
     window.copyText = async function(text) {
       try {
