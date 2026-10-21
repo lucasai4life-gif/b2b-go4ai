@@ -61,8 +61,7 @@
   overflow-x:hidden;
 }
 .ar-page main{display:block}
-.ar-page figure:not(.ar-wide),
-.ar-page figcaption{margin:0}
+figure,figcaption{margin:0}
 
 /* -- shared measures ------------------------------------------------------ */
 .ar-col{max-width:50rem;margin-left:auto;margin-right:auto}
@@ -402,6 +401,107 @@ html.ar-motion [data-ar-rise]{
 html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
 
 /* -- 8. RESPONSIVE -------------------------------------------------------- */
+@media (min-width: 769px){
+  /* 1. Hero centered alignment */
+  .ar-hero__head{
+    max-width:68rem;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ar-hero .ar-crumb{
+    justify-content:center;
+  }
+  .ar-hero .ar-meta{
+    justify-content:center;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ar-hero .ar-title{
+    text-align:center;
+    max-width:68rem;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ar-hero .ar-sub{
+    text-align:center;
+    max-width:50rem;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  /* 2. Article body axis & width system */
+  .ar-col{
+    max-width:50rem;
+    margin-left:auto;
+    margin-right:auto;
+    width:100%;
+  }
+  .ar-wide{
+    max-width:65rem;
+    margin-left:auto;
+    margin-right:auto;
+    width:100%;
+  }
+
+  /* 3. Media containers & standalone images centered */
+  .ar-hero__fig,
+  .ar-fig{
+    display:block;
+    width:100%;
+    max-width:65rem;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ar-shot,
+  .ar-fig__frame{
+    display:block;
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ar-shot img,
+  .ar-fig__frame img{
+    display:block;
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  /* 4. Captions flush with media block */
+  .ar-cap{
+    padding-inline:0;
+    width:100%;
+  }
+
+  /* 5. Grids centered */
+  .ar-duo{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:clamp(1rem,2vw,1.5rem);
+    align-items:start;
+    margin-left:auto;
+    margin-right:auto;
+    width:100%;
+  }
+  .ar-duo figure{
+    margin:0;
+    width:100%;
+  }
+  .ar-stats .ar-wide{
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ar-stats__grid{
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ar-achievements,
+  .ar-startup-grid{
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
+
 @media (max-width:991px){
   .ar-title{max-width:100%}
   .ar-stats__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -533,7 +633,7 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
     <div class="padding-global">
       <div class="container">
 
-        <div class="ar-wide">
+        <div class="ar-wide ar-hero__head">
           <nav class="ar-crumb" aria-label="Đường dẫn">
             <a href="/tin-tuc-chia-se">Tin tức &amp; sự kiện</a>
             <i aria-hidden="true">/</i>
