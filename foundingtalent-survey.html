@@ -1,0 +1,1576 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>GO4AI | Founding Talent Survey</title>
+<meta name="description" content="Khảo sát khát vọng &amp; môi trường phát triển nhân tài — GO4AI Founding Talent. Khoảng 5–7 phút, không có câu trả lời đúng hay sai." />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#f2f6f5" />
+<link rel="icon" href="/foundingtalent/logos/logo-go4ai-life.webp" />
+<link rel="canonical" href="https://b2b.go4ai.org/foundingtalent-survey" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="GO4AI | Founding Talent Survey" />
+<meta property="og:description" content="Khảo sát khát vọng &amp; môi trường phát triển nhân tài — GO4AI Founding Talent." />
+<meta property="og:url" content="https://b2b.go4ai.org/foundingtalent-survey" />
+<meta property="og:image" content="https://b2b.go4ai.org/foundingtalent/logos/logo-go4ai-life.webp" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ==========================================================================
+     GO4AI | FOUNDING TALENT SURVEY
+     Page-scoped namespace: .fs-*
+     Visual language inherited from /foundingtalent:
+       off-white #f2f6f5 · emerald #08906c · near-black #15171a
+       Archivo (sans) + Azeret Mono (technical micro-labels) · technical grid
+     ========================================================================== */
+  :root {
+    --fs-bg: #f2f6f5;
+    --fs-ink: #15171a;
+    --fs-ink-2: #454e4c;
+    --fs-mute: #73817e;
+    --fs-line: rgba(21, 23, 26, 0.10);
+    --fs-line-2: rgba(21, 23, 26, 0.18);
+    --fs-emerald: #08906c;
+    --fs-emerald-700: #06694f;
+    --fs-emerald-50: #eaf5f0;
+    --fs-emerald-tint: rgba(8, 144, 108, 0.06);
+    --fs-white: #ffffff;
+    --fs-danger: #b8351f;
+    --fs-radius: 24px;
+    --fs-radius-opt: 14px;
+    --fs-sans: "Archivo", Arial, sans-serif;
+    --fs-mono: "Azeret Mono", ui-monospace, "SFMono-Regular", monospace;
+    --fs-shadow: 0 1px 2px rgba(21, 23, 26, 0.04), 0 28px 64px -36px rgba(21, 23, 26, 0.30);
+    --fs-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--fs-sans);
+    color: var(--fs-ink);
+    background-color: var(--fs-bg);
+    background-image:
+      linear-gradient(90deg, rgba(21, 23, 26, 0.032) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(21, 23, 26, 0.032) 1px, transparent 1px),
+      radial-gradient(920px 480px at 50% -12%, rgba(8, 144, 108, 0.075), transparent 72%);
+    background-size: 72px 72px, 72px 72px, 100% 100%;
+    background-position: center top, center top, center top;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  .fs-skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--fs-ink);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 0 0 8px 0;
+    z-index: 100;
+  }
+  .fs-skip:focus { left: 0; }
+
+  /* ─── TOP BAR ─────────────────────────────────────────────────────────── */
+  .fs-top {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 22px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .fs-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--fs-ink);
+    min-height: 40px;
+  }
+  .fs-brand__logo { height: 34px; width: auto; display: block; }
+  .fs-brand__txt {
+    font-family: var(--fs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fs-mute);
+    border-left: 1px solid var(--fs-line-2);
+    padding-left: 12px;
+    line-height: 1.5;
+  }
+  .fs-brand__txt b { display: block; color: var(--fs-ink); font-weight: 500; letter-spacing: 0.12em; }
+  .fs-top__meta {
+    font-family: var(--fs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fs-mute);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .fs-top__dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--fs-emerald);
+    box-shadow: 0 0 0 4px rgba(8, 144, 108, 0.12);
+  }
+
+  /* ─── SHELL ───────────────────────────────────────────────────────────── */
+  .fs-main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 26px 24px 72px;
+  }
+
+  .fs-card {
+    position: relative;
+    background: var(--fs-white);
+    border: 1px solid var(--fs-line);
+    border-radius: var(--fs-radius);
+    box-shadow: var(--fs-shadow);
+    padding: 44px 44px 40px;
+  }
+  /* corner ticks — technical system accent */
+  .fs-card::before,
+  .fs-card::after {
+    content: "";
+    position: absolute;
+    width: 10px; height: 10px;
+    border-color: rgba(8, 144, 108, 0.55);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .fs-card::before { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
+  .fs-card::after { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
+
+  /* ─── INTRO ───────────────────────────────────────────────────────────── */
+  .fs-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--fs-white);
+    border: 1px solid var(--fs-line-2);
+    border-radius: 100px;
+    padding: 8px 15px 8px 12px;
+    font-family: var(--fs-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fs-ink);
+    margin-bottom: 22px;
+  }
+  .fs-kicker__dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--fs-emerald);
+    flex: none;
+  }
+
+  .fs-title {
+    margin: 0 0 26px;
+    font-size: clamp(28px, 4.4vw, 42px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    text-wrap: pretty;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--fs-line);
+  }
+  .fs-title em { font-style: normal; color: var(--fs-emerald); display: block; }
+
+  .fs-copy { margin: 0 0 16px; font-size: 16px; line-height: 1.72; color: var(--fs-ink-2); }
+  .fs-copy--strong { color: var(--fs-ink); font-weight: 500; }
+
+  .fs-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 26px 0 22px;
+  }
+  .fs-fact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--fs-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--fs-ink-2);
+    background: #f7faf9;
+    border: 1px solid var(--fs-line);
+    border-radius: 10px;
+    padding: 9px 13px;
+  }
+  .fs-fact b { color: var(--fs-emerald-700); font-weight: 500; }
+
+  .fs-note {
+    margin: 0 0 30px;
+    padding: 14px 16px;
+    border-left: 2px solid var(--fs-emerald);
+    background: linear-gradient(90deg, rgba(8, 144, 108, 0.055), rgba(8, 144, 108, 0));
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--fs-ink-2);
+  }
+
+  /* ─── BUTTONS ─────────────────────────────────────────────────────────── */
+  .fs-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 100px;
+    font-family: var(--fs-sans);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 0 26px;
+    height: 54px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.18s var(--fs-ease), background-color 0.18s var(--fs-ease),
+                border-color 0.18s var(--fs-ease), color 0.18s var(--fs-ease), box-shadow 0.18s var(--fs-ease);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fs-btn:focus-visible { outline: 2px solid var(--fs-emerald); outline-offset: 3px; }
+
+  .fs-btn--primary {
+    background: var(--fs-emerald);
+    color: #fff;
+    box-shadow: 0 10px 24px -12px rgba(8, 144, 108, 0.75);
+  }
+  .fs-btn--primary:hover { background: var(--fs-emerald-700); transform: translateY(-1px); }
+  .fs-btn--primary:active { transform: translateY(0); }
+
+  .fs-btn--finish { background: var(--fs-ink); color: #fff; box-shadow: 0 10px 24px -14px rgba(21, 23, 26, 0.9); }
+  .fs-btn--finish:hover { background: #000; transform: translateY(-1px); }
+
+  .fs-btn--ghost {
+    background: transparent;
+    color: var(--fs-ink-2);
+    border-color: var(--fs-line-2);
+  }
+  .fs-btn--ghost:hover { border-color: var(--fs-ink); color: var(--fs-ink); background: #fafcfb; }
+
+  .fs-btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+  .fs-btn__arrow { transition: transform 0.18s var(--fs-ease); }
+  .fs-btn:hover .fs-btn__arrow { transform: translateX(3px); }
+
+  .fs-start { width: 100%; }
+  .fs-start-note {
+    margin: 14px 0 0;
+    font-family: var(--fs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fs-mute);
+    text-align: center;
+  }
+
+  /* ─── PROGRESS ────────────────────────────────────────────────────────── */
+  .fs-progress {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(242, 246, 245, 0.94);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--fs-line);
+    padding: 14px 24px 12px;
+    margin: 0 -24px 26px;
+  }
+  .fs-progress__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 9px;
+  }
+  .fs-progress__label {
+    font-family: var(--fs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fs-mute);
+  }
+  .fs-progress__count {
+    font-family: var(--fs-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--fs-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .fs-progress__count b { color: var(--fs-emerald-700); font-weight: 500; }
+  .fs-progress__track {
+    height: 3px;
+    background: rgba(21, 23, 26, 0.10);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .fs-progress__fill {
+    height: 100%;
+    width: 14.2857%;
+    background: var(--fs-emerald);
+    border-radius: 100px;
+    transition: width 0.42s var(--fs-ease);
+  }
+
+  /* ─── STEP ────────────────────────────────────────────────────────────── */
+  .fs-step[hidden] { display: none; }
+  .fs-step__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .fs-step__no {
+    font-family: var(--fs-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fs-emerald-700);
+  }
+  .fs-step__rule { flex: 1; height: 1px; background: var(--fs-line); }
+  .fs-step__meta {
+    font-family: var(--fs-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fs-mute);
+    white-space: nowrap;
+  }
+  .fs-q {
+    margin: 0 0 12px;
+    font-size: clamp(20px, 2.6vw, 26px);
+    line-height: 1.34;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    text-wrap: pretty;
+  }
+  .fs-hint {
+    margin: 0 0 22px;
+    font-size: 14px;
+    line-height: 1.62;
+    color: var(--fs-mute);
+  }
+  .fs-hint + .fs-options { margin-top: 0; }
+
+  /* ─── OPTIONS ─────────────────────────────────────────────────────────── */
+  .fs-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 8px;
+    border: 0;
+    padding: 0;
+  }
+  .fs-opt {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 15px 16px;
+    background: var(--fs-white);
+    border: 1px solid var(--fs-line-2);
+    border-radius: var(--fs-radius-opt);
+    cursor: pointer;
+    transition: border-color 0.16s var(--fs-ease), background-color 0.16s var(--fs-ease),
+                box-shadow 0.16s var(--fs-ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fs-opt:hover { border-color: rgba(8, 144, 108, 0.45); background: rgba(8, 144, 108, 0.022); }
+  .fs-opt:focus-within { border-color: var(--fs-emerald); box-shadow: 0 0 0 3px rgba(8, 144, 108, 0.13); }
+
+  .fs-opt__input {
+    position: absolute;
+    opacity: 0;
+    width: 1px; height: 1px;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  .fs-opt__key {
+    flex: none;
+    width: 26px; height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--fs-line-2);
+    border-radius: 8px;
+    font-family: var(--fs-mono);
+    font-size: 11px;
+    color: var(--fs-mute);
+    background: #fbfdfc;
+    transition: all 0.16s var(--fs-ease);
+    margin-top: 1px;
+  }
+  .fs-opt__text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--fs-ink-2);
+    padding-top: 2px;
+  }
+  .fs-opt__text b { font-weight: 600; color: var(--fs-ink); }
+
+  .fs-opt__mark {
+    flex: none;
+    width: 19px; height: 19px;
+    margin-top: 3px;
+    border: 1px solid var(--fs-line-2);
+    border-radius: 50%;
+    background: #fff;
+    position: relative;
+    transition: all 0.16s var(--fs-ease);
+  }
+  .fs-opt--multi .fs-opt__mark { border-radius: 5px; }
+  .fs-opt__mark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: all 0.16s var(--fs-ease);
+  }
+  .fs-opt--multi .fs-opt__mark::after {
+    width: 9px; height: 5px;
+    border-radius: 0;
+    background: transparent;
+    border-left: 1.8px solid #fff;
+    border-bottom: 1.8px solid #fff;
+    transform: rotate(-45deg) scale(0.6);
+    margin-top: 4px;
+  }
+
+  /* selected */
+  .fs-opt.is-sel {
+    border-color: var(--fs-emerald);
+    background: var(--fs-emerald-50);
+    box-shadow: inset 0 0 0 1px var(--fs-emerald);
+  }
+  .fs-opt.is-sel .fs-opt__key {
+    background: var(--fs-emerald);
+    border-color: var(--fs-emerald);
+    color: #fff;
+  }
+  .fs-opt.is-sel .fs-opt__text { color: var(--fs-ink); }
+  .fs-opt.is-sel .fs-opt__mark { background: var(--fs-emerald); border-color: var(--fs-emerald); }
+  .fs-opt.is-sel .fs-opt__mark::after { opacity: 1; transform: scale(1); }
+  .fs-opt--multi.is-sel .fs-opt__mark::after { transform: rotate(-45deg) scale(1); }
+
+  /* locked (max reached) */
+  .fs-opt.is-locked { opacity: 0.42; cursor: not-allowed; }
+  .fs-opt.is-locked:hover { border-color: var(--fs-line-2); background: var(--fs-white); }
+
+  /* "Khác" option with inline input */
+  .fs-opt--other { display: block; padding: 0; cursor: default; }
+  .fs-opt--other:hover { border-color: var(--fs-line-2); background: var(--fs-white); }
+  .fs-opt--other.is-sel:hover { border-color: var(--fs-emerald); background: var(--fs-emerald-50); }
+  .fs-opt__hit {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 15px 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fs-other-wrap {
+    padding: 0 16px 14px 55px;
+    display: none;
+  }
+  .fs-opt--other.is-sel .fs-other-wrap { display: block; }
+  .fs-other-input {
+    width: 100%;
+    font-family: var(--fs-sans);
+    font-size: 15px;
+    color: var(--fs-ink);
+    background: #fff;
+    border: 1px solid var(--fs-line-2);
+    border-radius: 10px;
+    padding: 12px 13px;
+    min-height: 46px;
+    transition: border-color 0.16s var(--fs-ease), box-shadow 0.16s var(--fs-ease);
+  }
+  .fs-other-input:focus {
+    outline: none;
+    border-color: var(--fs-emerald);
+    box-shadow: 0 0 0 3px rgba(8, 144, 108, 0.13);
+  }
+  .fs-other-input::placeholder { color: #9aa8a4; }
+
+  /* ─── TEXTAREA ────────────────────────────────────────────────────────── */
+  .fs-textarea-wrap { position: relative; }
+  .fs-textarea {
+    width: 100%;
+    min-height: 168px;
+    resize: vertical;
+    font-family: var(--fs-sans);
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--fs-ink);
+    background: #fbfdfc;
+    border: 1px solid var(--fs-line-2);
+    border-radius: var(--fs-radius-opt);
+    padding: 16px 17px 40px;
+    transition: border-color 0.16s var(--fs-ease), box-shadow 0.16s var(--fs-ease), background-color 0.16s var(--fs-ease);
+  }
+  .fs-textarea:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--fs-emerald);
+    box-shadow: 0 0 0 3px rgba(8, 144, 108, 0.13);
+  }
+  .fs-textarea::placeholder { color: #9aa8a4; }
+  .fs-textarea-foot {
+    position: absolute;
+    left: 17px; right: 14px; bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    pointer-events: none;
+  }
+  .fs-counter {
+    font-family: var(--fs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--fs-mute);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─── ALERT ───────────────────────────────────────────────────────────── */
+  .fs-alert {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 16px 0 0;
+    padding: 12px 14px;
+    border: 1px solid rgba(184, 53, 31, 0.28);
+    background: #fdf3f1;
+    border-radius: 12px;
+    color: var(--fs-danger);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .fs-alert.is-on { display: flex; }
+  .fs-alert__icon {
+    flex: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--fs-danger);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  /* ─── NAV ─────────────────────────────────────────────────────────────── */
+  .fs-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--fs-line);
+  }
+  .fs-nav__spacer { flex: 1; }
+  .fs-nav .fs-btn { min-width: 132px; }
+
+  .fs-submit-error {
+    display: none;
+    margin: 18px 0 0;
+    padding: 14px 16px;
+    border: 1px solid rgba(184, 53, 31, 0.3);
+    background: #fdf3f1;
+    border-radius: 12px;
+    color: var(--fs-danger);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .fs-submit-error.is-on { display: block; }
+  .fs-submit-error button {
+    margin-top: 10px;
+    font-family: var(--fs-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fs-danger);
+    background: #fff;
+    border: 1px solid rgba(184, 53, 31, 0.35);
+    border-radius: 100px;
+    padding: 7px 15px;
+    cursor: pointer;
+  }
+
+  /* ─── SUCCESS ─────────────────────────────────────────────────────────── */
+  .fs-done { text-align: left; }
+  .fs-done__mark {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--fs-emerald-50);
+    border: 1px solid rgba(8, 144, 108, 0.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .fs-done__mark svg { width: 24px; height: 24px; stroke: var(--fs-emerald); }
+  .fs-done__title {
+    margin: 0 0 16px;
+    font-size: clamp(26px, 3.6vw, 36px);
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .fs-done__body {
+    margin: 0 0 28px;
+    font-size: 16px;
+    line-height: 1.72;
+    color: var(--fs-ink-2);
+    max-width: 56ch;
+  }
+  .fs-done__ref {
+    font-family: var(--fs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--fs-mute);
+    border-top: 1px solid var(--fs-line);
+    padding-top: 16px;
+    margin: 0 0 24px;
+    word-break: break-all;
+  }
+  .fs-done__ref b { color: var(--fs-ink-2); font-weight: 500; }
+
+  /* ─── FOOT ────────────────────────────────────────────────────────────── */
+  .fs-foot {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-family: var(--fs-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fs-mute);
+  }
+  .fs-foot a { color: var(--fs-mute); text-decoration: none; border-bottom: 1px solid var(--fs-line-2); padding-bottom: 1px; }
+  .fs-foot a:hover { color: var(--fs-emerald-700); border-color: var(--fs-emerald); }
+
+  .fs-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ─── RESPONSIVE ──────────────────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .fs-top { padding: 16px 16px 0; }
+    .fs-brand__logo { height: 30px; }
+    .fs-brand__txt { font-size: 9.5px; letter-spacing: 0.1em; padding-left: 10px; }
+    .fs-top__meta { display: none; }
+    .fs-main { padding: 18px 14px 40px; }
+    .fs-card { padding: 26px 20px 24px; border-radius: 20px; }
+    .fs-card::before, .fs-card::after { display: none; }
+    .fs-title { font-size: clamp(23px, 6.8vw, 31px); letter-spacing: -0.025em; padding-bottom: 20px; margin-bottom: 20px; }
+    .fs-copy { font-size: 15px; line-height: 1.68; }
+    .fs-note { font-size: 14px; padding: 12px 14px; }
+    .fs-facts { margin: 20px 0 18px; gap: 8px; }
+    .fs-fact { font-size: 10px; padding: 8px 11px; }
+    .fs-btn { height: 52px; font-size: 15px; padding: 0 22px; }
+
+    .fs-progress { margin: 0 -14px 20px; padding: 12px 14px 10px; }
+    .fs-progress__label { font-size: 9.5px; }
+    .fs-progress__count { font-size: 11.5px; }
+
+    .fs-q { font-size: 19px; line-height: 1.38; }
+    .fs-hint { font-size: 13.5px; margin-bottom: 18px; }
+
+    .fs-opt { padding: 14px 14px; gap: 11px; border-radius: 13px; }
+    .fs-opt__text { font-size: 14.5px; line-height: 1.5; }
+    .fs-opt__key { width: 24px; height: 24px; font-size: 10px; }
+    .fs-opt__hit { padding: 14px 14px; gap: 11px; }
+    .fs-other-wrap { padding: 0 14px 13px 49px; }
+
+    .fs-textarea { min-height: 190px; font-size: 16px; padding: 14px 15px 38px; }
+
+    /* sticky action bar while the survey is on screen */
+    body[data-mode="survey"] { padding-bottom: 92px; }
+    body[data-mode="survey"] .fs-nav {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 11px 14px calc(11px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.96);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--fs-line);
+      border-radius: 0;
+      box-shadow: 0 -8px 24px -18px rgba(21, 23, 26, 0.4);
+      z-index: 40;
+    }
+    body[data-mode="survey"] .fs-nav__spacer { display: none; }
+    body[data-mode="survey"] .fs-nav .fs-btn { height: 50px; min-width: 0; flex: 1; white-space: nowrap; font-size: 14.5px; padding: 0 16px; }
+    body[data-mode="survey"] .fs-nav .fs-btn--ghost { flex: 0 0 auto; padding: 0 18px; }
+
+    .fs-done__body { font-size: 15px; }
+    .fs-foot { padding: 0 16px 28px; font-size: 9.5px; }
+  }
+
+  @media (max-width: 380px) {
+    .fs-card { padding: 22px 16px 20px; }
+    .fs-kicker { font-size: 9.5px; letter-spacing: 0.09em; padding: 7px 12px 7px 10px; }
+    .fs-q { font-size: 18px; }
+    .fs-opt__text { font-size: 14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+</style>
+</head>
+<body data-mode="intro">
+<a class="fs-skip" href="#fs-main">Chuyển đến nội dung chính</a>
+
+<header class="fs-top">
+  <a class="fs-brand" href="/foundingtalent" aria-label="GO4AI Founding Talent">
+    <img class="fs-brand__logo" src="/foundingtalent/logos/logo-go4ai-life.webp" alt="GO4AI Life" width="90" height="34" />
+    <span class="fs-brand__txt"><b>Founding Talent</b>Survey 2026</span>
+  </a>
+  <span class="fs-top__meta"><span class="fs-top__dot"></span> Khảo sát trực tuyến</span>
+</header>
+
+<main class="fs-main" id="fs-main">
+
+  <!-- ══════════════════ INTRO ══════════════════ -->
+  <section class="fs-card" id="fs-intro" aria-labelledby="fs-intro-title">
+    <p class="fs-kicker"><span class="fs-kicker__dot"></span>GO4AI | FOUNDING TALENT SURVEY</p>
+    <h1 class="fs-title" id="fs-intro-title">
+      <em>KHẢO SÁT KHÁT VỌNG</em>
+      &amp; MÔI TRƯỜNG PHÁT TRIỂN NHÂN TÀI
+    </h1>
+
+    <p class="fs-copy fs-copy--strong">Mỗi người đều có những khát vọng, động lực và cách phát triển khác nhau.</p>
+    <p class="fs-copy">GO4AI mong muốn lắng nghe những điều bạn thực sự tìm kiếm trên hành trình khám phá, sáng tạo và khởi nghiệp, từ đó cùng kiến tạo một môi trường nơi bạn có thể phát huy năng lực, hiện thực hóa ý tưởng và tạo ra giá trị thực tế.</p>
+
+    <div class="fs-facts">
+      <span class="fs-fact"><b>05–07</b> phút</span>
+      <span class="fs-fact"><b>07</b> câu hỏi</span>
+      <span class="fs-fact"><b>01</b> lượt gửi</span>
+    </div>
+
+    <p class="fs-note">Thời gian thực hiện: Khoảng 5–7 phút.<br />Không có câu trả lời đúng hay sai. Hãy chia sẻ góc nhìn chân thực nhất của bạn.</p>
+
+    <button class="fs-btn fs-btn--primary fs-start" type="button" id="fs-start">
+      Bắt đầu khảo sát <span class="fs-btn__arrow" aria-hidden="true">→</span>
+    </button>
+    <p class="fs-start-note">Câu trả lời được lưu bảo mật và chỉ dùng cho mục đích tuyển chọn &amp; phát triển nhân tài GO4AI.</p>
+  </section>
+
+  <!-- ══════════════════ SURVEY ══════════════════ -->
+  <section id="fs-survey" hidden aria-label="Khảo sát Founding Talent">
+    <div class="fs-progress" role="group" aria-label="Tiến độ khảo sát">
+      <div class="fs-progress__row">
+        <span class="fs-progress__label">Tiến độ</span>
+        <span class="fs-progress__count" id="fs-count"><b>1</b> / 7</span>
+      </div>
+      <div class="fs-progress__track" role="progressbar" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1" aria-label="Câu hỏi" id="fs-bar">
+        <div class="fs-progress__fill" id="fs-fill"></div>
+      </div>
+    </div>
+
+    <div class="fs-card">
+      <form id="fs-form" novalidate autocomplete="off">
+
+        <!-- ─── CÂU 1 ─── -->
+        <div class="fs-step" data-step="1">
+          <div class="fs-step__head">
+            <span class="fs-step__no">Câu 1</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Chọn 1 đáp án</span>
+          </div>
+          <h2 class="fs-q" id="q1-label">Trong 3 năm tới, thành tựu nào dưới đây sẽ khiến bạn cảm thấy tự hào nhất về hành trình phát triển của mình?</h2>
+          <p class="fs-hint">Chọn 1 đáp án.</p>
+          <div class="fs-options" role="radiogroup" aria-labelledby="q1-label" data-q="q1">
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q1" value="A" />
+              <span class="fs-opt__key">A</span>
+              <span class="fs-opt__text">Tự xây dựng một sản phẩm hoặc doanh nghiệp có khách hàng và tạo ra giá trị thực tế.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q1" value="B" />
+              <span class="fs-opt__key">B</span>
+              <span class="fs-opt__text">Trở thành người dẫn dắt một dự án, đội ngũ hoặc lĩnh vực kinh doanh.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q1" value="C" />
+              <span class="fs-opt__key">C</span>
+              <span class="fs-opt__text">Phát triển chuyên môn vượt trội, trở thành chuyên gia trong lĩnh vực mình theo đuổi.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q1" value="D" />
+              <span class="fs-opt__key">D</span>
+              <span class="fs-opt__text">Được khám phá nhiều lĩnh vực, thử nghiệm những ý tưởng mới và tìm ra hướng đi riêng.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q1" value="E" />
+              <span class="fs-opt__key">E</span>
+              <span class="fs-opt__text">Cùng những người có chung lý tưởng xây dựng một tổ chức hoặc dự án có sức ảnh hưởng.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <div class="fs-opt fs-opt--other">
+              <label class="fs-opt__hit">
+                <input class="fs-opt__input" type="radio" name="q1" value="F" data-other="q1-other" />
+                <span class="fs-opt__key">F</span>
+                <span class="fs-opt__text">Khác:</span>
+                <span class="fs-opt__mark" aria-hidden="true"></span>
+              </label>
+              <div class="fs-other-wrap">
+                <input class="fs-other-input" type="text" id="q1-other" maxlength="300" placeholder="Nhập thành tựu bạn hướng tới…" aria-label="Câu 1 — nội dung khác" />
+              </div>
+            </div>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
+        <!-- ─── CÂU 2 ─── -->
+        <div class="fs-step" data-step="2" hidden>
+          <div class="fs-step__head">
+            <span class="fs-step__no">Câu 2</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Trả lời tự do</span>
+          </div>
+          <h2 class="fs-q" id="q2-label">Hãy chia sẻ một trải nghiệm mà bạn đã chủ động thử sức với điều mới hoặc một thử thách khó. Điều gì khiến bạn muốn thực hiện và bạn đã học được gì từ trải nghiệm đó?</h2>
+          <p class="fs-hint">Trả lời tự do, khoảng 3–5 câu. Có thể chia sẻ trải nghiệm trong học tập, công việc hoặc dự án cá nhân.</p>
+          <div class="fs-textarea-wrap">
+            <textarea class="fs-textarea" id="q2-text" maxlength="4000" rows="7" placeholder="Viết câu trả lời của bạn tại đây…" aria-labelledby="q2-label"></textarea>
+            <div class="fs-textarea-foot"><span class="fs-counter" data-counter-for="q2-text">0 / 4000</span></div>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
+        <!-- ─── CÂU 3 ─── -->
+        <div class="fs-step" data-step="3" hidden>
+          <div class="fs-step__head">
+            <span class="fs-step__no">Câu 3</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Chọn tối đa 2 đáp án</span>
+          </div>
+          <h2 class="fs-q" id="q3-label">Trong những môi trường học tập, làm việc hoặc dự án từng tham gia, điều gì khiến bạn cảm thấy bản thân chưa thể phát huy hết năng lực?</h2>
+          <p class="fs-hint">Chọn tối đa 2 đáp án.</p>
+          <div class="fs-options" role="group" aria-labelledby="q3-label" data-q="q3" data-max="2">
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="A" />
+              <span class="fs-opt__key">A</span>
+              <span class="fs-opt__text">Thiếu cơ hội thử nghiệm và hiện thực hóa những ý tưởng mới.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="B" />
+              <span class="fs-opt__key">B</span>
+              <span class="fs-opt__text">Chưa được tin tưởng trao quyền hoặc chủ động đưa ra quyết định.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="C" />
+              <span class="fs-opt__key">C</span>
+              <span class="fs-opt__text">Thiếu những người đồng hành có cùng tham vọng và tinh thần phát triển.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="D" />
+              <span class="fs-opt__key">D</span>
+              <span class="fs-opt__text">Thiếu sự cố vấn, phản hồi hoặc định hướng từ những người có kinh nghiệm.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="E" />
+              <span class="fs-opt__key">E</span>
+              <span class="fs-opt__text">Công việc thiếu tính thử thách, ít cơ hội học hỏi và phát triển.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="F" />
+              <span class="fs-opt__key">F</span>
+              <span class="fs-opt__text">Những đóng góp hoặc ý tưởng chưa được ghi nhận tương xứng.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="G" />
+              <span class="fs-opt__key">G</span>
+              <span class="fs-opt__text">Thiếu nguồn lực hoặc điều kiện để triển khai dự án thực tế.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi" data-exclusive-group="q3">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="H" data-exclusive="q3" />
+              <span class="fs-opt__key">H</span>
+              <span class="fs-opt__text">Chưa gặp rào cản đáng kể.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q3" value="I" data-exclusive="q3" />
+              <span class="fs-opt__key">I</span>
+              <span class="fs-opt__text">Chưa có đủ trải nghiệm để đánh giá.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <div class="fs-opt fs-opt--multi fs-opt--other">
+              <label class="fs-opt__hit">
+                <input class="fs-opt__input" type="checkbox" name="q3" value="J" data-other="q3-other" />
+                <span class="fs-opt__key">J</span>
+                <span class="fs-opt__text">Khác:</span>
+                <span class="fs-opt__mark" aria-hidden="true"></span>
+              </label>
+              <div class="fs-other-wrap">
+                <input class="fs-other-input" type="text" id="q3-other" maxlength="300" placeholder="Nhập điều bạn muốn bổ sung…" aria-label="Câu 3 — nội dung khác" />
+              </div>
+            </div>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
+        <!-- ─── CÂU 4 ─── -->
+        <div class="fs-step" data-step="4" hidden>
+          <div class="fs-step__head">
+            <span class="fs-step__no">Câu 4</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Chọn tối đa 2 đáp án</span>
+          </div>
+          <h2 class="fs-q" id="q4-label">Khi lựa chọn một môi trường để phát triển lâu dài, 2 yếu tố nào quan trọng nhất đối với bạn?</h2>
+          <p class="fs-hint">Chọn tối đa 2 đáp án.</p>
+          <div class="fs-options" role="group" aria-labelledby="q4-label" data-q="q4" data-max="2">
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q4" value="A" />
+              <span class="fs-opt__key">A</span>
+              <span class="fs-opt__text"><b>Tự chủ &amp; trao quyền:</b> Được tin tưởng quyết định cách làm và chịu trách nhiệm với kết quả.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q4" value="B" />
+              <span class="fs-opt__key">B</span>
+              <span class="fs-opt__text"><b>Đồng đội xuất sắc:</b> Làm việc cùng những người giỏi, có tham vọng và luôn thúc đẩy nhau tiến bộ.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q4" value="C" />
+              <span class="fs-opt__key">C</span>
+              <span class="fs-opt__text"><b>Tự do sáng tạo:</b> Được thử nghiệm ý tưởng mới, chấp nhận những thất bại có kiểm soát và học hỏi từ chúng.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q4" value="D" />
+              <span class="fs-opt__key">D</span>
+              <span class="fs-opt__text"><b>Cố vấn &amp; phát triển:</b> Được dẫn dắt, phản hồi và có cơ hội nâng cao năng lực liên tục.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q4" value="E" />
+              <span class="fs-opt__key">E</span>
+              <span class="fs-opt__text"><b>Thử thách thực tế:</b> Được giải quyết những bài toán khó, phát triển sản phẩm và tạo ra kết quả cụ thể.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q4" value="F" />
+              <span class="fs-opt__key">F</span>
+              <span class="fs-opt__text"><b>Ghi nhận công bằng:</b> Thành quả và đóng góp được đánh giá minh bạch, gắn với cơ hội và quyền lợi tương xứng.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q4" value="G" />
+              <span class="fs-opt__key">G</span>
+              <span class="fs-opt__text"><b>Linh hoạt &amp; bền vững:</b> Được chủ động sắp xếp công việc, duy trì hiệu suất và cân bằng cuộc sống.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
+        <!-- ─── CÂU 5 ─── -->
+        <div class="fs-step" data-step="5" hidden>
+          <div class="fs-step__head">
+            <span class="fs-step__no">Câu 5</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Chọn 1 đáp án</span>
+          </div>
+          <h2 class="fs-q" id="q5-label">Giả sử các môi trường dưới đây đều có mức đãi ngộ phù hợp và thời gian cam kết tương đương, bạn sẽ ưu tiên lựa chọn môi trường nào để phát triển trong 6 tháng tới?</h2>
+          <p class="fs-hint">Chọn 1 đáp án.</p>
+          <div class="fs-options" role="radiogroup" aria-labelledby="q5-label" data-q="q5">
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q5" value="A" />
+              <span class="fs-opt__key">A</span>
+              <span class="fs-opt__text">Được trao quyền tự chủ cao để dẫn dắt một dự án mới, nhưng phải tự tìm hướng giải quyết và đối mặt với nhiều điều chưa chắc chắn.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q5" value="B" />
+              <span class="fs-opt__key">B</span>
+              <span class="fs-opt__text">Được làm việc trực tiếp với người giàu kinh nghiệm, có sự hướng dẫn và phản hồi thường xuyên, nhưng quyền tự quyết ban đầu còn giới hạn.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q5" value="C" />
+              <span class="fs-opt__key">C</span>
+              <span class="fs-opt__text">Được làm việc trong đội ngũ có năng lực cao, liên tục đối mặt với những thử thách lớn, nhưng phải thích nghi với nhịp độ làm việc nhanh và kỳ vọng cao.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt">
+              <input class="fs-opt__input" type="radio" name="q5" value="D" />
+              <span class="fs-opt__key">D</span>
+              <span class="fs-opt__text">Có quy trình, trách nhiệm và lộ trình phát triển rõ ràng, ít biến động, nhưng cơ hội thử nghiệm các ý tưởng mới còn hạn chế.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <div class="fs-opt fs-opt--other">
+              <label class="fs-opt__hit">
+                <input class="fs-opt__input" type="radio" name="q5" value="E" data-other="q5-other" />
+                <span class="fs-opt__key">E</span>
+                <span class="fs-opt__text">Khác:</span>
+                <span class="fs-opt__mark" aria-hidden="true"></span>
+              </label>
+              <div class="fs-other-wrap">
+                <input class="fs-other-input" type="text" id="q5-other" maxlength="300" placeholder="Nhập môi trường bạn ưu tiên…" aria-label="Câu 5 — nội dung khác" />
+              </div>
+            </div>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
+        <!-- ─── CÂU 6 ─── -->
+        <div class="fs-step" data-step="6" hidden>
+          <div class="fs-step__head">
+            <span class="fs-step__no">Câu 6</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Chọn tối đa 2 đáp án</span>
+          </div>
+          <h2 class="fs-q" id="q6-label">Khi cân nhắc gia nhập một startup ở giai đoạn đầu, 2 yếu tố nào có ảnh hưởng lớn nhất đến quyết định đồng hành của bạn?</h2>
+          <p class="fs-hint">Chọn tối đa 2 đáp án.</p>
+          <div class="fs-options" role="group" aria-labelledby="q6-label" data-q="q6" data-max="2">
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q6" value="A" />
+              <span class="fs-opt__key">A</span>
+              <span class="fs-opt__text">Tin tưởng vào tầm nhìn, năng lực và giá trị của đội ngũ sáng lập.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q6" value="B" />
+              <span class="fs-opt__key">B</span>
+              <span class="fs-opt__text">Nhìn thấy tiềm năng thực tế của sản phẩm, thị trường và cơ hội phát triển.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q6" value="C" />
+              <span class="fs-opt__key">C</span>
+              <span class="fs-opt__text">Được trao vai trò quan trọng, có quyền chủ động và cơ hội làm chủ kết quả.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q6" value="D" />
+              <span class="fs-opt__key">D</span>
+              <span class="fs-opt__text">Có cơ hội học hỏi, phát triển nhanh và mở rộng năng lực bản thân.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q6" value="E" />
+              <span class="fs-opt__key">E</span>
+              <span class="fs-opt__text">Có cơ chế thu nhập, quyền lợi và chia sẻ thành quả phù hợp, minh bạch.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q6" value="F" />
+              <span class="fs-opt__key">F</span>
+              <span class="fs-opt__text">Được làm việc với những người cùng chí hướng và có văn hóa phù hợp.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <label class="fs-opt fs-opt--multi">
+              <input class="fs-opt__input" type="checkbox" name="q6" value="G" />
+              <span class="fs-opt__key">G</span>
+              <span class="fs-opt__text">Có nguồn lực, sự hỗ trợ và điều kiện thực tế để biến ý tưởng thành kết quả.</span>
+              <span class="fs-opt__mark" aria-hidden="true"></span>
+            </label>
+            <div class="fs-opt fs-opt--multi fs-opt--other">
+              <label class="fs-opt__hit">
+                <input class="fs-opt__input" type="checkbox" name="q6" value="H" data-other="q6-other" />
+                <span class="fs-opt__key">H</span>
+                <span class="fs-opt__text">Khác:</span>
+                <span class="fs-opt__mark" aria-hidden="true"></span>
+              </label>
+              <div class="fs-other-wrap">
+                <input class="fs-other-input" type="text" id="q6-other" maxlength="300" placeholder="Nhập yếu tố bạn quan tâm…" aria-label="Câu 6 — nội dung khác" />
+              </div>
+            </div>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
+        <!-- ─── CÂU 7 ─── -->
+        <div class="fs-step" data-step="7" hidden>
+          <div class="fs-step__head">
+            <span class="fs-step__no">Câu 7</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Trả lời tự do</span>
+          </div>
+          <h2 class="fs-q" id="q7-label">Nếu có thể thay đổi một điều trong cách các tổ chức hiện nay tạo điều kiện cho những người thích khám phá, sáng tạo và khởi nghiệp, bạn muốn thay đổi điều gì nhất? Vì sao điều đó quan trọng với bạn?</h2>
+          <p class="fs-hint">Trả lời tự do.<br />Chúng tôi trân trọng những góc nhìn mới, ý tưởng khác biệt và kỳ vọng chân thực của bạn.</p>
+          <div class="fs-textarea-wrap">
+            <textarea class="fs-textarea" id="q7-text" maxlength="4000" rows="7" placeholder="Viết câu trả lời của bạn tại đây…" aria-labelledby="q7-label"></textarea>
+            <div class="fs-textarea-foot"><span class="fs-counter" data-counter-for="q7-text">0 / 4000</span></div>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
+        <p class="fs-submit-error" id="fs-submit-error" role="alert">
+          <span id="fs-submit-error-text">Không thể lưu câu trả lời. Vui lòng kiểm tra kết nối và thử lại.</span>
+          <br /><button type="button" id="fs-retry">Thử gửi lại</button>
+        </p>
+
+        <div class="fs-nav">
+          <button class="fs-btn fs-btn--ghost" type="button" id="fs-back" hidden>
+            <span aria-hidden="true">←</span> Quay lại
+          </button>
+          <span class="fs-nav__spacer" aria-hidden="true"></span>
+          <button class="fs-btn fs-btn--primary" type="button" id="fs-next">
+            Tiếp tục <span class="fs-btn__arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SUCCESS ══════════════════ -->
+  <section class="fs-card fs-done" id="fs-done" hidden aria-labelledby="fs-done-title">
+    <span class="fs-done__mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+    </span>
+    <p class="fs-kicker"><span class="fs-kicker__dot"></span>Hoàn tất · 7 / 7</p>
+    <h2 class="fs-done__title" id="fs-done-title">Cảm ơn bạn đã chia sẻ.</h2>
+    <p class="fs-done__body">GO4AI tin rằng một môi trường phát triển tốt không chỉ được xây dựng bởi tổ chức, mà còn bởi chính những con người có khát vọng, năng lực và tinh thần cùng kiến tạo.</p>
+    <p class="fs-done__ref" id="fs-done-ref" hidden>Mã phiếu: <b id="fs-done-sid"></b></p>
+    <a class="fs-btn fs-btn--finish" href="/foundingtalent">
+      Quay lại Founding Talent <span class="fs-btn__arrow" aria-hidden="true">→</span>
+    </a>
+  </section>
+
+</main>
+
+<footer class="fs-foot">
+  <span>GO4AI · Founding Talent Survey 2026</span>
+  <a href="/chinh-sach-bao-ve-du-lieu">Chính sách bảo vệ dữ liệu</a>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var TOTAL = 7;
+  var MIN_TEXT = 10;
+  var ENDPOINT = '/api/foundingtalent/survey';
+  var SID_KEY = 'go4ai_ft_survey_sid';
+
+  var $ = function (sel, root) { return (root || document).querySelector(sel); };
+  var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+
+  var body = document.body;
+  var introEl = $('#fs-intro');
+  var surveyEl = $('#fs-survey');
+  var doneEl = $('#fs-done');
+  var form = $('#fs-form');
+  var steps = $$('.fs-step');
+  var nextBtn = $('#fs-next');
+  var backBtn = $('#fs-back');
+  var fillEl = $('#fs-fill');
+  var countEl = $('#fs-count');
+  var barEl = $('#fs-bar');
+  var submitError = $('#fs-submit-error');
+  var submitErrorText = $('#fs-submit-error-text');
+  var retryBtn = $('#fs-retry');
+
+  var current = 1;
+  var submitting = false;
+  var submissionId = '';
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var scrollBehavior = reduceMotion ? 'auto' : 'smooth';
+
+  /* ── submission id ─────────────────────────────────────────────────── */
+  function makeSubmissionId() {
+    var rand = '';
+    if (window.crypto && window.crypto.randomUUID) {
+      rand = window.crypto.randomUUID().replace(/-/g, '').slice(0, 8);
+    } else {
+      rand = Math.random().toString(36).slice(2, 10);
+    }
+    return 'fts_' + Date.now().toString(36) + '_' + rand;
+  }
+
+  function getSubmissionId() {
+    if (submissionId) return submissionId;
+    try {
+      var saved = sessionStorage.getItem(SID_KEY);
+      if (saved && /^fts_[a-z0-9_]{4,40}$/.test(saved)) { submissionId = saved; return submissionId; }
+    } catch (e) {}
+    submissionId = makeSubmissionId();
+    try { sessionStorage.setItem(SID_KEY, submissionId); } catch (e) {}
+    return submissionId;
+  }
+
+  /* ── mode switching ────────────────────────────────────────────────── */
+  function setMode(mode) {
+    body.setAttribute('data-mode', mode);
+    introEl.hidden = mode !== 'intro';
+    surveyEl.hidden = mode !== 'survey';
+    doneEl.hidden = mode !== 'done';
+  }
+
+  function scrollTop() {
+    window.scrollTo({ top: 0, behavior: scrollBehavior });
+  }
+
+  /* ── selection visuals ─────────────────────────────────────────────── */
+  function syncOptionVisuals(group) {
+    $$('.fs-opt', group).forEach(function (opt) {
+      var input = $('input', opt);
+      if (!input) return;
+      opt.classList.toggle('is-sel', input.checked);
+    });
+  }
+
+  function applyMaxLimit(group) {
+    var max = parseInt(group.getAttribute('data-max') || '0', 10);
+    if (!max) return;
+    var boxes = $$('input[type="checkbox"]', group);
+    var checked = boxes.filter(function (b) { return b.checked; });
+    // A standalone option (Q3 H / I) is never locked: picking it replaces the others.
+    var hasStandalone = checked.some(function (b) { return b.hasAttribute('data-exclusive'); });
+    var full = !hasStandalone && checked.length >= max;
+    boxes.forEach(function (box) {
+      var lock = full && !box.checked && !box.hasAttribute('data-exclusive');
+      box.disabled = lock;
+      var opt = box.closest('.fs-opt');
+      if (opt) opt.classList.toggle('is-locked', lock);
+    });
+  }
+
+  /* ── Q3 exclusivity (H / I stand alone) ────────────────────────────── */
+  function applyExclusive(group) {
+    if (group.getAttribute('data-q') !== 'q3') return;
+    var boxes = $$('input[type="checkbox"]', group);
+    var exclusive = boxes.filter(function (b) { return b.checked && b.hasAttribute('data-exclusive'); });
+    if (exclusive.length) {
+      var keeper = exclusive[exclusive.length - 1];
+      boxes.forEach(function (b) {
+        if (b !== keeper && b.checked) {
+          b.checked = false;
+          var other = b.getAttribute('data-other');
+          if (other) { var f = document.getElementById(other); if (f) f.value = ''; }
+        }
+      });
+    }
+  }
+
+  /* ── events ────────────────────────────────────────────────────────── */
+  $$('.fs-options').forEach(function (group) {
+    group.addEventListener('change', function (e) {
+      var input = e.target;
+      if (!input || input.type === 'text') return;
+
+      if (input.type === 'checkbox' && input.hasAttribute('data-exclusive') && input.checked) {
+        applyExclusive(group);
+      } else if (input.type === 'checkbox' && input.checked) {
+        // picking a normal option clears the standalone H / I choices
+        $$('input[data-exclusive]', group).forEach(function (b) { b.checked = false; });
+      }
+
+      applyMaxLimit(group);
+      syncOptionVisuals(group);
+      clearAlert(group.closest('.fs-step'));
+    });
+  });
+
+  // focus "Khác" text field as soon as it is revealed
+  $$('.fs-opt--other input[type="radio"], .fs-opt--other input[type="checkbox"]').forEach(function (input) {
+    input.addEventListener('change', function () {
+      if (!input.checked) return;
+      var target = document.getElementById(input.getAttribute('data-other'));
+      if (target) {
+        window.setTimeout(function () { target.focus({ preventScroll: true }); }, 60);
+      }
+    });
+  });
+
+  // character counters
+  $$('[data-counter-for]').forEach(function (counter) {
+    var field = document.getElementById(counter.getAttribute('data-counter-for'));
+    if (!field) return;
+    var max = parseInt(field.getAttribute('maxlength') || '4000', 10);
+    var update = function () {
+      counter.textContent = field.value.length + ' / ' + max;
+    };
+    field.addEventListener('input', update);
+    update();
+  });
+
+  /* ── alerts ────────────────────────────────────────────────────────── */
+  function showAlert(stepEl, message) {
+    var alert = $('[data-alert]', stepEl);
+    if (!alert) return;
+    $('[data-alert-text]', alert).textContent = message;
+    alert.classList.add('is-on');
+  }
+  function clearAlert(stepEl) {
+    if (!stepEl) return;
+    var alert = $('[data-alert]', stepEl);
+    if (alert) alert.classList.remove('is-on');
+  }
+
+  function checkedValues(name) {
+    return $$('input[name="' + name + '"]:checked').map(function (i) { return i.value; });
+  }
+
+  /* ── validation ────────────────────────────────────────────────────── */
+  function validate(step) {
+    if (step === 1) {
+      var q1 = checkedValues('q1');
+      if (!q1.length) return { ok: false, msg: 'Vui lòng chọn một đáp án cho câu 1.' };
+      if (q1[0] === 'F' && $('#q1-other').value.trim().length < 2) {
+        return { ok: false, msg: 'Vui lòng nhập nội dung cho lựa chọn "Khác" ở câu 1.', focus: '#q1-other' };
+      }
+      return { ok: true };
+    }
+
+    if (step === 2) {
+      if ($('#q2-text').value.trim().length < MIN_TEXT) {
+        return { ok: false, msg: 'Vui lòng chia sẻ câu trả lời của bạn (ít nhất vài dòng).', focus: '#q2-text' };
+      }
+      return { ok: true };
+    }
+
+    if (step === 3) {
+      var q3 = checkedValues('q3');
+      if (!q3.length) return { ok: false, msg: 'Vui lòng chọn tối đa 2 đáp án cho câu 3.' };
+      if (q3.indexOf('J') > -1 && $('#q3-other').value.trim().length < 2) {
+        return { ok: false, msg: 'Vui lòng nhập nội dung cho lựa chọn "Khác" ở câu 3.', focus: '#q3-other' };
+      }
+      return { ok: true };
+    }
+
+    if (step === 4) {
+      if (!checkedValues('q4').length) return { ok: false, msg: 'Vui lòng chọn tối đa 2 yếu tố quan trọng nhất với bạn.' };
+      return { ok: true };
+    }
+
+    if (step === 5) {
+      var q5 = checkedValues('q5');
+      if (!q5.length) return { ok: false, msg: 'Vui lòng chọn một đáp án cho câu 5.' };
+      if (q5[0] === 'E' && $('#q5-other').value.trim().length < 2) {
+        return { ok: false, msg: 'Vui lòng nhập nội dung cho lựa chọn "Khác" ở câu 5.', focus: '#q5-other' };
+      }
+      return { ok: true };
+    }
+
+    if (step === 6) {
+      var q6 = checkedValues('q6');
+      if (!q6.length) return { ok: false, msg: 'Vui lòng chọn tối đa 2 yếu tố ảnh hưởng đến quyết định của bạn.' };
+      if (q6.indexOf('H') > -1 && $('#q6-other').value.trim().length < 2) {
+        return { ok: false, msg: 'Vui lòng nhập nội dung cho lựa chọn "Khác" ở câu 6.', focus: '#q6-other' };
+      }
+      return { ok: true };
+    }
+
+    if (step === 7) {
+      if ($('#q7-text').value.trim().length < MIN_TEXT) {
+        return { ok: false, msg: 'Vui lòng chia sẻ câu trả lời của bạn (ít nhất vài dòng).', focus: '#q7-text' };
+      }
+      return { ok: true };
+    }
+
+    return { ok: true };
+  }
+
+  /* ── step navigation ───────────────────────────────────────────────── */
+  function renderStep(step) {
+    current = step;
+    steps.forEach(function (el) {
+      el.hidden = parseInt(el.getAttribute('data-step'), 10) !== step;
+    });
+
+    fillEl.style.width = (step / TOTAL * 100) + '%';
+    countEl.innerHTML = '<b>' + step + '</b> / ' + TOTAL;
+    barEl.setAttribute('aria-valuenow', String(step));
+    backBtn.hidden = step === 1;
+
+    var isLast = step === TOTAL;
+    nextBtn.className = 'fs-btn ' + (isLast ? 'fs-btn--finish' : 'fs-btn--primary');
+    nextBtn.innerHTML = isLast
+      ? 'Hoàn tất khảo sát <span class="fs-btn__arrow" aria-hidden="true">→</span>'
+      : 'Tiếp tục <span class="fs-btn__arrow" aria-hidden="true">→</span>';
+
+    submitError.classList.remove('is-on');
+    scrollTop();
+  }
+
+  function goNext() {
+    if (submitting) return;
+    var result = validate(current);
+    if (!result.ok) {
+      var stepEl = $('.fs-step[data-step="' + current + '"]');
+      showAlert(stepEl, result.msg);
+      if (result.focus) {
+        var field = $(result.focus);
+        if (field) field.focus({ preventScroll: false });
+      }
+      return;
+    }
+    clearAlert($('.fs-step[data-step="' + current + '"]'));
+    if (current === TOTAL) { submit(); return; }
+    renderStep(current + 1);
+  }
+
+  function goBack() {
+    if (submitting || current === 1) return;
+    clearAlert($('.fs-step[data-step="' + current + '"]'));
+    renderStep(current - 1);
+  }
+
+  /* ── payload ───────────────────────────────────────────────────────── */
+  function collect() {
+    var q1 = checkedValues('q1')[0] || '';
+    var q5 = checkedValues('q5')[0] || '';
+    var q3 = checkedValues('q3');
+    var q6 = checkedValues('q6');
+    var params = new URLSearchParams(window.location.search);
+
+    return {
+      submission_id: getSubmissionId(),
+      q1: q1,
+      q1_other: q1 === 'F' ? $('#q1-other').value.trim() : '',
+      q2_text: $('#q2-text').value.trim(),
+      q3: q3,
+      q3_other: q3.indexOf('J') > -1 ? $('#q3-other').value.trim() : '',
+      q4: checkedValues('q4'),
+      q5: q5,
+      q5_other: q5 === 'E' ? $('#q5-other').value.trim() : '',
+      q6: q6,
+      q6_other: q6.indexOf('H') > -1 ? $('#q6-other').value.trim() : '',
+      q7_text: $('#q7-text').value.trim(),
+      source: 'foundingtalent-survey',
+      page_path: window.location.pathname,
+      utm_source: params.get('utm_source') || '',
+      utm_campaign: params.get('utm_campaign') || '',
+      referrer: document.referrer || ''
+    };
+  }
+
+  /* ── submit ────────────────────────────────────────────────────────── */
+  function setSubmitting(state) {
+    submitting = state;
+    nextBtn.disabled = state;
+    backBtn.disabled = state;
+    if (state) {
+      nextBtn.innerHTML = 'Đang gửi…';
+    } else {
+      nextBtn.innerHTML = 'Hoàn tất khảo sát <span class="fs-btn__arrow" aria-hidden="true">→</span>';
+    }
+  }
+
+  function submit() {
+    if (submitting) return;
+    setSubmitting(true);
+    submitError.classList.remove('is-on');
+
+    var payload = collect();
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      cache: 'no-store'
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          return { status: res.status, data: data };
+        });
+      })
+      .then(function (out) {
+        if (out.status >= 200 && out.status < 300 && out.data && out.data.success) {
+          var sid = out.data.submission_id || payload.submission_id;
+          $('#fs-done-sid').textContent = sid;
+          $('#fs-done-ref').hidden = false;
+          setMode('done');
+          scrollTop();
+          return;
+        }
+        throw new Error((out.data && out.data.error) || 'Không thể lưu câu trả lời.');
+      })
+      .catch(function (err) {
+        setSubmitting(false);
+        submitErrorText.textContent = (err && err.message ? err.message : 'Không thể lưu câu trả lời.') +
+          ' Câu trả lời của bạn vẫn được giữ trên trang này — vui lòng thử lại.';
+        submitError.classList.add('is-on');
+        submitError.scrollIntoView({ block: 'center', behavior: scrollBehavior });
+      });
+  }
+
+  /* ── wire up ───────────────────────────────────────────────────────── */
+  $('#fs-start').addEventListener('click', function () {
+    setMode('survey');
+    renderStep(1);
+  });
+
+  nextBtn.addEventListener('click', goNext);
+  backBtn.addEventListener('click', goBack);
+  retryBtn.addEventListener('click', function () {
+    submitError.classList.remove('is-on');
+    submit();
+  });
+
+  form.addEventListener('submit', function (e) { e.preventDefault(); goNext(); });
+
+  // keyboard: Enter advances (except inside a textarea), Esc goes back
+  form.addEventListener('keydown', function (e) {
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (e.key === 'Enter' && tag !== 'textarea') {
+      e.preventDefault();
+      goNext();
+    }
+    if (e.key === 'Escape') goBack();
+  });
+
+  // initial state
+  setMode('intro');
+})();
+</script>
+</body>
+</html>

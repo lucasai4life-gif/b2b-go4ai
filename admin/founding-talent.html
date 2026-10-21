@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GO4AI Internal Admin — Founding Talent Survey</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #091310;
+    --card-bg: #101f1a;
+    --card-border: #1e3830;
+    --surface: #152922;
+    --text: #e2ede8;
+    --text-muted: #8ba89c;
+    --primary: #22c55e;
+    --primary-hover: #16a34a;
+    --primary-dim: rgba(34, 197, 94, 0.12);
+    --danger: #ef4444;
+    --danger-dim: rgba(239, 68, 68, 0.15);
+    --amber: #f59e0b;
+    --radius: 8px;
+    --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+  a { color: var(--primary); text-decoration: none; }
+
+  /* ─── UNLOCK ─────────────────────────────────────────────── */
+  #unlock-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .unlock-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .unlock-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary);
+    background: var(--primary-dim);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .unlock-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .unlock-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+  .form-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+  .form-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #fff;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-dim); }
+  .form-input::placeholder { color: #5f7a70; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font);
+    cursor: pointer;
+    transition: background .15s, border-color .15s, opacity .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--card-border); }
+  .btn-primary { background: var(--primary); color: #04130c; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  .btn-block { width: 100%; margin-top: 18px; padding: 12px; }
+  .btn-ghost { background: transparent; border-color: var(--card-border); color: var(--text-muted); }
+  .btn-ghost:hover { color: var(--text); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .unlock-error {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: var(--danger-dim);
+    color: #fca5a5;
+    border-radius: var(--radius);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .unlock-error.is-on { display: block; }
+  .unlock-foot { margin-top: 18px; font-size: 11.5px; color: #5f7a70; text-align: center; }
+
+  /* ─── DASHBOARD SHELL ────────────────────────────────────── */
+  #dashboard-view { display: none; flex-direction: column; min-height: 100vh; }
+  #dashboard-view.is-on { display: flex; }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 24px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--card-border);
+    flex-wrap: wrap;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .brand-mark {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: var(--primary-dim);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--primary);
+    flex: none;
+  }
+  .brand-title { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .brand-sub { font-size: 11px; color: var(--text-muted); font-family: var(--mono); letter-spacing: .02em; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .04em;
+    color: var(--text-muted);
+    border: 1px solid var(--card-border);
+    background: var(--surface);
+    border-radius: 100px;
+    padding: 6px 11px;
+    white-space: nowrap;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+
+  /* ─── STATS ──────────────────────────────────────────────── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .stat { background: var(--card-bg); padding: 14px 24px; }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .stat-value { font-size: 22px; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .stat-value small { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-left: 4px; }
+
+  /* ─── FILTERS ────────────────────────────────────────────── */
+  .controls {
+    padding: 14px 24px;
+    background: rgba(16, 31, 26, 0.6);
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .controls-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .field > label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .field input, .field select {
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    font-size: 12.5px;
+    font-family: var(--font);
+    outline: none;
+    min-height: 36px;
+  }
+  .field input:focus, .field select:focus { border-color: var(--primary); }
+  .field--search { flex: 1 1 260px; }
+  .field--search input { width: 100%; }
+  .field--date input { width: 148px; }
+  .field select { min-width: 190px; }
+  .spacer { flex: 1; }
+  .controls-meta {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ─── TABLE ──────────────────────────────────────────────── */
+  .table-wrap { flex: 1; overflow: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 980px; }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #0d1a16;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--card-border);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30, 56, 48, 0.6);
+    vertical-align: top;
+    font-size: 12.5px;
+    color: var(--text);
+  }
+  tbody tr { cursor: pointer; transition: background .12s; }
+  tbody tr:hover { background: rgba(34, 197, 94, 0.05); }
+  tbody tr:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .cell-time { font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+  .cell-id { font-family: var(--mono); font-size: 11px; color: #9ec9b8; white-space: nowrap; }
+  .tag {
+    display: inline-block;
+    font-size: 11.5px;
+    line-height: 1.4;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: 5px;
+    padding: 2px 7px;
+    margin: 0 4px 4px 0;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .tag b { color: var(--primary); font-family: var(--mono); font-size: 10px; margin-right: 4px; }
+  .tag--muted { color: var(--text-muted); }
+  .cell-answer { max-width: 300px; }
+
+  .empty {
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .empty b { display: block; color: var(--text); font-size: 15px; margin-bottom: 6px; }
+
+  /* ─── DRAWER ─────────────────────────────────────────────── */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 10, 8, 0.72);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    z-index: 60;
+  }
+  .drawer-backdrop.is-on { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(620px, 100vw);
+    background: var(--card-bg);
+    border-left: 1px solid var(--card-border);
+    transform: translateX(100%);
+    transition: transform .24s cubic-bezier(.22,.61,.36,1);
+    z-index: 61;
+    display: flex;
+    flex-direction: column;
+  }
+  .drawer.is-on { transform: translateX(0); }
+  .drawer-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+  .drawer-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .drawer-sub { font-family: var(--mono); font-size: 10.5px; color: var(--text-muted); margin-top: 4px; word-break: break-all; }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    width: 32px; height: 32px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    flex: none;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--text-muted); }
+  .drawer-body { padding: 20px 22px 40px; overflow-y: auto; }
+
+  .ans { padding: 16px 0; border-bottom: 1px solid rgba(30, 56, 48, 0.7); }
+  .ans:last-child { border-bottom: 0; }
+  .ans-q {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .ans-title { font-size: 13.5px; font-weight: 600; color: #fff; margin-bottom: 10px; line-height: 1.45; }
+  .ans-value {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .ans-value--free { font-size: 14.5px; line-height: 1.85; }
+  .ans-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .ans-list li {
+    display: flex;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .ans-list .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--primary);
+    background: var(--primary-dim);
+    border-radius: 4px;
+    padding: 2px 6px;
+    height: 19px;
+    flex: none;
+  }
+  .ans-other {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-left: 2px solid var(--primary);
+    padding-left: 10px;
+  }
+  .ans-other b { color: var(--text); font-weight: 600; }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .meta-item { font-size: 12px; color: var(--text-muted); }
+  .meta-item b { display: block; color: var(--text); font-family: var(--mono); font-size: 11px; margin-top: 2px; word-break: break-all; }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translate(-50%, 20px);
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 100px;
+    font-size: 12.5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    z-index: 90;
+  }
+  .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .topbar, .controls, .stats .stat { padding-left: 16px; padding-right: 16px; }
+    .field select { min-width: 0; flex: 1 1 140px; }
+    .field--date input { width: 100%; }
+    .field--date { flex: 1 1 140px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ UNLOCK ══════════════ -->
+<div id="unlock-view">
+  <div class="unlock-card">
+    <span class="unlock-badge">Internal · Read-only</span>
+    <h1 class="unlock-title">Founding Talent Survey</h1>
+    <p class="unlock-desc">Vui lòng nhập khóa quản trị bảo mật (ADMIN_ACCESS_KEY) để xem dữ liệu khảo sát.</p>
+    <form id="unlock-form" autocomplete="off">
+      <label class="form-label" for="admin-key-input">Khóa truy cập quản trị</label>
+      <input type="password" id="admin-key-input" class="form-input" placeholder="Dán mã ADMIN_ACCESS_KEY…" autocomplete="current-password" required>
+      <button type="submit" class="btn btn-primary btn-block" id="unlock-btn">Mở khóa hệ thống</button>
+    </form>
+    <p class="unlock-error" id="unlock-error"></p>
+    <p class="unlock-foot">Dữ liệu chỉ được trả về sau khi xác thực phía máy chủ.</p>
+  </div>
+</div>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<div id="dashboard-view">
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="brand-mark">FT</span>
+      <div>
+        <div class="brand-title">GO4AI | Founding Talent Survey</div>
+        <div class="brand-sub">/admin/founding-talent · read-only</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="pill"><span class="dot"></span><span id="last-updated">—</span></span>
+      <button class="btn btn-ghost" type="button" id="refresh-btn">Làm mới</button>
+      <button class="btn btn-ghost" type="button" id="logout-btn">Đăng xuất</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Tổng phản hồi</div>
+      <div class="stat-value" id="stat-total">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Đang hiển thị</div>
+      <div class="stat-value" id="stat-shown">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Hôm nay</div>
+      <div class="stat-value" id="stat-today">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">7 ngày gần nhất</div>
+      <div class="stat-value" id="stat-week">—</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="controls-row">
+      <div class="field field--search">
+        <label for="f-search">Tìm câu trả lời tự do</label>
+        <input type="search" id="f-search" placeholder="Tìm trong câu 2, câu 7 và các mục “Khác”…" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="f-q1">Câu 1 · Khát vọng</label>
+        <select id="f-q1">
+          <option value="">Tất cả</option>
+          <option value="A">A · Tự xây dựng sản phẩm / doanh nghiệp</option>
+          <option value="B">B · Dẫn dắt dự án / đội ngũ</option>
+          <option value="C">C · Chuyên gia trong lĩnh vực</option>
+          <option value="D">D · Khám phá nhiều lĩnh vực</option>
+          <option value="E">E · Cùng người chung lý tưởng</option>
+          <option value="F">F · Khác</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-q4">Câu 4 · Môi trường lý tưởng</label>
+        <select id="f-q4">
+          <option value="">Tất cả</option>
+          <option value="A">A · Tự chủ &amp; trao quyền</option>
+          <option value="B">B · Đồng đội xuất sắc</option>
+          <option value="C">C · Tự do sáng tạo</option>
+          <option value="D">D · Cố vấn &amp; phát triển</option>
+          <option value="E">E · Thử thách thực tế</option>
+          <option value="F">F · Ghi nhận công bằng</option>
+          <option value="G">G · Linh hoạt &amp; bền vững</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls-row">
+      <div class="field">
+        <label for="f-q5">Câu 5 · Lựa chọn môi trường</label>
+        <select id="f-q5">
+          <option value="">Tất cả</option>
+          <option value="A">A · Tự chủ cao, tự tìm hướng</option>
+          <option value="B">B · Cố vấn sát, quyền tự quyết hạn chế</option>
+          <option value="C">C · Đội ngũ mạnh, nhịp nhanh</option>
+          <option value="D">D · Quy trình rõ, ít biến động</option>
+          <option value="E">E · Khác</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-q6">Câu 6 · Yếu tố startup</label>
+        <select id="f-q6">
+          <option value="">Tất cả</option>
+          <option value="A">A · Tầm nhìn &amp; đội ngũ sáng lập</option>
+          <option value="B">B · Tiềm năng sản phẩm / thị trường</option>
+          <option value="C">C · Vai trò quan trọng, làm chủ kết quả</option>
+          <option value="D">D · Học hỏi &amp; phát triển nhanh</option>
+          <option value="E">E · Thu nhập &amp; chia sẻ thành quả</option>
+          <option value="F">F · Con người &amp; văn hóa phù hợp</option>
+          <option value="G">G · Nguồn lực &amp; điều kiện thực tế</option>
+          <option value="H">H · Khác</option>
+        </select>
+      </div>
+      <div class="field field--date">
+        <label for="f-from">Từ ngày</label>
+        <input type="date" id="f-from">
+      </div>
+      <div class="field field--date">
+        <label for="f-to">Đến ngày</label>
+        <input type="date" id="f-to">
+      </div>
+      <span class="spacer"></span>
+      <div class="controls-row" style="gap:8px;">
+        <button class="btn btn-ghost" type="button" id="reset-btn">Xóa lọc</button>
+        <button class="btn btn-primary" type="button" id="export-btn">Xuất CSV</button>
+      </div>
+    </div>
+    <div class="controls-meta" id="filter-summary">—</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Thời gian gửi</th>
+          <th>Submission ID</th>
+          <th>Câu 1 · Khát vọng</th>
+          <th>Câu 4 · Môi trường lý tưởng</th>
+          <th>Câu 5 · Lựa chọn</th>
+          <th>Câu 6 · Yếu tố startup</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="empty" id="empty-state" hidden>
+      <b>Chưa có phản hồi phù hợp</b>
+      Thử xóa bộ lọc hoặc thay đổi từ khóa tìm kiếm.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DRAWER ══════════════ -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Chi tiết phản hồi">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-title">Chi tiết phản hồi</div>
+      <div class="drawer-sub" id="drawer-sub">—</div>
+    </div>
+    <button class="icon-btn" type="button" id="drawer-close" aria-label="Đóng">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = '/api/admin/founding-talent';
+  var SESSION_KEY = 'go4ai_admin_ft_key';
+
+  var $ = function (s) { return document.querySelector(s); };
+
+  /* ── option labels (short for table, full for detail) ─────────────── */
+  var Q1_SHORT = {
+    A: 'Tự xây dựng sản phẩm / DN',
+    B: 'Dẫn dắt dự án / đội ngũ',
+    C: 'Chuyên gia lĩnh vực',
+    D: 'Khám phá nhiều lĩnh vực',
+    E: 'Cùng người chung lý tưởng',
+    F: 'Khác'
+  };
+  var Q1_FULL = {
+    A: 'Tự xây dựng một sản phẩm hoặc doanh nghiệp có khách hàng và tạo ra giá trị thực tế.',
+    B: 'Trở thành người dẫn dắt một dự án, đội ngũ hoặc lĩnh vực kinh doanh.',
+    C: 'Phát triển chuyên môn vượt trội, trở thành chuyên gia trong lĩnh vực mình theo đuổi.',
+    D: 'Được khám phá nhiều lĩnh vực, thử nghiệm những ý tưởng mới và tìm ra hướng đi riêng.',
+    E: 'Cùng những người có chung lý tưởng xây dựng một tổ chức hoặc dự án có sức ảnh hưởng.',
+    F: 'Khác'
+  };
+  var Q3_FULL = {
+    A: 'Thiếu cơ hội thử nghiệm và hiện thực hóa những ý tưởng mới.',
+    B: 'Chưa được tin tưởng trao quyền hoặc chủ động đưa ra quyết định.',
+    C: 'Thiếu những người đồng hành có cùng tham vọng và tinh thần phát triển.',
+    D: 'Thiếu sự cố vấn, phản hồi hoặc định hướng từ những người có kinh nghiệm.',
+    E: 'Công việc thiếu tính thử thách, ít cơ hội học hỏi và phát triển.',
+    F: 'Những đóng góp hoặc ý tưởng chưa được ghi nhận tương xứng.',
+    G: 'Thiếu nguồn lực hoặc điều kiện để triển khai dự án thực tế.',
+    H: 'Chưa gặp rào cản đáng kể.',
+    I: 'Chưa có đủ trải nghiệm để đánh giá.',
+    J: 'Khác'
+  };
+  var Q4_SHORT = {
+    A: 'Tự chủ & trao quyền',
+    B: 'Đồng đội xuất sắc',
+    C: 'Tự do sáng tạo',
+    D: 'Cố vấn & phát triển',
+    E: 'Thử thách thực tế',
+    F: 'Ghi nhận công bằng',
+    G: 'Linh hoạt & bền vững'
+  };
+  var Q4_FULL = {
+    A: 'Tự chủ & trao quyền: Được tin tưởng quyết định cách làm và chịu trách nhiệm với kết quả.',
+    B: 'Đồng đội xuất sắc: Làm việc cùng những người giỏi, có tham vọng và luôn thúc đẩy nhau tiến bộ.',
+    C: 'Tự do sáng tạo: Được thử nghiệm ý tưởng mới, chấp nhận những thất bại có kiểm soát và học hỏi từ chúng.',
+    D: 'Cố vấn & phát triển: Được dẫn dắt, phản hồi và có cơ hội nâng cao năng lực liên tục.',
+    E: 'Thử thách thực tế: Được giải quyết những bài toán khó, phát triển sản phẩm và tạo ra kết quả cụ thể.',
+    F: 'Ghi nhận công bằng: Thành quả và đóng góp được đánh giá minh bạch, gắn với cơ hội và quyền lợi tương xứng.',
+    G: 'Linh hoạt & bền vững: Được chủ động sắp xếp công việc, duy trì hiệu suất và cân bằng cuộc sống.'
+  };
+  var Q5_SHORT = {
+    A: 'Tự chủ cao, tự tìm hướng',
+    B: 'Cố vấn sát, quyền tự quyết hạn chế',
+    C: 'Đội ngũ mạnh, nhịp nhanh',
+    D: 'Quy trình rõ, ít biến động',
+    E: 'Khác'
+  };
+  var Q5_FULL = {
+    A: 'Được trao quyền tự chủ cao để dẫn dắt một dự án mới, nhưng phải tự tìm hướng giải quyết và đối mặt với nhiều điều chưa chắc chắn.',
+    B: 'Được làm việc trực tiếp với người giàu kinh nghiệm, có sự hướng dẫn và phản hồi thường xuyên, nhưng quyền tự quyết ban đầu còn giới hạn.',
+    C: 'Được làm việc trong đội ngũ có năng lực cao, liên tục đối mặt với những thử thách lớn, nhưng phải thích nghi với nhịp độ làm việc nhanh và kỳ vọng cao.',
+    D: 'Có quy trình, trách nhiệm và lộ trình phát triển rõ ràng, ít biến động, nhưng cơ hội thử nghiệm các ý tưởng mới còn hạn chế.',
+    E: 'Khác'
+  };
+  var Q6_SHORT = {
+    A: 'Tầm nhìn & đội ngũ sáng lập',
+    B: 'Tiềm năng sản phẩm / thị trường',
+    C: 'Vai trò quan trọng',
+    D: 'Học hỏi & phát triển nhanh',
+    E: 'Thu nhập & chia sẻ thành quả',
+    F: 'Con người & văn hóa',
+    G: 'Nguồn lực & điều kiện',
+    H: 'Khác'
+  };
+  var Q6_FULL = {
+    A: 'Tin tưởng vào tầm nhìn, năng lực và giá trị của đội ngũ sáng lập.',
+    B: 'Nhìn thấy tiềm năng thực tế của sản phẩm, thị trường và cơ hội phát triển.',
+    C: 'Được trao vai trò quan trọng, có quyền chủ động và cơ hội làm chủ kết quả.',
+    D: 'Có cơ hội học hỏi, phát triển nhanh và mở rộng năng lực bản thân.',
+    E: 'Có cơ chế thu nhập, quyền lợi và chia sẻ thành quả phù hợp, minh bạch.',
+    F: 'Được làm việc với những người cùng chí hướng và có văn hóa phù hợp.',
+    G: 'Có nguồn lực, sự hỗ trợ và điều kiện thực tế để biến ý tưởng thành kết quả.',
+    H: 'Khác'
+  };
+
+  var Q_TEXT = {
+    q1: 'Trong 3 năm tới, thành tựu nào dưới đây sẽ khiến bạn cảm thấy tự hào nhất về hành trình phát triển của mình?',
+    q2: 'Hãy chia sẻ một trải nghiệm mà bạn đã chủ động thử sức với điều mới hoặc một thử thách khó. Điều gì khiến bạn muốn thực hiện và bạn đã học được gì từ trải nghiệm đó?',
+    q3: 'Trong những môi trường học tập, làm việc hoặc dự án từng tham gia, điều gì khiến bạn cảm thấy bản thân chưa thể phát huy hết năng lực?',
+    q4: 'Khi lựa chọn một môi trường để phát triển lâu dài, 2 yếu tố nào quan trọng nhất đối với bạn?',
+    q5: 'Giả sử các môi trường dưới đây đều có mức đãi ngộ phù hợp và thời gian cam kết tương đương, bạn sẽ ưu tiên lựa chọn môi trường nào để phát triển trong 6 tháng tới?',
+    q6: 'Khi cân nhắc gia nhập một startup ở giai đoạn đầu, 2 yếu tố nào có ảnh hưởng lớn nhất đến quyết định đồng hành của bạn?',
+    q7: 'Nếu có thể thay đổi một điều trong cách các tổ chức hiện nay tạo điều kiện cho những người thích khám phá, sáng tạo và khởi nghiệp, bạn muốn thay đổi điều gì nhất? Vì sao điều đó quan trọng với bạn?'
+  };
+
+  /* ── state ────────────────────────────────────────────────────────── */
+  var token = '';
+  var items = [];
+  var total = 0;
+  var searchTimer = null;
+  var lastQuery = '';
+
+  /* ── helpers ──────────────────────────────────────────────────────── */
+  function esc(s) {
+    return String(s === null || s === undefined ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function fmtTime(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    var p = function (n) { return String(n).padStart(2, '0'); };
+    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() +
+      ' · ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  function tags(list, map) {
+    if (!list || !list.length) return '<span class="tag tag--muted">—</span>';
+    return list.map(function (c) {
+      return '<span class="tag"><b>' + esc(c) + '</b>' + esc(map[c] || c) + '</span>';
+    }).join('');
+  }
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('is-on');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('is-on'); }, 2600);
+  }
+
+  /* ── auth ─────────────────────────────────────────────────────────── */
+  function showUnlock(msg) {
+    $('#dashboard-view').classList.remove('is-on');
+    $('#unlock-view').style.display = 'flex';
+    if (msg) {
+      var err = $('#unlock-error');
+      err.textContent = msg;
+      err.classList.add('is-on');
+    }
+  }
+  function showDashboard() {
+    $('#unlock-view').style.display = 'none';
+    $('#dashboard-view').classList.add('is-on');
+    var err = $('#unlock-error');
+    err.classList.remove('is-on');
+  }
+
+  /* ── query string ─────────────────────────────────────────────────── */
+  function buildQuery(extra) {
+    var p = new URLSearchParams();
+    var q1 = $('#f-q1').value;
+    var q4 = $('#f-q4').value;
+    var q5 = $('#f-q5').value;
+    var q6 = $('#f-q6').value;
+    var from = $('#f-from').value;
+    var to = $('#f-to').value;
+    var search = $('#f-search').value.trim();
+
+    if (q1) p.set('q1', q1);
+    if (q4) p.set('q4', q4);
+    if (q5) p.set('q5', q5);
+    if (q6) p.set('q6', q6);
+    if (from) p.set('from', new Date(from + 'T00:00:00').toISOString());
+    if (to) p.set('to', new Date(to + 'T23:59:59.999').toISOString());
+    if (search) p.set('search', search);
+    if (extra) Object.keys(extra).forEach(function (k) { p.set(k, extra[k]); });
+    return p.toString();
+  }
+
+  function activeFilterCount() {
+    var n = 0;
+    ['#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to', '#f-search'].forEach(function (s) {
+      if ($(s).value.trim()) n++;
+    });
+    return n;
+  }
+
+  /* ── load ─────────────────────────────────────────────────────────── */
+  function load(opts) {
+    opts = opts || {};
+    var query = buildQuery({ limit: '500' });
+    lastQuery = query;
+
+    return fetch(API + '?' + query + '&_t=' + Date.now(), {
+      method: 'GET',
+      cache: 'no-store',
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        return { status: res.status, data: data };
+      });
+    }).then(function (out) {
+      if (out.status === 401) {
+        sessionStorage.removeItem(SESSION_KEY);
+        showUnlock(out.data.error || 'Khóa truy cập không hợp lệ.');
+        return false;
+      }
+      if (out.status === 429) {
+        showUnlock(out.data.error || 'Tạm khóa do thử sai nhiều lần.');
+        return false;
+      }
+      if (out.status === 503) {
+        showUnlock(out.data.error || 'Chưa cấu hình ADMIN_ACCESS_KEY trên Cloudflare.');
+        return false;
+      }
+      if (!out.data || !out.data.success) {
+        showUnlock((out.data && out.data.error) || 'Lỗi máy chủ (' + out.status + ').');
+        return false;
+      }
+
+      items = out.data.items || [];
+      total = out.data.total || 0;
+      render();
+      if (!opts.silent) toast('Đã cập nhật dữ liệu');
+      return true;
+    }).catch(function () {
+      showUnlock('Lỗi kết nối mạng đến máy chủ.');
+      return false;
+    });
+  }
+
+  /* ── render ───────────────────────────────────────────────────────── */
+  function render() {
+    var body = $('#table-body');
+    var empty = $('#empty-state');
+
+    body.innerHTML = items.map(function (it) {
+      return '<tr tabindex="0" data-sid="' + esc(it.submission_id) + '">' +
+        '<td class="cell-time">' + esc(fmtTime(it.created_at)) + '</td>' +
+        '<td class="cell-id">' + esc(it.submission_id) + '</td>' +
+        '<td class="cell-answer">' + tags([it.q1], Q1_SHORT) + (it.q1_other ? '<div class="tag tag--muted" style="white-space:normal;">' + esc(it.q1_other) + '</div>' : '') + '</td>' +
+        '<td class="cell-answer">' + tags(it.q4, Q4_SHORT) + '</td>' +
+        '<td class="cell-answer">' + tags([it.q5], Q5_SHORT) + (it.q5_other ? '<div class="tag tag--muted" style="white-space:normal;">' + esc(it.q5_other) + '</div>' : '') + '</td>' +
+        '<td class="cell-answer">' + tags(it.q6, Q6_SHORT) + (it.q6_other ? '<div class="tag tag--muted" style="white-space:normal;">' + esc(it.q6_other) + '</div>' : '') + '</td>' +
+        '</tr>';
+    }).join('');
+
+    empty.hidden = items.length > 0;
+
+    // stats
+    $('#stat-total').textContent = total.toLocaleString('vi-VN');
+    $('#stat-shown').textContent = items.length.toLocaleString('vi-VN');
+
+    var now = new Date();
+    var startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    var weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    var today = 0, week = 0;
+    items.forEach(function (it) {
+      var t = new Date(it.created_at).getTime();
+      if (!isNaN(t)) {
+        if (t >= startToday) today++;
+        if (t >= weekAgo) week++;
+      }
+    });
+    $('#stat-today').textContent = today.toLocaleString('vi-VN');
+    $('#stat-week').textContent = week.toLocaleString('vi-VN');
+
+    var n = activeFilterCount();
+    $('#filter-summary').textContent = n
+      ? n + ' bộ lọc đang áp dụng · ' + items.length + '/' + total + ' phản hồi'
+      : 'Không lọc · ' + total + ' phản hồi';
+    $('#last-updated').textContent = 'Cập nhật ' + fmtTime(new Date().toISOString());
+  }
+
+  /* ── detail drawer ────────────────────────────────────────────────── */
+  function answerList(list, map) {
+    if (!list || !list.length) return '<div class="ans-value">—</div>';
+    return '<ul class="ans-list">' + list.map(function (c) {
+      return '<li><span class="k">' + esc(c) + '</span><span>' + esc(map[c] || c) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function openDrawer(sid) {
+    var it = items.filter(function (x) { return x.submission_id === sid; })[0];
+    if (!it) return;
+
+    $('#drawer-sub').textContent = it.submission_id + ' · ' + fmtTime(it.created_at);
+
+    var html = '';
+
+    html += '<div class="ans"><div class="ans-q">Câu 1 · Khát vọng cá nhân</div>' +
+      '<div class="ans-title">' + esc(Q_TEXT.q1) + '</div>' +
+      answerList([it.q1], Q1_FULL) +
+      (it.q1_other ? '<div class="ans-other"><b>Khác:</b> ' + esc(it.q1_other) + '</div>' : '') +
+      '</div>';
+
+    html += '<div class="ans"><div class="ans-q">Câu 2 · Động lực khám phá &amp; dấn thân</div>' +
+      '<div class="ans-title">' + esc(Q_TEXT.q2) + '</div>' +
+      '<div class="ans-value ans-value--free">' + esc(it.q2_text || '—') + '</div></div>';
+
+    html += '<div class="ans"><div class="ans-q">Câu 3 · Nhu cầu chưa được đáp ứng</div>' +
+      '<div class="ans-title">' + esc(Q_TEXT.q3) + '</div>' +
+      answerList(it.q3, Q3_FULL) +
+      (it.q3_other ? '<div class="ans-other"><b>Khác:</b> ' + esc(it.q3_other) + '</div>' : '') +
+      '</div>';
+
+    html += '<div class="ans"><div class="ans-q">Câu 4 · Môi trường phát triển lý tưởng</div>' +
+      '<div class="ans-title">' + esc(Q_TEXT.q4) + '</div>' +
+      answerList(it.q4, Q4_FULL) + '</div>';
+
+    html += '<div class="ans"><div class="ans-q">Câu 5 · Lựa chọn và đánh đổi</div>' +
+      '<div class="ans-title">' + esc(Q_TEXT.q5) + '</div>' +
+      answerList([it.q5], Q5_FULL) +
+      (it.q5_other ? '<div class="ans-other"><b>Khác:</b> ' + esc(it.q5_other) + '</div>' : '') +
+      '</div>';
+
+    html += '<div class="ans"><div class="ans-q">Câu 6 · Động lực tham gia startup</div>' +
+      '<div class="ans-title">' + esc(Q_TEXT.q6) + '</div>' +
+      answerList(it.q6, Q6_FULL) +
+      (it.q6_other ? '<div class="ans-other"><b>Khác:</b> ' + esc(it.q6_other) + '</div>' : '') +
+      '</div>';
+
+    html += '<div class="ans"><div class="ans-q">Câu 7 · Kỳ vọng khác biệt</div>' +
+      '<div class="ans-title">' + esc(Q_TEXT.q7) + '</div>' +
+      '<div class="ans-value ans-value--free">' + esc(it.q7_text || '—') + '</div></div>';
+
+    html += '<div class="ans"><div class="ans-q">Metadata</div>' +
+      '<div class="meta-grid">' +
+      '<div class="meta-item">Nguồn<b>' + esc(it.source || '—') + '</b></div>' +
+      '<div class="meta-item">Trang<b>' + esc(it.page_path || '—') + '</b></div>' +
+      '<div class="meta-item">UTM source<b>' + esc(it.utm_source || '—') + '</b></div>' +
+      '<div class="meta-item">UTM campaign<b>' + esc(it.utm_campaign || '—') + '</b></div>' +
+      '<div class="meta-item" style="grid-column:1/-1;">Referrer<b>' + esc(it.referrer || '—') + '</b></div>' +
+      '</div></div>';
+
+    $('#drawer-body').innerHTML = html;
+    $('#drawer-body').scrollTop = 0;
+    $('#drawer').classList.add('is-on');
+    $('#drawer').setAttribute('aria-hidden', 'false');
+    $('#drawer-backdrop').classList.add('is-on');
+  }
+
+  function closeDrawer() {
+    $('#drawer').classList.remove('is-on');
+    $('#drawer').setAttribute('aria-hidden', 'true');
+    $('#drawer-backdrop').classList.remove('is-on');
+  }
+
+  /* ── csv ──────────────────────────────────────────────────────────── */
+  function exportCsv() {
+    var query = buildQuery({ export: 'csv' });
+    toast('Đang xuất CSV…');
+    fetch(API + '?' + query + '&_t=' + Date.now(), {
+      method: 'GET',
+      cache: 'no-store',
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).then(function (res) {
+      if (res.status === 401) { sessionStorage.removeItem(SESSION_KEY); showUnlock('Phiên đăng nhập đã hết hạn.'); return null; }
+      if (!res.ok) throw new Error('export failed');
+      return res.blob();
+    }).then(function (blob) {
+      if (!blob) return;
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'founding-talent-surveys-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      toast('Đã xuất CSV (' + items.length + ' dòng đang lọc)');
+    }).catch(function () {
+      toast('Không thể xuất CSV. Vui lòng thử lại.');
+    });
+  }
+
+  /* ── wiring ───────────────────────────────────────────────────────── */
+  $('#unlock-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var key = $('#admin-key-input').value.trim();
+    if (!key) return;
+    var btn = $('#unlock-btn');
+    btn.disabled = true;
+    btn.textContent = 'Đang xác thực…';
+    token = key;
+
+    fetch(API + '?limit=1&_t=' + Date.now(), {
+      method: 'GET',
+      cache: 'no-store',
+      headers: { 'Authorization': 'Bearer ' + key }
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        return { status: res.status, data: data };
+      });
+    }).then(function (out) {
+      if (out.status === 200 && out.data.success) {
+        sessionStorage.setItem(SESSION_KEY, key);
+        showDashboard();
+        $('#f-search').value = '';
+        load({ silent: true });
+        return;
+      }
+      token = '';
+      showUnlock(out.data.error || ('Không thể xác thực (mã ' + out.status + ').'));
+    }).catch(function () {
+      token = '';
+      showUnlock('Lỗi kết nối mạng đến máy chủ.');
+    }).then(function () {
+      btn.disabled = false;
+      btn.textContent = 'Mở khóa hệ thống';
+    });
+  });
+
+  $('#logout-btn').addEventListener('click', function () {
+    sessionStorage.removeItem(SESSION_KEY);
+    token = '';
+    $('#admin-key-input').value = '';
+    showUnlock();
+  });
+
+  $('#refresh-btn').addEventListener('click', function () { load(); });
+
+  $('#f-search').addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function () { load({ silent: true }); }, 320);
+  });
+
+  ['#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to'].forEach(function (sel) {
+    $(sel).addEventListener('change', function () { load({ silent: true }); });
+  });
+
+  $('#reset-btn').addEventListener('click', function () {
+    ['#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to', '#f-search'].forEach(function (s) { $(s).value = ''; });
+    load({ silent: true });
+  });
+
+  $('#export-btn').addEventListener('click', exportCsv);
+
+  $('#table-body').addEventListener('click', function (e) {
+    var tr = e.target.closest('tr[data-sid]');
+    if (tr) openDrawer(tr.getAttribute('data-sid'));
+  });
+  $('#table-body').addEventListener('keydown', function (e) {
+    var tr = e.target.closest('tr[data-sid]');
+    if (tr && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      openDrawer(tr.getAttribute('data-sid'));
+    }
+  });
+
+  $('#drawer-close').addEventListener('click', closeDrawer);
+  $('#drawer-backdrop').addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  /* ── boot ─────────────────────────────────────────────────────────── */
+  var saved = sessionStorage.getItem(SESSION_KEY);
+  if (saved) {
+    token = saved;
+    load({ silent: true }).then(function (ok) { if (ok) showDashboard(); });
+  } else {
+    showUnlock();
+  }
+})();
+</script>
+</body>
+</html>
