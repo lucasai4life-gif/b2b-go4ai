@@ -65,8 +65,8 @@
 .ar-page figcaption{margin:0}
 
 /* -- shared measures ------------------------------------------------------ */
-.ar-col{max-width:47rem;margin-left:auto;margin-right:auto}
-.ar-wide{max-width:62rem;margin-left:auto;margin-right:auto}
+.ar-col{max-width:48rem;margin-left:auto;margin-right:auto}
+.ar-wide{max-width:60rem;margin-left:auto;margin-right:auto}
 
 /* -- 1. HERO -------------------------------------------------------------- */
 .ar-hero{position:relative;padding:clamp(1.75rem,3.4vw,3rem) 0 0;overflow:hidden}
@@ -124,25 +124,20 @@
   letter-spacing:-.012em;color:var(--ar-ink-2);
 }
 
-.ar-hero__fig{margin:clamp(2rem,4.2vw,3.25rem) 0 0;position:relative;z-index:1}
+.ar-hero__fig{margin:clamp(2rem,3.6vw,3rem) auto 0;position:relative;z-index:1}
 .ar-shot{
-  overflow:hidden;border-radius:18px;
+  overflow:hidden;border-radius:16px;
   border:1px solid var(--ar-line-2);background:#e8eeec;
-  box-shadow:0 34px 74px -46px rgba(6,95,71,.5);
+  box-shadow:0 24px 60px -28px rgba(6,95,71,.28);
+  aspect-ratio:16 / 9;max-height:520px;
 }
-.ar-shot img{display:block;width:100%;height:auto}
-/* full-bleed hero: no 100vw trick, the figure simply sits outside the
-   padded wrapper so it spans the section (= viewport) with no overflow risk */
-.ar-shot--bleed{
-  border-radius:0;border:0;box-shadow:none;
-  border-top:1px solid var(--ar-line-2);
-  border-bottom:1px solid var(--ar-line-2);
-}
+.ar-shot img{display:block;width:100%;height:100%;object-fit:cover}
 
 .ar-cap{
   display:flex;gap:.6rem;margin:.85rem 0 0;
   font-family:var(--font-mono);font-size:.6875rem;line-height:1.65;
   letter-spacing:.04em;color:var(--ar-ink-3);
+  padding-inline:.25rem;
 }
 .ar-cap::before{
   content:'';flex:0 0 18px;height:1px;background:var(--ar-em);
@@ -206,7 +201,7 @@
 .ar-stat--w .ar-stat__v{font-size:clamp(1.3rem,2vw,1.7rem);letter-spacing:-.02em;color:#8fe3c6}
 
 /* -- 4. SECTIONS ---------------------------------------------------------- */
-.ar-sec{padding:clamp(2.5rem,5vw,4.25rem) 0}
+.ar-sec{padding:clamp(3.5rem,6.5vw,6.5rem) 0}
 .ar-sec + .ar-sec{border-top:1px solid var(--ar-line-2)}
 .ar-sec__n{
   display:flex;align-items:center;gap:.7rem;
@@ -220,7 +215,7 @@
   letter-spacing:-.033em;font-weight:600;color:var(--ar-ink);
   text-wrap:balance;
 }
-.ar-sec__body{margin-top:clamp(1.15rem,2.2vw,1.6rem)}
+.ar-sec__body{margin-top:clamp(1.5rem,2.4vw,2rem)}
 
 .ar-prose p{
   margin:0;font-size:clamp(1.0625rem,.45vw + 1rem,1.1875rem);
@@ -245,39 +240,95 @@
 }
 .ar-list strong{color:var(--ar-ink);font-weight:600}
 
+/* Section 01 highlight cards */
+.ar-achievements{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(.85rem,1.8vw,1.25rem);margin-top:clamp(1.5rem,2.4vw,2rem);
+}
+.ar-achieve{
+  padding:clamp(1rem,1.6vw,1.25rem);border-radius:12px;
+  border:1px solid var(--ar-line-2);border-top:3px solid var(--ar-em);
+  background:rgba(255,255,255,.72);
+  box-shadow:0 8px 24px -16px rgba(17,22,20,.06);
+}
+.ar-achieve__tag{
+  font-family:var(--font-mono);font-size:clamp(.8125rem,.3vw + .75rem,.9375rem);
+  font-weight:700;letter-spacing:.04em;color:var(--ar-em-deep);
+  margin-bottom:.45rem;
+}
+.ar-achieve__p{
+  margin:0;font-size:clamp(.875rem,.2vw + .82rem,.9375rem);
+  line-height:1.56;color:var(--ar-ink-2);
+}
+
 /* roster panel (11 schools / 12 organisations) */
 .ar-roster{
-  margin:1.35rem 0 0;padding:1.1rem 1.25rem 1.1rem 1.35rem;
-  border-left:2px solid var(--ar-em);border-radius:0 8px 8px 0;
-  background:linear-gradient(90deg,rgba(10,143,109,.055),rgba(10,143,109,0) 72%);
+  margin:clamp(1.25rem,2vw,1.5rem) 0 0;
+  padding:clamp(1.1rem,2vw,1.35rem) clamp(1.25rem,2.2vw,1.5rem);
+  border-left:3px solid var(--ar-em);border-radius:0 10px 10px 0;
+  background:linear-gradient(90deg,rgba(10,143,109,.07),rgba(10,143,109,.015) 85%);
+  border-top:1px solid rgba(10,143,109,.1);
+  border-right:1px solid rgba(10,143,109,.06);
+  border-bottom:1px solid rgba(10,143,109,.1);
 }
 .ar-roster p{
   margin:0;font-size:clamp(.9375rem,.28vw + .9rem,1rem);
   line-height:1.72;letter-spacing:-.004em;color:var(--ar-ink-2);
 }
 
+/* Section 05 startup cards */
+.ar-startup-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(.85rem,1.8vw,1.25rem);margin-top:clamp(1.5rem,2.4vw,2rem);
+}
+.ar-startup-card{
+  padding:clamp(1.1rem,2vw,1.35rem);border-radius:12px;
+  border:1px solid var(--ar-line-2);border-left:3px solid var(--ar-em);
+  background:rgba(255,255,255,.75);
+  box-shadow:0 8px 24px -16px rgba(17,22,20,.06);
+}
+.ar-startup-card__t{
+  font-family:var(--font-mono);font-size:clamp(.875rem,.3vw + .8125rem,.9375rem);
+  font-weight:700;letter-spacing:.02em;color:var(--ar-ink);
+  margin-bottom:.4rem;
+}
+.ar-startup-card__p{
+  margin:0;font-size:clamp(.875rem,.2vw + .82rem,.9375rem);
+  line-height:1.58;color:var(--ar-ink-2);
+}
+
 /* figures */
-.ar-fig{margin-top:clamp(1.75rem,3.4vw,2.6rem)}
+.ar-fig{
+  margin-top:clamp(2rem,3.2vw,2.5rem);
+  margin-bottom:clamp(1.75rem,2.8vw,2.25rem);
+}
 .ar-fig__frame{
   overflow:hidden;border-radius:14px;
-  border:1px solid var(--ar-line-2);background:#e8eeec;
+  border:1px solid var(--ar-line-2);background:#eef3f1;
+  box-shadow:0 16px 40px -24px rgba(17,22,20,.12);
+  aspect-ratio:16 / 10;max-height:520px;
 }
-.ar-fig__frame img{display:block;width:100%;height:auto}
-.ar-fig--fit .ar-fig__frame img{object-fit:cover;height:100%}
+.ar-fig__frame img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* Contained screenshot frame for XPRIZE */
+.ar-fig__frame--contain{
+  background:#0f1613;
+  border-color:rgba(255,255,255,.08);
+  padding:clamp(.75rem,1.8vw,1.25rem);
+  box-shadow:0 20px 48px -24px rgba(0,0,0,.4);
+  aspect-ratio:auto;max-height:none;
+}
+.ar-fig__frame--contain img{
+  width:100%;max-height:420px;object-fit:contain;
+  margin:0 auto;border-radius:6px;
+}
 
 .ar-duo{
-  display:grid;grid-template-columns:1.12fr .88fr;
-  gap:clamp(.7rem,1.6vw,1.1rem);align-items:start;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(1rem,2vw,1.5rem);align-items:start;
 }
-.ar-duo .ar-fig__frame{aspect-ratio:4 / 3}
+.ar-duo .ar-fig__frame{aspect-ratio:4 / 3;max-height:none}
 .ar-duo .ar-fig__frame img{height:100%;object-fit:cover}
-
-.ar-split{
-  display:grid;grid-template-columns:1.02fr .98fr;
-  gap:clamp(1.35rem,3vw,2.5rem);align-items:center;
-}
-.ar-split .ar-fig{margin:0}
-.ar-split .ar-prose p:first-child{margin-top:0}
 
 /* -- 5. CLOSING BAND ------------------------------------------------------ */
 .ar-end{
@@ -354,9 +405,8 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
 @media (max-width:991px){
   .ar-title{max-width:100%}
   .ar-stats__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .ar-split{grid-template-columns:1fr;gap:1.5rem}
   .ar-duo{grid-template-columns:1fr 1fr}
-  .ar-shot{border-radius:14px}
+  .ar-shot{border-radius:14px;max-height:440px}
 }
 @media (max-width:767px){
   .ar-hero{padding-top:1.35rem}
@@ -364,14 +414,19 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
   .ar-meta__cat{padding:.45rem .55rem}
   .ar-title{font-size:clamp(1.85rem,7.6vw,2.5rem);letter-spacing:-.035em;line-height:1.06}
   .ar-sub{font-size:1rem;line-height:1.6}
-  .ar-shot{border-radius:12px}
-  .ar-shot--bleed{border-radius:0}
-  .ar-sec{padding:2.1rem 0}
+  .ar-shot{border-radius:12px;aspect-ratio:16 / 10;max-height:none}
+  .ar-sec{padding:clamp(2.75rem,6vw,3.5rem) 0}
   .ar-sec__t{max-width:100%}
+  .ar-fig{margin-top:clamp(1.35rem,3vw,1.75rem);margin-bottom:clamp(1.25rem,2.8vw,1.6rem)}
+  .ar-fig__frame{border-radius:12px;aspect-ratio:16 / 10;max-height:none}
+  .ar-fig__frame--contain{padding:.65rem;border-radius:12px}
+  .ar-fig__frame--contain img{max-height:300px}
+  .ar-achievements{grid-template-columns:1fr;gap:.75rem}
+  .ar-startup-grid{grid-template-columns:1fr;gap:.75rem}
   .ar-list li{padding-left:1.65rem;padding-top:.8rem;padding-bottom:.8rem}
   .ar-list li::before{top:1.2rem}
   .ar-roster{padding:.95rem 1rem .95rem 1.1rem;border-radius:0 6px 6px 0}
-  .ar-duo{grid-template-columns:1fr;gap:.7rem}
+  .ar-duo{grid-template-columns:1fr;gap:1rem}
   .ar-duo .ar-fig__frame{aspect-ratio:4 / 3}
   .ar-stat__v{font-size:1.7rem}
   .ar-stat--w .ar-stat__v{font-size:1.2rem}
@@ -495,23 +550,17 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
         <h1 class="ar-title" id="ar-title">GO4AI – Hành trình <em>1 năm</em> kiến tạo giá trị AI và kết nối quốc tế</h1>
 
         <p class="ar-sub">21/10/2025 – 21/10/2026 | Một năm xây dựng nền tảng, phát triển hệ sinh thái và chuyển hóa ý tưởng thành giá trị thực tiễn.</p>
+
+        <figure class="ar-hero__fig ar-wide" data-ar-rise>
+          <div class="ar-shot">
+            <img src="/assets/images/news/go4ai-1-nam-hero.jpg"
+                 alt="Tổng hợp hoạt động GO4AI trong năm đầu tiên: ký kết hợp tác, workshop và sự kiện tại các trường, doanh nghiệp"
+                 width="1600" height="904" fetchpriority="high" decoding="async">
+          </div>
+          <figcaption class="ar-cap">Hành trình 21/10/2025 – 21/10/2026 qua các hoạt động ký kết, workshop và sự kiện của GO4AI.</figcaption>
+        </figure>
       </div>
     </div>
-
-    <figure class="ar-hero__fig">
-      <div class="ar-shot ar-shot--bleed">
-        <img src="/assets/images/news/go4ai-1-nam-hero.jpg"
-             alt="Tổng hợp hoạt động GO4AI trong năm đầu tiên: ký kết hợp tác, workshop và sự kiện tại các trường, doanh nghiệp"
-             width="1600" height="904" fetchpriority="high" decoding="async">
-      </div>
-      <div class="padding-global">
-        <div class="container">
-          <div class="ar-col">
-            <figcaption class="ar-cap">Hành trình 21/10/2025 – 21/10/2026 qua các hoạt động ký kết, workshop và sự kiện của GO4AI.</figcaption>
-          </div>
-        </div>
-      </div>
-    </figure>
   </section>
 
   <!-- ======================================================= 2. LEAD ==== -->
@@ -574,16 +623,25 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
             <p>Từ bài toán đó, GO4AI phát triển AI Passport – mô hình đánh giá và ghi nhận năng lực AI thông qua sản phẩm, minh chứng thực hành và kết quả triển khai, hướng đến việc xây dựng hồ sơ năng lực có thể kiểm chứng, thay vì chỉ dựa trên chứng chỉ hay kiến thức lý thuyết.</p>
             <p>Ngay trong năm đầu tiên, AI Passport ghi dấu tại các sân chơi khởi nghiệp và đổi mới sáng tạo:</p>
 
-            <ul class="ar-list">
-              <li><strong>TOP 20</strong> – Cardano SEA Hackathon, cuộc thi công nghệ quy mô Đông Nam Á.</li>
-              <li><strong>TOP 100</strong> – Startup Wheel, một trong những cuộc thi khởi nghiệp quốc tế quy mô lớn tại Đông Nam Á.</li>
-              <li><strong>Build with Gemini XPRIZE 2026:</strong> Một trong 1.400 dự án tham gia cuộc thi AI quốc tế do XPRIZE tổ chức với sự đồng hành của Google, thu hút hơn 26.000 người đăng ký trên toàn cầu.</li>
-            </ul>
+            <div class="ar-achievements">
+              <div class="ar-achieve">
+                <div class="ar-achieve__tag">TOP 20</div>
+                <p class="ar-achieve__p">Cardano SEA Hackathon, cuộc thi công nghệ quy mô Đông Nam Á.</p>
+              </div>
+              <div class="ar-achieve">
+                <div class="ar-achieve__tag">TOP 100</div>
+                <p class="ar-achieve__p">Startup Wheel, một trong những cuộc thi khởi nghiệp quốc tế quy mô lớn tại Đông Nam Á.</p>
+              </div>
+              <div class="ar-achieve">
+                <div class="ar-achieve__tag">Build with Gemini XPRIZE 2026</div>
+                <p class="ar-achieve__p">Một trong 1.400 dự án tham gia cuộc thi AI quốc tế do XPRIZE tổ chức với sự đồng hành của Google, thu hút hơn 26.000 người đăng ký trên toàn cầu.</p>
+              </div>
+            </div>
           </div>
         </div>
 
         <figure class="ar-fig ar-wide" data-ar-rise>
-          <div class="ar-fig__frame">
+          <div class="ar-fig__frame ar-fig__frame--contain">
             <img src="/assets/images/news/go4ai-1-nam-xprize.png"
                  alt="Hồ sơ dự án AI Passport của GO4AI trên nền tảng Build with Gemini XPRIZE"
                  width="1600" height="709" loading="lazy" decoding="async">
@@ -612,11 +670,6 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
           <div class="ar-sec__body ar-prose">
             <p>Song song với phát triển công nghệ, GO4AI đã tiếp cận hơn 5.000 học viên trong hệ sinh thái, từ học sinh, sinh viên đến giảng viên, người đi làm và nhân sự doanh nghiệp.</p>
             <p>Với phương pháp đào tạo lấy thực hành làm trọng tâm, GO4AI hướng đến việc giúp người học không chỉ hiểu và sử dụng AI, mà còn tạo ra sản phẩm, giải quyết vấn đề và từng bước làm chủ công nghệ.</p>
-            <p>Trong năm đầu tiên, GO4AI cũng mở rộng mạng lưới hợp tác và kết nối với 11 trường cao đẳng, đại học, bao gồm:</p>
-          </div>
-
-          <div class="ar-roster">
-            <p>Cao đẳng FPT Polytechnic, Đại học FPT, Cao đẳng CTIM, Cao đẳng Kinh tế Đối ngoại, Cao đẳng Kinh tế TP.HCM, Đại học Công Thương TP.HCM, Đại học Tây Nguyên, Đại học Kinh tế TP.HCM, Trường Đại học Quốc tế – ĐHQG TP.HCM, Đại học Hoa Sen và Đại học Lạc Hồng.</p>
           </div>
         </div>
 
@@ -631,7 +684,13 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
 
         <div class="ar-col" data-ar-rise>
           <div class="ar-prose">
-            <p>Thông qua những kết nối này, GO4AI từng bước thu hẹp khoảng cách giữa đào tạo và nhu cầu thực tế của thị trường lao động trong kỷ nguyên AI.</p>
+            <p>Trong năm đầu tiên, GO4AI cũng mở rộng mạng lưới hợp tác và kết nối với 11 trường cao đẳng, đại học, bao gồm:</p>
+
+            <div class="ar-roster">
+              <p>Cao đẳng FPT Polytechnic, Đại học FPT, Cao đẳng CTIM, Cao đẳng Kinh tế Đối ngoại, Cao đẳng Kinh tế TP.HCM, Đại học Công Thương TP.HCM, Đại học Tây Nguyên, Đại học Kinh tế TP.HCM, Trường Đại học Quốc tế – ĐHQG TP.HCM, Đại học Hoa Sen và Đại học Lạc Hồng.</p>
+            </div>
+
+            <p style="margin-top:1.25em">Thông qua những kết nối này, GO4AI từng bước thu hẹp khoảng cách giữa đào tạo và nhu cầu thực tế của thị trường lao động trong kỷ nguyên AI.</p>
           </div>
         </div>
 
@@ -648,11 +707,7 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
           <p class="ar-sec__n">03</p>
           <h2 class="ar-sec__t" id="ar-s3">Kết nối doanh nghiệp – Mở rộng cơ hội ứng dụng AI thực tiễn</h2>
           <div class="ar-sec__body ar-prose">
-            <p>Từ nền tảng giáo dục, GO4AI tiếp tục phát triển mạng lưới hợp tác với 12 doanh nghiệp và tổ chức, gồm:</p>
-          </div>
-
-          <div class="ar-roster">
-            <p>HR1 Vietnam Holdings, VTALK Academy, SunlandSG, ThinkSmart Group, Easy AI, Bizciti Việt Nam, Viện Đào tạo &amp; Phát triển Doanh nhân Việt Nam, Viện Đào tạo Bách Khoa, Startup Master Track, HUB Network, Vietnamese Connect và FTMS Global.</p>
+            <p>Mỗi kết nối mở ra thêm cơ hội đưa AI vào những bài toán thực tế, từ phát triển năng lực nhân sự đến ứng dụng công nghệ trong hoạt động doanh nghiệp.</p>
           </div>
         </div>
 
@@ -667,8 +722,13 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
 
         <div class="ar-col" data-ar-rise>
           <div class="ar-prose">
-            <p>Mỗi kết nối mở ra thêm cơ hội đưa AI vào những bài toán thực tế, từ phát triển năng lực nhân sự đến ứng dụng công nghệ trong hoạt động doanh nghiệp.</p>
-            <p>Đây cũng là bước tiến trong định hướng của GO4AI: không chỉ đào tạo AI, mà còn đồng hành cùng doanh nghiệp trong quá trình ứng dụng và tạo ra giá trị từ công nghệ.</p>
+            <p>Từ nền tảng giáo dục, GO4AI tiếp tục phát triển mạng lưới hợp tác với 12 doanh nghiệp và tổ chức, gồm:</p>
+
+            <div class="ar-roster">
+              <p>HR1 Vietnam Holdings, VTALK Academy, SunlandSG, ThinkSmart Group, Easy AI, Bizciti Việt Nam, Viện Đào tạo &amp; Phát triển Doanh nhân Việt Nam, Viện Đào tạo Bách Khoa, Startup Master Track, HUB Network, Vietnamese Connect và FTMS Global.</p>
+            </div>
+
+            <p style="margin-top:1.25em">Đây cũng là bước tiến trong định hướng của GO4AI: không chỉ đào tạo AI, mà còn đồng hành cùng doanh nghiệp trong quá trình ứng dụng và tạo ra giá trị từ công nghệ.</p>
           </div>
         </div>
 
@@ -735,23 +795,29 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
             <p>Không chỉ phát triển các dự án của riêng mình, GO4AI còn đồng hành với thế hệ khởi nghiệp trẻ thông qua hoạt động mentoring.</p>
             <p>Trong năm đầu tiên, hai dự án dưới sự cố vấn của GO4AI đã ghi nhận những dấu ấn tại các sân chơi khởi nghiệp:</p>
 
-            <ul class="ar-list">
-              <li><strong>AI Fashion Studio:</strong> Dự án ứng dụng AI trong lĩnh vực thời trang và sáng tạo.</li>
-              <li><strong>Vietgrand:</strong> Hệ thống tích hợp AI hỗ trợ chăm sóc người cao tuổi, đạt giải Nhì cuộc thi Đổi mới Sáng tạo Công nghệ cấp thành phố.</li>
-            </ul>
+            <div class="ar-startup-grid">
+              <div class="ar-startup-card">
+                <div class="ar-startup-card__t">AI Fashion Studio</div>
+                <p class="ar-startup-card__p">Dự án ứng dụng AI trong lĩnh vực thời trang và sáng tạo.</p>
+              </div>
+              <div class="ar-startup-card">
+                <div class="ar-startup-card__t">Vietgrand</div>
+                <p class="ar-startup-card__p">Hệ thống tích hợp AI hỗ trợ chăm sóc người cao tuổi, đạt giải Nhì cuộc thi Đổi mới Sáng tạo Công nghệ cấp thành phố.</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="ar-split ar-wide" data-ar-rise>
-          <figure class="ar-fig">
-            <div class="ar-fig__frame">
-              <img src="/assets/images/news/go4ai-1-nam-startup.jpg"
-                   alt="Khu vực trưng bày dự án tại cuộc thi Đổi mới Sáng tạo Công nghệ cấp thành phố"
-                   width="960" height="712" loading="lazy" decoding="async">
-            </div>
-            <figcaption class="ar-cap">Khu vực trưng bày dự án tại cuộc thi Đổi mới Sáng tạo Công nghệ cấp thành phố.</figcaption>
-          </figure>
+        <figure class="ar-fig ar-wide" data-ar-rise>
+          <div class="ar-fig__frame">
+            <img src="/assets/images/news/go4ai-1-nam-startup.jpg"
+                 alt="Khu vực trưng bày dự án tại cuộc thi Đổi mới Sáng tạo Công nghệ cấp thành phố"
+                 width="960" height="712" loading="lazy" decoding="async">
+          </div>
+          <figcaption class="ar-cap">Khu vực trưng bày dự án tại cuộc thi Đổi mới Sáng tạo Công nghệ cấp thành phố.</figcaption>
+        </figure>
 
+        <div class="ar-col" data-ar-rise>
           <div class="ar-prose">
             <p>Những kết quả này tiếp tục khẳng định định hướng của GO4AI: không chỉ phát triển công nghệ, mà còn góp phần phát triển những con người có khả năng ứng dụng và sáng tạo cùng AI.</p>
           </div>
