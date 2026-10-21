@@ -271,7 +271,7 @@ export async function onRequestGet(context) {
         l.created_at as lead_created_at
       FROM baogiaxnk_surveys s
       LEFT JOIN leads l ON (s.lead_id = l.id OR json_extract(l.payload_json, '$.submission_id') = s.submission_id)
-      ORDER BY s.created_at DESC
+      ORDER BY s.created_at DESC, s.id DESC
       LIMIT ? OFFSET ?
     `).bind(limit, offset).all();
 

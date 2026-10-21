@@ -68,7 +68,7 @@
   <div class="action-row"><button class="primary" type="button" id="wantReview">Nhận bản 1 trang & trao đổi riêng →</button><button class="secondary" type="button" id="wantPlan">Chỉ nhận kế hoạch 7 ngày</button></div>
   <button class="plain" style="color:#dceee0;text-decoration:underline;text-underline-offset:4px;margin-top:6px;padding-left:0" type="button" id="saveNow">Lưu kết quả ngay trên máy, không cần để lại Zalo</button>
  </div>
- <div class="action-row" style="margin-top:15px"><button type="button" class="secondary" id="editAnswers">← Sửa câu trả lời</button><button type="button" class="secondary" id="printReport">In / lưu PDF</button></div>
+ <div class="action-row" style="margin-top:15px"><button type="button" class="secondary" id="editAnswers">← Sửa câu trả lời</button><button type="button" class="secondary" id="restartQuiz">Làm bài khảo sát mới ↺</button><button type="button" class="secondary" id="printReport">In / lưu PDF</button></div>
 </section>
 <section id="lead" class="view inner" aria-label="Yêu cầu nhận kết quả">
  <div class="panel">
@@ -105,7 +105,7 @@
  </div>
 </section>
 <section id="done" class="view inner" aria-label="Hoàn tất">
-<div class="panel"><div class="eyebrow">Yêu cầu đã được tiếp nhận</div><h2 class="q-title">GO4AI đã nhận được yêu cầu.</h2><p>Đội ngũ sẽ liên hệ qua kênh đã cung cấp theo quy trình tiếp nhận. Lịch trao đổi 60 phút chỉ được xác nhận khi hai bên thống nhất.</p><div class="callout"><p>Trước buổi làm việc, anh/chị có thể chọn một người chịu trách nhiệm báo giá và chuẩn bị 5 báo giá gần đây. <strong>Chưa cần gửi dữ liệu nhạy cảm qua biểu mẫu.</strong></p></div><button type="button" class="primary" id="doneResult">Xem lại kết quả →</button></div>
+<div class="panel"><div class="eyebrow">Yêu cầu đã được tiếp nhận</div><h2 class="q-title">GO4AI đã nhận được yêu cầu.</h2><p>Đội ngũ sẽ liên hệ qua kênh đã cung cấp theo quy trình tiếp nhận. Lịch trao đổi 60 phút chỉ được xác nhận khi hai bên thống nhất.</p><div class="callout"><p>Trước buổi làm việc, anh/chị có thể chọn một người chịu trách nhiệm báo giá và chuẩn bị 5 báo giá gần đây. <strong>Chưa cần gửi dữ liệu nhạy cảm qua biểu mẫu.</strong></p></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="primary" id="doneResult">Xem lại kết quả →</button><button type="button" class="secondary" id="doneNewQuiz">Làm bài khảo sát mới ↺</button></div></div>
 </section>
 </main>
 <footer><div class="shell footer-flex"><span>GO4AI · Bản chẩn đoán sơ bộ dùng tại Coffee for Business · 22/10/2026</span><span>Kết quả chỉ dùng để định hướng – không thay thế đánh giá thực tế.</span></div></footer>
@@ -206,7 +206,23 @@ const paths={
   days:["Chọn chủ quy trình báo giá.","Lấy 20 báo giá gần nhất để lập baseline.","Đo thời gian từ nhận yêu cầu tới gửi khách.","Ghi nhận lỗi phát hiện trước và sau khi phát hành.","Kiểm tra nguồn giá, quyền duyệt, dấu vết thay đổi.","Tìm một điểm có thể cải tiến bằng SOP, chưa cần AI.","Chốt lịch xem xét lại sau 30–90 ngày nếu điều kiện thay đổi."]
  }
 };
-const state={sector:null,answers:Array(9).fill(null),step:-1,result:null,leadIntent:"review",submission_id:null,lastSavedKey:null,isSaving:false};
+const state={sector:null,answers:Array(9).fill(null),step:-1,result:null,leadIntent:"review",submission_id:null,lastSavedKey:null,isSaving:false,savePromise:null};
+function resetSurvey(){
+ state.sector=null;
+ state.answers=Array(9).fill(null);
+ state.step=-1;
+ state.result=null;
+ state.leadIntent="review";
+ state.submission_id=null;
+ state.lastSavedKey=null;
+ state.isSaving=false;
+ state.savePromise=null;
+ try{
+  if($("leadForm"))$("leadForm").reset();
+  if($("formError")){$("formError").classList.remove("visible");$("formError").textContent="";}
+  if($("sendStatus"))$("sendStatus").innerHTML="";
+ }catch(_){}
+}
 function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));window.scrollTo({top:0,behavior:"instant"});}
 function sectorLabel(){return sectors.find(s=>s[0]===state.sector)?.[1]||"Doanh nghiệp";}
 function renderQuiz(){
@@ -257,13 +273,13 @@ function renderResult(){
 
  autoSaveSurvey().catch(()=>{});
 }
-async function autoSaveSurvey(){
- if(!CONFIG.SURVEY_ENDPOINT)return;
+function autoSaveSurvey(){
+ if(!CONFIG.SURVEY_ENDPOINT)return Promise.resolve();
  const r=state.result;
- if(!r||!state.answers||state.answers.length!==9||state.answers.includes(null))return;
+ if(!r||!state.answers||state.answers.length!==9||state.answers.includes(null))return Promise.resolve();
  const currentKey=`${state.sector}:${state.answers.join(",")}`;
- if(state.lastSavedKey===currentKey&&state.submission_id)return;
- if(state.isSaving)return;
+ if(state.lastSavedKey===currentKey&&state.submission_id)return Promise.resolve();
+ if(state.isSaving)return state.savePromise||Promise.resolve();
  state.isSaving=true;
  const urlParams=new URLSearchParams(location.search);
  const data=paths[r.code]||{};
@@ -291,25 +307,28 @@ async function autoSaveSurvey(){
    current_page_path:location.pathname||"/baogiaxnk"
   }
  };
- try{
-  const res=await fetch(CONFIG.SURVEY_ENDPOINT,{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify(payload),
-   credentials:"omit"
-  });
-  if(res.ok){
-   const json=await res.json();
-   if(json&&json.submission_id){
-    state.submission_id=json.submission_id;
-    state.lastSavedKey=currentKey;
+ state.savePromise=(async()=>{
+  try{
+   const res=await fetch(CONFIG.SURVEY_ENDPOINT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload),
+    credentials:"omit"
+   });
+   if(res.ok){
+    const json=await res.json();
+    if(json&&json.submission_id){
+     state.submission_id=json.submission_id;
+     state.lastSavedKey=currentKey;
+    }
    }
+  }catch(err){
+   console.warn("[AutoSave] Survey auto-save error:",err.message);
+  }finally{
+   state.isSaving=false;
   }
- }catch(err){
-  console.warn("[AutoSave] Survey auto-save error:",err.message);
- }finally{
-  state.isSaving=false;
- }
+ })();
+ return state.savePromise;
 }
 function openLead(intent){
  state.leadIntent=intent;const r=state.result;const code=r.code;
@@ -363,6 +382,9 @@ async function submitLead(e){
  if(!/^[+0-9().\s-]{9,24}$/.test(field("phone"))){err.textContent="Vui lòng kiểm tra định dạng số điện thoại hoặc Zalo.";err.classList.add("visible");return;}
  if(field("email")&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field("email"))){err.textContent="Địa chỉ email chưa đúng định dạng; có thể để trống.";err.classList.add("visible");return;}
  if(!$("consent").checked){err.textContent="Vui lòng xác nhận đồng ý cho GO4AI liên hệ về kết quả trước khi tiếp tục.";err.classList.add("visible");return;}
+ if(state.isSaving&&state.savePromise){
+  try{await state.savePromise;}catch(_){}
+ }
  const payload=getLeadPayload();
  if(!(CONFIG.LEAD_ENDPOINT&&CONFIG.PRIVACY_POLICY_URL)){
   const text=[
@@ -398,7 +420,7 @@ function downloadReport(){
  const blob=new Blob([getReportHTML()],{type:"text/html;charset=utf-8"});
  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`GO4AI_Ket_qua_${state.result.code}_22-10-2026.html`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-$("startBtn").addEventListener("click",()=>{state.step=-1;renderQuiz();show("quiz");});
+$("startBtn").addEventListener("click",()=>{resetSurvey();renderQuiz();show("quiz");});
 $("backBtn").addEventListener("click",()=>{if(state.step===-1){show("welcome");return;}state.step--;renderQuiz();window.scrollTo(0,0);});
 $("nextBtn").addEventListener("click",()=>{
  if(state.step===-1){if(!state.sector)return;state.step=0;renderQuiz();window.scrollTo(0,0);return;}
@@ -407,6 +429,7 @@ $("nextBtn").addEventListener("click",()=>{
  state.step++;renderQuiz();window.scrollTo(0,0);
 });
 $("editAnswers").addEventListener("click",()=>{state.step=0;renderQuiz();show("quiz");});
+$("restartQuiz")?.addEventListener("click",()=>{resetSurvey();show("welcome");});
 $("wantReview").addEventListener("click",()=>openLead("review"));
 $("wantPlan").addEventListener("click",()=>openLead("plan"));
 $("backToResult").addEventListener("click",()=>show("result"));
@@ -415,6 +438,7 @@ $("saveFromForm").addEventListener("click",downloadReport);
 $("printReport").addEventListener("click",()=>window.print());
 $("leadForm").addEventListener("submit",submitLead);
 $("doneResult").addEventListener("click",()=>show("result"));
+$("doneNewQuiz")?.addEventListener("click",()=>{resetSurvey();show("welcome");});
 for(let i=0;i<=12;i++)$("paperScore").insertAdjacentHTML("beforeend",`<option value="${i}">${i}/12</option>`);
 window.__GO4AI_DIAGNOSTIC_TEST__={calculate,qs,paths,state,renderResult,show,autoSaveSurvey};
 </script>

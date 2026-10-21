@@ -492,8 +492,8 @@ export async function onRequestPost(context) {
 
       if (leadType === 'baogiaxnk_diagnostic' && payloadExtra.submission_id && env.DB) {
         try {
-          await env.DB.prepare('UPDATE baogiaxnk_surveys SET lead_id = ? WHERE submission_id = ?')
-            .bind(leadId, payloadExtra.submission_id).run();
+          await env.DB.prepare('UPDATE baogiaxnk_surveys SET lead_id = ?, updated_at = ? WHERE submission_id = ?')
+            .bind(leadId, createdAt, payloadExtra.submission_id).run();
         } catch (linkErr) {
           console.warn('[leads] Link survey warning:', linkErr.message);
         }

@@ -225,7 +225,7 @@ export async function onRequestPost(context) {
     }
 
     // ─── 6. CREATE NEW SUBMISSION ─────────────────────────────────────
-    const newSubmissionId = `bgx_${Date.now().toString(36)}_${crypto.randomUUID().slice(0, 8)}`;
+    const newSubmissionId = submissionIdParam || `bgx_${Date.now().toString(36)}_${crypto.randomUUID().slice(0, 8)}`;
 
     try {
       await env.DB.prepare(`
