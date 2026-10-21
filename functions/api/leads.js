@@ -154,6 +154,7 @@ export async function onRequestPost(context) {
       payloadExtra.event_id = sanitizeField(body.event_id || 'coffee-for-business-2026-10-22', 100);
       payloadExtra.qr_variant = sanitizeField(body.qr_variant, 50);
       payloadExtra.recorded_at = sanitizeField(body.recorded_at, 50) || new Date().toISOString();
+      payloadExtra.submission_id = sanitizeField(body.submission_id || body.questionnaire?.submission_id, 64);
       payloadExtra.contact = {
         name,
         phone,
@@ -488,6 +489,15 @@ export async function onRequestPost(context) {
 
       if (result.success === false) throw new Error('D1 INSERT returned success=false');
       leadId = result.meta?.last_row_id;
+
+      if (leadType === 'baogiaxnk_diagnostic' && payloadExtra.submission_id && env.DB) {
+        try {
+          await env.DB.prepare('UPDATE baogiaxnk_surveys SET lead_id = ? WHERE submission_id = ?')
+            .bind(leadId, payloadExtra.submission_id).run();
+        } catch (linkErr) {
+          console.warn('[leads] Link survey warning:', linkErr.message);
+        }
+      }
     } catch (dbErr) {
       console.error('[leads] D1 write error:', dbErr.message);
       return new Response(JSON.stringify({ success: false, error: 'Lỗi cơ sở dữ liệu. Vui lòng thử lại.' }), {
@@ -755,6 +765,7 @@ function buildTelegramMessage(data) {
     return [
       '📊 <b>[LEAD] CHẨN ĐOÁN BÁO GIÁ XNK</b>',
       `\nNguồn: <code>/baogiaxnk</code>`,
+      payloadExtra.submission_id ? `\nMã khảo sát: <code>${esc(payloadExtra.submission_id)}</code>` : '',
       payloadExtra.event_id ? `\nSự kiện: <code>${esc(payloadExtra.event_id)}</code>` : '',
       '\n──────────────',
       line('Họ tên', name),

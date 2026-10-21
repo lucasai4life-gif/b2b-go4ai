@@ -120,6 +120,7 @@
  */
 const CONFIG = {
   LEAD_ENDPOINT: "/api/leads",
+  SURVEY_ENDPOINT: "/api/baogiaxnk/survey",
   PRIVACY_POLICY_URL: "/chinh-sach-bao-ve-du-lieu",
   EVENT_ID: "coffee-for-business-2026-10-22",
   UTM_SOURCE: "event_qr",
@@ -205,7 +206,7 @@ const paths={
   days:["Chọn chủ quy trình báo giá.","Lấy 20 báo giá gần nhất để lập baseline.","Đo thời gian từ nhận yêu cầu tới gửi khách.","Ghi nhận lỗi phát hiện trước và sau khi phát hành.","Kiểm tra nguồn giá, quyền duyệt, dấu vết thay đổi.","Tìm một điểm có thể cải tiến bằng SOP, chưa cần AI.","Chốt lịch xem xét lại sau 30–90 ngày nếu điều kiện thay đổi."]
  }
 };
-const state={sector:null,answers:Array(9).fill(null),step:-1,result:null,leadIntent:"review"};
+const state={sector:null,answers:Array(9).fill(null),step:-1,result:null,leadIntent:"review",submission_id:null,lastSavedKey:null,isSaving:false};
 function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));window.scrollTo({top:0,behavior:"instant"});}
 function sectorLabel(){return sectors.find(s=>s[0]===state.sector)?.[1]||"Doanh nghiệp";}
 function renderQuiz(){
@@ -253,6 +254,62 @@ function renderResult(){
  $("ctaTitle").textContent=data.cta;$("ctaDesc").textContent=data.ctaDesc;
  $("wantReview").textContent=r.code==="D"?"Nhận cách tự đo & xem lại sau →":"Nhận bản 1 trang & trao đổi riêng →";
  $("wantPlan").textContent=r.code==="D"?"Chỉ nhận kế hoạch 7 ngày":"Chỉ nhận kế hoạch 7 ngày";
+
+ autoSaveSurvey().catch(()=>{});
+}
+async function autoSaveSurvey(){
+ if(!CONFIG.SURVEY_ENDPOINT)return;
+ const r=state.result;
+ if(!r||!state.answers||state.answers.length!==9||state.answers.includes(null))return;
+ const currentKey=`${state.sector}:${state.answers.join(",")}`;
+ if(state.lastSavedKey===currentKey&&state.submission_id)return;
+ if(state.isSaving)return;
+ state.isSaving=true;
+ const urlParams=new URLSearchParams(location.search);
+ const data=paths[r.code]||{};
+ const payload={
+  submission_id:state.submission_id||undefined,
+  source:"baogiaxnk",
+  event_id:CONFIG.EVENT_ID,
+  sector:state.sector,
+  sector_name:sectorLabel(),
+  answers:[...state.answers],
+  scores:{P:r.P,F:r.F,N:r.N},
+  route:r.code,
+  caveat:r.caveat||"",
+  result:{
+   title:data.title||"",
+   subtitle:data.subtitle||"",
+   action:data.action||"",
+   stages:data.stages||[],
+   days:data.days||[]
+  },
+  metadata:{
+   utm_source:urlParams.get("utm_source")||CONFIG.UTM_SOURCE,
+   utm_campaign:urlParams.get("utm_campaign")||CONFIG.UTM_CAMPAIGN,
+   qr_variant:urlParams.get("qr")||"stage",
+   current_page_path:location.pathname||"/baogiaxnk"
+  }
+ };
+ try{
+  const res=await fetch(CONFIG.SURVEY_ENDPOINT,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify(payload),
+   credentials:"omit"
+  });
+  if(res.ok){
+   const json=await res.json();
+   if(json&&json.submission_id){
+    state.submission_id=json.submission_id;
+    state.lastSavedKey=currentKey;
+   }
+  }
+ }catch(err){
+  console.warn("[AutoSave] Survey auto-save error:",err.message);
+ }finally{
+  state.isSaving=false;
+ }
 }
 function openLead(intent){
  state.leadIntent=intent;const r=state.result;const code=r.code;
@@ -279,6 +336,7 @@ function getLeadPayload(){
  const urlParams=new URLSearchParams(location.search);
  return {
   leadType:"baogiaxnk_diagnostic",
+  submission_id:state.submission_id||undefined,
   sourcePage:"/baogiaxnk",
   sourceCta:"diagnostic_form",
   event_id:CONFIG.EVENT_ID,
@@ -287,7 +345,7 @@ function getLeadPayload(){
   qr_variant:urlParams.get("qr")||"stage",
   recorded_at:new Date().toISOString(),
   contact:{name:field("fullName"),phone:field("phone"),company:field("company"),role:field("role"),email:field("email"),preferred_contact_time:field("callTime"),message:field("note")},
-  questionnaire:{sector:state.sector,sector_name:sectorLabel(),answers:[...state.answers],paper_score:field("paperScore"),points:{P:state.result.P,F:state.result.F,N:state.result.N},route:state.result.code,advisory_note:state.result.caveat},
+  questionnaire:{submission_id:state.submission_id||undefined,sector:state.sector,sector_name:sectorLabel(),answers:[...state.answers],paper_score:field("paperScore"),points:{P:state.result.P,F:state.result.F,N:state.result.N},route:state.result.code,advisory_note:state.result.caveat},
   requests:{lead_intent:state.leadIntent,diagnostic_60min:$("want60").checked,seven_day_plan:$("want7").checked},
   consent:{contact_for_this_assessment:$("consent").checked}
  };
@@ -358,7 +416,7 @@ $("printReport").addEventListener("click",()=>window.print());
 $("leadForm").addEventListener("submit",submitLead);
 $("doneResult").addEventListener("click",()=>show("result"));
 for(let i=0;i<=12;i++)$("paperScore").insertAdjacentHTML("beforeend",`<option value="${i}">${i}/12</option>`);
-window.__GO4AI_DIAGNOSTIC_TEST__={calculate,qs,paths,state,renderResult,show};
+window.__GO4AI_DIAGNOSTIC_TEST__={calculate,qs,paths,state,renderResult,show,autoSaveSurvey};
 </script>
 </body>
 </html>
