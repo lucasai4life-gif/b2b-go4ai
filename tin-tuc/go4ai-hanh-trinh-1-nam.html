@@ -65,8 +65,8 @@
 .ar-page figcaption{margin:0}
 
 /* -- shared measures ------------------------------------------------------ */
-.ar-col{max-width:48rem;margin-left:auto;margin-right:auto}
-.ar-wide{max-width:60rem;margin-left:auto;margin-right:auto}
+.ar-col{max-width:50rem;margin-left:auto;margin-right:auto}
+.ar-wide{max-width:65rem;margin-left:auto;margin-right:auto}
 
 /* -- 1. HERO -------------------------------------------------------------- */
 .ar-hero{position:relative;padding:clamp(1.75rem,3.4vw,3rem) 0 0;overflow:hidden}
@@ -145,7 +145,7 @@
 }
 
 /* -- 2. LEAD -------------------------------------------------------------- */
-.ar-lead{margin:clamp(2.5rem,5vw,4rem) 0 0}
+.ar-lead{margin:clamp(2.5rem,5vw,4rem) auto 0}
 .ar-lead p{
   margin:0;font-size:clamp(1.0625rem,.45vw + 1rem,1.1875rem);
   line-height:1.74;letter-spacing:-.012em;color:var(--ar-ink-2);
@@ -533,23 +533,25 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
     <div class="padding-global">
       <div class="container">
 
-        <nav class="ar-crumb" aria-label="Đường dẫn">
-          <a href="/tin-tuc-chia-se">Tin tức &amp; sự kiện</a>
-          <i aria-hidden="true">/</i>
-          <span aria-current="page">Tin tức</span>
-        </nav>
+        <div class="ar-wide">
+          <nav class="ar-crumb" aria-label="Đường dẫn">
+            <a href="/tin-tuc-chia-se">Tin tức &amp; sự kiện</a>
+            <i aria-hidden="true">/</i>
+            <span aria-current="page">Tin tức</span>
+          </nav>
 
-        <div class="ar-meta">
-          <span class="ar-meta__cat">Tin tức</span>
-          <span class="ar-meta__sep" aria-hidden="true"></span>
-          <span class="ar-meta__status"><span class="ar-meta__dot" aria-hidden="true"></span>Đã diễn ra</span>
-          <span class="ar-meta__sep" aria-hidden="true"></span>
-          <time class="ar-meta__date" datetime="2026-10-21">21/10/2026</time>
+          <div class="ar-meta">
+            <span class="ar-meta__cat">Tin tức</span>
+            <span class="ar-meta__sep" aria-hidden="true"></span>
+            <span class="ar-meta__status"><span class="ar-meta__dot" aria-hidden="true"></span>Đã diễn ra</span>
+            <span class="ar-meta__sep" aria-hidden="true"></span>
+            <time class="ar-meta__date" datetime="2026-10-21">21/10/2026</time>
+          </div>
+
+          <h1 class="ar-title" id="ar-title">GO4AI – Hành trình <em>1 năm</em> kiến tạo giá trị AI và kết nối quốc tế</h1>
+
+          <p class="ar-sub">21/10/2025 – 21/10/2026 | Một năm xây dựng nền tảng, phát triển hệ sinh thái và chuyển hóa ý tưởng thành giá trị thực tiễn.</p>
         </div>
-
-        <h1 class="ar-title" id="ar-title">GO4AI – Hành trình <em>1 năm</em> kiến tạo giá trị AI và kết nối quốc tế</h1>
-
-        <p class="ar-sub">21/10/2025 – 21/10/2026 | Một năm xây dựng nền tảng, phát triển hệ sinh thái và chuyển hóa ý tưởng thành giá trị thực tiễn.</p>
 
         <figure class="ar-hero__fig ar-wide" data-ar-rise>
           <div class="ar-shot">
@@ -578,32 +580,34 @@ html.ar-motion [data-ar-rise].is-in{opacity:1;transform:none;will-change:auto}
   <section class="ar-stats" aria-label="Một năm nhìn lại bằng số liệu">
     <div class="padding-global">
       <div class="container">
-        <p class="ar-stats__k">Một năm nhìn lại</p>
+        <div class="ar-wide">
+          <p class="ar-stats__k">Một năm nhìn lại</p>
 
-        <div class="ar-stats__grid">
-          <div class="ar-stat" data-ar-rise>
-            <span class="ar-stat__v">5.000+</span>
-            <span class="ar-stat__l">học viên trong hệ sinh thái</span>
-          </div>
-          <div class="ar-stat" data-ar-rise>
-            <span class="ar-stat__v">11</span>
-            <span class="ar-stat__l">trường cao đẳng, đại học</span>
-          </div>
-          <div class="ar-stat" data-ar-rise>
-            <span class="ar-stat__v">12</span>
-            <span class="ar-stat__l">doanh nghiệp &amp; tổ chức</span>
-          </div>
-          <div class="ar-stat ar-stat--w" data-ar-rise>
-            <span class="ar-stat__v">TOP 20</span>
-            <span class="ar-stat__l">Cardano SEA Hackathon</span>
-          </div>
-          <div class="ar-stat ar-stat--w" data-ar-rise>
-            <span class="ar-stat__v">TOP 100</span>
-            <span class="ar-stat__l">Startup Wheel</span>
-          </div>
-          <div class="ar-stat" data-ar-rise>
-            <span class="ar-stat__v">1.400</span>
-            <span class="ar-stat__l">dự án Build with Gemini XPRIZE</span>
+          <div class="ar-stats__grid">
+            <div class="ar-stat" data-ar-rise>
+              <span class="ar-stat__v">5.000+</span>
+              <span class="ar-stat__l">học viên trong hệ sinh thái</span>
+            </div>
+            <div class="ar-stat" data-ar-rise>
+              <span class="ar-stat__v">11</span>
+              <span class="ar-stat__l">trường cao đẳng, đại học</span>
+            </div>
+            <div class="ar-stat" data-ar-rise>
+              <span class="ar-stat__v">12</span>
+              <span class="ar-stat__l">doanh nghiệp &amp; tổ chức</span>
+            </div>
+            <div class="ar-stat ar-stat--w" data-ar-rise>
+              <span class="ar-stat__v">TOP 20</span>
+              <span class="ar-stat__l">Cardano SEA Hackathon</span>
+            </div>
+            <div class="ar-stat ar-stat--w" data-ar-rise>
+              <span class="ar-stat__v">TOP 100</span>
+              <span class="ar-stat__l">Startup Wheel</span>
+            </div>
+            <div class="ar-stat" data-ar-rise>
+              <span class="ar-stat__v">1.400</span>
+              <span class="ar-stat__l">dự án Build with Gemini XPRIZE</span>
+            </div>
           </div>
         </div>
       </div>
