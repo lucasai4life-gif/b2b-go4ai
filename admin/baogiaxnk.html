@@ -194,6 +194,50 @@
     }
     .stat-pill strong { color: #fff; }
 
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #86efac;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .live-pill.paused {
+      background: rgba(156, 163, 175, 0.12);
+      border-color: rgba(156, 163, 175, 0.35);
+      color: var(--text-muted);
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+      display: inline-block;
+      animation: pulseLive 2s infinite ease-in-out;
+    }
+    .live-pill.paused .live-dot {
+      background: #9ca3af;
+      box-shadow: none;
+      animation: none;
+    }
+    @keyframes pulseLive {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+    .btn.is-refreshing .icon-refresh {
+      display: inline-block;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
     /* ─── CONTROLS & FILTER BAR ────────────────────────────────── */
     .controls-bar {
       padding: 16px 24px;
@@ -489,6 +533,13 @@
         <div class="topbar-title">Quản trị Khảo sát & Lead Báo Giá XNK</div>
       </div>
       <div class="topbar-right">
+        <div id="live-indicator" class="live-pill" title="Trạng thái tự động cập nhật">
+          <span class="live-dot"></span>
+          <span id="sync-status">Trực tiếp (4s)</span>
+        </div>
+        <div id="last-updated-stat" class="stat-pill" title="Thời gian cập nhật dữ liệu gần nhất từ máy chủ">
+          Cập nhật: <strong id="last-updated-time">--:--:--</strong>
+        </div>
         <div id="total-stat" class="stat-pill">Đang tải...</div>
         <button id="logout-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Đăng xuất</button>
       </div>
@@ -522,7 +573,7 @@
       </div>
       <div class="actions-group">
         <button id="export-btn" class="btn btn-secondary">📥 Xuất CSV</button>
-        <button id="refresh-btn" class="btn btn-secondary">🔄 Làm mới</button>
+        <button id="refresh-btn" class="btn btn-secondary"><span class="icon-refresh">🔄</span> Làm mới</button>
       </div>
     </div>
 
@@ -581,9 +632,14 @@
 
     const API_ENDPOINT = "/api/admin/baogiaxnk";
     const SESSION_KEY = "bgxnk_admin_access_token";
+    const POLL_INTERVAL_MS = 4000;
 
     let allItems = [];
     let filteredItems = [];
+    let lastItemsJson = "";
+    let pollTimer = null;
+    let activeDetailSubmissionId = null;
+    let isFetching = false;
 
     const $ = id => document.getElementById(id);
     const escapeHTML = str => String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -594,13 +650,21 @@
         const d = new Date(isoStr);
         return d.toLocaleString('vi-VN', {
           timeZone: 'Asia/Ho_Chi_Minh',
-          hour: '2-digit', minute: '2-digit',
+          hour: '2-digit', minute: '2-digit', second: '2-digit',
           day: '2-digit', month: '2-digit', year: 'numeric'
         });
       } catch { return isoStr; }
     }
 
+    function formatTimeOnly(dateObj) {
+      return dateObj.toLocaleTimeString('vi-VN', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+    }
+
     function showUnlock() {
+      stopPolling();
       $("unlock-view").style.display = "flex";
       $("dashboard-view").style.display = "none";
       $("admin-key-input").value = "";
@@ -618,23 +682,47 @@
       err.style.display = "block";
     }
 
+    function updateLiveIndicator(active, label) {
+      const pill = $("live-indicator");
+      const text = $("sync-status");
+      if (!pill || !text) return;
+      if (active) {
+        pill.classList.remove("paused");
+        text.textContent = label || "Trực tiếp (4s)";
+      } else {
+        pill.classList.add("paused");
+        text.textContent = label || "Tạm dừng";
+      }
+    }
+
     // ─── AUTHENTICATION & DATA FETCH ───────────────────────────────────
-    async function loadAdminData(token) {
+    async function loadAdminData(token, options = {}) {
+      const { isSilent = false, isManual = false } = options;
+      if (isFetching) return false;
+      isFetching = true;
+
       const btn = $("unlock-btn");
-      btn.disabled = true;
-      btn.innerHTML = `<span>Đang xác thực...</span>`;
+      if (!isSilent) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Đang xác thực...</span>`;
+      }
 
       try {
-        const res = await fetch(API_ENDPOINT, {
+        const url = `${API_ENDPOINT}?_t=${Date.now()}`;
+        const res = await fetch(url, {
           method: 'GET',
+          cache: 'no-store',
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
           }
         });
 
         const data = await res.json().catch(() => ({}));
 
         if (res.status === 401) {
+          stopPolling();
           sessionStorage.removeItem(SESSION_KEY);
           showUnlock();
           showUnlockError(data.error || "Mã khóa truy cập không hợp lệ.");
@@ -642,42 +730,128 @@
         }
 
         if (res.status === 429) {
-          showUnlock();
-          showUnlockError(data.error || "Hệ thống tạm khóa do thử sai nhiều lần. Vui lòng đợi.");
+          if (!isSilent) {
+            showUnlock();
+            showUnlockError(data.error || "Hệ thống tạm khóa do thử sai nhiều lần. Vui lòng đợi.");
+          }
+          updateLiveIndicator(false, "Bị giới hạn (429)");
           return false;
         }
 
         if (res.status === 503) {
-          showUnlock();
-          showUnlockError(data.error || "Chưa cấu hình ADMIN_ACCESS_KEY trên Cloudflare.");
+          if (!isSilent) {
+            showUnlock();
+            showUnlockError(data.error || "Chưa cấu hình ADMIN_ACCESS_KEY trên Cloudflare.");
+          }
           return false;
         }
 
         if (!res.ok || !data.success) {
-          showUnlock();
-          showUnlockError(data.error || `Lỗi máy chủ (${res.status}).`);
+          if (!isSilent) {
+            showUnlock();
+            showUnlockError(data.error || `Lỗi máy chủ (${res.status}).`);
+          }
           return false;
         }
 
         // Auth success
         sessionStorage.setItem(SESSION_KEY, token);
-        allItems = data.items || [];
         showDashboard();
-        applyFilters();
+
+        // Update timestamp
+        const now = new Date();
+        $("last-updated-time").textContent = formatTimeOnly(now);
+        updateLiveIndicator(true, "Trực tiếp (4s)");
+
+        // Smart diff: only re-render if items changed
+        const newItems = data.items || [];
+        const currentJson = JSON.stringify(newItems);
+        const hasChanged = currentJson !== lastItemsJson;
+
+        if (hasChanged) {
+          lastItemsJson = currentJson;
+          allItems = newItems;
+          applyFilters({ preserveScroll: true });
+
+          // If detail drawer is open for a submission, update it live!
+          if (activeDetailSubmissionId) {
+            const activeItem = allItems.find(i => i.submission_id === activeDetailSubmissionId);
+            if (activeItem) {
+              renderDrawerBody(activeItem);
+            }
+          }
+        } else {
+          renderStats();
+        }
+
+        // Ensure polling is active
+        if (!pollTimer && !document.hidden) {
+          startPolling();
+        }
+
         return true;
 
       } catch (networkErr) {
-        showUnlock();
-        showUnlockError("Lỗi kết nối mạng đến máy chủ.");
+        if (!isSilent) {
+          showUnlock();
+          showUnlockError("Lỗi kết nối mạng đến máy chủ.");
+        }
+        updateLiveIndicator(false, "Lỗi kết nối");
         return false;
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<span>Mở khóa hệ thống</span><span>→</span>`;
+        isFetching = false;
+        if (!isSilent) {
+          btn.disabled = false;
+          btn.innerHTML = `<span>Mở khóa hệ thống</span><span>→</span>`;
+        }
       }
     }
 
+    // ─── POLLING LIFECYCLE ──────────────────────────────────────────────
+    function startPolling() {
+      stopPolling();
+      const token = sessionStorage.getItem(SESSION_KEY);
+      if (!token) return;
+
+      updateLiveIndicator(true, "Trực tiếp (4s)");
+      pollTimer = setInterval(() => {
+        if (document.hidden) return;
+        const currentToken = sessionStorage.getItem(SESSION_KEY);
+        if (!currentToken) {
+          stopPolling();
+          return;
+        }
+        loadAdminData(currentToken, { isSilent: true });
+      }, POLL_INTERVAL_MS);
+    }
+
+    function stopPolling() {
+      if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+      }
+      updateLiveIndicator(false, "Tạm dừng");
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      const token = sessionStorage.getItem(SESSION_KEY);
+      if (!token) return;
+
+      if (document.hidden) {
+        updateLiveIndicator(false, "Tạm dừng (tab ẩn)");
+      } else {
+        updateLiveIndicator(true, "Đang đồng bộ...");
+        loadAdminData(token, { isSilent: true });
+        startPolling();
+      }
+    });
+
     // ─── FILTER & RENDER ───────────────────────────────────────────────
-    function applyFilters() {
+    function applyFilters(options = {}) {
+      const { preserveScroll = false } = options;
+      const tableContainer = document.querySelector(".table-container");
+      const prevScrollTop = (preserveScroll && tableContainer) ? tableContainer.scrollTop : 0;
+
       const search = ($("filter-search").value || '').toLowerCase().trim();
       const route = $("filter-route").value;
       const sector = $("filter-sector").value;
@@ -708,6 +882,10 @@
 
       renderTable();
       renderStats();
+
+      if (preserveScroll && tableContainer) {
+        tableContainer.scrollTop = prevScrollTop;
+      }
     }
 
     function renderStats() {
@@ -723,7 +901,7 @@
         return;
       }
 
-      tbody.innerHTML = filteredItems.map((item, idx) => {
+      tbody.innerHTML = filteredItems.map((item) => {
         const c = item.contact || {};
         const p = item.scores || {};
         const isLead = item.has_contact;
@@ -731,7 +909,7 @@
         const zaloUrl = c.phone ? `https://zalo.me/${c.phone.replace(/[^0-9]/g, '')}` : '#';
 
         return `
-          <tr>
+          <tr data-submission-id="${escapeHTML(item.submission_id)}">
             <td style="white-space: nowrap; font-size: 12px; color: var(--text-muted);">
               ${formatDate(item.created_at)}
             </td>
@@ -762,7 +940,7 @@
                 : `<span class="status-badge status-no-contact">○ Chỉ xem</span>`}
             </td>
             <td>
-              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="openDetail(${idx})">
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="openDetail('${escapeHTML(item.submission_id)}')">
                 Xem →
               </button>
             </td>
@@ -772,17 +950,29 @@
     }
 
     // ─── DETAIL VIEW DRAWER ────────────────────────────────────────────
-    window.openDetail = function(filteredIdx) {
-      const item = filteredItems[filteredIdx];
+    window.openDetail = function(identifier) {
+      let item = null;
+      if (typeof identifier === 'number') {
+        item = filteredItems[identifier];
+      } else {
+        item = allItems.find(i => i.submission_id === identifier) || filteredItems.find(i => i.submission_id === identifier);
+      }
       if (!item) return;
 
+      activeDetailSubmissionId = item.submission_id;
+      $("drawer-title").textContent = `Chi tiết #${item.submission_id}`;
+      renderDrawerBody(item);
+
+      $("detail-drawer").style.display = "flex";
+      $("detail-drawer").setAttribute("aria-hidden", "false");
+    };
+
+    function renderDrawerBody(item) {
       const c = item.contact || {};
       const res = item.result || {};
       const meta = item.metadata || {};
       const p = item.scores || {};
       const answers = item.answers || [];
-
-      $("drawer-title").textContent = `Chi tiết #${item.submission_id}`;
 
       let qaHtml = '';
       for (let i = 0; i < 9; i++) {
@@ -933,12 +1123,10 @@
           </div>
         </div>
       `;
-
-      $("detail-drawer").style.display = "flex";
-      $("detail-drawer").setAttribute("aria-hidden", "false");
-    };
+    }
 
     function closeDetail() {
+      activeDetailSubmissionId = null;
       $("detail-drawer").style.display = "none";
       $("detail-drawer").setAttribute("aria-hidden", "true");
     }
@@ -1029,21 +1217,29 @@
     });
 
     $("logout-btn").addEventListener("click", () => {
+      stopPolling();
       sessionStorage.removeItem(SESSION_KEY);
       allItems = [];
       filteredItems = [];
+      lastItemsJson = "";
+      activeDetailSubmissionId = null;
       showUnlock();
     });
 
-    $("refresh-btn").addEventListener("click", () => {
+    $("refresh-btn").addEventListener("click", async () => {
       const token = sessionStorage.getItem(SESSION_KEY);
-      if (token) loadAdminData(token);
+      if (!token) return;
+      const btn = $("refresh-btn");
+      btn.classList.add("is-refreshing");
+      updateLiveIndicator(true, "Đang làm mới...");
+      await loadAdminData(token, { isManual: true, isSilent: true });
+      btn.classList.remove("is-refreshing");
     });
 
-    $("filter-search").addEventListener("input", applyFilters);
-    $("filter-route").addEventListener("change", applyFilters);
-    $("filter-sector").addEventListener("change", applyFilters);
-    $("filter-contact").addEventListener("change", applyFilters);
+    $("filter-search").addEventListener("input", () => applyFilters({ preserveScroll: true }));
+    $("filter-route").addEventListener("change", () => applyFilters({ preserveScroll: true }));
+    $("filter-sector").addEventListener("change", () => applyFilters({ preserveScroll: true }));
+    $("filter-contact").addEventListener("change", () => applyFilters({ preserveScroll: true }));
 
     window.copyText = async function(text) {
       try {
