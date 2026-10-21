@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GO4AI Internal Admin — Quản trị Khảo sát & Lead Báo Giá XNK</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #091310;
+      --card-bg: #101f1a;
+      --card-border: #1e3830;
+      --surface: #152922;
+      --text: #e2ede8;
+      --text-muted: #8ba89c;
+      --primary: #22c55e;
+      --primary-hover: #16a34a;
+      --primary-dim: rgba(34, 197, 94, 0.12);
+      --danger: #ef4444;
+      --danger-dim: rgba(239, 68, 68, 0.15);
+      --amber: #f59e0b;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --radius: 8px;
+      --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* ─── UNLOCK SCREEN ────────────────────────────────────────── */
+    #unlock-view {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .unlock-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 32px 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .unlock-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      background: var(--primary-dim);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .unlock-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .unlock-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #fff;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-dim);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font);
+    }
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: #052e16;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:hover { background: #1c352c; }
+    .alert-banner {
+      background: var(--danger-dim);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ─── DASHBOARD VIEW ───────────────────────────────────────── */
+    #dashboard-view {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .topbar {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .topbar-logo {
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .topbar-logo span { color: var(--primary); }
+    .topbar-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      border-left: 1px solid var(--card-border);
+      padding-left: 14px;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .stat-pill {
+      font-size: 12px;
+      background: var(--surface);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+    }
+    .stat-pill strong { color: #fff; }
+
+    /* ─── CONTROLS & FILTER BAR ────────────────────────────────── */
+    .controls-bar {
+      padding: 16px 24px;
+      background: rgba(16, 31, 26, 0.6);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .filters-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+    }
+    .search-input {
+      min-width: 260px;
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #fff;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .select-filter {
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #fff;
+      outline: none;
+      cursor: pointer;
+    }
+    .actions-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* ─── DATA TABLE ───────────────────────────────────────────── */
+    .table-container {
+      flex: 1;
+      padding: 20px 24px;
+      overflow-x: auto;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      font-size: 13px;
+    }
+    .data-table th {
+      background: #142821;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 61px;
+      z-index: 20;
+    }
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(30, 56, 48, 0.6);
+      vertical-align: middle;
+      color: var(--text);
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td {
+      background: rgba(34, 197, 94, 0.04);
+    }
+
+    /* Pills & Badges */
+    .id-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .id-pill:hover { color: #fff; border-color: var(--primary); }
+    .route-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .route-A { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .route-B { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .route-C { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .route-D { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4); }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-has-contact {
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    .status-no-contact {
+      background: rgba(148, 163, 184, 0.1);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .tel-link {
+      color: #6ee7b7;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .tel-link:hover { text-decoration: underline; }
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    /* ─── DETAIL DRAWER / MODAL ────────────────────────────────── */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .drawer-panel {
+      width: 100%;
+      max-width: 680px;
+      height: 100vh;
+      background: var(--card-bg);
+      border-left: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      z-index: 10;
+    }
+    .drawer-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .drawer-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .drawer-close:hover { color: #fff; background: var(--surface); }
+    .drawer-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .drawer-section {
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    .drawer-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .detail-item.full-width { grid-column: span 2; }
+    .detail-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .detail-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      word-break: break-word;
+    }
+    .qa-box {
+      border-left: 2px solid var(--card-border);
+      padding-left: 12px;
+      margin-bottom: 12px;
+    }
+    .qa-box:last-child { margin-bottom: 0; }
+    .qa-q { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .qa-a { font-size: 12px; color: #86efac; font-weight: 500; }
+    .plan-card {
+      background: rgba(9, 19, 16, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .topbar-right { width: 100%; justify-content: space-between; }
+      .controls-bar { flex-direction: column; align-items: stretch; }
+      .filters-group { flex-direction: column; align-items: stretch; }
+      .search-input { width: 100%; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-item.full-width { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── UNLOCK SCREEN ─────────────────────────────────────────── -->
+  <main id="unlock-view">
+    <div class="unlock-card">
+      <div class="unlock-badge">GO4AI Internal Only</div>
+      <h1 class="unlock-title">Quản trị Báo Giá XNK</h1>
+      <p class="unlock-desc">Vui lòng nhập khóa quản trị bảo mật (ADMIN_ACCESS_KEY) để truy cập dữ liệu khảo sát và thông tin khách hàng.</p>
+      
+      <div id="unlock-error" class="alert-banner" role="alert"></div>
+
+      <form id="unlock-form">
+        <div class="form-group">
+          <label for="admin-key-input" class="form-label">Mã khóa truy cập</label>
+          <input type="password" id="admin-key-input" class="form-input" placeholder="Dán mã ADMIN_ACCESS_KEY..." autocomplete="current-password" required>
+        </div>
+        <button type="submit" id="unlock-btn" class="btn btn-primary">
+          <span>Mở khóa hệ thống</span>
+          <span>→</span>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- ─── DASHBOARD VIEW ────────────────────────────────────────── -->
+  <div id="dashboard-view">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">GO<span>4</span>AI</div>
+        <div class="topbar-title">Quản trị Khảo sát & Lead Báo Giá XNK</div>
+      </div>
+      <div class="topbar-right">
+        <div id="total-stat" class="stat-pill">Đang tải...</div>
+        <button id="logout-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Đăng xuất</button>
+      </div>
+    </header>
+
+    <div class="controls-bar">
+      <div class="filters-group">
+        <input type="text" id="filter-search" class="search-input" placeholder="🔍 Tìm tên, SĐT, công ty, email, mã...">
+        <select id="filter-route" class="select-filter">
+          <option value="">Lộ trình: Tất cả</option>
+          <option value="A">Lộ trình A (Đội ngũ)</option>
+          <option value="B">Lộ trình B (Quy trình & Dữ liệu)</option>
+          <option value="C">Lộ trình C (Thí điểm AI)</option>
+          <option value="D">Lộ trình D (Tự đo trước)</option>
+        </select>
+        <select id="filter-sector" class="select-filter">
+          <option value="">Ngành: Tất cả</option>
+          <option value="coffee">Cà phê</option>
+          <option value="cashew">Hạt điều</option>
+          <option value="pepper">Hồ tiêu</option>
+          <option value="rice">Gạo</option>
+          <option value="farm">Nông sản / Thực phẩm khác</option>
+          <option value="agtech">Công nghệ nông nghiệp</option>
+          <option value="other">Ngành khác</option>
+        </select>
+        <select id="filter-contact" class="select-filter">
+          <option value="">Liên hệ: Tất cả</option>
+          <option value="has">Có thông tin liên hệ</option>
+          <option value="none">Chưa để lại thông tin</option>
+        </select>
+      </div>
+      <div class="actions-group">
+        <button id="export-btn" class="btn btn-secondary">📥 Xuất CSV</button>
+        <button id="refresh-btn" class="btn btn-secondary">🔄 Làm mới</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table" id="main-table">
+        <thead>
+          <tr>
+            <th>Thời gian</th>
+            <th>Mã khảo sát</th>
+            <th>Khách hàng & Công ty</th>
+            <th>Số điện thoại / Zalo</th>
+            <th>Email</th>
+            <th>Ngành hàng</th>
+            <th>Điểm P-F-N</th>
+            <th>Lộ trình</th>
+            <th>Bản</th>
+            <th>Trạng thái</th>
+            <th>Chi tiết</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr>
+            <td colspan="11" class="empty-state">Đang tải dữ liệu khảo sát...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── DETAIL DRAWER ─────────────────────────────────────────── -->
+  <div id="detail-drawer" class="drawer-backdrop" aria-hidden="true">
+    <div class="drawer-panel">
+      <div class="drawer-header">
+        <div class="drawer-title" id="drawer-title">Chi tiết Khảo sát</div>
+        <button type="button" class="drawer-close" id="drawer-close-btn">&times;</button>
+      </div>
+      <div class="drawer-body" id="drawer-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 9 Questions and options database for detail mapping
+    const QUESTIONS = [
+      { q: "1. Đội kinh doanh, thu mua, logistics đang dùng AI cho công việc ra sao?", opts: ["Dùng đều, có cách làm chung", "Vài người tự dùng, mỗi người một kiểu", "Gần như chưa dùng"] },
+      { q: "2. Nếu AI soạn sai một con số trong báo giá, nhân viên có biết cách phát hiện không?", opts: ["Có, đã có quy tắc kiểm tra", "Một vài người biết", "Chưa ai được hướng dẫn"] },
+      { q: "3. Ai trong công ty có thể tự dẫn dắt việc áp dụng AI sau này?", opts: ["Đã có người và có thời gian", "Có người nhưng đang rất bận", "Chưa có ai"] },
+      { q: "4. Nếu người giữ giá nghỉ phép một tuần, công ty có báo giá được không?", opts: ["Được, hoạt động bình thường", "Được nhưng chậm, hay phải gọi hỏi", "Báo giá chậm hoặc dừng"] },
+      { q: "5. Giảm giá hay ngoại lệ đang được duyệt thế nào?", opts: ["Có người duyệt rõ, lưu lại ai duyệt, mức nào, lúc nào", "Có duyệt nhưng qua chat hoặc nói miệng, khó tra lại", "Chưa có quy tắc duyệt rõ"] },
+      { q: "6. Cùng một mặt hàng, công ty đang có bao nhiêu bản giá?", opts: ["Một nguồn giá chuẩn, có ngày hiệu lực", "Vài bản, nhưng biết bản nào đúng", "Nhiều bản, không chắc bản nào còn hiệu lực"] },
+      { q: "7. Từ lúc khách gửi email hỏi giá đến lúc báo giá rời công ty, thường mất bao lâu?", opts: ["Dưới 1 giờ", "Trong ngày", "Sang ngày hôm sau trở đi"] },
+      { q: "8. Mỗi tháng công ty nhận khoảng bao nhiêu yêu cầu báo giá?", opts: ["Dưới 20", "Từ 20 đến 80", "Trên 80"] },
+      { q: "9. Lần gần nhất báo giá sai hoặc sót cước, điều kiện giao hàng là khi nào?", opts: ["Chưa gặp trong 6 tháng gần đây", "Có gặp, nhưng bắt được trước khi gửi khách", "Có gặp, báo giá đã tới tay khách"] }
+    ];
+
+    const API_ENDPOINT = "/api/admin/baogiaxnk";
+    const SESSION_KEY = "bgxnk_admin_access_token";
+
+    let allItems = [];
+    let filteredItems = [];
+
+    const $ = id => document.getElementById(id);
+    const escapeHTML = str => String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    function formatDate(isoStr) {
+      if (!isoStr) return '—';
+      try {
+        const d = new Date(isoStr);
+        return d.toLocaleString('vi-VN', {
+          timeZone: 'Asia/Ho_Chi_Minh',
+          hour: '2-digit', minute: '2-digit',
+          day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+      } catch { return isoStr; }
+    }
+
+    function showUnlock() {
+      $("unlock-view").style.display = "flex";
+      $("dashboard-view").style.display = "none";
+      $("admin-key-input").value = "";
+      $("admin-key-input").focus();
+    }
+
+    function showDashboard() {
+      $("unlock-view").style.display = "none";
+      $("dashboard-view").style.display = "flex";
+    }
+
+    function showUnlockError(msg) {
+      const err = $("unlock-error");
+      err.textContent = msg;
+      err.style.display = "block";
+    }
+
+    // ─── AUTHENTICATION & DATA FETCH ───────────────────────────────────
+    async function loadAdminData(token) {
+      const btn = $("unlock-btn");
+      btn.disabled = true;
+      btn.innerHTML = `<span>Đang xác thực...</span>`;
+
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.status === 401) {
+          sessionStorage.removeItem(SESSION_KEY);
+          showUnlock();
+          showUnlockError(data.error || "Mã khóa truy cập không hợp lệ.");
+          return false;
+        }
+
+        if (res.status === 429) {
+          showUnlock();
+          showUnlockError(data.error || "Hệ thống tạm khóa do thử sai nhiều lần. Vui lòng đợi.");
+          return false;
+        }
+
+        if (res.status === 503) {
+          showUnlock();
+          showUnlockError(data.error || "Chưa cấu hình ADMIN_ACCESS_KEY trên Cloudflare.");
+          return false;
+        }
+
+        if (!res.ok || !data.success) {
+          showUnlock();
+          showUnlockError(data.error || `Lỗi máy chủ (${res.status}).`);
+          return false;
+        }
+
+        // Auth success
+        sessionStorage.setItem(SESSION_KEY, token);
+        allItems = data.items || [];
+        showDashboard();
+        applyFilters();
+        return true;
+
+      } catch (networkErr) {
+        showUnlock();
+        showUnlockError("Lỗi kết nối mạng đến máy chủ.");
+        return false;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Mở khóa hệ thống</span><span>→</span>`;
+      }
+    }
+
+    // ─── FILTER & RENDER ───────────────────────────────────────────────
+    function applyFilters() {
+      const search = ($("filter-search").value || '').toLowerCase().trim();
+      const route = $("filter-route").value;
+      const sector = $("filter-sector").value;
+      const contactMode = $("filter-contact").value;
+
+      filteredItems = allItems.filter(item => {
+        if (route && item.route !== route) return false;
+        if (sector && item.sector !== sector) return false;
+        if (contactMode === 'has' && !item.has_contact) return false;
+        if (contactMode === 'none' && item.has_contact) return false;
+
+        if (search) {
+          const c = item.contact || {};
+          const hay = [
+            item.submission_id,
+            item.sector_name,
+            c.name,
+            c.phone,
+            c.company,
+            c.email,
+            c.role
+          ].filter(Boolean).join(' ').toLowerCase();
+
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      });
+
+      renderTable();
+      renderStats();
+    }
+
+    function renderStats() {
+      const total = allItems.length;
+      const withContact = allItems.filter(i => i.has_contact).length;
+      $("total-stat").innerHTML = `Tổng: <strong>${total}</strong> | Có liên hệ: <strong>${withContact}</strong> | Đang lọc: <strong>${filteredItems.length}</strong>`;
+    }
+
+    function renderTable() {
+      const tbody = $("table-body");
+      if (!filteredItems.length) {
+        tbody.innerHTML = `<tr><td colspan="11" class="empty-state">Không có bản ghi nào phù hợp với bộ lọc tìm kiếm.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filteredItems.map((item, idx) => {
+        const c = item.contact || {};
+        const p = item.scores || {};
+        const isLead = item.has_contact;
+        const phoneFormatted = c.phone ? escapeHTML(c.phone) : '—';
+        const zaloUrl = c.phone ? `https://zalo.me/${c.phone.replace(/[^0-9]/g, '')}` : '#';
+
+        return `
+          <tr>
+            <td style="white-space: nowrap; font-size: 12px; color: var(--text-muted);">
+              ${formatDate(item.created_at)}
+            </td>
+            <td>
+              <span class="id-pill" onclick="copyText('${escapeHTML(item.submission_id)}')" title="Bấm để sao chép mã">
+                ${escapeHTML(item.submission_id)}
+              </span>
+            </td>
+            <td>
+              <div style="font-weight: 600; color: #fff;">${escapeHTML(c.name || 'Khách vãng lai')}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">${escapeHTML(c.company || 'Chưa cung cấp')}</div>
+            </td>
+            <td style="white-space: nowrap;">
+              ${c.phone ? `<a href="${zaloUrl}" target="_blank" rel="noopener" class="tel-link">💬 ${phoneFormatted}</a>` : '<span style="color:var(--text-muted)">—</span>'}
+            </td>
+            <td style="font-size: 12px;">${c.email ? `<a href="mailto:${escapeHTML(c.email)}" style="color:var(--text); text-decoration:none;">${escapeHTML(c.email)}</a>` : '<span style="color:var(--text-muted)">—</span>'}</td>
+            <td><span style="font-size: 12px;">${escapeHTML(item.sector_name || item.sector || '—')}</span></td>
+            <td style="white-space: nowrap; font-family: var(--mono); font-size: 12px;">
+              P:${p.P} F:${p.F} N:${p.N}
+            </td>
+            <td>
+              <span class="route-badge route-${item.route}">${escapeHTML(item.route)}</span>
+            </td>
+            <td style="text-align: center; font-size: 11px; color: var(--text-muted);">r${item.revision || 1}</td>
+            <td>
+              ${isLead 
+                ? `<span class="status-badge status-has-contact">● Đã để lại SĐT</span>` 
+                : `<span class="status-badge status-no-contact">○ Chỉ xem</span>`}
+            </td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="openDetail(${idx})">
+                Xem →
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ─── DETAIL VIEW DRAWER ────────────────────────────────────────────
+    window.openDetail = function(filteredIdx) {
+      const item = filteredItems[filteredIdx];
+      if (!item) return;
+
+      const c = item.contact || {};
+      const res = item.result || {};
+      const meta = item.metadata || {};
+      const p = item.scores || {};
+      const answers = item.answers || [];
+
+      $("drawer-title").textContent = `Chi tiết #${item.submission_id}`;
+
+      let qaHtml = '';
+      for (let i = 0; i < 9; i++) {
+        const qObj = QUESTIONS[i];
+        const selectedIdx = answers[i];
+        const selectedText = (selectedIdx !== undefined && selectedIdx !== null && qObj.opts[selectedIdx]) 
+          ? qObj.opts[selectedIdx] 
+          : 'Chưa chọn';
+
+        qaHtml += `
+          <div class="qa-box">
+            <div class="qa-q">${qObj.q}</div>
+            <div class="qa-a">✓ ${escapeHTML(selectedText)}</div>
+          </div>
+        `;
+      }
+
+      let stagesHtml = (res.stages || []).map(s => `
+        <div class="plan-card">
+          <strong style="color:#fff;">${escapeHTML(s[0])} · ${escapeHTML(s[1])}</strong>
+          <p style="margin: 4px 0; color: var(--text-muted);">${escapeHTML(s[2])}</p>
+          <div style="font-size: 11px; color: #86efac;">Phụ trách: ${escapeHTML(s[3])} | Đầu ra: ${escapeHTML(s[4])}</div>
+        </div>
+      `).join('');
+
+      let daysHtml = (res.days || []).map((d, i) => `
+        <div style="font-size: 12px; margin-bottom: 4px;">
+          <strong style="color:var(--primary);">Ngày ${i+1}:</strong> ${escapeHTML(d)}
+        </div>
+      `).join('');
+
+      $("drawer-content").innerHTML = `
+        <!-- Section A: Contact -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">👤 Thông tin khách hàng & Yêu cầu</div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">Họ tên</span>
+              <span class="detail-value" style="font-weight:700; color:#fff;">${escapeHTML(c.name || 'Khách chưa để lại tên')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Số điện thoại / Zalo</span>
+              <span class="detail-value">${c.phone ? `<a href="https://zalo.me/${c.phone.replace(/[^0-9]/g, '')}" target="_blank" class="tel-link">${escapeHTML(c.phone)}</a>` : '—'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Doanh nghiệp</span>
+              <span class="detail-value">${escapeHTML(c.company || '—')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Chức vụ</span>
+              <span class="detail-value">${escapeHTML(c.role || '—')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Email</span>
+              <span class="detail-value">${escapeHTML(c.email || '—')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Khung giờ hẹn gọi</span>
+              <span class="detail-value">${escapeHTML(c.preferred_contact_time || 'Chưa chọn')}</span>
+            </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">Nhu cầu đăng ký</span>
+              <span class="detail-value">
+                ${c.diagnostic_60min ? '✅ Hẹn đo hiện trạng 60 phút ' : ''}
+                ${c.seven_day_plan ? '✅ Nhận kế hoạch 7 ngày' : ''}
+                ${!c.diagnostic_60min && !c.seven_day_plan ? '—' : ''}
+              </span>
+            </div>
+            ${c.note ? `
+            <div class="detail-item full-width">
+              <span class="detail-label">Ghi chú bổ sung từ khách</span>
+              <span class="detail-value" style="background:#091310; padding:8px 10px; border-radius:4px; font-style:italic;">"${escapeHTML(c.note)}"</span>
+            </div>` : ''}
+          </div>
+        </div>
+
+        <!-- Section B: 9 Questions -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">📋 Toàn bộ 9 câu trả lời thực tế</div>
+          <div style="font-size:12px; margin-bottom:12px; color:var(--text-muted);">
+            Ngành lựa chọn: <strong style="color:#fff;">${escapeHTML(item.sector_name || item.sector)}</strong>
+          </div>
+          ${qaHtml}
+        </div>
+
+        <!-- Section C: Results -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">🎯 Kết quả chẩn đoán đề xuất</div>
+          <div class="detail-grid" style="margin-bottom:14px;">
+            <div class="detail-item">
+              <span class="detail-label">Lộ trình đề xuất</span>
+              <span class="detail-value" style="font-weight:700; color:var(--primary);">HƯỚNG ${escapeHTML(item.route)}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Điểm thành phần</span>
+              <span class="detail-value">Đội ngũ ${p.P}/6 · Quy trình ${p.F}/6 · Rủi ro ${p.N}/6</span>
+            </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">Tiêu đề chẩn đoán</span>
+              <span class="detail-value" style="font-weight:600;">${escapeHTML(res.title)}</span>
+            </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">Hành động trong 48 giờ</span>
+              <span class="detail-value" style="color:#fde047;">${escapeHTML(res.action)}</span>
+            </div>
+          </div>
+
+          ${stagesHtml ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); margin:12px 0 6px;">THỨ TỰ ĐẦU TƯ:</div>${stagesHtml}` : ''}
+          ${daysHtml ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); margin:12px 0 6px;">KẾ HOẠCH 7 NGÀY:</div>${daysHtml}` : ''}
+        </div>
+
+        <!-- Section D: Metadata -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">⚙️ Metadata kỹ thuật & Nguồn lưu vết</div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">Submission ID</span>
+              <span class="detail-value" style="font-family:var(--mono);">${escapeHTML(item.submission_id)}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Revision (Số lần chỉnh sửa)</span>
+              <span class="detail-value">v${item.revision || 1}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Thời điểm tạo</span>
+              <span class="detail-value">${formatDate(item.created_at)}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Thời điểm cập nhật</span>
+              <span class="detail-value">${formatDate(item.updated_at)}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Sự kiện (Event ID)</span>
+              <span class="detail-value">${escapeHTML(item.event_id || '—')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">UTM Source / Campaign</span>
+              <span class="detail-value">${escapeHTML(meta.utm_source || '—')} / ${escapeHTML(meta.utm_campaign || '—')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Biến thể QR</span>
+              <span class="detail-value">${escapeHTML(meta.qr_variant || 'stage')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Liên kết Lead ID</span>
+              <span class="detail-value">${item.lead_id ? `#${item.lead_id}` : 'Chưa có lead'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      $("detail-drawer").style.display = "flex";
+      $("detail-drawer").setAttribute("aria-hidden", "false");
+    };
+
+    function closeDetail() {
+      $("detail-drawer").style.display = "none";
+      $("detail-drawer").setAttribute("aria-hidden", "true");
+    }
+
+    $("drawer-close-btn").addEventListener("click", closeDetail);
+    $("detail-drawer").addEventListener("click", e => {
+      if (e.target === $("detail-drawer")) closeDetail();
+    });
+
+    // ─── CSV EXPORT ───────────────────────────────────────────────────
+    $("export-btn").addEventListener("click", () => {
+      if (!filteredItems.length) {
+        alert("Không có dữ liệu để xuất.");
+        return;
+      }
+
+      const headers = [
+        "Thoi_gian",
+        "Submission_ID",
+        "Ho_ten",
+        "Cong_ty",
+        "So_dien_thoai",
+        "Email",
+        "Chuc_vu",
+        "Khung_gio_hen",
+        "Ghi_chu",
+        "Nganh_hang",
+        "Diem_P",
+        "Diem_F",
+        "Diem_N",
+        "Lo_trinh",
+        "Hen_60_phut",
+        "Ke_hoach_7_ngay",
+        "Revision",
+        "Event_ID",
+        "UTM_Source",
+        "Lead_ID"
+      ];
+
+      const rows = filteredItems.map(item => {
+        const c = item.contact || {};
+        const p = item.scores || {};
+        const meta = item.metadata || {};
+
+        return [
+          item.created_at || '',
+          item.submission_id || '',
+          c.name || '',
+          c.company || '',
+          c.phone || '',
+          c.email || '',
+          c.role || '',
+          c.preferred_contact_time || '',
+          (c.note || '').replace(/[\r\n]+/g, ' '),
+          item.sector_name || item.sector || '',
+          p.P ?? '',
+          p.F ?? '',
+          p.N ?? '',
+          item.route || '',
+          c.diagnostic_60min ? 'Co' : 'Khong',
+          c.seven_day_plan ? 'Co' : 'Khong',
+          item.revision || 1,
+          item.event_id || '',
+          meta.utm_source || '',
+          item.lead_id || ''
+        ].map(val => `"${String(val).replace(/"/g, '""')}"`).join(',');
+      });
+
+      // UTF-8 BOM for Excel compatibility
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `GO4AI_BaoGiaXNK_Surveys_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // ─── EVENT LISTENERS ───────────────────────────────────────────────
+    $("unlock-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const token = $("admin-key-input").value.trim();
+      if (!token) return;
+      loadAdminData(token);
+    });
+
+    $("logout-btn").addEventListener("click", () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      allItems = [];
+      filteredItems = [];
+      showUnlock();
+    });
+
+    $("refresh-btn").addEventListener("click", () => {
+      const token = sessionStorage.getItem(SESSION_KEY);
+      if (token) loadAdminData(token);
+    });
+
+    $("filter-search").addEventListener("input", applyFilters);
+    $("filter-route").addEventListener("change", applyFilters);
+    $("filter-sector").addEventListener("change", applyFilters);
+    $("filter-contact").addEventListener("change", applyFilters);
+
+    window.copyText = async function(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        alert(`Đã chép mã: ${text}`);
+      } catch {
+        prompt("Sao chép mã này:", text);
+      }
+    };
+
+    // Auto-login on load if session key exists
+    document.addEventListener("DOMContentLoaded", () => {
+      const existingToken = sessionStorage.getItem(SESSION_KEY);
+      if (existingToken) {
+        loadAdminData(existingToken);
+      } else {
+        showUnlock();
+      }
+    });
+  </script>
+</body>
+</html>
