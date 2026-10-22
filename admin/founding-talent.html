@@ -265,6 +265,10 @@
   tbody tr:hover { background: rgba(34, 197, 94, 0.05); }
   tbody tr:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
   .cell-time { font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+  .cell-name { font-weight: 600; color: #fff; white-space: nowrap; }
+  .cell-email { font-family: var(--mono); font-size: 11.5px; color: #a3c9bc; }
+  .cell-phone { font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+  .cell-org { max-width: 220px; color: var(--text); }
   .cell-id { font-family: var(--mono); font-size: 11px; color: #9ec9b8; white-space: nowrap; }
   .tag {
     display: inline-block;
@@ -400,6 +404,40 @@
   .meta-item { font-size: 12px; color: var(--text-muted); }
   .meta-item b { display: block; color: var(--text); font-family: var(--mono); font-size: 11px; margin-top: 2px; word-break: break-all; }
 
+  .drawer-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--primary);
+    background: rgba(34, 197, 94, 0.08);
+    border-left: 3px solid var(--primary);
+    padding: 8px 12px;
+    margin: 20px 0 12px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .drawer-section-title:first-child { margin-top: 0; }
+  .candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .candidate-item { font-size: 12px; color: var(--text-muted); }
+  .candidate-item b {
+    display: block;
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-top: 2px;
+    word-break: break-word;
+  }
+  .candidate-item--full { grid-column: 1 / -1; }
+
   .toast {
     position: fixed;
     left: 50%;
@@ -484,8 +522,18 @@
   <div class="controls">
     <div class="controls-row">
       <div class="field field--search">
-        <label for="f-search">Tìm câu trả lời tự do</label>
-        <input type="search" id="f-search" placeholder="Tìm trong câu 2, câu 7 và các mục “Khác”…" autocomplete="off">
+        <label for="f-search">Tìm kiếm</label>
+        <input type="search" id="f-search" placeholder="Tìm theo họ tên, email, SĐT, trường/đơn vị, câu 2, 7…" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="f-group">Nhóm ứng viên</label>
+        <select id="f-group">
+          <option value="">Tất cả nhóm</option>
+          <option value="Sinh viên">Sinh viên</option>
+          <option value="Người đi làm">Người đi làm</option>
+          <option value="Từng khởi nghiệp">Từng khởi nghiệp</option>
+          <option value="Khác">Khác</option>
+        </select>
       </div>
       <div class="field">
         <label for="f-q1">Câu 1 · Khát vọng</label>
@@ -561,11 +609,13 @@
       <thead>
         <tr>
           <th>Thời gian gửi</th>
+          <th>Họ tên</th>
+          <th>Email</th>
+          <th>SĐT / Zalo</th>
+          <th>Nhóm ứng viên</th>
+          <th>Trường / Đơn vị</th>
           <th>Submission ID</th>
           <th>Câu 1 · Khát vọng</th>
-          <th>Câu 4 · Môi trường lý tưởng</th>
-          <th>Câu 5 · Lựa chọn</th>
-          <th>Câu 6 · Yếu tố startup</th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
@@ -748,6 +798,7 @@
   /* ── query string ─────────────────────────────────────────────────── */
   function buildQuery(extra) {
     var p = new URLSearchParams();
+    var group = $('#f-group').value;
     var q1 = $('#f-q1').value;
     var q4 = $('#f-q4').value;
     var q5 = $('#f-q5').value;
@@ -756,6 +807,7 @@
     var to = $('#f-to').value;
     var search = $('#f-search').value.trim();
 
+    if (group) p.set('group', group);
     if (q1) p.set('q1', q1);
     if (q4) p.set('q4', q4);
     if (q5) p.set('q5', q5);
@@ -769,7 +821,7 @@
 
   function activeFilterCount() {
     var n = 0;
-    ['#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to', '#f-search'].forEach(function (s) {
+    ['#f-group', '#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to', '#f-search'].forEach(function (s) {
       if ($(s).value.trim()) n++;
     });
     return n;
@@ -825,13 +877,18 @@
     var empty = $('#empty-state');
 
     body.innerHTML = items.map(function (it) {
+      var groupLabel = esc(it.candidate_group || '—');
+      if (it.candidate_group_other) groupLabel += ' <small style="color:var(--text-muted)">(' + esc(it.candidate_group_other) + ')</small>';
+
       return '<tr tabindex="0" data-sid="' + esc(it.submission_id) + '">' +
         '<td class="cell-time">' + esc(fmtTime(it.created_at)) + '</td>' +
+        '<td class="cell-name">' + esc(it.candidate_name || '—') + '</td>' +
+        '<td class="cell-email">' + esc(it.candidate_email || '—') + '</td>' +
+        '<td class="cell-phone">' + esc(it.candidate_phone || '—') + '</td>' +
+        '<td><span class="tag"><b>•</b>' + groupLabel + '</span></td>' +
+        '<td class="cell-org">' + esc(it.candidate_organization || '—') + '</td>' +
         '<td class="cell-id">' + esc(it.submission_id) + '</td>' +
         '<td class="cell-answer">' + tags([it.q1], Q1_SHORT) + (it.q1_other ? '<div class="tag tag--muted" style="white-space:normal;">' + esc(it.q1_other) + '</div>' : '') + '</td>' +
-        '<td class="cell-answer">' + tags(it.q4, Q4_SHORT) + '</td>' +
-        '<td class="cell-answer">' + tags([it.q5], Q5_SHORT) + (it.q5_other ? '<div class="tag tag--muted" style="white-space:normal;">' + esc(it.q5_other) + '</div>' : '') + '</td>' +
-        '<td class="cell-answer">' + tags(it.q6, Q6_SHORT) + (it.q6_other ? '<div class="tag tag--muted" style="white-space:normal;">' + esc(it.q6_other) + '</div>' : '') + '</td>' +
         '</tr>';
     }).join('');
 
@@ -878,6 +935,20 @@
 
     var html = '';
 
+    // PHẦN 1: THÔNG TIN ỨNG VIÊN
+    html += '<div class="drawer-section-title">Phần 1 · THÔNG TIN ỨNG VIÊN</div>';
+    html += '<div class="candidate-grid">' +
+      '<div class="candidate-item">Họ và tên<b>' + esc(it.candidate_name || '—') + '</b></div>' +
+      '<div class="candidate-item">Email<b>' + esc(it.candidate_email || '—') + '</b></div>' +
+      '<div class="candidate-item">Số điện thoại / Zalo<b>' + esc(it.candidate_phone || '—') + '</b></div>' +
+      '<div class="candidate-item">Nhóm ứng viên<b>' + esc(it.candidate_group || '—') +
+        (it.candidate_group_other ? ' (' + esc(it.candidate_group_other) + ')' : '') + '</b></div>' +
+      '<div class="candidate-item candidate-item--full">Trường học / Đơn vị hiện tại<b>' + esc(it.candidate_organization || '—') + '</b></div>' +
+      '</div>';
+
+    // PHẦN 2: CÂU TRẢ LỜI KHẢO SÁT
+    html += '<div class="drawer-section-title">Phần 2 · CÂU TRẢ LỜI KHẢO SÁT</div>';
+
     html += '<div class="ans"><div class="ans-q">Câu 1 · Khát vọng cá nhân</div>' +
       '<div class="ans-title">' + esc(Q_TEXT.q1) + '</div>' +
       answerList([it.q1], Q1_FULL) +
@@ -914,8 +985,12 @@
       '<div class="ans-title">' + esc(Q_TEXT.q7) + '</div>' +
       '<div class="ans-value ans-value--free">' + esc(it.q7_text || '—') + '</div></div>';
 
-    html += '<div class="ans"><div class="ans-q">Metadata</div>' +
+    // PHẦN 3: METADATA
+    html += '<div class="drawer-section-title">Phần 3 · THÔNG TIN KỸ THUẬT (METADATA)</div>';
+    html += '<div class="ans">' +
       '<div class="meta-grid">' +
+      '<div class="meta-item">Submission ID<b>' + esc(it.submission_id) + '</b></div>' +
+      '<div class="meta-item">Thời gian gửi<b>' + esc(fmtTime(it.created_at)) + '</b></div>' +
       '<div class="meta-item">Nguồn<b>' + esc(it.source || '—') + '</b></div>' +
       '<div class="meta-item">Trang<b>' + esc(it.page_path || '—') + '</b></div>' +
       '<div class="meta-item">UTM source<b>' + esc(it.utm_source || '—') + '</b></div>' +
@@ -1015,12 +1090,12 @@
     searchTimer = setTimeout(function () { load({ silent: true }); }, 320);
   });
 
-  ['#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to'].forEach(function (sel) {
+  ['#f-group', '#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to'].forEach(function (sel) {
     $(sel).addEventListener('change', function () { load({ silent: true }); });
   });
 
   $('#reset-btn').addEventListener('click', function () {
-    ['#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to', '#f-search'].forEach(function (s) { $(s).value = ''; });
+    ['#f-group', '#f-q1', '#f-q4', '#f-q5', '#f-q6', '#f-from', '#f-to', '#f-search'].forEach(function (s) { $(s).value = ''; });
     load({ silent: true });
   });
 

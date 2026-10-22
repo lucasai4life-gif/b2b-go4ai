@@ -61,6 +61,7 @@ async function timingSafeEqual(a, b) {
 }
 
 const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?Z$/;
+const CANDIDATE_GROUPS = ['Sinh viên', 'Người đi làm', 'Từng khởi nghiệp', 'Khác'];
 const Q1_CODES = ['A', 'B', 'C', 'D', 'E', 'F'];
 const Q4_CODES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 const Q5_CODES = ['A', 'B', 'C', 'D', 'E'];
@@ -143,6 +144,7 @@ export async function onRequestGet(context) {
     // ─── 3. QUERY PARAMS ────────────────────────────────────────────────
     const url = new URL(request.url);
     const submissionIdParam = sanitizeField(url.searchParams.get('submission_id') || '', 64);
+    const groupParam = sanitizeField(url.searchParams.get('group') || url.searchParams.get('candidate_group') || '', 64);
     const q1 = sanitizeField(url.searchParams.get('q1') || '', 4).toUpperCase();
     const q4 = sanitizeField(url.searchParams.get('q4') || '', 4).toUpperCase();
     const q5 = sanitizeField(url.searchParams.get('q5') || '', 4).toUpperCase();
@@ -179,6 +181,10 @@ export async function onRequestGet(context) {
     const where = [];
     const params = [];
 
+    if (groupParam && CANDIDATE_GROUPS.includes(groupParam)) {
+      where.push('candidate_group = ?');
+      params.push(groupParam);
+    }
     if (q1 && Q1_CODES.includes(q1)) { where.push('q1_answer = ?'); params.push(q1); }
     if (q5 && Q5_CODES.includes(q5)) { where.push('q5_answer = ?'); params.push(q5); }
     if (q4 && Q4_CODES.includes(q4)) {
@@ -195,6 +201,11 @@ export async function onRequestGet(context) {
     if (search) {
       const like = '%' + search.replace(/[\\%_]/g, (c) => '\\' + c) + '%';
       where.push(`(
+        candidate_name LIKE ? ESCAPE '\\' OR
+        candidate_email LIKE ? ESCAPE '\\' OR
+        candidate_phone LIKE ? ESCAPE '\\' OR
+        candidate_organization LIKE ? ESCAPE '\\' OR
+        candidate_group_other LIKE ? ESCAPE '\\' OR
         q2_text LIKE ? ESCAPE '\\' OR
         q7_text LIKE ? ESCAPE '\\' OR
         q1_other LIKE ? ESCAPE '\\' OR
@@ -203,7 +214,7 @@ export async function onRequestGet(context) {
         q6_other LIKE ? ESCAPE '\\' OR
         submission_id LIKE ? ESCAPE '\\'
       )`);
-      params.push(like, like, like, like, like, like, like);
+      params.push(like, like, like, like, like, like, like, like, like, like, like, like);
     }
 
     const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
@@ -295,6 +306,12 @@ function formatRow(row) {
     submission_id: row.submission_id,
     created_at: row.created_at,
     updated_at: row.updated_at,
+    candidate_name: row.candidate_name || '',
+    candidate_email: row.candidate_email || '',
+    candidate_phone: row.candidate_phone || '',
+    candidate_group: row.candidate_group || '',
+    candidate_group_other: row.candidate_group_other || '',
+    candidate_organization: row.candidate_organization || '',
     q1: row.q1_answer || '',
     q1_other: row.q1_other || '',
     q2_text: row.q2_text || '',
@@ -322,6 +339,8 @@ function csvCell(value) {
 function toCsv(items) {
   const head = [
     'created_at', 'submission_id',
+    'candidate_name', 'candidate_email', 'candidate_phone',
+    'candidate_group', 'candidate_group_other', 'candidate_organization',
     'q1_answer', 'q1_other', 'q2_text',
     'q3_answers', 'q3_other', 'q4_answers',
     'q5_answer', 'q5_other', 'q6_answers', 'q6_other', 'q7_text',
@@ -331,6 +350,8 @@ function toCsv(items) {
   for (const it of items) {
     lines.push([
       it.created_at, it.submission_id,
+      it.candidate_name, it.candidate_email, it.candidate_phone,
+      it.candidate_group, it.candidate_group_other, it.candidate_organization,
       it.q1, it.q1_other, it.q2_text,
       it.q3.join(' | '), it.q3_other, it.q4.join(' | '),
       it.q5, it.q5_other, it.q6.join(' | '), it.q6_other, it.q7_text,

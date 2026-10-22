@@ -27,6 +27,7 @@ import {
 } from '../_security.js';
 
 // ─── OPTION WHITELISTS ────────────────────────────────────────────────────
+const CANDIDATE_GROUPS = ['Sinh viên', 'Người đi làm', 'Từng khởi nghiệp', 'Khác'];
 const Q1_CODES = ['A', 'B', 'C', 'D', 'E', 'F'];
 const Q3_CODES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 const Q4_CODES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
@@ -121,7 +122,36 @@ export async function onRequestPost(context) {
       return jsonResponse({ success: false, error: 'Yêu cầu không hợp lệ.' }, 400, headers);
     }
 
-    // ─── 4. VALIDATE ANSWERS ────────────────────────────────────────────
+    // ─── 4A. VALIDATE CANDIDATE INFO ────────────────────────────────────
+    const candidateName = normalizeText(body.candidate_name, 120);
+    if (!candidateName || candidateName.length < 2) {
+      return jsonResponse({ success: false, error: 'Họ và tên: vui lòng nhập ít nhất 2 ký tự.' }, 422, headers);
+    }
+
+    const candidateEmail = sanitizeField(body.candidate_email || '', 320).toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!candidateEmail || !emailRegex.test(candidateEmail)) {
+      return jsonResponse({ success: false, error: 'Email: vui lòng nhập địa chỉ email hợp lệ.' }, 422, headers);
+    }
+
+    const candidatePhone = sanitizeField(body.candidate_phone || '', 32);
+
+    const candidateGroup = sanitizeField(body.candidate_group || '', 64);
+    if (!CANDIDATE_GROUPS.includes(candidateGroup)) {
+      return jsonResponse({ success: false, error: 'Nhóm ứng viên: vui lòng chọn nhóm phù hợp.' }, 422, headers);
+    }
+
+    const candidateGroupOther = candidateGroup === 'Khác' ? normalizeText(body.candidate_group_other, 255) : '';
+    if (candidateGroup === 'Khác' && candidateGroupOther.length < 2) {
+      return jsonResponse({ success: false, error: 'Vui lòng chia sẻ thêm về nhóm ứng viên của bạn.' }, 422, headers);
+    }
+
+    const candidateOrganization = normalizeText(body.candidate_organization, 255);
+    if (!candidateOrganization || candidateOrganization.length < 2) {
+      return jsonResponse({ success: false, error: 'Trường học / Đơn vị hiện tại: vui lòng nhập ít nhất 2 ký tự.' }, 422, headers);
+    }
+
+    // ─── 4B. VALIDATE ANSWERS ───────────────────────────────────────────
     const q1 = normalizeCode(body.q1, Q1_CODES);
     if (!q1) {
       return jsonResponse({ success: false, error: 'Câu 1: vui lòng chọn một đáp án.' }, 422, headers);
@@ -196,7 +226,7 @@ export async function onRequestPost(context) {
       return jsonResponse({ success: false, error: 'Dịch vụ lưu trữ tạm thời không sẵn sàng.' }, 503, headers);
     }
 
-    // ─── 6. IDEMPOTENT INSERT ───────────────────────────────────────────
+    // ─── 6. IDEMPOTENT INSERT / UPDATE ──────────────────────────────────
     const nowIso = new Date().toISOString();
     const q3Json = JSON.stringify(q3);
     const q4Json = JSON.stringify(q4);
@@ -205,14 +235,41 @@ export async function onRequestPost(context) {
     const result = await env.DB.prepare(`
       INSERT INTO founding_talent_surveys (
         submission_id, created_at, updated_at,
+        candidate_name, candidate_email, candidate_phone,
+        candidate_group, candidate_group_other, candidate_organization,
         q1_answer, q1_other, q2_text,
         q3_answers_json, q3_other, q4_answers_json,
         q5_answer, q5_other, q6_answers_json, q6_other, q7_text,
         source, page_path, utm_source, utm_campaign, referrer
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(submission_id) DO NOTHING
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(submission_id) DO UPDATE SET
+        updated_at = excluded.updated_at,
+        candidate_name = excluded.candidate_name,
+        candidate_email = excluded.candidate_email,
+        candidate_phone = excluded.candidate_phone,
+        candidate_group = excluded.candidate_group,
+        candidate_group_other = excluded.candidate_group_other,
+        candidate_organization = excluded.candidate_organization,
+        q1_answer = excluded.q1_answer,
+        q1_other = excluded.q1_other,
+        q2_text = excluded.q2_text,
+        q3_answers_json = excluded.q3_answers_json,
+        q3_other = excluded.q3_other,
+        q4_answers_json = excluded.q4_answers_json,
+        q5_answer = excluded.q5_answer,
+        q5_other = excluded.q5_other,
+        q6_answers_json = excluded.q6_answers_json,
+        q6_other = excluded.q6_other,
+        q7_text = excluded.q7_text,
+        source = excluded.source,
+        page_path = excluded.page_path,
+        utm_source = excluded.utm_source,
+        utm_campaign = excluded.utm_campaign,
+        referrer = excluded.referrer
     `).bind(
       submissionId, nowIso, nowIso,
+      candidateName, candidateEmail, candidatePhone || null,
+      candidateGroup, candidateGroupOther || null, candidateOrganization,
       q1, q1Other || null, q2Text,
       q3Json, q3Other || null, q4Json,
       q5, q5Other || null, q6Json, q6Other || null, q7Text,
@@ -225,7 +282,7 @@ export async function onRequestPost(context) {
       success: true,
       submission_id: submissionId,
       duplicate: changed === 0,
-    }, changed === 0 ? 200 : 201, headers);
+    }, 200, headers);
 
   } catch (err) {
     console.error('[fts] submit error:', err.message);

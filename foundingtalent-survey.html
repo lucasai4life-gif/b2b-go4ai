@@ -557,6 +557,110 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* ─── CANDIDATE FORM (STEP 0) ─────────────────────────────────────────── */
+  .fs-candidate-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 0 0 16px;
+  }
+  .fs-field {
+    display: flex;
+    flex-direction: column;
+  }
+  .fs-label {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--fs-ink);
+    margin-bottom: 7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .fs-req {
+    color: var(--fs-danger);
+    font-weight: 700;
+  }
+  .fs-input {
+    width: 100%;
+    font-family: var(--fs-sans);
+    font-size: 15.5px;
+    color: var(--fs-ink);
+    background: #fff;
+    border: 1px solid var(--fs-line-2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-height: 48px;
+    transition: border-color 0.16s var(--fs-ease), box-shadow 0.16s var(--fs-ease), background-color 0.16s var(--fs-ease);
+  }
+  .fs-input:focus {
+    outline: none;
+    border-color: var(--fs-emerald);
+    box-shadow: 0 0 0 3px rgba(8, 144, 108, 0.13);
+  }
+  .fs-input::placeholder { color: #9aa8a4; }
+  .fs-input.is-invalid, .fs-select.is-invalid {
+    border-color: var(--fs-danger) !important;
+    background-color: #fff9f8 !important;
+  }
+  .fs-select-wrap {
+    position: relative;
+    width: 100%;
+  }
+  .fs-select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--fs-ink-2);
+    pointer-events: none;
+  }
+  .fs-select {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #fff;
+    border: 1px solid var(--fs-line-2);
+    border-radius: 10px;
+    padding: 12px 38px 12px 14px;
+    font-family: var(--fs-sans);
+    font-size: 15.5px;
+    color: var(--fs-ink);
+    min-height: 48px;
+    cursor: pointer;
+    transition: border-color 0.16s var(--fs-ease), box-shadow 0.16s var(--fs-ease);
+  }
+  .fs-select:focus {
+    outline: none;
+    border-color: var(--fs-emerald);
+    box-shadow: 0 0 0 3px rgba(8, 144, 108, 0.13);
+  }
+  .fs-field-help {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--fs-mute);
+    margin: 6px 0 0;
+  }
+  .fs-field-error {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--fs-danger);
+    font-weight: 500;
+    margin: 6px 0 0;
+  }
+  .fs-candidate-note {
+    font-family: var(--fs-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--fs-mute);
+    margin: 4px 0 0;
+  }
+
   /* ─── ALERT ───────────────────────────────────────────────────────────── */
   .fs-alert {
     display: none;
@@ -814,8 +918,69 @@
     <div class="fs-card">
       <form id="fs-form" novalidate autocomplete="off">
 
+        <!-- ─── BƯỚC 0: THÔNG TIN ỨNG VIÊN ─── -->
+        <div class="fs-step" data-step="0">
+          <div class="fs-step__head">
+            <span class="fs-step__no">Thông tin</span>
+            <span class="fs-step__rule"></span>
+            <span class="fs-step__meta">Bước khởi đầu</span>
+          </div>
+          <h2 class="fs-q" id="candidate-info-title">THÔNG TIN ỨNG VIÊN</h2>
+          <p class="fs-hint">Trước khi bắt đầu, hãy chia sẻ một vài thông tin để GO4AI hiểu rõ hơn về bạn.</p>
+
+          <div class="fs-candidate-fields">
+            <div class="fs-field">
+              <label class="fs-label" for="c-name">01. Họ và tên <span class="fs-req">*</span></label>
+              <input class="fs-input" type="text" id="c-name" name="candidate_name" placeholder="Nguyễn Văn A" maxlength="120" autocomplete="name" required />
+              <p class="fs-field-error" id="err-c-name" hidden></p>
+            </div>
+
+            <div class="fs-field">
+              <label class="fs-label" for="c-email">02. Email <span class="fs-req">*</span></label>
+              <input class="fs-input" type="email" id="c-email" name="candidate_email" placeholder="ban@email.com" maxlength="320" autocomplete="email" required />
+              <p class="fs-field-help">Dùng để định danh hồ sơ và nhận thông báo.</p>
+              <p class="fs-field-error" id="err-c-email" hidden></p>
+            </div>
+
+            <div class="fs-field">
+              <label class="fs-label" for="c-phone">03. Số điện thoại / Zalo</label>
+              <input class="fs-input" type="tel" id="c-phone" name="candidate_phone" placeholder="09xx xxx xxx" maxlength="32" autocomplete="tel" />
+              <p class="fs-field-help">Không bắt buộc.</p>
+              <p class="fs-field-error" id="err-c-phone" hidden></p>
+            </div>
+
+            <div class="fs-field">
+              <label class="fs-label" for="c-group">04. Nhóm ứng viên <span class="fs-req">*</span></label>
+              <div class="fs-select-wrap">
+                <select class="fs-select" id="c-group" name="candidate_group" required>
+                  <option value="">— Chọn nhóm ứng viên —</option>
+                  <option value="Sinh viên">Sinh viên</option>
+                  <option value="Người đi làm">Người đi làm</option>
+                  <option value="Từng khởi nghiệp">Từng khởi nghiệp</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+              <p class="fs-field-error" id="err-c-group" hidden></p>
+              <div id="c-group-other-wrap" style="display:none; margin-top:10px;">
+                <input class="fs-input" type="text" id="c-group-other" name="candidate_group_other" placeholder="Vui lòng chia sẻ thêm…" maxlength="255" />
+                <p class="fs-field-error" id="err-c-group-other" hidden></p>
+              </div>
+            </div>
+
+            <div class="fs-field">
+              <label class="fs-label" for="c-org">05. Trường học / Đơn vị hiện tại <span class="fs-req">*</span></label>
+              <input class="fs-input" type="text" id="c-org" name="candidate_organization" placeholder="ĐH Bách Khoa TP.HCM / Công ty ABC / Freelance" maxlength="255" required />
+              <p class="fs-field-help">Nhập tên trường, tổ chức hoặc đơn vị đang học tập/làm việc.</p>
+              <p class="fs-field-error" id="err-c-org" hidden></p>
+            </div>
+
+            <p class="fs-candidate-note">Các trường có dấu (*) là bắt buộc.</p>
+          </div>
+          <p class="fs-alert" data-alert role="alert"><span class="fs-alert__icon" aria-hidden="true">!</span><span data-alert-text></span></p>
+        </div>
+
         <!-- ─── CÂU 1 ─── -->
-        <div class="fs-step" data-step="1">
+        <div class="fs-step" data-step="1" hidden>
           <div class="fs-step__head">
             <span class="fs-step__no">Câu 1</span>
             <span class="fs-step__rule"></span>
@@ -1199,6 +1364,7 @@
   var MIN_TEXT = 10;
   var ENDPOINT = '/api/foundingtalent/survey';
   var SID_KEY = 'go4ai_ft_survey_sid';
+  var CANDIDATE_KEY = 'go4ai_ft_candidate';
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
@@ -1218,11 +1384,45 @@
   var submitErrorText = $('#fs-submit-error-text');
   var retryBtn = $('#fs-retry');
 
-  var current = 1;
+  var current = 0;
   var submitting = false;
   var submissionId = '';
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var scrollBehavior = reduceMotion ? 'auto' : 'smooth';
+
+  /* ── candidate persistence ─────────────────────────────────────────── */
+  function saveCandidateState() {
+    try {
+      var data = {
+        name: ($('#c-name') ? $('#c-name').value : ''),
+        email: ($('#c-email') ? $('#c-email').value : ''),
+        phone: ($('#c-phone') ? $('#c-phone').value : ''),
+        group: ($('#c-group') ? $('#c-group').value : ''),
+        groupOther: ($('#c-group-other') ? $('#c-group-other').value : ''),
+        org: ($('#c-org') ? $('#c-org').value : '')
+      };
+      sessionStorage.setItem(CANDIDATE_KEY, JSON.stringify(data));
+    } catch (e) {}
+  }
+
+  function restoreCandidateState() {
+    try {
+      var raw = sessionStorage.getItem(CANDIDATE_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (!data) return;
+      if ($('#c-name') && data.name) $('#c-name').value = data.name;
+      if ($('#c-email') && data.email) $('#c-email').value = data.email;
+      if ($('#c-phone') && data.phone) $('#c-phone').value = data.phone;
+      if ($('#c-group') && data.group) {
+        $('#c-group').value = data.group;
+        var wrap = $('#c-group-other-wrap');
+        if (wrap) wrap.style.display = data.group === 'Khác' ? 'block' : 'none';
+      }
+      if ($('#c-group-other') && data.groupOther) $('#c-group-other').value = data.groupOther;
+      if ($('#c-org') && data.org) $('#c-org').value = data.org;
+    } catch (e) {}
+  }
 
   /* ── submission id ─────────────────────────────────────────────────── */
   function makeSubmissionId() {
@@ -1342,6 +1542,38 @@
     update();
   });
 
+  // candidate info input listeners
+  ['#c-name', '#c-email', '#c-phone', '#c-group-other', '#c-org'].forEach(function (sel) {
+    var el = $(sel);
+    if (!el) return;
+    el.addEventListener('input', function () {
+      el.classList.remove('is-invalid');
+      var err = document.getElementById('err-' + el.id);
+      if (err) err.hidden = true;
+      clearAlert($('.fs-step[data-step="0"]'));
+      saveCandidateState();
+    });
+  });
+
+  var groupSelect = $('#c-group');
+  if (groupSelect) {
+    groupSelect.addEventListener('change', function () {
+      groupSelect.classList.remove('is-invalid');
+      var err = $('#err-c-group');
+      if (err) err.hidden = true;
+      var otherWrap = $('#c-group-other-wrap');
+      if (otherWrap) {
+        otherWrap.style.display = groupSelect.value === 'Khác' ? 'block' : 'none';
+        if (groupSelect.value === 'Khác') {
+          var otherInput = $('#c-group-other');
+          if (otherInput) setTimeout(function () { otherInput.focus(); }, 60);
+        }
+      }
+      clearAlert($('.fs-step[data-step="0"]'));
+      saveCandidateState();
+    });
+  }
+
   /* ── alerts ────────────────────────────────────────────────────────── */
   function showAlert(stepEl, message) {
     var alert = $('[data-alert]', stepEl);
@@ -1359,8 +1591,97 @@
     return $$('input[name="' + name + '"]:checked').map(function (i) { return i.value; });
   }
 
+  /* ── candidate validation ──────────────────────────────────────────── */
+  function validateCandidate() {
+    var valid = true;
+    var firstFocus = null;
+
+    var nameEl = $('#c-name');
+    var errName = $('#err-c-name');
+    var nameVal = (nameEl.value || '').trim();
+    if (nameVal.length < 2) {
+      valid = false;
+      nameEl.classList.add('is-invalid');
+      errName.textContent = 'Vui lòng nhập họ và tên (ít nhất 2 ký tự).';
+      errName.hidden = false;
+      if (!firstFocus) firstFocus = nameEl;
+    } else {
+      nameEl.classList.remove('is-invalid');
+      errName.hidden = true;
+    }
+
+    var emailEl = $('#c-email');
+    var errEmail = $('#err-c-email');
+    var emailVal = (emailEl.value || '').trim();
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(emailVal)) {
+      valid = false;
+      emailEl.classList.add('is-invalid');
+      errEmail.textContent = 'Vui lòng nhập địa chỉ email hợp lệ (ví dụ: ban@email.com).';
+      errEmail.hidden = false;
+      if (!firstFocus) firstFocus = emailEl;
+    } else {
+      emailEl.classList.remove('is-invalid');
+      errEmail.hidden = true;
+    }
+
+    var groupEl = $('#c-group');
+    var errGroup = $('#err-c-group');
+    var groupVal = groupEl.value;
+    var allowedGroups = ['Sinh viên', 'Người đi làm', 'Từng khởi nghiệp', 'Khác'];
+    if (!allowedGroups.includes(groupVal)) {
+      valid = false;
+      groupEl.classList.add('is-invalid');
+      errGroup.textContent = 'Vui lòng chọn nhóm ứng viên.';
+      errGroup.hidden = false;
+      if (!firstFocus) firstFocus = groupEl;
+    } else {
+      groupEl.classList.remove('is-invalid');
+      errGroup.hidden = true;
+    }
+
+    var otherEl = $('#c-group-other');
+    var errOther = $('#err-c-group-other');
+    if (groupVal === 'Khác') {
+      var otherVal = (otherEl.value || '').trim();
+      if (otherVal.length < 2) {
+        valid = false;
+        otherEl.classList.add('is-invalid');
+        errOther.textContent = 'Vui lòng chia sẻ thêm về nhóm ứng viên của bạn.';
+        errOther.hidden = false;
+        if (!firstFocus) firstFocus = otherEl;
+      } else {
+        otherEl.classList.remove('is-invalid');
+        errOther.hidden = true;
+      }
+    } else {
+      otherEl.classList.remove('is-invalid');
+      errOther.hidden = true;
+    }
+
+    var orgEl = $('#c-org');
+    var errOrg = $('#err-c-org');
+    var orgVal = (orgEl.value || '').trim();
+    if (orgVal.length < 2) {
+      valid = false;
+      orgEl.classList.add('is-invalid');
+      errOrg.textContent = 'Vui lòng nhập trường học hoặc đơn vị hiện tại (ít nhất 2 ký tự).';
+      errOrg.hidden = false;
+      if (!firstFocus) firstFocus = orgEl;
+    } else {
+      orgEl.classList.remove('is-invalid');
+      errOrg.hidden = true;
+    }
+
+    return { ok: valid, focus: firstFocus };
+  }
+
   /* ── validation ────────────────────────────────────────────────────── */
   function validate(step) {
+    if (step === 0) {
+      return validateCandidate();
+    }
+
     if (step === 1) {
       var q1 = checkedValues('q1');
       if (!q1.length) return { ok: false, msg: 'Vui lòng chọn một đáp án cho câu 1.' };
@@ -1426,10 +1747,19 @@
       el.hidden = parseInt(el.getAttribute('data-step'), 10) !== step;
     });
 
-    fillEl.style.width = (step / TOTAL * 100) + '%';
-    countEl.innerHTML = '<b>' + step + '</b> / ' + TOTAL;
-    barEl.setAttribute('aria-valuenow', String(step));
-    backBtn.hidden = step === 1;
+    if (step === 0) {
+      fillEl.style.width = '0%';
+      countEl.innerHTML = '<b>Thông tin ứng viên</b>';
+      barEl.setAttribute('aria-valuenow', '0');
+      backBtn.hidden = false;
+      backBtn.innerHTML = '<span aria-hidden="true">←</span> Giới thiệu';
+    } else {
+      fillEl.style.width = (step / TOTAL * 100) + '%';
+      countEl.innerHTML = '<b>' + step + '</b> / ' + TOTAL;
+      barEl.setAttribute('aria-valuenow', String(step));
+      backBtn.hidden = false;
+      backBtn.innerHTML = '<span aria-hidden="true">←</span> Quay lại';
+    }
 
     var isLast = step === TOTAL;
     nextBtn.className = 'fs-btn ' + (isLast ? 'fs-btn--finish' : 'fs-btn--primary');
@@ -1443,6 +1773,19 @@
 
   function goNext() {
     if (submitting) return;
+
+    if (current === 0) {
+      var candRes = validateCandidate();
+      if (!candRes.ok) {
+        if (candRes.focus) candRes.focus.focus({ preventScroll: false });
+        return;
+      }
+      saveCandidateState();
+      clearAlert($('.fs-step[data-step="0"]'));
+      renderStep(1);
+      return;
+    }
+
     var result = validate(current);
     if (!result.ok) {
       var stepEl = $('.fs-step[data-step="' + current + '"]');
@@ -1459,7 +1802,12 @@
   }
 
   function goBack() {
-    if (submitting || current === 1) return;
+    if (submitting) return;
+    if (current === 0) {
+      setMode('intro');
+      scrollTop();
+      return;
+    }
     clearAlert($('.fs-step[data-step="' + current + '"]'));
     renderStep(current - 1);
   }
@@ -1474,6 +1822,12 @@
 
     return {
       submission_id: getSubmissionId(),
+      candidate_name: ($('#c-name') ? $('#c-name').value.trim() : ''),
+      candidate_email: ($('#c-email') ? $('#c-email').value.trim() : ''),
+      candidate_phone: ($('#c-phone') ? $('#c-phone').value.trim() : ''),
+      candidate_group: ($('#c-group') ? $('#c-group').value : ''),
+      candidate_group_other: ($('#c-group') && $('#c-group').value === 'Khác' && $('#c-group-other') ? $('#c-group-other').value.trim() : ''),
+      candidate_organization: ($('#c-org') ? $('#c-org').value.trim() : ''),
       q1: q1,
       q1_other: q1 === 'F' ? $('#q1-other').value.trim() : '',
       q2_text: $('#q2-text').value.trim(),
@@ -1546,7 +1900,7 @@
   /* ── wire up ───────────────────────────────────────────────────────── */
   $('#fs-start').addEventListener('click', function () {
     setMode('survey');
-    renderStep(1);
+    renderStep(0);
   });
 
   nextBtn.addEventListener('click', goNext);
@@ -1569,6 +1923,7 @@
   });
 
   // initial state
+  restoreCandidateState();
   setMode('intro');
 })();
 </script>
