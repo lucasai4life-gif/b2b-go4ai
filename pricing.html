@@ -960,6 +960,214 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
   a{color:#111!important;text-decoration:none}
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════
+   UPGRADE: BRAND LOGO · TITLE MOTION · TIMELINE AUTOPLAY · OS SYSTEM
+   ══════════════════════════════════════════════════════════════════════ */
+.brand__logo-img{height:36px;width:auto;display:block;object-fit:contain;transition:transform .2s var(--ease)}
+.brand:hover .brand__logo-img{transform:scale(1.04)}
+.ft__brand{display:inline-flex;align-items:center;gap:12px;text-decoration:none;margin-bottom:14px}
+.ft__logo-img{height:46px;width:auto;display:block;object-fit:contain}
+.ft__brand-text{font-size:17px;font-weight:700;letter-spacing:.08em;color:#fff}
+
+/* Course Title Motion */
+.pc__title, .mod__h, .mod__name {
+  will-change: transform, opacity;
+  transition: transform .22s cubic-bezier(.16,1,.3,1), opacity .22s cubic-bezier(.16,1,.3,1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pc__title, .mod__h, .mod__name {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* 180-Minute Timeline Autoplay */
+.tb__topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
+.tb__topbar .tb__k{margin-bottom:0}
+.tb__live-badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--brand-on-dark);background:rgba(8,144,108,.2);padding:4px 10px;border-radius:var(--r-pill);border:1px solid rgba(127,217,188,.26)}
+.tb__live-dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:dotPulse 1.8s infinite ease-in-out}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
+
+.tb__track-wrap{position:relative}
+.tb__track-line{position:absolute;left:8px;top:10px;bottom:10px;width:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.tb__track-signal{position:absolute;left:0;top:0;width:100%;height:40px;background:linear-gradient(180deg,transparent,#34d399,transparent);opacity:0;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .3s}
+.tb__i{position:relative;padding-left:28px;transition:all .35s var(--motion-ease)}
+.tb__i .tb__dot{position:absolute;left:4px;top:6px;width:10px;height:10px;border-radius:50%;background:#0B1214;border:1px solid var(--brand-on-dark);box-shadow:0 0 0 3px rgba(8,144,108,.16);transition:all .4s var(--motion-ease)}
+.tb__i.is-live-active .tb__dot{background:#34d399;border-color:#B6F0DC;box-shadow:0 0 0 5px rgba(52,211,153,.26),0 0 18px rgba(52,211,153,.65);transform:scale(1.2)}
+.tb__i.is-live-active b{color:#B6F0DC;text-shadow:0 0 12px rgba(127,217,188,.3)}
+.tb__i.is-live-active span{color:#fff}
+
+@media (min-width:900px){
+  .tb__track-line{left:20px;right:20px;top:10px;bottom:auto;width:auto;height:2px}
+  .tb__track-signal{width:60px;height:100%;background:linear-gradient(90deg,transparent,#34d399,transparent)}
+  .tb__grid{grid-template-columns:repeat(5,1fr);gap:18px}
+  .tb__i{padding-left:0;padding-top:28px}
+  .tb__i .tb__dot{left:0;top:5px}
+}
+
+/* SECTION 03 & 04: GO4AI AI TRANSFORMATION OPERATING SYSTEM */
+.sec--os{background:#080E10;position:relative;overflow:hidden;border-top:1px solid rgba(8,144,108,.24);color:#fff}
+.sec--os .h2{color:#fff}
+.sec--os .lead{color:rgba(233,240,238,.78)}
+.sec--os .smeta__k{color:var(--brand-on-dark)}
+.sec--os .smeta__n{color:var(--brand-on-dark);border-color:rgba(127,217,188,.35);background:rgba(8,144,108,.2)}
+
+/* Connected Diagnostic Pipeline */
+.diag-pipeline{background:rgba(255,255,255,.022);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-xl);padding:clamp(20px,3vw,38px);position:relative;overflow:hidden}
+.diag-pipeline__bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:16px}
+.diag-pipeline__tag{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--brand-on-dark)}
+.diag-pipeline__status{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.12em;color:#B6F0DC;background:rgba(8,144,108,.2);padding:4px 10px;border-radius:var(--r-pill);border:1px solid rgba(127,217,188,.28)}
+.diag-dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:dotPulse 1.6s infinite ease-in-out}
+
+.diag-track-wrap{position:relative}
+.diag-track-line{position:absolute;left:10px;top:10px;bottom:10px;width:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.diag-track-signal{position:absolute;left:0;top:0;width:100%;height:40px;background:linear-gradient(180deg,transparent,#34d399,transparent);opacity:0;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .3s}
+
+.diag-flow{display:grid;gap:18px;grid-template-columns:1fr;position:relative}
+.diag-node{position:relative;padding-left:36px;padding-bottom:18px;transition:all .35s var(--motion-ease)}
+.diag-node .flow__n{left:0;top:0;width:24px;height:24px;border-radius:50%;background:#0B1214;border:1px solid rgba(127,217,188,.3);color:var(--brand-on-dark);font-family:var(--mono);font-size:9.5px;font-weight:700;display:grid;place-items:center;transition:all .4s var(--motion-ease)}
+.diag-node .flow__t{font-size:16px;font-weight:600;color:rgba(233,240,238,.9);transition:color .3s}
+.diag-node .flow__d{font-size:13.2px;line-height:1.64;color:rgba(233,240,238,.65);margin-top:6px}
+
+.diag-node.is-live-active .flow__n{background:#08906c;color:#fff;border-color:#34d399;box-shadow:0 0 0 5px rgba(52,211,153,.22),0 0 18px rgba(52,211,153,.6);transform:scale(1.15)}
+.diag-node.is-live-active .flow__t{color:#fff;text-shadow:0 0 14px rgba(127,217,188,.35)}
+.diag-node.is-live-active .flow__d{color:rgba(233,240,238,.92)}
+
+@media (min-width:1080px){
+  .diag-track-line{left:24px;right:24px;top:12px;bottom:auto;width:auto;height:2px}
+  .diag-track-signal{width:60px;height:100%;background:linear-gradient(90deg,transparent,#34d399,transparent)}
+  .diag-flow{grid-template-columns:repeat(5,1fr);gap:20px}
+  .diag-node{padding-left:0;padding-top:40px;padding-bottom:0}
+  .diag-node .flow__t{min-height:2.65em}
+}
+
+/* Visual Output Pathways (Sau bước 05) */
+.diag-output{margin-top:clamp(26px,3.4vw,38px);padding:clamp(18px,2.4vw,28px);background:rgba(8,144,108,.07);border:1px solid rgba(52,211,153,.22);border-radius:var(--r-lg);position:relative}
+.diag-output__header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 16px;margin-bottom:18px;border-bottom:1px solid rgba(52,211,153,.15);padding-bottom:12px}
+.diag-output__label{display:flex;align-items:center;gap:10px}
+.diag-output__label b{color:#fff;font-size:13.5px;letter-spacing:.03em}
+.diag-output__code{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--brand-on-dark);background:rgba(8,144,108,.25);padding:3px 8px;border-radius:4px}
+.diag-output__caption{font-size:12px;color:rgba(233,240,238,.62)}
+.diag-output__grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:768px){.diag-output__grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1100px){.diag-output__grid{grid-template-columns:repeat(4,1fr)}}
+.diag-card{background:rgba(11,18,20,.7);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:16px 14px;display:flex;flex-direction:column;gap:5px;transition:all .22s var(--motion-ease)}
+.diag-card:hover{border-color:rgba(127,217,188,.42);background:rgba(11,18,20,.95);transform:translateY(-2px)}
+.diag-card__pill{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--brand-on-dark);letter-spacing:.12em}
+.diag-card__title{font-size:15px;font-weight:700;color:#fff}
+.diag-card__desc{font-size:12.6px;line-height:1.45;color:rgba(233,240,238,.72)}
+.diag-card__meta{margin-top:auto;padding-top:8px;font-size:11.8px;font-weight:600;color:#B6F0DC}
+
+/* Executive Decision Console */
+.decision-console{display:grid;gap:18px;margin-top:clamp(30px,4vw,46px)}
+@media (min-width:900px){.decision-console{grid-template-columns:1fr 1fr;gap:20px}}
+.role--console{position:relative;display:flex;flex-direction:column;gap:18px;min-width:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-lg);padding:clamp(20px,2.4vw,32px);box-shadow:0 18px 44px -22px rgba(0,0,0,.65);overflow:hidden;transition:border-color .28s var(--ease)}
+.role--console:hover{border-color:rgba(127,217,188,.32)}
+.role--ceo::before{content:"";position:absolute;left:0;top:0;right:0;height:2px;background:linear-gradient(90deg,#34d399,transparent)}
+.role--hr::before{content:"";position:absolute;left:0;top:0;right:0;height:2px;background:linear-gradient(90deg,#60a5fa,transparent)}
+.console-head{display:flex;flex-direction:column;gap:6px}
+.console-badge{display:inline-flex;align-items:center;width:fit-content;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;padding:3px 8px;border-radius:4px}
+.console-badge--ceo{color:#7FD9BC;background:rgba(8,144,108,.2);border:1px solid rgba(127,217,188,.3)}
+.console-badge--hr{color:#93c5fd;background:rgba(37,99,235,.2);border:1px solid rgba(147,197,253,.3)}
+.role--console .role__q{color:#fff;font-size:clamp(17px,1.85vw,20.5px);font-weight:600;line-height:1.36}
+.console-steps{display:flex;flex-direction:column;gap:12px}
+.console-steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;font-size:13.4px;line-height:1.62;color:rgba(233,240,238,.78)}
+.console-steps strong{color:#fff;font-weight:600}
+.console-step .role__b{width:20px;height:20px;border-radius:50%;flex:none;margin-top:2px;display:grid;place-items:center;background:#0B1214;border:1px solid rgba(255,255,255,.2);font-family:var(--mono);font-size:9px;font-weight:700;color:rgba(233,240,238,.7);transition:all .35s var(--motion-ease)}
+.console-step.is-live-active .role__b{background:#08906c;color:#fff;border-color:#34d399;box-shadow:0 0 14px rgba(52,211,153,.55);transform:scale(1.15)}
+.console-step.is-live-active span{color:#fff}
+.console-res{margin-top:auto;padding:16px 18px;border-radius:var(--r);background:rgba(8,144,108,.12);border:1px solid rgba(127,217,188,.24);font-size:13px;line-height:1.64;color:rgba(233,240,238,.88)}
+.console-res__tag{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--brand-on-dark);margin-bottom:6px}
+.console-res b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#B6F0DC;margin-bottom:6px;line-height:1.5}
+.console-res strong{color:#fff;font-weight:600}
+
+/* Workshop Privilege 3-Stage Signal Flow */
+.privilege-flow{position:relative;overflow:hidden;margin-top:clamp(32px,4.4vw,54px);border-radius:var(--r-xl);padding:clamp(24px,3.4vw,44px);background:linear-gradient(135deg,#071411 0%,#0c221d 50%,#071411 100%);border:1px solid rgba(52,211,153,.3);color:#fff;display:grid;gap:22px;box-shadow:0 24px 60px -20px rgba(0,0,0,.7)}
+.privilege-flow .pivot__q{color:#fff;font-size:clamp(18px,2.4vw,25px);font-weight:600;line-height:1.34}
+.privilege-flow .pivot__sub{color:rgba(233,240,238,.84);font-size:13.6px;line-height:1.62;margin-top:8px}
+.privilege-flow .pivot__sub strong{color:#fff}
+.privilege-track{margin:10px 0 6px}
+.privilege-stages{display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:880px){
+  .privilege-stages{grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:12px}
+  .privilege-connector{display:block;width:34px;height:2px;background:rgba(255,255,255,.14);position:relative;overflow:hidden}
+  .privilege-signal{position:absolute;left:-100%;top:0;width:60%;height:100%;background:#34d399;box-shadow:0 0 8px #34d399;animation:signalFlow 2.4s infinite linear}
+}
+@keyframes signalFlow{0%{left:-100%}100%{left:150%}}
+.privilege-stage{position:relative;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);transition:all .35s var(--motion-ease)}
+.privilege-stage.is-live-active{border-color:#34d399;background:rgba(8,144,108,.16);box-shadow:0 0 20px -6px rgba(52,211,153,.45)}
+.privilege-stage__num{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--brand-on-dark);display:block}
+.privilege-stage__title{font-size:15px;font-weight:700;color:#fff;margin-top:4px}
+.privilege-stage__desc{font-size:12.6px;line-height:1.48;color:rgba(233,240,238,.72);margin-top:6px}
+.btn--privilege{background:#08906c;color:#fff;border:1px solid #34d399;box-shadow:0 12px 28px -10px rgba(8,144,108,.7)}
+.btn--privilege:hover{background:#077a5c;color:#fff}
+
+/* 4 Quality Gates Framework (Section 04) */
+.quality-gates{display:flex;flex-direction:column;gap:18px;margin-top:clamp(28px,3.6vw,44px)}
+.qgate{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-lg);padding:clamp(20px,2.8vw,32px);position:relative;overflow:hidden;transition:border-color .3s}
+.qgate:hover{border-color:rgba(127,217,188,.3)}
+.qgate__top{border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:12px;margin-bottom:16px}
+.qgate__tag{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--brand-on-dark);background:rgba(8,144,108,.2);padding:3px 8px;border-radius:4px}
+.qgate__title{font-size:clamp(16px,1.8vw,19px);font-weight:600;color:#fff;margin-top:8px}
+.qgate__content p{font-size:14px;line-height:1.72;color:rgba(233,240,238,.8)}
+.qgate__content strong{color:#fff;font-weight:600}
+.qgate__content em{color:#B6F0DC;font-style:italic}
+
+.qgate__statuses{display:grid;grid-template-columns:1fr;gap:10px;margin-top:18px}
+@media (min-width:768px){.qgate__statuses{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1100px){.qgate__statuses{grid-template-columns:repeat(4,1fr)}}
+.qstatus{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--r);background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08)}
+.qstatus__icon{font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:11px}
+.qstatus--pass{border-color:rgba(52,211,153,.35)}.qstatus--pass .qstatus__icon{background:#08906c;color:#fff}.qstatus--pass b{color:#34d399}
+.qstatus--fix{border-color:rgba(251,191,36,.35)}.qstatus--fix .qstatus__icon{background:#b45309;color:#fff}.qstatus--fix b{color:#fbbf24}
+.qstatus--test{border-color:rgba(96,165,250,.35)}.qstatus--test .qstatus__icon{background:#1d4ed8;color:#fff}.qstatus--test b{color:#93c5fd}
+.qstatus--fail{border-color:rgba(248,113,113,.35)}.qstatus--fail .qstatus__icon{background:#991b1b;color:#fff}.qstatus--fail b{color:#f87171}
+.qstatus div b{display:block;font-size:13.5px;margin-bottom:2px}
+.qstatus div span{font-size:11.8px;line-height:1.45;color:rgba(233,240,238,.65)}
+
+.boundary-split{margin-top:20px;padding:18px;border-radius:var(--r);background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.09);display:grid;gap:16px}
+@media (min-width:900px){.boundary-split{grid-template-columns:1fr auto 1fr;align-items:stretch}}
+.boundary-col{padding:14px}
+.boundary-col h4{font-size:15px;font-weight:700;color:#fff;margin:8px 0 10px}
+.boundary-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;padding:2px 6px;border-radius:3px}
+.boundary-col--training .boundary-badge{color:#7FD9BC;background:rgba(8,144,108,.25)}
+.boundary-col--enterprise .boundary-badge{color:#93c5fd;background:rgba(37,99,235,.25)}
+.boundary-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;padding:0;margin:0}
+.boundary-col li{font-size:12.8px;line-height:1.55;color:rgba(233,240,238,.75);padding-left:16px;position:relative}
+.boundary-col li::before{content:"•";position:absolute;left:0;color:var(--brand-on-dark)}
+.boundary-divider{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:120px;text-align:center}
+.boundary-node{width:6px;height:6px;border-radius:50%;background:var(--brand-on-dark)}
+.boundary-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--brand-on-dark);background:rgba(8,144,108,.2);padding:4px 8px;border-radius:4px;border:1px solid rgba(127,217,188,.3)}
+
+/* Measured Impact System (Final Verdict) */
+.measured-impact{margin-top:clamp(36px,4.4vw,56px);padding:clamp(24px,3.2vw,36px);border-radius:var(--r-xl);background:rgba(8,144,108,.08);border:1px solid rgba(52,211,153,.26);display:flex;flex-direction:column;gap:24px}
+.impact-chain{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:768px){.impact-chain{grid-template-columns:1fr auto 1fr auto 1fr;align-items:center}}
+.impact-stage{padding:16px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:var(--r)}
+.impact-tag{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;display:inline-block;margin-bottom:6px;color:rgba(233,240,238,.7)}
+.impact-tag--brand{color:#7FD9BC}
+.impact-tag--success{color:#34d399}
+.impact-stage b{display:block;font-size:15px;color:#fff;margin-bottom:4px}
+.impact-stage p{font-size:12.5px;line-height:1.5;color:rgba(233,240,238,.7);margin:0}
+.impact-arrow{color:var(--brand-on-dark);font-weight:700;text-align:center}
+.impact-labels{display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:center}
+.impact-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--brand-on-dark);background:rgba(8,144,108,.16);padding:3px 8px;border-radius:4px;border:1px solid rgba(127,217,188,.2)}
+.impact-quotes{display:grid;grid-template-columns:1fr;gap:14px;border-top:1px solid rgba(255,255,255,.09);padding-top:20px}
+@media (min-width:768px){.impact-quotes{grid-template-columns:1fr 1fr;gap:32px}}
+.impact-quotes p:first-child{font-size:clamp(15px,1.6vw,17.5px);font-weight:500;line-height:1.5;color:rgba(233,240,238,.75);margin:0}
+.impact-quotes p:last-child{font-size:clamp(16px,1.8vw,19.5px);font-weight:600;line-height:1.45;color:#fff;margin:0}
+
+/* Enterprise Dark Footer */
+.ft{background:#080E10;border-top:1px solid rgba(8,144,108,.24);position:relative;overflow:hidden;color:#fff;padding-block:clamp(44px,5vw,64px) 28px}
+.ft::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(52,211,153,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(52,211,153,.025) 1px,transparent 1px);background-size:48px 48px}
+.ft > .wrap{position:relative;z-index:1}
+.ft p{color:rgba(233,240,238,.72)}
+.ft h4{color:var(--brand-on-dark);letter-spacing:.14em}
+.ft ul a{color:rgba(233,240,238,.78)}
+.ft ul a:hover{color:#B6F0DC}
+.ft__bar{border-top-color:rgba(255,255,255,.1);color:rgba(233,240,238,.5)}
+
 </style>
 
 </head>
@@ -968,16 +1176,8 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
 <!-- ══════════════════════════ HEADER ══════════════════════════ -->
 <header class="hd" id="hd">
   <div class="wrap hd__in">
-    <a class="brand" href="#top">
-      <span class="brand__lock">
-        <svg class="brand__mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="1" y="1" width="22" height="22" rx="6" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M8 15.5V8.5h3.6a2.2 2.2 0 0 1 0 4.4H8" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="16.2" cy="15.4" r="1.2" fill="currentColor"/>
-        </svg>
-        GO4AI
-      </span>
+    <a class="brand" href="/" aria-label="GO4AI — Trang chủ">
+      <img src="assets/images/logos/logo-go4ai-life.png" alt="GO4AI" class="brand__logo-img" width="36" height="48">
       <span class="brand__div" aria-hidden="true">/</span>
       <span class="brand__sub">Danh mục Chương trình &amp; Bảng giá Niêm yết</span>
     </a>
@@ -1461,29 +1661,40 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
       <p class="lead">Không dạy bài giảng đại trà. Trước mỗi lớp In-house, GO4AI khảo sát quy trình của doanh nghiệp, làm sạch dữ liệu mẫu và thiết kế bài tập theo đúng nghiệp vụ từng phòng ban. Mỗi buổi kéo dài <strong>3 giờ (180 phút)</strong> với 01 Giảng viên chính và 02 Trợ giảng kèm thực hành tại bàn.</p>
     </header>
 
-    <!-- Cấu trúc 180 phút chuẩn B2B -->
-    <div class="tb" data-rv>
-      <span class="tb__k">Cấu trúc cố định mỗi buổi 3 giờ (180 phút) tại Doanh nghiệp</span>
-      <div class="tb__grid">
-        <div class="tb__i">
-          <b>Phút 00 – 10</b>
-          <span>Chốt mục tiêu đầu ra của buổi, kiểm tra tài liệu mẫu và rà soát bài buổi trước.</span>
-        </div>
-        <div class="tb__i">
-          <b>Phút 10 – 40</b>
-          <span>Hướng dẫn phương pháp làm việc và nguyên tắc kiểm soát rủi ro/dữ liệu.</span>
-        </div>
-        <div class="tb__i">
-          <b>Phút 40 – 85</b>
-          <span>Giảng viên làm mẫu trực tiếp trên 01 tình huống và hồ sơ thật của doanh nghiệp.</span>
-        </div>
-        <div class="tb__i">
-          <b>Phút 95 – 155</b>
-          <span>Nhân sự tự thực hành trên công việc của phòng mình (Trợ giảng kèm tại bàn).</span>
-        </div>
-        <div class="tb__i">
-          <b>Phút 155 – 180</b>
-          <span>Kiểm tra chéo theo danh sách kiểm, sửa lỗi và nghiệm thu sản phẩm tại lớp.</span>
+    <!-- Cấu trúc 180 phút chuẩn B2B (Autoplay Protocol) -->
+    <div class="tb" id="timeline-180" data-rv>
+      <div class="tb__topbar">
+        <span class="tb__k">Cấu trúc cố định mỗi buổi 3 giờ (180 phút) tại Doanh nghiệp</span>
+        <span class="tb__live-badge"><i class="tb__live-dot" aria-hidden="true"></i> PROTOCOL AUTOPLAY · 00 ➔ 180 PHÚT</span>
+      </div>
+      <div class="tb__track-wrap">
+        <div class="tb__track-line" aria-hidden="true"><div class="tb__track-signal" id="tb-signal"></div></div>
+        <div class="tb__grid" id="tb-grid">
+          <div class="tb__i" data-tb-step="0">
+            <span class="tb__dot"></span>
+            <b>Phút 00 – 10</b>
+            <span>Chốt mục tiêu đầu ra của buổi, kiểm tra tài liệu mẫu và rà soát bài buổi trước.</span>
+          </div>
+          <div class="tb__i" data-tb-step="1">
+            <span class="tb__dot"></span>
+            <b>Phút 10 – 40</b>
+            <span>Hướng dẫn phương pháp làm việc và nguyên tắc kiểm soát rủi ro/dữ liệu.</span>
+          </div>
+          <div class="tb__i" data-tb-step="2">
+            <span class="tb__dot"></span>
+            <b>Phút 40 – 85</b>
+            <span>Giảng viên làm mẫu trực tiếp trên 01 tình huống và hồ sơ thật của doanh nghiệp.</span>
+          </div>
+          <div class="tb__i" data-tb-step="3">
+            <span class="tb__dot"></span>
+            <b>Phút 95 – 155</b>
+            <span>Nhân sự tự thực hành trên công việc của phòng mình (Trợ giảng kèm tại bàn).</span>
+          </div>
+          <div class="tb__i" data-tb-step="4">
+            <span class="tb__dot"></span>
+            <b>Phút 155 – 180</b>
+            <span>Kiểm tra chéo theo danh sách kiểm, sửa lỗi và nghiệm thu sản phẩm tại lớp.</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1760,8 +1971,9 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
   </div>
 </section>
 
-<!-- ══════════════════════════ 04 · CHẨN ĐOÁN QUY TRÌNH OFFLINE ══════════════════════════ -->
-<section class="sec sec--white" id="buoi-offline">
+<!-- ══════════════════════════ 03 · CHẨN ĐOÁN QUY TRÌNH OFFLINE (OPERATING SYSTEM) ══════════════════════════ -->
+<section class="sec sec--os sec--dark" id="buoi-offline">
+  <div class="enterprise-atmosphere" aria-hidden="true"></div>
   <div class="wrap">
     <header class="shead" data-rv>
       <div class="smeta">
@@ -1773,89 +1985,172 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
       <p class="lead">Workshop 90 phút online cho bạn thấy Claude và AI làm được gì. Buổi làm việc offline (3 giờ) bắt đầu từ việc đang thật sự diễn ra trong doanh nghiệp bạn: chọn một quy trình đang nghẽn, tách ra từng bước, rồi xác định chính xác nên áp dụng Gói B2B 01, 02, 03 hay 04.</p>
     </header>
 
-    <ol class="flow">
-      <li class="flow__i" data-rv>
-        <span class="flow__n">01</span>
-        <h3 class="flow__t">Xác định vấn đề</h3>
-        <p class="flow__d">Chọn một công việc hoặc quy trình đang tốn thời gian, dễ sai hoặc khó đo. Càng cụ thể càng tốt — ví dụ “nhập hồ sơ ứng viên vào CRM” hoặc “đối chiếu báo giá nhà cung cấp” tốt hơn “ứng dụng AI cho công ty”.</p>
-      </li>
-      <li class="flow__i" data-rv style="--d:.05s">
-        <span class="flow__n">02</span>
-        <h3 class="flow__t">Phân tích quy trình hiện tại</h3>
-        <p class="flow__d">Vẽ lại các bước đang diễn ra: ai làm, mất bao lâu, dữ liệu nằm ở đâu, bàn giao cho ai và đang bị trả lại sửa ở bước nào.</p>
-      </li>
-      <li class="flow__i" data-rv style="--d:.1s">
-        <span class="flow__n">03</span>
-        <h3 class="flow__t">Tìm điểm nghẽn</h3>
-        <p class="flow__d">Chỉ ra bước nào chặn dòng chảy công việc, bước nào lặp lại nhàm chán, bước nào cần chuẩn hóa biểu mẫu trước khi nghĩ đến tự động hóa.</p>
-      </li>
-      <li class="flow__i" data-rv style="--d:.15s">
-        <span class="flow__n">04</span>
-        <h3 class="flow__t">Thiết kế vai trò AI và con người</h3>
-        <p class="flow__d">Quyết định bước nào giao cho AI thực hiện, bước nào con người giữ quyền kiểm tra — và điểm bắt buộc phải phê duyệt nằm ở đâu.</p>
-      </li>
-      <li class="flow__i" data-rv style="--d:.2s">
-        <span class="flow__n">05</span>
-        <h3 class="flow__t">Chốt sản phẩm đầu ra, KPI &amp; gói triển khai</h3>
-        <p class="flow__d">Xác định rõ doanh nghiệp chỉ cần đào tạo công cụ miễn phí theo phòng (B2B 01), chuẩn hóa đầu vào–đầu ra (B2B 02), tự động hóa với Claude (B2B 03) hay đóng gói thành ứng dụng nội bộ (B2B 04).</p>
-      </li>
-    </ol>
+    <!-- Connected Diagnostic Pipeline (Autoplay 01 -> 05) -->
+    <div class="diag-pipeline" id="diag-pipeline" data-rv>
+      <div class="diag-pipeline__bar">
+        <span class="diag-pipeline__tag">DIAGNOSTIC PROTOCOL · 5 PHASES</span>
+        <span class="diag-pipeline__status"><i class="diag-dot" aria-hidden="true"></i> PROTOCOL AUTOPLAY · 01 ➔ 05</span>
+      </div>
+      <div class="diag-track-wrap">
+        <div class="diag-track-line" aria-hidden="true"><div class="diag-track-signal" id="diag-signal"></div></div>
+        <ol class="flow diag-flow" id="diag-flow">
+          <li class="flow__i diag-node" data-diag-step="0">
+            <span class="flow__n">01</span>
+            <h3 class="flow__t">Xác định vấn đề</h3>
+            <p class="flow__d">Chọn một công việc hoặc quy trình đang tốn thời gian, dễ sai hoặc khó đo. Càng cụ thể càng tốt — ví dụ “nhập hồ sơ ứng viên vào CRM” hoặc “đối chiếu báo giá nhà cung cấp” tốt hơn “ứng dụng AI cho công ty”.</p>
+          </li>
+          <li class="flow__i diag-node" data-diag-step="1">
+            <span class="flow__n">02</span>
+            <h3 class="flow__t">Phân tích quy trình hiện tại</h3>
+            <p class="flow__d">Vẽ lại các bước đang diễn ra: ai làm, mất bao lâu, dữ liệu nằm ở đâu, bàn giao cho ai và đang bị trả lại sửa ở bước nào.</p>
+          </li>
+          <li class="flow__i diag-node" data-diag-step="2">
+            <span class="flow__n">03</span>
+            <h3 class="flow__t">Tìm điểm nghẽn</h3>
+            <p class="flow__d">Chỉ ra bước nào chặn dòng chảy công việc, bước nào lặp lại nhàm chán, bước nào cần chuẩn hóa biểu mẫu trước khi nghĩ đến tự động hóa.</p>
+          </li>
+          <li class="flow__i diag-node" data-diag-step="3">
+            <span class="flow__n">04</span>
+            <h3 class="flow__t">Thiết kế vai trò AI và con người</h3>
+            <p class="flow__d">Quyết định bước nào giao cho AI thực hiện, bước nào con người giữ quyền kiểm tra — và điểm bắt buộc phải phê duyệt nằm ở đâu.</p>
+          </li>
+          <li class="flow__i diag-node" data-diag-step="4">
+            <span class="flow__n">05</span>
+            <h3 class="flow__t">Chốt sản phẩm đầu ra, KPI &amp; gói triển khai</h3>
+            <p class="flow__d">Xác định rõ doanh nghiệp chỉ cần đào tạo công cụ miễn phí theo phòng (B2B 01), chuẩn hóa đầu vào–đầu ra (B2B 02), tự động hóa với Claude (B2B 03) hay đóng gói thành ứng dụng nội bộ (B2B 04).</p>
+          </li>
+        </ol>
+      </div>
 
-    <div class="roles">
-      <article class="role role--a" data-rv>
-        <p class="role__k">Dành cho CEO · Founder · Ban điều hành</p>
+      <!-- Visual Output Pathways (Sau bước 05) -->
+      <div class="diag-output" id="diag-output">
+        <div class="diag-output__header">
+          <div class="diag-output__label">
+            <span class="diag-output__code">PHASE 05 VISUAL OUTPUT</span>
+            <b>CÁC HƯỚNG TRIỂN KHAI PHÙ HỢP TÙY THEO KẾT QUẢ CHẨN ĐOÁN</b>
+          </div>
+          <span class="diag-output__caption">Bản đồ điều hướng giải pháp — Minh bạch hướng đi, không tự động chọn gói</span>
+        </div>
+        <div class="diag-output__grid">
+          <div class="diag-card">
+            <span class="diag-card__pill">HƯỚNG 01</span>
+            <h4 class="diag-card__title">Gói B2B 01</h4>
+            <p class="diag-card__desc">AI Free Tools Thiết Kế Riêng Theo Phòng Ban</p>
+            <span class="diag-card__meta">100% Công cụ miễn phí · 30.000.000 đ</span>
+          </div>
+          <div class="diag-card">
+            <span class="diag-card__pill">HƯỚNG 02</span>
+            <h4 class="diag-card__title">Gói B2B 02</h4>
+            <p class="diag-card__desc">Custom AI Project Cho Phòng Ban &amp; Quản Lý</p>
+            <span class="diag-card__meta">Chuẩn hóa Đầu vào – Đầu ra · 45.000.000 đ</span>
+          </div>
+          <div class="diag-card">
+            <span class="diag-card__pill">HƯỚNG 03</span>
+            <h4 class="diag-card__title">Gói B2B 03</h4>
+            <p class="diag-card__desc">Claude For Business — Tự Động Hóa Vận Hành</p>
+            <span class="diag-card__meta">Cowork · Chrome · Sheets · 65.000.000 đ</span>
+          </div>
+          <div class="diag-card">
+            <span class="diag-card__pill">HƯỚNG 04</span>
+            <h4 class="diag-card__title">Gói B2B 04</h4>
+            <p class="diag-card__desc">Chương Trình CEO &amp; AI Builder Doanh Nghiệp</p>
+            <span class="diag-card__meta">Chiến lược &amp; Ứng dụng nội bộ · 45tr – 120tr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Executive Decision Console (CEO / HR) -->
+    <div class="roles decision-console" id="decision-console">
+      <article class="role role--console role--ceo" data-rv>
+        <div class="console-head">
+          <span class="console-badge console-badge--ceo">STRATEGIC DECISION CONSOLE</span>
+          <p class="role__k">Dành cho CEO · Founder · Ban điều hành</p>
+        </div>
         <h3 class="role__q">“Nếu bắt đầu ứng dụng AI trong 30 ngày tới, doanh nghiệp nên chọn việc gì trước?”</h3>
-        <ul class="role__list">
-          <li>
+        <ul class="role__list console-steps" id="console-ceo-steps">
+          <li class="console-step" data-c-step="0">
             <span class="role__b" aria-hidden="true">1</span>
             <span>Công việc nào tạo ra kết quả nhanh, dễ đo lường và không làm xáo trộn vận hành hiện tại?</span>
           </li>
-          <li>
+          <li class="console-step" data-c-step="1">
             <span class="role__b" aria-hidden="true">2</span>
             <span>Khi nào chỉ cần đào tạo nhân viên dùng công cụ có sẵn, khi nào mới cần đóng gói ứng dụng AI riêng?</span>
           </li>
-          <li>
+          <li class="console-step" data-c-step="2">
             <span class="role__b" aria-hidden="true">3</span>
             <span>Làm sao phân quyền dữ liệu, kiểm soát chất lượng và giữ lại tài sản quy trình cho công ty?</span>
           </li>
         </ul>
-        <div class="role__res">
+        <div class="role__res console-res console-res--ceo">
+          <div class="console-res__tag">KHUYẾN NGHỊ THI CÔNG CHIẾN LƯỢC</div>
           <b>Lộ trình khuyến nghị cho Ban Giám đốc</b>
           Bắt đầu bằng <strong>Gói B2B 04A (2 buổi CEO – 45tr)</strong> để chốt bài toán &amp; tiêu chí nghiệm thu, hoặc đi thẳng <strong>Combo Quản lý (B2B 02 – 45tr) + CEO nối tiếp 3 buổi (75tr) = 120tr</strong> để ra trọn bộ quy trình và ứng dụng chạy thật.
         </div>
       </article>
 
-      <article class="role role--b" data-rv style="--d:.06s">
-        <p class="role__k">Dành cho Giám đốc HR · L&amp;D · Trưởng bộ phận</p>
+      <article class="role role--console role--hr" data-rv style="--d:.06s">
+        <div class="console-head">
+          <span class="console-badge console-badge--hr">CAPABILITY &amp; ADOPTION CONSOLE</span>
+          <p class="role__k">Dành cho Giám đốc HR · L&amp;D · Trưởng bộ phận</p>
+        </div>
         <h3 class="role__q">“Làm sao để đào tạo xong nhân sự thực sự áp dụng được và đo được bằng sản phẩm?”</h3>
-        <ul class="role__list">
-          <li>
+        <ul class="role__list console-steps" id="console-hr-steps">
+          <li class="console-step" data-c-step="0">
             <span class="role__b" aria-hidden="true">1</span>
             <span>Chưa có ngân sách mua phần mềm trả phí cho toàn công ty ➔ Chọn <strong>Gói B2B 01 (AI Free Tools thiết kế riêng theo phòng ban – 30tr)</strong>.</span>
           </li>
-          <li>
+          <li class="console-step" data-c-step="1">
             <span class="role__b" aria-hidden="true">2</span>
             <span>Đã có Claude Pro / GPT Plus nhưng kết quả làm ra chưa đồng đều ➔ Chọn <strong>Gói B2B 02 (Custom AI Project – 45tr)</strong>.</span>
           </li>
-          <li>
+          <li class="console-step" data-c-step="2">
             <span class="role__b" aria-hidden="true">3</span>
             <span>Muốn tự động hóa khâu đọc hồ sơ, nhập liệu CRM trên Chrome và làm báo cáo tháng ➔ Chọn <strong>Gói B2B 03 (Claude For Business – 65tr)</strong>.</span>
           </li>
         </ul>
-        <div class="role__res">
+        <div class="role__res console-res console-res--hr">
+          <div class="console-res__tag">KHUNG ĐÁNH GIÁ MINH CHỨNG THỰC TẾ</div>
           <b>Đánh giá năng lực nhân sự bằng minh chứng</b>
           Thay vì chỉ điểm danh số giờ ngồi học, mỗi nhân sự được nghiệm thu bằng sản phẩm công việc thực tế Trước – Sau trên hệ thống Training Hub &amp; AI Passport của GO4AI.
         </div>
       </article>
     </div>
 
-    <div class="pivot" data-rv>
-      <div>
+    <!-- Workshop Privilege 3-Stage Signal Flow -->
+    <div class="pivot privilege-flow" id="privilege-flow" data-rv>
+      <div class="privilege-header">
         <p class="pivot__q">Đặc quyền dành cho Doanh nghiệp tham dự Workshop Claude 90 Minutes:</p>
         <p class="pivot__sub">Tặng suất <strong>Làm việc Chẩn đoán Quy trình &amp; Thiết kế Bài toán AI trực tiếp cùng Chuyên gia GO4AI</strong> (khấu trừ 100% giá trị vào hợp đồng đào tạo In-house khi triển khai).</p>
       </div>
+
+      <div class="privilege-track">
+        <div class="privilege-stages" id="privilege-stages">
+          <div class="privilege-stage" data-p-step="0">
+            <span class="privilege-stage__dot"></span>
+            <span class="privilege-stage__num">GIAI ĐOẠN 01</span>
+            <h4 class="privilege-stage__title">WORKSHOP 90 MIN</h4>
+            <p class="privilege-stage__desc">Trình diễn trực tiếp 6 cấp độ AI thực chiến trên quy trình</p>
+          </div>
+          <div class="privilege-connector" aria-hidden="true"><span class="privilege-signal"></span></div>
+          <div class="privilege-stage" data-p-step="1">
+            <span class="privilege-stage__dot"></span>
+            <span class="privilege-stage__num">GIAI ĐOẠN 02</span>
+            <h4 class="privilege-stage__title">DIAGNOSTIC SESSION</h4>
+            <p class="privilege-stage__desc">3 giờ làm việc offline chẩn đoán điểm nghẽn &amp; thiết kế bài toán</p>
+          </div>
+          <div class="privilege-connector" aria-hidden="true"><span class="privilege-signal"></span></div>
+          <div class="privilege-stage" data-p-step="2">
+            <span class="privilege-stage__dot"></span>
+            <span class="privilege-stage__num">GIAI ĐOẠN 03</span>
+            <h4 class="privilege-stage__title">IN-HOUSE DEPLOYMENT</h4>
+            <p class="privilege-stage__desc">Triển khai gói B2B đo lường được bằng sản phẩm đầu ra</p>
+          </div>
+        </div>
+      </div>
+
       <div class="pivot__act">
-        <a class="btn" href="#chinh-sach">
+        <a class="btn btn--privilege" href="#chinh-sach">
           Xem quy chuẩn nghiệm thu &amp; chính sách
           <svg class="btn__a" width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M2.5 8h10M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1866,8 +2161,9 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
   </div>
 </section>
 
-<!-- ══════════════════════════ 05 · CHÍNH SÁCH & NGHIỆM THU ══════════════════════════ -->
-<section class="sec sec--light" id="chinh-sach">
+<!-- ══════════════════════════ 04 · CHÍNH SÁCH & NGHIỆM THU (QUALITY GATES) ══════════════════════════ -->
+<section class="sec sec--os sec--dark" id="chinh-sach">
+  <div class="enterprise-atmosphere" aria-hidden="true"></div>
   <div class="wrap">
     <header class="shead" data-rv>
       <div class="smeta">
@@ -1878,32 +2174,148 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
       <h2 class="h2">Minh bạch ngay từ đầu về sản phẩm đạt được và phạm vi triển khai.</h2>
     </header>
 
-    <dl class="pol">
-      <div class="pol__row">
-        <dt class="pol__q">1. Chính sách cam kết cho học viên Cá nhân (Public 2h/buổi)</dt>
-        <dd class="pol__a">Học viên được <strong>học thử buổi đầu tiên</strong>; nếu thấy không phù hợp được hoàn lại 100% học phí. Vắng buổi học có đầy đủ video ghi hình và trợ giảng hướng dẫn làm bù bài tập. Với khóa Google AI Essentials, học viên được đồng hành hỗ trợ cho đến khi thi đạt chứng chỉ và hoàn tất hồ sơ AI Passport. Học viên cũ (Alumni) được giảm 30–40% khi học nâng cấp lên khóa tiếp theo.</dd>
-      </div>
+    <!-- 4 Quality Gates Framework -->
+    <div class="quality-gates">
+      <!-- GATE 01 -->
+      <article class="qgate" data-rv>
+        <div class="qgate__top">
+          <span class="qgate__tag">GATE 01 · LEARNER POLICY</span>
+          <h3 class="qgate__title">1. Chính sách cam kết cho học viên Cá nhân (Public 2h/buổi)</h3>
+        </div>
+        <div class="qgate__content">
+          <p class="pol__a">Học viên được <strong>học thử buổi đầu tiên</strong>; nếu thấy không phù hợp được hoàn lại 100% học phí. Vắng buổi học có đầy đủ video ghi hình và trợ giảng hướng dẫn làm bù bài tập. Với khóa Google AI Essentials, học viên được đồng hành hỗ trợ cho đến khi thi đạt chứng chỉ và hoàn tất hồ sơ AI Passport. Học viên cũ (Alumni) được giảm 30–40% khi học nâng cấp lên khóa tiếp theo.</p>
+        </div>
+      </article>
 
-      <div class="pol__row">
-        <dt class="pol__q">2. Cách nghiệm thu kết quả đối với lớp Doanh nghiệp (In-house 3h/buổi)</dt>
-        <dd class="pol__a">GO4AI không nghiệm thu bằng cảm tính hay số giờ điểm danh. Mỗi buổi học đều nghiệm thu sản phẩm theo 4 mức: <strong>Đạt · Cần sửa · Cần thử thêm · Chưa đạt</strong>. Bài thực hành chỉ được tính là <em>Đạt</em> khi đúng tài liệu công ty cung cấp, không sai lệch số liệu/tên/ngày tháng, nêu rõ chỗ thiếu thông tin cần hỏi người có thẩm quyền và vượt qua bài kiểm thử tình huống mới.</dd>
-      </div>
+      <!-- GATE 02 -->
+      <article class="qgate qgate--acceptance" data-rv style="--d:.05s">
+        <div class="qgate__top">
+          <span class="qgate__tag">GATE 02 · ENTERPRISE ACCEPTANCE</span>
+          <h3 class="qgate__title">2. Cách nghiệm thu kết quả đối với lớp Doanh nghiệp (In-house 3h/buổi)</h3>
+        </div>
+        <div class="qgate__content">
+          <p class="pol__a">GO4AI không nghiệm thu bằng cảm tính hay số giờ điểm danh. Mỗi buổi học đều nghiệm thu sản phẩm theo 4 mức: <strong>Đạt · Cần sửa · Cần thử thêm · Chưa đạt</strong>. Bài thực hành chỉ được tính là <em>Đạt</em> khi đúng tài liệu công ty cung cấp, không sai lệch số liệu/tên/ngày tháng, nêu rõ chỗ thiếu thông tin cần hỏi người có thẩm quyền và vượt qua bài kiểm thử tình huống mới.</p>
 
-      <div class="pol__row">
-        <dt class="pol__q">3. Chi phí tài khoản phần mềm AI và thuế VAT được tính như thế nào?</dt>
-        <dd class="pol__a">• <strong>Với khóa B2C Cá nhân:</strong> Học phí Google AI Essentials (3.050.000 đ) đã bao gồm hỗ trợ tài khoản học và thi Coursera theo lớp. Với các khóa nâng cao (Custom AI Project, Claude for Business, AI Builder), học viên chủ động dùng tài khoản Claude Pro / ChatGPT Plus cá nhân (~20 USD/tháng) để dữ liệu và công cụ thuộc sở hữu riêng.<br>
-          • <strong>Với gói B2B Doanh nghiệp:</strong> Đơn giá niêm yết trên bảng giá chưa bao gồm VAT, chi phí bản quyền tài khoản AI trả phí của nhân sự (nếu chọn gói Pro) và chi phí đi lại/lưu trú ngoài TP.HCM đối với lớp Offline.</dd>
-      </div>
+          <!-- 4 Visual Acceptance Statuses -->
+          <div class="qgate__statuses" aria-label="4 mức nghiệm thu sản phẩm">
+            <div class="qstatus qstatus--pass">
+              <span class="qstatus__icon">✓</span>
+              <div>
+                <b>Đạt</b>
+                <span>Đúng tài liệu công ty, không sai lệch số liệu, vượt qua bài kiểm thử tình huống mới.</span>
+              </div>
+            </div>
+            <div class="qstatus qstatus--fix">
+              <span class="qstatus__icon">▲</span>
+              <div>
+                <b>Cần sửa</b>
+                <span>Đúng hướng vận hành nhưng cần hiệu chỉnh quy chế hoặc chuẩn hóa văn phong.</span>
+              </div>
+            </div>
+            <div class="qstatus qstatus--test">
+              <span class="qstatus__icon">⟳</span>
+              <div>
+                <b>Cần thử thêm</b>
+                <span>Cần bổ sung hồ sơ ngoại lệ hoặc kiểm tra chéo thêm từ bộ phận liên quan.</span>
+              </div>
+            </div>
+            <div class="qstatus qstatus--fail">
+              <span class="qstatus__icon">✕</span>
+              <div>
+                <b>Chưa đạt</b>
+                <span>Tài liệu đầu vào sai lệch, AI tự suy diễn thông tin hoặc thiếu điểm chốt duyệt.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
 
-      <div class="pol__row">
-        <dt class="pol__q">4. Ranh giới giữa “Đào tạo ra công cụ chạy thử” và “Dịch vụ triển khai phần mềm cấp doanh nghiệp”</dt>
-        <dd class="pol__a">Trong phạm vi các khóa đào tạo (kể cả gói AI Builder), sản phẩm tạo ra là bộ quy trình, bảng tính tự động hoặc ứng dụng chạy thử trên máy tính với dữ liệu mẫu đã được phê duyệt. Khi doanh nghiệp muốn <strong>đưa ứng dụng lên máy chủ dùng chung cho hàng trăm nhân sự, kết nối trực tiếp vào cơ sở dữ liệu lõi (ERP/CRM nội bộ), bảo trì dài hạn và cam kết SLA vận hành</strong> (Cấp độ 5–6 quy mô lớn), GO4AI sẽ khảo sát và báo giá thành gói <em>Tư vấn &amp; Triển khai Giải pháp Kỹ thuật</em> riêng biệt.</dd>
-      </div>
-    </dl>
+      <!-- GATE 03 -->
+      <article class="qgate" data-rv style="--d:.1s">
+        <div class="qgate__top">
+          <span class="qgate__tag">GATE 03 · COST &amp; ACCOUNT SCOPE</span>
+          <h3 class="qgate__title">3. Chi phí tài khoản phần mềm AI và thuế VAT được tính như thế nào?</h3>
+        </div>
+        <div class="qgate__content">
+          <p class="pol__a">• <strong>Với khóa B2C Cá nhân:</strong> Học phí Google AI Essentials (3.050.000 đ) đã bao gồm hỗ trợ tài khoản học và thi Coursera theo lớp. Với các khóa nâng cao (Custom AI Project, Claude for Business, AI Builder), học viên chủ động dùng tài khoản Claude Pro / ChatGPT Plus cá nhân (~20 USD/tháng) để dữ liệu và công cụ thuộc sở hữu riêng.<br>
+          • <strong>Với gói B2B Doanh nghiệp:</strong> Đơn giá niêm yết trên bảng giá chưa bao gồm VAT, chi phí bản quyền tài khoản AI trả phí của nhân sự (nếu chọn gói Pro) và chi phí đi lại/lưu trú ngoài TP.HCM đối với lớp Offline.</p>
+        </div>
+      </article>
 
-    <div class="verdict" data-rv>
-      <p>Không tự hứa hẹn những con số tiết kiệm phóng đại khi chưa đo lường.</p>
-      <p>Đo thời gian thực tế Trước – Sau trên chính công việc của bạn, và để sản phẩm đầu ra tự chứng minh giá trị.</p>
+      <!-- GATE 04 -->
+      <article class="qgate qgate--boundary" data-rv style="--d:.15s">
+        <div class="qgate__top">
+          <span class="qgate__tag">GATE 04 · DEPLOYMENT BOUNDARY</span>
+          <h3 class="qgate__title">4. Ranh giới giữa “Đào tạo ra công cụ chạy thử” và “Dịch vụ triển khai phần mềm cấp doanh nghiệp”</h3>
+        </div>
+        <div class="qgate__content">
+          <p class="pol__a">Trong phạm vi các khóa đào tạo (kể cả gói AI Builder), sản phẩm tạo ra là bộ quy trình, bảng tính tự động hoặc ứng dụng chạy thử trên máy tính với dữ liệu mẫu đã được phê duyệt. Khi doanh nghiệp muốn <strong>đưa ứng dụng lên máy chủ dùng chung cho hàng trăm nhân sự, kết nối trực tiếp vào cơ sở dữ liệu lõi (ERP/CRM nội bộ), bảo trì dài hạn và cam kết SLA vận hành</strong> (Cấp độ 5–6 quy mô lớn), GO4AI sẽ khảo sát và báo giá thành gói <em>Tư vấn &amp; Triển khai Giải pháp Kỹ thuật</em> riêng biệt.</p>
+
+          <!-- Visual Architecture Split Diagram -->
+          <div class="boundary-split">
+            <div class="boundary-col boundary-col--training">
+              <span class="boundary-badge">PHẠM VI ĐÀO TẠO (IN-HOUSE)</span>
+              <h4>TRAINING OUTPUT</h4>
+              <ul>
+                <li>Bộ quy trình &amp; Trợ lý AI nạp sẵn quy chế phòng ban</li>
+                <li>Bảng tính Google Sheets tự động hóa bằng script tiếng Việt</li>
+                <li>Ứng dụng chạy thử trên máy tính với dữ liệu mẫu đã phê duyệt</li>
+                <li>Sổ tay vận hành &amp; danh sách kiểm soát chất lượng bàn giao</li>
+              </ul>
+            </div>
+            <div class="boundary-divider" aria-hidden="true">
+              <span class="boundary-node"></span>
+              <span class="boundary-label">RANH GIỚI KIỂM SOÁT</span>
+              <span class="boundary-node"></span>
+            </div>
+            <div class="boundary-col boundary-col--enterprise">
+              <span class="boundary-badge">DỊCH VỤ DOANH NGHIỆP LỚN</span>
+              <h4>ENTERPRISE DEPLOYMENT</h4>
+              <ul>
+                <li>Đưa ứng dụng lên máy chủ đám mây dùng chung cho hàng trăm nhân sự</li>
+                <li>Kết nối trực tiếp vào cơ sở dữ liệu lõi doanh nghiệp (ERP / CRM nội bộ)</li>
+                <li>Bảo trì dài hạn, cập nhật mô hình và cam kết SLA vận hành</li>
+                <li>Gói Tư vấn &amp; Triển khai Giải pháp Kỹ thuật riêng biệt</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Measured Impact System (Final Verdict) -->
+    <div class="verdict measured-impact" data-rv>
+      <div class="impact-framework">
+        <div class="impact-chain">
+          <div class="impact-stage">
+            <span class="impact-tag">BEFORE</span>
+            <b>Trước Đào Tạo</b>
+            <p>Thao tác thủ công, tốn nhiều thời gian đối chiếu</p>
+          </div>
+          <div class="impact-arrow" aria-hidden="true">→</div>
+          <div class="impact-stage impact-stage--mid">
+            <span class="impact-tag impact-tag--brand">WORKFLOW</span>
+            <b>Quy Trình AI</b>
+            <p>Chuẩn hóa dữ liệu đầu vào &amp; nguyên tắc kiểm tra</p>
+          </div>
+          <div class="impact-arrow" aria-hidden="true">→</div>
+          <div class="impact-stage">
+            <span class="impact-tag impact-tag--success">AFTER</span>
+            <b>Sau Đào Tạo</b>
+            <p>Sản phẩm chạy thật, nghiệm thu chéo tại bàn</p>
+          </div>
+        </div>
+        <div class="impact-labels" aria-label="Chỉ số đo lường">
+          <span class="impact-label">TIME</span>
+          <span class="impact-label">MANUAL STEPS</span>
+          <span class="impact-label">ERRORS</span>
+          <span class="impact-label">OUTPUT</span>
+        </div>
+      </div>
+      <div class="impact-quotes">
+        <p>Không tự hứa hẹn những con số tiết kiệm phóng đại khi chưa đo lường.</p>
+        <p>Đo thời gian thực tế Trước – Sau trên chính công việc của bạn, và để sản phẩm đầu ra tự chứng minh giá trị.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1913,14 +2325,10 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
   <div class="wrap">
     <div class="ft__grid">
       <div>
-        <div class="ft__brand">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="1" y="1" width="22" height="22" rx="6" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M8 15.5V8.5h3.6a2.2 2.2 0 0 1 0 4.4H8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="16.2" cy="15.4" r="1.2" fill="currentColor"/>
-          </svg>
-          GO4AI
-        </div>
+        <a class="ft__brand" href="/" aria-label="GO4AI — Trang chủ">
+          <img src="assets/images/logos/logo-go4ai-life.png" alt="GO4AI" class="brand__logo-img ft__logo-img" width="44" height="58">
+          <span class="ft__brand-text">GO4AI</span>
+        </a>
         <p>Công ty TNHH Công nghệ Tư vấn Đào tạo GO4AI — Đào tạo thực chiến, chuẩn hóa quy trình và xây dựng hệ thống ứng dụng AI tạo ra kết quả đo lường được cho cá nhân và doanh nghiệp.</p>
       </div>
 
@@ -2221,5 +2629,256 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
   preference();measure();
 })();
 </script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   AUTOPLAY RUNTIMES: 180-MIN TIMELINE · DIAGNOSTIC PIPELINE · DECISION
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  // 1. Timeline 180 Min Autoplay
+  var tbEl = document.getElementById('timeline-180');
+  var tbItems = tbEl ? Array.from(tbEl.querySelectorAll('.tb__i')) : [];
+  var tbSignal = document.getElementById('tb-signal');
+  var tbTimer = null;
+  var tbIdx = 0;
+  var tbVisible = false;
+
+  function setTbStep(idx) {
+    if (!tbItems.length) return;
+    tbItems.forEach(function(el, i) {
+      el.classList.toggle('is-live-active', i === idx);
+    });
+    if (tbSignal) {
+      var isHorizontal = window.innerWidth >= 900;
+      var trackLine = tbEl.querySelector('.tb__track-line');
+      if (trackLine) {
+        tbSignal.style.opacity = '1';
+        if (isHorizontal) {
+          var w = trackLine.clientWidth;
+          var x = (idx / (tbItems.length - 1)) * Math.max(0, w - 60);
+          tbSignal.style.transform = 'translate3d(' + x.toFixed(1) + 'px, 0, 0)';
+        } else {
+          var h = trackLine.clientHeight;
+          var y = (idx / (tbItems.length - 1)) * Math.max(0, h - 40);
+          tbSignal.style.transform = 'translate3d(0, ' + y.toFixed(1) + 'px, 0)';
+        }
+      }
+    }
+  }
+
+  function cycleTb() {
+    clearTimeout(tbTimer);
+    if (!tbVisible || document.hidden || reduce.matches) return;
+    setTbStep(tbIdx % tbItems.length);
+    tbIdx++;
+    tbTimer = setTimeout(cycleTb, 1600); // 5 steps * 1.6s = 8.0s loop
+  }
+
+  if (tbEl && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        tbVisible = entry.isIntersecting;
+        if (tbVisible) {
+          cycleTb();
+        } else {
+          clearTimeout(tbTimer);
+        }
+      });
+    }, { threshold: 0.15 }).observe(tbEl);
+  }
+
+  // 2. Section 03 Diagnostic Pipeline Autoplay (01 -> 05)
+  var diagEl = document.getElementById('diag-pipeline');
+  var diagNodes = diagEl ? Array.from(diagEl.querySelectorAll('.diag-node')) : [];
+  var diagSignal = document.getElementById('diag-signal');
+  var diagTimer = null;
+  var diagIdx = 0;
+  var diagVisible = false;
+
+  function setDiagStep(idx) {
+    if (!diagNodes.length) return;
+    diagNodes.forEach(function(el, i) {
+      el.classList.toggle('is-live-active', i === idx);
+    });
+    if (diagSignal) {
+      var isHorizontal = window.innerWidth >= 1080;
+      var trackLine = diagEl.querySelector('.diag-track-line');
+      if (trackLine) {
+        diagSignal.style.opacity = '1';
+        if (isHorizontal) {
+          var w = trackLine.clientWidth;
+          var x = (idx / (diagNodes.length - 1)) * Math.max(0, w - 60);
+          diagSignal.style.transform = 'translate3d(' + x.toFixed(1) + 'px, 0, 0)';
+        } else {
+          var h = trackLine.clientHeight;
+          var y = (idx / (diagNodes.length - 1)) * Math.max(0, h - 40);
+          diagSignal.style.transform = 'translate3d(0, ' + y.toFixed(1) + 'px, 0)';
+        }
+      }
+    }
+  }
+
+  function cycleDiag() {
+    clearTimeout(diagTimer);
+    if (!diagVisible || document.hidden || reduce.matches) return;
+    setDiagStep(diagIdx % diagNodes.length);
+    diagIdx++;
+    diagTimer = setTimeout(cycleDiag, 1600); // 5 steps * 1.6s = 8.0s loop
+  }
+
+  if (diagEl && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        diagVisible = entry.isIntersecting;
+        if (diagVisible) {
+          cycleDiag();
+        } else {
+          clearTimeout(diagTimer);
+        }
+      });
+    }, { threshold: 0.12 }).observe(diagEl);
+  }
+
+  // 3. Decision Console Checkpoints Sequential Illumination
+  var consoleEl = document.getElementById('decision-console');
+  var ceoSteps = consoleEl ? Array.from(consoleEl.querySelectorAll('#console-ceo-steps .console-step')) : [];
+  var hrSteps = consoleEl ? Array.from(consoleEl.querySelectorAll('#console-hr-steps .console-step')) : [];
+  var consoleTimer = null;
+  var consoleIdx = 0;
+  var consoleVisible = false;
+
+  function setConsoleStep(idx) {
+    [ceoSteps, hrSteps].forEach(function(group) {
+      group.forEach(function(el, i) {
+        el.classList.toggle('is-live-active', i === idx);
+      });
+    });
+  }
+
+  function cycleConsole() {
+    clearTimeout(consoleTimer);
+    if (!consoleVisible || document.hidden || reduce.matches) return;
+    setConsoleStep(consoleIdx % 3);
+    consoleIdx++;
+    consoleTimer = setTimeout(cycleConsole, 2200);
+  }
+
+  if (consoleEl && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        consoleVisible = entry.isIntersecting;
+        if (consoleVisible) {
+          cycleConsole();
+        } else {
+          clearTimeout(consoleTimer);
+        }
+      });
+    }, { threshold: 0.15 }).observe(consoleEl);
+  }
+
+  // 4. Workshop Privilege 3-Stage Signal Flow
+  var privEl = document.getElementById('privilege-flow');
+  var privStages = privEl ? Array.from(privEl.querySelectorAll('.privilege-stage')) : [];
+  var privTimer = null;
+  var privIdx = 0;
+  var privVisible = false;
+
+  function cyclePriv() {
+    clearTimeout(privTimer);
+    if (!privVisible || document.hidden || reduce.matches) return;
+    privStages.forEach(function(el, i) {
+      el.classList.toggle('is-live-active', i === (privIdx % privStages.length));
+    });
+    privIdx++;
+    privTimer = setTimeout(cyclePriv, 2400);
+  }
+
+  if (privEl && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        privVisible = entry.isIntersecting;
+        if (privVisible) {
+          cyclePriv();
+        } else {
+          clearTimeout(privTimer);
+        }
+      });
+    }, { threshold: 0.15 }).observe(privEl);
+  }
+
+  // 5. Course Title Subtle Scroll Motion
+  var titleElements = Array.from(document.querySelectorAll('.pc__title, .mod__h, .mod__name'));
+  var scrollTicking = false;
+
+  function updateTitleMotion() {
+    scrollTicking = false;
+    if (reduce.matches) return;
+    var vh = window.innerHeight;
+    var isMobile = window.innerWidth < 768;
+    var maxShift = isMobile ? 4 : 10;
+
+    titleElements.forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.bottom > -50 && rect.top < vh + 50) {
+        var progress = (vh - rect.top) / (vh + rect.height);
+        var shift = (progress - 0.5) * maxShift;
+        var opacity = Math.min(1, 0.8 + (1 - Math.abs(progress - 0.5) * 0.4));
+        el.style.transform = 'translate3d(0, ' + shift.toFixed(2) + 'px, 0)';
+        el.style.opacity = opacity.toFixed(3);
+      }
+    });
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking && !reduce.matches) {
+      scrollTicking = true;
+      requestAnimationFrame(updateTitleMotion);
+    }
+  }, { passive: true });
+
+  // Page visibility listener for clean battery/CPU pause
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      clearTimeout(tbTimer);
+      clearTimeout(diagTimer);
+      clearTimeout(consoleTimer);
+      clearTimeout(privTimer);
+    } else {
+      if (tbVisible) cycleTb();
+      if (diagVisible) cycleDiag();
+      if (consoleVisible) cycleConsole();
+      if (privVisible) cyclePriv();
+    }
+  });
+
+  // Reduced motion preference listener
+  if (reduce.addEventListener) {
+    reduce.addEventListener('change', function() {
+      if (reduce.matches) {
+        clearTimeout(tbTimer);
+        clearTimeout(diagTimer);
+        clearTimeout(consoleTimer);
+        clearTimeout(privTimer);
+        titleElements.forEach(function(el) {
+          el.style.transform = 'none';
+          el.style.opacity = '1';
+        });
+        [tbItems, diagNodes, ceoSteps, hrSteps, privStages].forEach(function(group) {
+          group.forEach(function(el) { el.classList.remove('is-live-active'); });
+        });
+      } else {
+        if (tbVisible) cycleTb();
+        if (diagVisible) cycleDiag();
+        if (consoleVisible) cycleConsole();
+        if (privVisible) cyclePriv();
+      }
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
