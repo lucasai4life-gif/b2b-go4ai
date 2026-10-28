@@ -1227,6 +1227,958 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
 .ft ul a:hover{color:#B6F0DC}
 .ft__bar{border-top-color:rgba(255,255,255,.1);color:rgba(233,240,238,.5)}
 
+/* ══════════════════════════════════════════════════════════════════════
+   MOBILE-FIRST WOW UPGRADE (<= 767px & Tablet Breakpoints)
+   Targeted specifically for premium, high-tech enterprise AI experience.
+   Desktop (>= 1000px) remains 100% untouched.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── COMPACT STICKY COURSE BAR (Mobile < 1000px) ─────────────────────── */
+.mobile-sticky-course{display:none}
+@media (max-width:999px){
+  .mobile-sticky-course{
+    display:block;
+    position:fixed;
+    top:72px;
+    left:0;
+    right:0;
+    z-index:95;
+    background:rgba(10,18,20,.94);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(52,211,153,.28);
+    box-shadow:0 10px 24px -10px rgba(0,0,0,.7);
+    transform:translateY(-100%);
+    opacity:0;
+    pointer-events:none;
+    transition:transform .25s cubic-bezier(.16,1,.3,1),opacity .22s ease;
+    padding:0 var(--gut);
+  }
+  .mobile-sticky-course.is-active{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+  html.menu-open .mobile-sticky-course,
+  .hd.is-open ~ #main-content .mobile-sticky-course{
+    display:none !important;
+  }
+  .msc-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    height:42px;
+    max-width:var(--wrap);
+    margin:0 auto;
+  }
+  .msc-left{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+    flex:1;
+  }
+  .msc-node{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#34d399;
+    box-shadow:0 0 8px #34d399;
+    flex:none;
+    animation:dotPulse 2s infinite ease-in-out;
+  }
+  .msc-tag{
+    font-family:var(--mono);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.1em;
+    color:#7FD9BC;
+    background:rgba(8,144,108,.25);
+    padding:2px 6px;
+    border-radius:4px;
+    border:1px solid rgba(127,217,188,.3);
+    flex:none;
+  }
+  .msc-name{
+    font-size:12.5px;
+    font-weight:600;
+    color:#FFFFFF;
+    letter-spacing:-.01em;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    min-width:0;
+  }
+  .msc-price{
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:700;
+    color:#B6F0DC;
+    background:rgba(8,144,108,.28);
+    border:1px solid rgba(127,217,188,.35);
+    border-radius:6px;
+    padding:3px 8px;
+    white-space:nowrap;
+    flex:none;
+    font-variant-numeric:tabular-nums;
+  }
+}
+@media (min-width:1000px){
+  .mobile-sticky-course{display:none !important}
+}
+
+/* ── MOBILE DESIGN SYSTEM (<= 767px) ─────────────────────────────────── */
+@media (max-width:767px){
+  :root{
+    --sec-y:48px;
+  }
+
+  /* Safe container */
+  .wrap{
+    padding-inline:18px;
+    box-sizing:border-box;
+    max-width:100%;
+  }
+
+  /* 1. Mobile Hero Upgrade */
+  .hero{
+    padding-top:calc(72px + 24px);
+    padding-bottom:44px;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 50% 12%,rgba(52,211,153,.18) 0%,transparent 65%);
+    pointer-events:none;
+    z-index:-1;
+  }
+  .hero__net{
+    top:10px;
+    right:-30px;
+    width:300px;
+    opacity:.35;
+  }
+  .hero h1{
+    font-size:clamp(25px,6.8vw,32px);
+    line-height:1.18;
+    letter-spacing:-.03em;
+    margin-top:14px;
+    max-width:100%;
+  }
+  .pill{
+    font-size:9px;
+    letter-spacing:.12em;
+    padding:6px 12px 6px 10px;
+  }
+  .eyebrow{
+    margin-top:14px;
+    font-size:10px;
+    letter-spacing:.12em;
+    gap:8px;
+  }
+  .eyebrow::before{
+    width:18px;
+  }
+  .kick{
+    font-size:15px;
+    line-height:1.45;
+    margin-top:14px;
+    color:#7FD9BC;
+  }
+  .sub{
+    font-size:13.5px;
+    line-height:1.6;
+    margin-top:12px;
+    color:rgba(233,240,238,.75);
+  }
+  .chips{
+    margin-top:18px;
+    gap:6px;
+  }
+  .chip{
+    font-size:11.5px;
+    padding:7px 11px;
+    border-radius:8px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(127,217,188,.22);
+  }
+  .strip{
+    margin-top:20px;
+    padding-top:18px;
+    gap:10px;
+  }
+  .strip__i{
+    padding:14px 15px;
+    border-radius:12px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .strip__k{
+    font-size:9.5px;
+    color:#7FD9BC;
+  }
+  .strip__v{
+    font-size:14px;
+    line-height:1.35;
+  }
+  .strip__v small{
+    font-size:12px;
+    margin-top:4px;
+    line-height:1.5;
+  }
+  .ctas{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    gap:10px;
+    margin-top:22px;
+  }
+  .ctas .btn{
+    width:100%;
+    min-height:52px;
+    font-size:14.5px;
+    font-weight:600;
+    border-radius:12px;
+    justify-content:center;
+    box-shadow:0 10px 28px -8px rgba(8,144,108,.8);
+  }
+  .ctas .linkarrow{
+    width:100%;
+    min-height:48px;
+    font-size:13.5px;
+    font-weight:500;
+    justify-content:center;
+    border-radius:12px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.12);
+  }
+
+  /* Visual AI Map 6 Cấp Độ on Mobile */
+  .map{
+    margin-top:28px;
+    padding:18px 16px;
+    border-radius:16px;
+    background:linear-gradient(175deg,rgba(16,28,30,.95) 0%,rgba(10,18,20,.98) 100%);
+    border:1px solid rgba(52,211,153,.28);
+    box-shadow:0 16px 40px -16px rgba(0,0,0,.8);
+  }
+  .map__hd{
+    align-items:flex-start;
+  }
+  .map__tag{
+    font-size:9px;
+    letter-spacing:.12em;
+    line-height:1.4;
+  }
+  .map__q{
+    font-size:13.8px;
+    line-height:1.45;
+    margin-top:10px;
+  }
+  .lvls{
+    margin-top:14px;
+  }
+  .lvls::before{
+    left:15px;
+  }
+  .lvl{
+    grid-template-columns:32px minmax(0,1fr);
+    gap:10px;
+    padding:9px 0;
+  }
+  .lvl__n{
+    width:32px;
+    height:28px;
+    font-size:8.5px;
+    border-radius:7px;
+  }
+  .lvl__t{
+    font-size:13.5px;
+    line-height:1.35;
+  }
+  .lvl__t small{
+    font-size:11.5px;
+    line-height:1.45;
+    margin-top:3px;
+  }
+  .lvl__tag{
+    font-size:8.5px;
+    padding:2px 6px;
+  }
+  .map__ft{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    padding-top:12px;
+    margin-top:12px;
+  }
+  .map__ft b{
+    font-size:13.5px;
+  }
+  .map__ft span{
+    font-size:10.5px;
+  }
+
+  /* Section Headings */
+  .shead{
+    margin-bottom:24px;
+  }
+  .smeta{
+    margin-bottom:12px;
+    gap:8px;
+  }
+  .smeta__n{
+    font-size:10.5px;
+  }
+  .smeta__r{
+    width:20px;
+  }
+  .smeta__k{
+    font-size:9.5px;
+    letter-spacing:.1em;
+  }
+  .h2{
+    font-size:clamp(22px,6.2vw,29px);
+    line-height:1.22;
+    letter-spacing:-.025em;
+  }
+  .lead{
+    font-size:13.8px;
+    line-height:1.58;
+    margin-top:10px;
+  }
+
+  /* 2. Mobile Course Overview Cards */
+  .pgrid{
+    grid-template-columns:1fr !important;
+    gap:14px;
+    margin-top:20px;
+  }
+  .pc{
+    padding:18px 16px;
+    border-radius:16px;
+  }
+  .pc__top{
+    gap:8px;
+  }
+  .pc__num{
+    font-size:10px;
+  }
+  .pc__badge{
+    font-size:9px;
+    padding:3px 8px;
+  }
+  .pc__title{
+    font-size:19px;
+    line-height:1.25;
+    margin-top:10px;
+  }
+  .pc__sub{
+    font-size:12.5px;
+    margin-top:4px;
+  }
+  .pc__price{
+    padding:12px 14px;
+    margin-top:12px;
+    border-radius:12px;
+  }
+  .pc__amt{
+    font-size:26px;
+  }
+  .pc__unit{
+    font-size:11px;
+    margin-top:3px;
+  }
+  .pc__alt{
+    font-size:11px;
+    margin-top:6px;
+    padding:3px 8px;
+  }
+  .pc__meta{
+    margin-top:12px;
+    gap:8px;
+  }
+  .pc__meta div{
+    grid-template-columns:78px minmax(0,1fr);
+    gap:8px;
+  }
+  .pc__meta dt{
+    font-size:9px;
+  }
+  .pc__meta dd{
+    font-size:12.8px;
+  }
+  .pc__val{
+    font-size:12.8px;
+    line-height:1.55;
+    margin-top:12px;
+    margin-bottom:14px;
+  }
+  .pc__out{
+    padding-top:12px;
+  }
+  .pc__out-k{
+    font-size:9px;
+    margin-bottom:6px;
+  }
+  .pc__out ul{
+    gap:6px;
+  }
+  .pc__out li{
+    font-size:12.5px;
+    line-height:1.5;
+  }
+
+  /* 2. Detailed Course Modules (System Module Architecture) */
+  .tl{
+    margin-top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .mod{
+    border-radius:16px;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid var(--line);
+    box-shadow:0 4px 18px rgba(0,0,0,.04);
+  }
+  .sec--dark .mod{
+    background:#0B1315;
+    border-color:rgba(52,211,153,.22);
+    box-shadow:0 8px 24px -10px rgba(0,0,0,.7);
+  }
+  .mod__rail{
+    padding:16px 16px 14px;
+    background:linear-gradient(175deg,#121F21 0%,#0A1214 100%);
+    border-bottom:1px solid rgba(52,211,153,.2);
+    border-top:3px solid #34d399;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .mod__rail::before{
+    display:none;
+  }
+  .mod__n{
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:700;
+    color:#7FD9BC;
+    letter-spacing:.12em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .mod__n::before{
+    content:"";
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#34d399;
+    box-shadow:0 0 8px #34d399;
+    flex:none;
+  }
+  .mod__n::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:rgba(52,211,153,.2);
+  }
+  .mod__kick{
+    font-size:9.5px;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(233,240,238,.75);
+    line-height:1.45;
+  }
+  .mod__name{
+    font-size:17.5px;
+    font-weight:700;
+    line-height:1.3;
+    color:#fff;
+    margin:2px 0 0;
+  }
+  .mod__price{
+    align-self:flex-start;
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:700;
+    color:#B6F0DC;
+    background:rgba(8,144,108,.28);
+    border:1px solid rgba(127,217,188,.35);
+    border-radius:6px;
+    padding:4px 9px;
+    margin-top:2px;
+  }
+  .mod__body{
+    padding:16px 14px 18px;
+  }
+  .mod__desc{
+    font-size:13px;
+    line-height:1.55;
+    margin-bottom:14px;
+  }
+  .sesgrid{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .ses{
+    padding:14px 14px;
+    border-radius:12px;
+    background:rgba(0,0,0,.02);
+    border:1px solid var(--line);
+  }
+  .sec--dark .ses{
+    background:rgba(255,255,255,.025);
+    border-color:rgba(255,255,255,.08);
+  }
+  .ses__top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+  }
+  .ses__b{
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .ses__dur{
+    font-size:9.5px;
+    font-family:var(--mono);
+    padding:2px 6px;
+    border-radius:4px;
+  }
+  .ses__h{
+    font-size:14.5px;
+    font-weight:700;
+    line-height:1.35;
+    margin-bottom:6px;
+  }
+  .ses__p{
+    font-size:12.8px;
+    line-height:1.55;
+  }
+  .ses__out{
+    margin-top:10px;
+    padding:10px 12px;
+    border-radius:8px;
+    font-size:12px;
+    line-height:1.5;
+    border-left:2px solid var(--brand);
+    background:var(--brand-soft);
+  }
+  .sec--dark .ses__out{
+    border-left-color:#34d399;
+    background:rgba(8,144,108,.14);
+    color:rgba(233,240,238,.9);
+  }
+
+  /* 4. 180-Minute Timeline Vertical Flow on Mobile */
+  .tb{
+    padding:18px 16px;
+    border-radius:16px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.08);
+    margin-top:24px;
+  }
+  .tb__topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .tb__k{
+    font-size:10px;
+    line-height:1.4;
+  }
+  .tb__live-badge{
+    font-size:9px;
+    padding:3px 8px;
+  }
+  .tb__track-line{
+    left:17px;
+    top:16px;
+    bottom:16px;
+    width:2px;
+    background:rgba(255,255,255,.1);
+  }
+  .tb__track-signal{
+    width:100%;
+    height:44px;
+    background:linear-gradient(180deg,transparent,#34d399,transparent);
+  }
+  .tb__grid{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .tb__i{
+    padding:14px 16px 14px 44px;
+    border-radius:12px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.06);
+    transition:all .35s ease;
+  }
+  .tb__i::before, .tb__i::after{
+    display:none !important;
+  }
+  .tb__i .tb__dot{
+    left:10px;
+    top:17px;
+    width:15px;
+    height:15px;
+    border-radius:50%;
+    background:#0B1214;
+    border:2px solid rgba(127,217,188,.4);
+    box-shadow:0 0 0 3px rgba(8,144,108,.16);
+    z-index:2;
+  }
+  .tb__i b{
+    font-size:11px;
+    margin-bottom:4px;
+  }
+  .tb__i span{
+    font-size:12.5px;
+    line-height:1.5;
+    color:rgba(233,240,238,.75);
+  }
+  .tb__i.is-live-active{
+    background:rgba(8,144,108,.16);
+    border-color:rgba(52,211,153,.45);
+    box-shadow:0 4px 20px -4px rgba(8,144,108,.35);
+  }
+  .tb__i.is-live-active .tb__dot{
+    background:#34d399;
+    border-color:#B6F0DC;
+    box-shadow:0 0 0 4px rgba(52,211,153,.3),0 0 16px #34d399;
+    transform:scale(1.15);
+  }
+  .tb__i.is-live-active b{
+    color:#B6F0DC;
+    text-shadow:0 0 10px rgba(127,217,188,.3);
+  }
+  .tb__i.is-live-active span{
+    color:#FFFFFF;
+  }
+
+  /* 5. Section 03 Diagnostic Pipeline on Mobile */
+  .diag-pipeline{
+    padding:18px 16px;
+    border-radius:16px;
+    margin-top:24px;
+  }
+  .diag-pipeline__bar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+    margin-bottom:18px;
+    padding-bottom:12px;
+  }
+  .diag-track-line{
+    left:20px;
+    top:16px;
+    bottom:16px;
+    width:2px;
+    background:rgba(255,255,255,.1);
+  }
+  .diag-track-signal{
+    width:100%;
+    height:48px;
+    background:linear-gradient(180deg,transparent,#34d399,transparent);
+  }
+  .diag-flow{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .diag-node{
+    padding:14px 16px 14px 48px;
+    border-radius:12px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.07);
+    transition:all .35s ease;
+  }
+  .diag-node .flow__n{
+    left:8px;
+    top:15px;
+    width:26px;
+    height:26px;
+    font-size:10px;
+    font-weight:700;
+    border-radius:50%;
+    z-index:2;
+  }
+  .diag-node .flow__t{
+    font-size:14.5px;
+    font-weight:700;
+    line-height:1.35;
+    margin-bottom:4px;
+  }
+  .diag-node .flow__d{
+    font-size:12.5px;
+    line-height:1.55;
+    color:rgba(233,240,238,.7);
+  }
+  .diag-node.is-live-active{
+    background:rgba(8,144,108,.16);
+    border-color:rgba(52,211,153,.45);
+    box-shadow:0 4px 20px -4px rgba(8,144,108,.35);
+  }
+  .diag-node.is-live-active .flow__n{
+    background:#08906c;
+    color:#fff;
+    border-color:#34d399;
+    box-shadow:0 0 14px #34d399;
+  }
+  .diag-node.is-live-active .flow__t{
+    color:#fff;
+  }
+  .diag-node.is-live-active .flow__d{
+    color:rgba(233,240,238,.92);
+  }
+  .diag-output{
+    padding:16px 14px;
+    margin-top:22px;
+    border-radius:14px;
+  }
+  .diag-output__grid{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .diag-card{
+    padding:14px 14px;
+    border-radius:12px;
+  }
+
+  /* 6. Executive Decision Console on Mobile */
+  .decision-console{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-top:22px;
+  }
+  .role--console{
+    padding:18px 16px;
+    border-radius:16px;
+    background:linear-gradient(175deg,#101c1e 0%,#0a1214 100%);
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 12px 32px -12px rgba(0,0,0,.7);
+  }
+  .role--console .role__q{
+    font-size:16px;
+    line-height:1.38;
+  }
+  .console-steps{
+    gap:8px;
+  }
+  .console-step{
+    padding:10px 12px;
+    border-radius:10px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.05);
+    transition:all .3s ease;
+  }
+  .console-step.is-live-active{
+    background:rgba(8,144,108,.14);
+    border-color:rgba(52,211,153,.35);
+  }
+  .console-step.is-live-active .role__b{
+    background:#08906c;
+    color:#fff;
+    border-color:#34d399;
+    box-shadow:0 0 10px #34d399;
+  }
+  .console-step.is-live-active span{
+    color:#FFFFFF;
+  }
+  .console-res{
+    padding:14px 14px;
+    border-radius:12px;
+    font-size:12.8px;
+    line-height:1.55;
+  }
+
+  /* 7. Activation Bridge on Mobile */
+  .privilege-flow{
+    padding:20px 16px;
+    border-radius:16px;
+    margin-top:26px;
+    gap:18px;
+  }
+  .privilege-flow .pivot__q{
+    font-size:17.5px;
+    line-height:1.35;
+  }
+  .privilege-stages{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:6px;
+  }
+  .privilege-connector{
+    display:block;
+    width:2px;
+    height:22px;
+    margin:0 auto;
+    background:rgba(255,255,255,.14);
+    position:relative;
+    overflow:hidden;
+  }
+  .privilege-signal{
+    position:absolute;
+    top:-100%;
+    left:0;
+    width:100%;
+    height:60%;
+    background:#34d399;
+    box-shadow:0 0 8px #34d399;
+    animation:signalFlowV 1.8s infinite linear;
+  }
+  @keyframes signalFlowV{
+    0%{top:-100%}
+    100%{top:150%}
+  }
+  .privilege-stage{
+    padding:14px 14px;
+    border-radius:12px;
+  }
+  .privilege-stage[data-p-step="1"]{
+    border-color:rgba(52,211,153,.5);
+    background:rgba(8,144,108,.18);
+    box-shadow:0 0 20px -4px rgba(52,211,153,.35);
+  }
+  .btn--privilege{
+    width:100%;
+    min-height:52px;
+    font-size:13.8px;
+    text-align:center;
+    justify-content:center;
+    border-radius:12px;
+    white-space:normal;
+    line-height:1.35;
+    padding:10px 16px;
+  }
+
+  /* 8. Governance on Mobile (4 Quality Gates) */
+  .quality-gates{
+    gap:16px;
+    margin-top:22px;
+  }
+  .qgate{
+    padding:18px 16px;
+    border-radius:16px;
+  }
+  .qgate__title{
+    font-size:16px;
+    line-height:1.38;
+  }
+  .qgate__content p{
+    font-size:13.5px;
+    line-height:1.65;
+  }
+  .qgate__statuses{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:14px;
+  }
+  .qstatus{
+    padding:10px 12px;
+    border-radius:10px;
+    background:rgba(0,0,0,.45);
+  }
+  .boundary-split{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    padding:14px;
+    border-radius:14px;
+  }
+  .boundary-divider{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:6px 0;
+  }
+  .boundary-col{
+    padding:8px 4px;
+  }
+
+  /* 9. Final Measured Impact on Mobile */
+  .measured-impact{
+    padding:20px 16px;
+    border-radius:16px;
+    margin-top:26px;
+    gap:16px;
+  }
+  .impact-chain{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    align-items:stretch;
+  }
+  .impact-stage{
+    padding:16px 16px;
+    border-radius:12px;
+    background:rgba(11,18,20,.9);
+    border:1px solid rgba(255,255,255,.14);
+  }
+  .impact-stage--mid{
+    border-color:rgba(52,211,153,.45);
+    background:rgba(8,144,108,.22);
+    box-shadow:0 0 24px -6px rgba(52,211,153,.35);
+  }
+  .impact-arrow{
+    transform:rotate(90deg);
+    margin:4px auto;
+    font-size:20px;
+    color:#34d399;
+    opacity:.9;
+  }
+  .impact-labels{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 10px;
+    justify-content:center;
+    margin-top:18px;
+  }
+  .impact-label{
+    font-size:9px;
+    padding:4px 9px;
+  }
+  .impact-quotes{
+    padding-top:16px;
+    gap:10px;
+  }
+  .impact-quotes p:first-child{
+    font-size:14px;
+    line-height:1.5;
+  }
+  .impact-quotes p:last-child{
+    font-size:15px;
+    line-height:1.45;
+  }
+
+  /* Footer on Mobile */
+  .ft{
+    padding-block:38px 24px;
+  }
+  .ft__grid{
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+  }
+}
+
 </style>
 
 </head>
@@ -1262,6 +2214,18 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
 </header>
 
 <main id="main-content" tabindex="-1">
+
+<!-- Mobile Compact Sticky Course Bar (Tracks Active Course on Scroll) -->
+<div class="mobile-sticky-course" id="mobile-sticky-course" aria-hidden="true">
+  <div class="msc-inner">
+    <div class="msc-left">
+      <span class="msc-node"></span>
+      <span class="msc-tag" id="msc-tag">B2C · 01</span>
+      <span class="msc-name" id="msc-name">Google AI Essentials</span>
+    </div>
+    <div class="msc-price" id="msc-price">3.050.000 VNĐ / HV</div>
+  </div>
+</div>
 
 <!-- ══════════════════════════ 01 · HERO ══════════════════════════ -->
 <section class="hero" id="top">
@@ -2907,7 +3871,76 @@ html:not(.motion-enabled) :is(.net-pulse,.n,.node-halo,.network-core),html:not(.
     }
   }, { passive: true });
 
-  updateTitleMotion();
+  // 6. Mobile Compact Sticky Course Bar (Tracks Active Course on Scroll)
+  var mscBar = document.getElementById('mobile-sticky-course');
+  var mscTag = document.getElementById('msc-tag');
+  var mscName = document.getElementById('msc-name');
+  var mscPrice = document.getElementById('msc-price');
+  var allCourseMods = Array.from(document.querySelectorAll('.mod'));
+
+  function updateMobileStickyCourse() {
+    if (!mscBar || window.innerWidth >= 1000) {
+      if (mscBar) mscBar.classList.remove('is-active');
+      return;
+    }
+    var hdHeight = 72;
+    var activeMod = null;
+
+    for (var i = 0; i < allCourseMods.length; i++) {
+      var mod = allCourseMods[i];
+      var r = mod.getBoundingClientRect();
+      if (r.top <= hdHeight + 40 && r.bottom > hdHeight + 40) {
+        activeMod = mod;
+        break;
+      }
+    }
+
+    if (activeMod) {
+      var nEl = activeMod.querySelector('.mod__n');
+      var nameEl = activeMod.querySelector('.mod__name');
+      var priceEl = activeMod.querySelector('.mod__price');
+
+      var nText = nEl ? nEl.textContent.trim().replace(/\s+/g, ' ') : '';
+      var nameText = nameEl ? nameEl.textContent.trim().replace(/\s+/g, ' ') : '';
+      var shortName = nameText.split('—')[0].trim();
+      var priceText = priceEl ? priceEl.textContent.trim().replace(/\s+/g, ' ') : '';
+
+      if (mscTag) mscTag.textContent = nText;
+      if (mscName) mscName.textContent = shortName || nameText;
+      if (mscPrice) mscPrice.textContent = priceText;
+      mscBar.classList.add('is-active');
+    } else {
+      mscBar.classList.remove('is-active');
+    }
+  }
+
+  window.addEventListener('scroll', function() {
+    if (window.innerWidth < 1000) {
+      requestAnimationFrame(updateMobileStickyCourse);
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', function() {
+    requestAnimationFrame(updateMobileStickyCourse);
+  }, { passive: true });
+
+  if (mscBar) {
+    mscBar.addEventListener('click', function() {
+      for (var i = 0; i < allCourseMods.length; i++) {
+        var mod = allCourseMods[i];
+        var r = mod.getBoundingClientRect();
+        if (r.top <= 82 && r.bottom >= 120) {
+          window.scrollTo({
+            top: window.scrollY + r.top - 80,
+            behavior: 'smooth'
+          });
+          break;
+        }
+      }
+    });
+  }
+
+  updateMobileStickyCourse();
 
   // Page visibility listener for clean battery/CPU pause
   document.addEventListener('visibilitychange', function() {
