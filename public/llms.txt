@@ -1,0 +1,49 @@
+# GO4AI B2B — Đào tạo & Giải pháp AI Ứng dụng cho Doanh nghiệp
+
+> GO4AI (CÔNG TY TNHH CÔNG NGHỆ TƯ VẤN ĐÀO TẠO GO4AI) đồng hành cùng doanh nghiệp từ đào tạo năng lực AI thực chiến cho nhân sự đến tư vấn thiết kế quy trình, triển khai AI Agent và kiến trúc hệ thống nền tảng AI. Mục tiêu cốt lõi: con người làm việc tốt hơn, quy trình chuẩn hóa theo SOP/KPI, và tạo ra sản phẩm đầu ra nhìn thấy được với ROI vận hành đo lường được.
+
+## Thông tin Doanh nghiệp & Liên hệ Chính thức
+- **Tên doanh nghiệp**: CÔNG TY TNHH CÔNG NGHỆ TƯ VẤN ĐÀO TẠO GO4AI
+- **Mã số doanh nghiệp (MST)**: 0319225657
+- **Đại diện pháp luật**: Bà Trần Thị Tuyết Hương – Giám đốc
+- **Enterprise AI Lead**: Lucas Đặng (Đặng Cường Thắng)
+- **Địa chỉ trụ sở**: B2/37T, Ấp 50, Xã Tân Nhựt, Thành phố Hồ Chí Minh, Việt Nam
+- **Hotline / Điện thoại**: [0988 846 503](tel:0988846503) / [+84988846503](tel:+84988846503)
+- **Email tiếp nhận**: [hocvien@go4ai.life](mailto:hocvien@go4ai.life)
+- **Thời gian làm việc & hỗ trợ**: 9:00 – 18:00, Thứ Hai đến Thứ Sáu
+- **Website B2B chính thức**: https://b2b.go4ai.org
+- **Mạng xã hội**:
+  - LinkedIn: https://www.linkedin.com/company/go4ai-life/
+  - Facebook: https://www.facebook.com/share/185wvNYhdm/?mibextid=wwXIfr
+  - YouTube: https://www.youtube.com/@goforai-f2y
+
+## Giải pháp & Dịch vụ B2B Trọng tâm của GO4AI
+1. **Đào tạo Năng lực AI Doanh nghiệp (Enterprise AI In-house Training)**:
+   - Các chương trình in-house (3 giờ/buổi) thiết kế theo dữ liệu và quy trình nội bộ của từng phòng ban.
+   - Workshop thực chiến "Claude 90 Phút — 6 cấp độ ứng dụng AI vào công việc".
+   - Danh mục đào tạo thực hành từ trợ lý cá nhân đến quy trình AI Agent tự động hóa.
+2. **Tư vấn Thiết kế Quy trình & SOP Chuẩn hóa**:
+   - Phương pháp luận triển khai: `Problem → Use Case → Scope → Output → KPI`.
+   - Chuẩn hóa quy trình vận hành gắn liền 4 trụ cột: AI, Vận hành, Chiến lược, Tài chính.
+3. **Kiến trúc Hệ thống & AI Agent Chuyên sâu**:
+   - Xây dựng AI Agent cho từng mảng nghiệp vụ: Sàng lọc CV & Tuyển dụng (HR), Báo giá tự động Logistics/XNK, Chăm sóc khách hàng & Bán hàng (Sales & CS), Phân tích dữ liệu & Báo cáo quản trị (Finance).
+4. **Hệ sinh thái Phát triển Năng lực & Nhân tài**:
+   - Nền tảng thành viên 12 tháng: LEARN (Năng lực cá nhân) · EARN (Dự án & Thu nhập) · BUILD (Giải pháp cho doanh nghiệp).
+   - Founding Talent Challenge: Chương trình phát triển đội ngũ nòng cốt và học bổng AI Business Builder Level 2.
+
+## Cấu trúc Website & Danh sách Liên kết (Public Routes)
+- [Trang chủ GO4AI B2B](https://b2b.go4ai.org/): Tổng quan năng lực, mô hình triển khai AI cho doanh nghiệp, bằng chứng tác động thực tế và triết lý đào tạo.
+- [Ứng dụng AI Thực tế](https://b2b.go4ai.org/ung-dung-thuc-te): Thư viện case study thực chiến tại các doanh nghiệp: tuyển dụng nhân sự, vận hành bán hàng, phân tích báo cáo và tối ưu chuỗi cung ứng.
+- [Bảng giá & Danh mục Khóa học](https://b2b.go4ai.org/pricing): Danh mục chương trình đào tạo B2C cá nhân và bảng báo giá niêm yết các gói đào tạo B2B in-house.
+- [Đội ngũ Giảng viên & Chuyên gia AI](https://b2b.go4ai.org/doi-ngu-giang-vien): Đội ngũ kiến trúc sư AI và giảng viên giàu kinh nghiệm thực chiến do Lucas Đặng dẫn dắt.
+- [Hồ sơ Chuyên gia Lucas Đặng](https://b2b.go4ai.org/lucas): Chi tiết năng lực, kinh nghiệm và phương pháp luận 4 trụ cột của Enterprise AI Lead Lucas Đặng (Đặng Cường Thắng).
+- [Workshop Claude 90 Phút](https://b2b.go4ai.org/claude/): Khóa học trực tuyến khám phá 6 cấp độ ứng dụng Claude và AI vào công việc hàng ngày.
+- [Cơ hội Phát triển LEARN · EARN · BUILD](https://b2b.go4ai.org/opp/): 3 con đường hợp tác và phát triển năng lực AI 12 tháng cùng GO4AI.
+- [Founding Talent Challenge 2026](https://b2b.go4ai.org/foundingtalent): Thử thách tuyển chọn nhân tài nòng cốt kiến tạo sản phẩm AI doanh nghiệp.
+- [Khảo sát Founding Talent](https://b2b.go4ai.org/foundingtalent-survey): Bài khảo sát 5-7 phút đánh giá nguyện vọng và môi trường phát triển tài năng AI.
+- [Chẩn đoán Ứng dụng AI Báo Giá XNK](https://b2b.go4ai.org/baogiaxnk): Công cụ chẩn đoán 9 câu hỏi giúp doanh nghiệp xác định điểm nghẽn và lộ trình tự động hóa báo giá xuất nhập khẩu.
+- [Tin tức & Sự kiện](https://b2b.go4ai.org/tin-tuc-chia-se): Cập nhật hoạt động đào tạo, hội thảo doanh nghiệp và góc nhìn công nghệ từ GO4AI.
+- [Hành trình 1 Năm GO4AI](https://b2b.go4ai.org/tin-tuc/go4ai-hanh-trinh-1-nam): Cột mốc phát triển hệ sinh thái AI, AI Passport và hợp tác công nghệ giáo dục Việt Nam - Hàn Quốc.
+- [Chính sách Bảo vệ Dữ liệu Cá nhân](https://b2b.go4ai.org/chinh-sach-bao-ve-du-lieu): Quy chuẩn bảo mật và xử lý dữ liệu học viên, đối tác theo Nghị định 13/2023/NĐ-CP.
+- [Điều khoản Sử dụng](https://b2b.go4ai.org/dieu-khoan-su-dung): Các điều khoản pháp lý và quy định sở hữu trí tuệ khi truy cập nền tảng GO4AI.
+- [Liên hệ & Tiếp nhận Phản ánh](https://b2b.go4ai.org/lien-he-phan-anh): Đường dây nóng tiếp nhận góp ý, xử lý phản hồi và giải quyết khiếu nại dịch vụ.

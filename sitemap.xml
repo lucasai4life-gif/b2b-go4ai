@@ -2,54 +2,105 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://b2b.go4ai.org/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/activities/SK2.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://b2b.go4ai.org/ung-dung-thuc-te</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/cases/case-hr-recruitment.png</image:loc></image:image>
   </url>
   <url>
-    <loc>https://b2b.go4ai.org/tin-tuc-chia-se</loc>
-    <image:image><image:loc>https://b2b.go4ai.org/assets/images/activities/SK4.jpg</image:loc></image:image>
-  </url>
-  <url>
-    <loc>https://b2b.go4ai.org/lucas</loc>
-    <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
+    <loc>https://b2b.go4ai.org/pricing</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://b2b.go4ai.org/doi-ngu-giang-vien</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
   </url>
   <url>
+    <loc>https://b2b.go4ai.org/lucas</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/tin-tuc-chia-se</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/activities/SK4.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/tin-tuc/go4ai-hanh-trinh-1-nam</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://b2b.go4ai.org/assets/images/news/go4ai-1-nam-hero.jpg</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://b2b.go4ai.org/claude/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://b2b.go4ai.org/opp/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/lucas-crop-4-5.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://b2b.go4ai.org/foundingtalent</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
     <image:image><image:loc>https://b2b.go4ai.org/foundingtalent/logos/logo-go4ai-life.webp</image:loc></image:image>
   </url>
   <url>
+    <loc>https://b2b.go4ai.org/foundingtalent-survey</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://b2b.go4ai.org/foundingtalent/logos/logo-go4ai-life.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://b2b.go4ai.org/baogiaxnk</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://b2b.go4ai.org/chinh-sach-bao-ve-du-lieu</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://b2b.go4ai.org/dieu-khoan-su-dung</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://b2b.go4ai.org/lien-he-phan-anh</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
     <image:image><image:loc>https://b2b.go4ai.org/assets/images/logos/logo-go4ai-life.png</image:loc></image:image>
-  </url>
-  <url>
-    <loc>https://b2b.go4ai.org/tin-tuc/go4ai-hanh-trinh-1-nam</loc>
-    <lastmod>2026-10-21</lastmod>
-    <image:image><image:loc>https://b2b.go4ai.org/assets/images/news/go4ai-1-nam-hero.jpg</image:loc></image:image>
-  </url>
-  <url>
-    <loc>https://b2b.go4ai.org/pricing</loc>
   </url>
 </urlset>
