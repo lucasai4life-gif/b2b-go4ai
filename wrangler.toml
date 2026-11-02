@@ -11,3 +11,9 @@ compatibility_flags = ["nodejs_compat"]
 binding = "DB"
 database_name = "b2b-go4ai-leads"
 database_id = "7b4f6f70-6f08-4f00-abf4-19eca197cb82"
+
+[[services]]
+binding = "VIP_INVITATION"
+service = "go4ai-vip-invitation-prod"
+environment = "production"
+
