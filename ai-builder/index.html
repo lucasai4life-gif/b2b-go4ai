@@ -1855,6 +1855,170 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
   html.lab-motion .lab-console.is-onscreen .lab-scan{animation:none!important;opacity:0!important}
 }
 
+
+/* ==========================================================================
+   V3 — FROM MANUAL WORK → WORKING AI
+   Hero morph stage · mobile reading order · sticky build sprint · uc switch
+   ========================================================================== */
+
+/* ---- hero console shell ---- */
+.lab-console{border-color:#C6BCA4}
+.lab-head{padding:20px 26px 18px}
+.lab-eyebrow{font-size:8px;letter-spacing:.26em;margin-bottom:7px}
+.lab-title{font-size:clamp(16px,1.45vw,21px);line-height:1.2;letter-spacing:.005em}
+.lab-status{padding:6px 11px;font-size:8.5px;letter-spacing:.18em}
+
+/* ---- stage ---- */
+.lab-stage{position:relative;padding:24px 26px;min-height:clamp(230px,25vw,312px);
+  display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid var(--lab-line)}
+.stage-layer{display:flex;flex-direction:column;justify-content:center;gap:14px}
+.stage-layer + .stage-layer{margin-top:26px}
+.stage-tag{font-size:7.5px;letter-spacing:.30em;text-transform:uppercase;color:var(--lab-gold);font-weight:600}
+
+.manual-chain,.ai-chain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.manual-chain li{position:relative;padding:9px 0 9px 38px;font-size:12.5px;letter-spacing:.04em;
+  color:rgba(11,26,41,.50);line-height:1.2}
+.manual-chain li::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:0;
+  border-left:1px dashed rgba(11,26,41,.24)}
+.manual-chain li::after{content:'';position:absolute;left:6px;top:50%;width:7px;height:7px;
+  border:1px solid rgba(11,26,41,.28);border-radius:50%;background:var(--lab-paper);
+  transform:translateY(-50%)}
+.manual-chain li:first-child::before{top:50%}
+.manual-chain li:last-child::before{bottom:50%}
+
+.ai-chain li{position:relative;display:flex;align-items:center;gap:12px;
+  min-height:clamp(42px,3.5vw,54px);padding-left:38px}
+.ai-chain li i{font-style:normal;font-size:8px;letter-spacing:.16em;color:var(--lab-gold);
+  flex:0 0 20px;font-weight:600}
+.ai-chain li b{font-family:var(--serif);font-weight:400;font-size:clamp(14px,1.2vw,18px);
+  color:var(--lab-ink);line-height:1.2}
+.ai-chain li::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:0;
+  border-left:1px solid rgba(138,109,50,.32)}
+.ai-chain li::after{content:'';position:absolute;left:5px;top:50%;width:9px;height:9px;
+  border-radius:50%;border:1px solid var(--lab-gold);background:var(--lab-paper);
+  transform:translateY(-50%);z-index:2}
+.ai-chain li:first-child::before{top:50%}
+.ai-chain li:last-child::before{bottom:50%}
+.ai-chain li.is-human::after{background:var(--lab-gold);box-shadow:0 0 0 4px rgba(201,179,126,.16)}
+.ai-chain li.is-human b{color:#7A5F28}
+
+/* ---- result ---- */
+.lab-result{position:relative;padding:22px 26px 24px;display:flex;flex-direction:column;gap:7px}
+.lab-result-title{font-family:var(--serif);font-weight:400;font-size:clamp(23px,2.5vw,35px);
+  line-height:1.04;letter-spacing:-.02em;color:var(--lab-ink);overflow-wrap:anywhere}
+.lab-result-sub{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--lab-gold);font-weight:600}
+
+/* ---- morph states (only when motion is armed) ---- */
+html.lab-motion .stage-layer{position:absolute;left:26px;right:26px;top:24px;bottom:24px;
+  margin:0;opacity:0;transform:translateY(10px);transition:none;pointer-events:none}
+html.lab-motion.lab-armed .stage-layer{transition:opacity .55s ease,transform .55s ease}
+html.lab-motion .lab-console[data-stage="manual"] .stage-manual,
+html.lab-motion .lab-console[data-stage="ai"] .stage-ai,
+html.lab-motion .lab-console[data-stage="boot"] .stage-ai{opacity:1;transform:none}
+
+html.lab-motion .lab-console[data-stage="ai"] .ai-chain li,
+html.lab-motion .lab-console[data-stage="boot"] .ai-chain li{
+  animation:aiNode .55s cubic-bezier(.22,.61,.36,1) both}
+html.lab-motion .lab-console[data-stage="ai"] .ai-chain li:nth-child(1),
+html.lab-motion .lab-console[data-stage="boot"] .ai-chain li:nth-child(1){animation-delay:.05s}
+html.lab-motion .lab-console[data-stage="ai"] .ai-chain li:nth-child(2),
+html.lab-motion .lab-console[data-stage="boot"] .ai-chain li:nth-child(2){animation-delay:.25s}
+html.lab-motion .lab-console[data-stage="ai"] .ai-chain li:nth-child(3),
+html.lab-motion .lab-console[data-stage="boot"] .ai-chain li:nth-child(3){animation-delay:.45s}
+html.lab-motion .lab-console[data-stage="ai"] .ai-chain li:nth-child(4),
+html.lab-motion .lab-console[data-stage="boot"] .ai-chain li:nth-child(4){animation-delay:.65s}
+@keyframes aiNode{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+html.lab-motion .lab-result{opacity:0;transform:translateY(10px);transition:none}
+html.lab-motion.lab-armed .lab-result{transition:opacity .6s ease .1s,transform .6s ease .1s}
+html.lab-motion .lab-console[data-stage="boot"] .lab-result{opacity:1;transform:none}
+
+/* ---- use-case switch ---- */
+.uc-switch{display:inline-flex;margin:0 0 28px;border:1px solid rgba(138,109,50,.42);
+  background:rgba(201,179,126,.07)}
+.uc-switch-btn{appearance:none;border:0;background:transparent;cursor:pointer;
+  padding:10px 18px;font-family:var(--sans);font-size:9px;letter-spacing:.20em;
+  text-transform:uppercase;color:var(--on-light-muted);transition:background .3s ease,color .3s ease}
+.uc-switch-btn + .uc-switch-btn{border-left:1px solid rgba(138,109,50,.42)}
+.uc-switch-btn[aria-pressed="true"]{background:var(--lab-ink);color:var(--ivory)}
+#use-case .uc-col{transition:opacity .5s ease,filter .5s ease}
+#use-case.uc-mode-manual .uc-col--after{opacity:.5;filter:saturate(.5)}
+#use-case.uc-mode-manual .uc-col--before{opacity:1;filter:none}
+#use-case.uc-mode-ai .uc-col--before{opacity:.45;filter:saturate(.4)}
+#use-case.uc-mode-ai .uc-col--after{opacity:1;filter:none}
+
+/* ---- sticky, scroll-synced build sprint (desktop) ---- */
+@media (min-width:761px){
+  #build-journey{overflow:visible}
+  #build-journey > .wrap{overflow:visible}
+  .sprint-tabs{position:sticky;top:0;z-index:6;background:var(--deep);
+    padding-top:8px;margin-bottom:0}
+  #build-journey .bp-list{display:flex;flex-direction:column;gap:16px;margin-top:20px}
+  html.lab-motion #build-journey .bp-item{display:block;opacity:1;transform:none}
+  #build-journey .bp-item{scroll-margin-top:132px}
+  #build-journey .bp-item.is-current{border-color:rgba(201,179,126,.55)}
+}
+
+/* ---- mobile: designed first screen ---- */
+@media (max-width:760px){
+  .lab-console{display:flex;flex-direction:column}
+  .lab-head{display:contents}
+  .lab-head > div{order:1;padding:14px 16px 10px}
+  .lab-stage{order:2}
+  .lab-status{order:3;align-self:flex-start;margin:0 16px 12px;font-size:8px;padding:5px 9px}
+  .lab-result{order:4}
+  .lab-foot{display:none}
+
+  .lab-title{font-size:16px;line-height:1.2}
+  .lab-eyebrow{font-size:7px;margin-bottom:4px}
+  .lab-stage{padding:14px 16px;min-height:196px}
+  .stage-layer{gap:10px}
+  .stage-layer + .stage-layer{margin-top:18px}
+  html.lab-motion .stage-layer{left:16px;right:16px;top:14px;bottom:14px}
+  .stage-tag{font-size:7px;letter-spacing:.22em}
+  .manual-chain li{padding:7px 0 7px 32px;font-size:11.5px}
+  .manual-chain li::before{left:8px}
+  .manual-chain li::after{left:5px}
+  .ai-chain li{min-height:36px;padding-left:32px;gap:9px}
+  .ai-chain li i{flex:0 0 16px;font-size:7px}
+  .ai-chain li b{font-size:13px}
+  .ai-chain li::before{left:8px}
+  .ai-chain li::after{left:4px;width:8px;height:8px}
+  .lab-result{padding:14px 16px 16px;gap:5px}
+  .lab-result-title{font-size:22px}
+  .lab-result-sub{font-size:7.5px;letter-spacing:.22em}
+  .uc-switch{margin-bottom:20px}
+  .uc-switch-btn{padding:9px 14px;font-size:8px;letter-spacing:.16em}
+}
+
+@media (max-width:400px){
+  .brandbar{padding-top:8px;padding-bottom:6px}
+  .hero-wordmark{margin-bottom:3px}
+  .eng-eyebrow{margin-bottom:5px}
+  .eng-kicker{margin-bottom:6px}
+  .eng-title{font-size:17px;line-height:1.04;margin-bottom:9px}
+  .lab-stage{padding:11px 14px;min-height:164px}
+  html.lab-motion .stage-layer{left:14px;right:14px;top:12px;bottom:12px}
+  .stage-layer{gap:8px}
+  .manual-chain li{padding:6px 0 6px 30px;font-size:11px}
+  .ai-chain li{min-height:30px;padding-left:30px}
+  .ai-chain li b{font-size:12.5px}
+  .lab-result{padding:12px 14px 14px}
+  .lab-result-title{font-size:20px}
+  .lab-status{margin-bottom:10px}
+  .eng-action{margin-top:10px}
+  .eng-cta.eng-cta{min-height:46px}
+  .hero-mobile-meta{margin-top:7px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html.lab-motion .stage-layer{position:static;opacity:1;transform:none;transition:none;margin-top:0}
+  html.lab-motion .stage-manual{display:none}
+  html.lab-motion .lab-result{opacity:1;transform:none;transition:none}
+  html.lab-motion .lab-console[data-stage] .ai-chain li{animation:none!important;opacity:1;transform:none}
+}
+
 </style>
 </head>
 <body data-page-node-id="bVGthlDPpJQRWZw6UAtpMH">
@@ -1923,43 +2087,43 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
     <!-- HERO WOW VISUAL · AI WORKFLOW ENGINE (technical editorial diagram) -->
     <div class="eng-visual" aria-label="AI Workflow Engine: INPUT → BUSINESS RULES → AI PROCESS → PROTOTYPE → HUMAN APPROVAL → OUTPUT → KPI" data-page-node-id="RTAi9fgewkFaBd7c9luIVw">
       <!-- HERO WOW VISUAL · WORKING PROTOTYPE CONSOLE (Enterprise Prototype Lab) -->
-      <div class="lab-console reveal" id="we-plate">
+      <div class="lab-console reveal" id="we-plate" data-stage="manual">
         <span class="lab-scan" aria-hidden="true"></span>
 
         <div class="lab-head">
           <div>
             <span class="lab-eyebrow">GO4AI / AI BUILDER</span>
-            <h2 class="lab-title">WORKING PROTOTYPE</h2>
+            <h2 class="lab-title">FROM MANUAL WORK TO WORKING AI</h2>
           </div>
           <span class="lab-status" id="lab-status" data-phase="RUNNING"><i aria-hidden="true"></i><b>RUNNING</b></span>
         </div>
 
-        <div class="lab-main">
-          <div class="lab-flow">
-            <div class="lab-flow-head">PROCESS / 01—05</div>
-            <div class="lab-spine" aria-hidden="true"><span class="lab-spine-fill"></span></div>
-            <ol class="lab-nodes">
-              <li class="lab-node"><span class="lab-dot" aria-hidden="true"></span><span class="lab-idx">01</span><span class="lab-name">INPUT</span></li>
-              <li class="lab-node"><span class="lab-dot" aria-hidden="true"></span><span class="lab-idx">02</span><span class="lab-name">BUSINESS RULES</span></li>
-              <li class="lab-node"><span class="lab-dot" aria-hidden="true"></span><span class="lab-idx">03</span><span class="lab-name">AI PROCESS</span></li>
-              <li class="lab-node lab-node--human"><span class="lab-dot" aria-hidden="true"></span><span class="lab-idx">04</span><span class="lab-name">HUMAN REVIEW</span></li>
-              <li class="lab-node lab-node--out"><span class="lab-dot" aria-hidden="true"></span><span class="lab-idx">05</span><span class="lab-name">OUTPUT</span></li>
+        <div class="lab-stage">
+          <div class="stage-layer stage-manual" aria-hidden="true">
+            <span class="stage-tag">MANUAL WORK</span>
+            <ol class="manual-chain">
+              <li>Email</li>
+              <li>Excel</li>
+              <li>Copy / Paste</li>
+              <li>Check</li>
+              <li>Report</li>
             </ol>
           </div>
-          <div class="lab-spec-col">
-            <div class="lab-core">
-              <span class="lab-core-kicker">WORKING</span>
-              <strong>PROTOTYPE</strong>
-              <span class="lab-core-sub">CHẠY THỬ</span>
-            </div>
-            <div class="lab-metrics" aria-label="Measurement slots">
-              <div class="lab-metric"><span>TIME</span><b>—</b></div>
-              <div class="lab-metric"><span>STEPS</span><b>—</b></div>
-              <div class="lab-metric"><span>ERRORS</span><b>—</b></div>
-              <div class="lab-metric"><span>KPI</span><b>—</b></div>
-            </div>
-            <p class="lab-human"><span>HUMAN IN THE LOOP</span><i aria-hidden="true">✓</i></p>
+
+          <div class="stage-layer stage-ai" aria-hidden="true">
+            <span class="stage-tag">AI WORKFLOW</span>
+            <ol class="ai-chain">
+              <li><i>01</i><b>INPUT</b></li>
+              <li><i>02</i><b>AI PROCESS</b></li>
+              <li class="is-human"><i>03</i><b>HUMAN REVIEW</b></li>
+              <li><i>04</i><b>OUTPUT</b></li>
+            </ol>
           </div>
+        </div>
+
+        <div class="lab-result">
+          <strong class="lab-result-title">WORKING PROTOTYPE</strong>
+          <span class="lab-result-sub">READY FOR TEST</span>
         </div>
 
         <div class="lab-foot"><span>01 PROCESS</span><span>01 PROTOTYPE</span><span>BEFORE / AFTER</span></div>
@@ -1970,7 +2134,7 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
         <span class="hmp-status" data-page-node-id="BFfQ79IH7y8oNI9WqDruAW"><i data-page-node-id="uAdUivIXfo3a6cbXswAfL4"></i> RUNNING</span>
         <span class="hmp-line" data-page-node-id="AB68P6VqohMsyGkEdXd8zG">01 PROCESS · 01 PROTOTYPE</span>
       </div>
-      <p class="hero-mobile-meta" data-page-node-id="GLJh9OgPNViMaAJk8Succa">21.11 · ONLINE · 5×2H</p>
+      <p class="hero-mobile-meta" data-page-node-id="GLJh9OgPNViMaAJk8Succa">21.11 · ONLINE · 5×2H · 1:1</p>
 
       <div class="eng-visual-caption" aria-label="Tóm tắt chương trình" data-page-node-id="pKcy9AUHQGwP7DIaGoQhMh">
         <div class="eng-cap" data-page-node-id="UBynu7KKBMG2noJDyOrHfB"><b data-page-node-id="LZRRLzm5yjGKSPKLCVtuc4">05</b><span data-page-node-id="5i3Pp0JZfwC0nZNDF5ATpY">BUỔI HỌC</span></div>
@@ -2174,6 +2338,11 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
       <h2 class="sec-title sec-title--serif reveal" id="usecase-title" data-page-node-id="mOESZdz6QIQB4yYuWNH3N2">TỪ BÁO GIÁ THỦ CÔNG <em data-page-node-id="AZUGpx9Mv7z4dnhhGUjh2S">THÀNH CÔNG CỤ AI</em></h2>
       <div class="rule rule--center reveal-line" aria-hidden="true" data-page-node-id="1urdjuqYvz4wFNBAEKsDi3"></div>
       <p class="sec-sub reveal" data-page-node-id="hT1wwWDdYXnW7CP7b8cF63">Một ví dụ minh họa cách một quy trình lặp lại được thiết kế lại — có người phê duyệt ở cuối chuỗi.</p>
+    </div>
+
+    <div class="uc-switch" role="group" aria-label="So sánh cách làm">
+      <button class="uc-switch-btn" type="button" data-uc="manual" aria-pressed="false">MANUAL</button>
+      <button class="uc-switch-btn" type="button" data-uc="ai" aria-pressed="true">AI-ASSISTED</button>
     </div>
 
     <div class="uc" id="uc" data-page-node-id="KzmnBFJKUkF02Ab61N7yMs">
@@ -3090,7 +3259,7 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
     panels.forEach(function (p, j) {
       p.classList.toggle('is-current', j === i);
       p.classList.toggle('is-open', j === i);
-      p.setAttribute('aria-hidden', (mobile || j === i) ? 'false' : 'true');
+      p.setAttribute('aria-hidden', 'false');
     });
     heads.forEach(function (h, j) { h.setAttribute('aria-expanded', j === i ? 'true' : 'false'); });
   }
@@ -3116,9 +3285,15 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
 
   try {
     doc.classList.add('lab-motion');
+    window.setTimeout(function () { doc.classList.add('lab-armed'); }, 120);
 
     tabs.forEach(function (t, i) {
-      t.addEventListener('click', function () { selectSprint(i, false); });
+      t.addEventListener('click', function () {
+        selectSprint(i, false);
+        if (!(mobileQuery && mobileQuery.matches) && panels[i]) {
+          panels[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
       t.addEventListener('keydown', function (e) {
         var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 :
                 e.key === 'Home' ? -99 : e.key === 'End' ? 99 : 0;
@@ -3138,18 +3313,23 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
       layers.forEach(function (e) { e.classList.add('is-locked'); });
       gates.forEach(function (e) { e.classList.add('is-checked'); });
       setPhase('RUNNING');
+      var se = document.getElementById('we-plate');
+      if (se) { se.setAttribute('data-stage', 'boot'); }
       clean = true;
       return;
     }
 
-    /* Status BUILDING → TESTING → RUNNING. Mobile starts and stays RUNNING. */
-    if (window.matchMedia('(min-width:761px)').matches) {
-      setPhase('BUILDING');
-      window.setTimeout(function () { setPhase('TESTING'); }, 1700);
-      window.setTimeout(function () { setPhase('RUNNING'); }, 3400);
-    } else {
+    /* HERO — MANUAL WORK -> AI WORKFLOW -> boot. One pass, then stop. */
+    var stageEl = document.getElementById('we-plate');
+    var narrow = !window.matchMedia('(min-width:761px)').matches;
+    if (stageEl) { stageEl.setAttribute('data-stage', 'manual'); }
+    setPhase('BUILDING');
+    window.setTimeout(function () { if (stageEl) { stageEl.setAttribute('data-stage', 'ai'); } }, narrow ? 700 : 1200);
+    window.setTimeout(function () { setPhase('TESTING'); }, narrow ? 1200 : 2600);
+    window.setTimeout(function () {
       setPhase('RUNNING');
-    }
+      if (stageEl) { stageEl.setAttribute('data-stage', 'boot'); }
+    }, narrow ? 1500 : 3400);
 
     /* One observer factory; also covers a reload that lands mid-section. */
     var observe = function (el, cb, opts) {
@@ -3212,5 +3392,49 @@ html.lab-motion .lab-console.is-onscreen .lab-node:nth-child(5){animation-delay:
 })();
 </script>
 
+<script>
+/* ==========================================================================
+   V3 CONTROLLER — scroll-synced sprint index + use-case comparison switch.
+   Both are pure enhancements: without this block the page still reads fine.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  /* --- use case: MANUAL / AI-ASSISTED --- */
+  var sec = document.getElementById('use-case');
+  if (sec) {
+    var btns = Array.prototype.slice.call(sec.querySelectorAll('.uc-switch-btn'));
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var mode = b.getAttribute('data-uc');
+        sec.classList.toggle('uc-mode-manual', mode === 'manual');
+        sec.classList.toggle('uc-mode-ai', mode === 'ai');
+        btns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      });
+    });
+  }
+
+  /* --- build sprint: sticky index follows the scroll --- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.sprint-tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('#build-journey .bp-item'));
+  if (tabs.length !== 5 || panels.length !== 5) { return; }
+  if (!('IntersectionObserver' in window)) { return; }
+  var wide = window.matchMedia ? window.matchMedia('(min-width:761px)') : null;
+  if (!wide || !wide.matches) { return; }
+
+  var active = 0;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) { return; }
+      var idx = panels.indexOf(en.target);
+      if (idx < 0 || idx === active) { return; }
+      active = idx;
+      tabs.forEach(function (t, j) { t.setAttribute('aria-selected', j === idx ? 'true' : 'false'); });
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+
+  panels.forEach(function (p) { io.observe(p); });
+})();
+</script>
 </body>
 </html>
