@@ -105,7 +105,8 @@
 
   function tsRender() {
     var host = document.getElementById('ai-builder-turnstile');
-    if (!host || !window.turnstile || tsWidgetId !== null) return;
+    if (!host || tsWidgetId !== null) return false;
+    if (!window.turnstile || typeof window.turnstile.render !== 'function') return false;
     try {
       tsWidgetId = window.turnstile.render(host, {
         sitekey: TS_SITEKEY,
@@ -115,13 +116,24 @@
         'timeout-callback': function () { tsToken = ''; },
         'error-callback': function () { tsToken = ''; }
       });
-    } catch (e) { tsWidgetId = null; }
+    } catch (e) {
+      // api.js defines window.turnstile before it is ready to render.
+      tsWidgetId = null;
+      return false;
+    }
+    return true;
   }
 
-  function tsBoot(tries) {
-    if (window.turnstile) { tsRender(); return; }
-    if (tries > 120) return;
-    setTimeout(function () { tsBoot(tries + 1); }, 150);
+  /* The widget mounts asynchronously and can fail silently on a cold load,
+     so keep asking until the host actually holds the widget. */
+  function tsEnsure(tries) {
+    var host = document.getElementById('ai-builder-turnstile');
+    if (!host) return;
+    if (host.childElementCount > 0) return;
+    tsRender();
+    if (host.childElementCount > 0) return;
+    if (tries > 100) return;
+    setTimeout(function () { tsEnsure(tries + 1); }, 200);
   }
 
   function tsRead() {
@@ -175,6 +187,16 @@
         return;
       }
 
+      var token = tsRead();
+      if (!token) {
+        if (status) {
+          status.textContent = 'Hệ thống xác thực bảo mật chưa sẵn sàng. Vui lòng đợi vài giây rồi gửi lại, hoặc liên hệ b2b@go4ai.org.';
+          status.className = 'form-status is-visible is-error';
+        }
+        tsEnsure(0);
+        return;
+      }
+
       var submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
 
@@ -197,7 +219,7 @@
         utm_campaign: getUrlParam('utm_campaign') || 'ai_builder_202611',
         problem: problem || 'Chưa mô tả chi tiết',
         notes: 'Vai trò: ' + role + (problem ? ' | Bài toán: ' + problem : ''),
-        turnstileToken: tsRead()
+        turnstileToken: token
       };
 
       fetch('/api/leads', {
@@ -444,7 +466,8 @@
     initDemoTabs();
     initDemoView();
     initConsultationForm();
-    tsBoot(0);
+    tsEnsure(0);
+    window.addEventListener('load', function () { tsEnsure(0); }, { once: true });
     initBlueprint();
     initBuild();
     initLayerLock();
