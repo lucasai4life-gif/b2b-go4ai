@@ -1,39 +1,33 @@
 /* ==========================================================================
-   AI BUILDER — THE WORKING AI PROTOTYPE
-   One controller. Original lead-capture / FAQ / demo-tab logic preserved
-   verbatim; motion system consolidated into named modules below it.
-   Motion is gated on prefers-reduced-motion and on JS availability: without
-   JS every section renders its settled, fully visible final state.
+   AI BUILDER — BUILD ONE REAL AI SYSTEM
+   One controller. Lead-capture / FAQ / demo-tab logic preserved.
+   Three hero-level sequences only: blueprint assembly, sprint evolution,
+   validation gates. Everything else = opacity + 12px reveal, 550ms.
+   Without JS every section renders its settled final state.
    ========================================================================== */
 (function () {
   'use strict';
 
-  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var root = document.documentElement;
-  if (!REDUCED) {
-    if (document.getElementById('proto-sheet')) root.classList.add('build-ready');
-    if (document.querySelector('.reveal')) root.classList.add('has-motion');
-  }
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function trackEvent(eventName, params) {
     try {
       if (window.dataLayer && Array.isArray(window.dataLayer)) {
         window.dataLayer.push(Object.assign({ event: eventName, timestamp: Date.now() }, params || {}));
       }
-      var ev = new CustomEvent(eventName, { detail: params || {} });
-      window.dispatchEvent(ev);
+      window.dispatchEvent(new CustomEvent(eventName, { detail: params || {} }));
     } catch (e) { /* safe fallback */ }
   }
 
   function getUrlParam(param) {
     try {
-      var searchParams = new URLSearchParams(window.location.search);
-      return searchParams.get(param) || '';
+      return new URLSearchParams(window.location.search).get(param) || '';
     } catch (e) { return ''; }
   }
 
   /* ======================================================================
-     1. CONTENT ENGINE — hero demo tabs (content unchanged)
+     1. CONTENT ENGINE — prototype demo tabs (content unchanged)
      ====================================================================== */
   var DEMO_DATA = {
     sales: {
@@ -56,7 +50,7 @@
     }
   };
 
-  function initHeroTabs() {
+  function initDemoTabs() {
     var tabBtns = document.querySelectorAll('.hw-tab-btn');
     var inputView = document.getElementById('hw-input-view');
     var engineView = document.getElementById('hw-engine-view');
@@ -68,12 +62,13 @@
       var d = DEMO_DATA[key];
       if (!d) return;
       inputView.textContent = d.input;
-      engineView.textContent = d.engine;
+      if (engineView) engineView.textContent = d.engine;
       outputView.textContent = d.output;
       if (alertView) alertView.textContent = d.alert;
       tabBtns.forEach(function (btn) {
-        btn.classList.toggle('is-active', btn.getAttribute('data-demo') === key);
-        btn.setAttribute('aria-selected', btn.getAttribute('data-demo') === key ? 'true' : 'false');
+        var on = btn.getAttribute('data-demo') === key;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
       });
     }
 
@@ -83,32 +78,25 @@
     renderTab('sales');
   }
 
-  /* ======================================================================
-     2. FAQ accordion (unchanged behaviour)
-     ====================================================================== */
-  function initFaq() {
-    var faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(function (item) {
-      var trigger = item.querySelector('.faq-trigger');
-      if (!trigger) return;
-      trigger.addEventListener('click', function () {
-        var isOpen = item.classList.contains('is-open');
-        faqItems.forEach(function (other) {
-          other.classList.remove('is-open');
-          var ot = other.querySelector('.faq-trigger');
-          if (ot) ot.setAttribute('aria-expanded', 'false');
+  /* Mobile: one column at a time */
+  function initDemoView() {
+    var body = document.getElementById('demo-body');
+    var btns = document.querySelectorAll('.demo-view-btn');
+    if (!body || !btns.length) return;
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        body.setAttribute('data-view', btn.getAttribute('data-view'));
+        btns.forEach(function (b) {
+          var on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
         });
-        if (!isOpen) {
-          item.classList.add('is-open');
-          trigger.setAttribute('aria-expanded', 'true');
-          trackEvent('ai_builder_faq_expand', { question: trigger.innerText.trim() });
-        }
       });
     });
   }
 
   /* ======================================================================
-     3. CONSULTATION FORM — preserved verbatim (endpoint, payload, validation)
+     2. CONSULTATION FORM — endpoint, payload and validation unchanged
      ====================================================================== */
   function initConsultationForm() {
     var form = document.getElementById('consultation-form');
@@ -174,10 +162,10 @@
         form.style.display = 'none';
         if (successCard) {
           successCard.classList.add('is-visible');
-          successCard.scrollIntoView({ behavior: 'smooth' });
+          successCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }).catch(function () {
-        // If API fails: do NOT show fake success. Show error and let user retry.
+        // No fake success on failure — surface the error and allow retry.
         if (status) {
           status.textContent = 'Không thể gửi yêu cầu lúc này do gián đoạn kết nối. Vui lòng bấm gửi lại hoặc liên hệ Hotline/Zalo GO4AI.';
           status.className = 'form-status is-visible is-error';
@@ -189,247 +177,216 @@
   }
 
   /* ======================================================================
-     4. MOTION SYSTEM — six named motions, no loops
+     3. MOTION — A. hero blueprint assembly (one shot)
      ====================================================================== */
-  function initReveals() {
-    var items = document.querySelectorAll('.reveal, .reveal-line');
-    if (!items.length) return;
-    if (REDUCED || !('IntersectionObserver' in window)) {
-      items.forEach(function (el) { el.classList.add('is-visible'); });
-      return;
-    }
-    root.classList.add('has-motion');
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
-    items.forEach(function (el) { io.observe(el); });
-    // Hard failsafe: never leave content hidden.
-    window.setTimeout(function () {
-      items.forEach(function (el) { el.classList.add('is-visible'); });
-    }, 4000);
-  }
-
-  /* Motion 1 — Hero Build Sequence (one shot) */
-  function initBuildSequence() {
-    var steps = document.querySelectorAll('.proto-step');
-    var spines = document.querySelectorAll('.proto-spine');
-    var result = document.getElementById('proto-result');
-    var statusEl = document.getElementById('proto-status');
-    var statusTxt = document.getElementById('proto-status-txt');
-    if (!steps.length || !statusEl) return;
+  function initBlueprint() {
+    var bp = document.getElementById('bp');
+    if (!bp) return;
+    var nodes = [].slice.call(bp.querySelectorAll('.bp-node'));
+    var ticks = [].slice.call(bp.querySelectorAll('.bp-tick'));
+    var flow = bp.querySelector('.bp-flow');
+    var core = document.getElementById('bp-core');
+    var foot = [].slice.call(bp.querySelectorAll('.bp-foot span'));
+    var state = document.getElementById('bp-state');
+    var stateTxt = document.getElementById('bp-state-txt');
 
     function settle() {
-      steps.forEach(function (s) { s.classList.add('is-on'); s.classList.remove('is-active'); });
-      spines.forEach(function (s) { s.classList.add('is-on'); });
-      if (result) result.classList.add('is-on');
-      if (statusTxt) statusTxt.textContent = 'RUNNING';
-      statusEl.classList.add('is-running');
+      nodes.forEach(function (n) { n.classList.add('is-on'); });
+      ticks.forEach(function (t) { t.classList.add('is-drawn'); });
+      if (flow) flow.classList.add('is-drawn');
+      if (core) core.classList.add('is-on');
+      foot.forEach(function (f) { f.classList.add('is-on'); });
+      if (stateTxt) stateTxt.textContent = 'RUNNING';
+      if (state) state.classList.add('is-running');
     }
 
     if (REDUCED) { settle(); return; }
 
-    root.classList.add('build-ready');
-    var queue = [];
-    function at(ms, fn) { queue.push(window.setTimeout(fn, ms)); }
-    at(120,  function () { steps[0].classList.add('is-on', 'is-active'); });
-    at(420,  function () { steps[0].classList.remove('is-active'); spines[0].classList.add('is-on'); });
-    at(660,  function () { steps[1].classList.add('is-on', 'is-active'); });
-    at(960,  function () { steps[1].classList.remove('is-active'); spines[1].classList.add('is-on'); });
-    at(1200, function () { steps[2].classList.add('is-on', 'is-active'); });
-    at(1500, function () { steps[2].classList.remove('is-active'); spines[2].classList.add('is-on'); });
-    at(1740, function () { steps[3].classList.add('is-on', 'is-active'); });
-    at(2040, function () { steps[3].classList.remove('is-active'); spines[3].classList.add('is-on'); });
-    at(2280, function () { steps[4].classList.add('is-on'); });
-    at(2480, function () { if (statusTxt) statusTxt.textContent = 'TESTING'; });
-    at(3050, function () {
-      if (statusTxt) statusTxt.textContent = 'RUNNING';
-      statusEl.classList.add('is-running');
+    root.classList.add('bp-run');
+
+    setTimeout(function () { if (flow) flow.classList.add('is-drawn'); }, 120);
+
+    nodes.forEach(function (node, i) {
+      setTimeout(function () {
+        node.classList.add('is-on');
+        if (ticks[i]) ticks[i].classList.add('is-drawn');
+      }, 160 + i * 220);
     });
-    at(3150, function () { if (result) result.classList.add('is-on'); });
-    // Failsafe: always end in the settled state.
-    at(4200, settle);
+
+    setTimeout(function () {
+      if (core) core.classList.add('is-on');
+      if (stateTxt) stateTxt.textContent = 'TESTING';
+    }, 1560);
+
+    setTimeout(function () {
+      if (stateTxt) stateTxt.textContent = 'RUNNING';
+      if (state) state.classList.add('is-running');
+    }, 2160);
+
+    setTimeout(function () {
+      foot.forEach(function (f, i) {
+        setTimeout(function () { f.classList.add('is-on'); }, i * 90);
+      });
+    }, 2320);
+
+    // Failsafe — always end in the settled state.
+    setTimeout(settle, 4200);
   }
 
-  /* Motion 3 — Product Stack Lock */
-  function initStackLock() {
-    var layers = document.querySelectorAll('.stack-layer');
+  /* ======================================================================
+     4. MOTION — B. sprint evolution + build navigation
+     ====================================================================== */
+  function initBuild() {
+    var btns = [].slice.call(document.querySelectorAll('.build-nav-list button'));
+    var sprints = [].slice.call(document.querySelectorAll('.sprint'));
+    var counter = document.getElementById('bn-now');
+    if (!btns.length || sprints.length !== 5) return;
+
+    function setActive(i) {
+      btns.forEach(function (b, k) { b.classList.toggle('is-active', k === i); });
+      if (counter) counter.textContent = '0' + (i + 1);
+    }
+
+    btns.forEach(function (btn, i) {
+      btn.addEventListener('click', function () {
+        var target = sprints[i];
+        if (!target) return;
+        target.open = true;
+        target.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+        setActive(i);
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) setActive(sprints.indexOf(entry.target));
+        });
+      }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+      sprints.forEach(function (s) { io.observe(s); });
+    }
+
+    /* Mobile: accordion, first sprint open. Desktop: all open, summary inert. */
+    function syncMode() {
+      var mobile = window.innerWidth <= 1020;
+      root.classList.toggle('sprint-accordion', mobile);
+      sprints.forEach(function (s, i) {
+        s.open = mobile ? i === 0 : true;
+      });
+    }
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(syncMode, 180);
+    }, { passive: true });
+    syncMode();
+  }
+
+  /* ======================================================================
+     5. MOTION — C. deliverable layers lock
+     ====================================================================== */
+  function initLayerLock() {
+    var layers = [].slice.call(document.querySelectorAll('.layer'));
     if (!layers.length) return;
     if (REDUCED || !('IntersectionObserver' in window)) {
       layers.forEach(function (l) { l.classList.add('is-locked'); });
       return;
     }
-    root.classList.add('stack-ready');
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-locked');
-          io.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var i = layers.indexOf(el);
+        setTimeout(function () { el.classList.add('is-locked'); }, (i % 3) * 90);
+        io.unobserve(el);
       });
-    }, { threshold: 0.28 });
+    }, { threshold: 0.35 });
     layers.forEach(function (l) { io.observe(l); });
-    window.setTimeout(function () {
+    setTimeout(function () {
       layers.forEach(function (l) { l.classList.add('is-locked'); });
-    }, 4500);
+    }, 5000);
   }
 
-  /* Motion 4 — Build Sprint state change (desktop) + mobile accordion */
-  function initSprint() {
-    var sprint = document.getElementById('sprint');
-    var panels = Array.prototype.slice.call(document.querySelectorAll('.sprint-panel'));
-    var navBtns = Array.prototype.slice.call(document.querySelectorAll('.sprint-nav-btn'));
-    var visuals = Array.prototype.slice.call(document.querySelectorAll('.sprint-visual-word'));
-    if (!sprint || panels.length !== 5) return;
+  /* ======================================================================
+     6. MOTION — D. validation gates
+     ====================================================================== */
+  function initGates() {
+    var grid = document.querySelector('.lab-grid');
+    var gates = [].slice.call(document.querySelectorAll('.gate'));
+    if (!grid || !gates.length) return;
 
-    var active = -1;
-    function setActive(i) {
-      i = Math.max(0, Math.min(4, i));
-      if (i === active) return;
-      active = i;
-      panels.forEach(function (p, k) { p.classList.toggle('is-active', k === i); });
-      navBtns.forEach(function (b, k) { b.classList.toggle('is-active', k === i); });
-      visuals.forEach(function (v, k) { v.classList.toggle('is-active', k === i); });
-    }
-    setActive(0);
-
-    var desktop = function () { return window.innerWidth > 980; };
-    var ticking = false;
-
-    function update() {
-      ticking = false;
-      if (!desktop() || REDUCED) return;
-      var navH = parseFloat(getComputedStyle(root).getPropertyValue('--nav-h')) || 70;
-      var rect = sprint.getBoundingClientRect();
-      var total = Math.max(1, sprint.offsetHeight - (window.innerHeight - navH));
-      var p = Math.max(0, Math.min(1, (navH - rect.top) / total));
-      setActive(Math.min(4, Math.floor(p * 5)));
-    }
-
-    function applyMode() {
-      if (desktop() && !REDUCED) root.classList.add('sprint-ready');
-      else {
-        root.classList.remove('sprint-ready');
-        panels.forEach(function (p) { p.classList.add('is-active'); });
-      }
-      update();
-    }
-
-    navBtns.forEach(function (btn, i) {
-      btn.addEventListener('click', function () {
-        if (!desktop()) return;
-        var navH = parseFloat(getComputedStyle(root).getPropertyValue('--nav-h')) || 70;
-        var top = sprint.getBoundingClientRect().top + window.pageYOffset;
-        var total = Math.max(1, sprint.offsetHeight - (window.innerHeight - navH));
-        window.scrollTo({ top: top + (i + 0.12) / 5 * total, behavior: 'smooth' });
-      });
-    });
-
-    window.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
-    }, { passive: true });
-    window.addEventListener('resize', applyMode, { passive: true });
-    applyMode();
-
-    /* Mobile accordion — only one item open */
-    function applyAccordion() {
-      var mobile = window.innerWidth <= 760;
-      root.classList.toggle('accordion-ready', mobile);
-      if (mobile) {
-        panels.forEach(function (p, i) { p.classList.toggle('is-open', i === 0); });
-      } else {
-        panels.forEach(function (p) { p.classList.remove('is-open'); });
-      }
-    }
-    panels.forEach(function (panel) {
-      var badge = panel.querySelector('.roadmap-badge');
-      if (!badge) return;
-      badge.setAttribute('tabindex', '0');
-      badge.setAttribute('role', 'button');
-      function toggle() {
-        if (window.innerWidth > 760) return;
-        var open = panel.classList.contains('is-open');
-        panels.forEach(function (p) { p.classList.remove('is-open'); });
-        if (!open) panel.classList.add('is-open');
-      }
-      badge.addEventListener('click', toggle);
-      badge.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
-      });
-    });
-    window.addEventListener('resize', applyAccordion, { passive: true });
-    applyAccordion();
-  }
-
-  /* Motion 5 — QA Gate Activation */
-  function initQAGates() {
-    var chamber = document.querySelector('.test-chamber');
-    var gates = Array.prototype.slice.call(document.querySelectorAll('.qa-gate'));
-    if (!chamber || !gates.length) return;
     gates.forEach(function (g) {
-      var state = g.querySelector('i');
-      if (state && state.textContent.trim() === 'REVIEW') g.classList.add('is-review');
+      var s = g.querySelector('.gate-s');
+      if (s && s.textContent.trim() === 'REVIEW') g.classList.add('is-review');
     });
+
     function activateAll() { gates.forEach(function (g) { g.classList.add('is-on'); }); }
     if (REDUCED || !('IntersectionObserver' in window)) { activateAll(); return; }
+
     var done = false;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting || done) return;
         done = true;
         gates.forEach(function (g, i) {
-          window.setTimeout(function () { g.classList.add('is-on'); }, i * 150);
+          setTimeout(function () { g.classList.add('is-on'); }, i * 130);
         });
         io.disconnect();
       });
-    }, { threshold: 0.22 });
-    io.observe(chamber);
-    window.setTimeout(activateAll, 6000);
-  }
-
-  /* Motion 6 support — Before / After mobile switch */
-  function initUseCaseSwitch() {
-    var wrap = document.querySelector('.uc-card-wrap');
-    var tabs = document.querySelectorAll('.uc-tab');
-    if (!wrap || !tabs.length) return;
-    function apply() {
-      if (window.innerWidth <= 760) {
-        if (!wrap.getAttribute('data-view')) wrap.setAttribute('data-view', 'before');
-      } else {
-        wrap.removeAttribute('data-view');
-      }
-    }
-    tabs.forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        wrap.setAttribute('data-view', tab.getAttribute('data-uc'));
-        tabs.forEach(function (t) {
-          var on = t === tab;
-          t.classList.toggle('is-active', on);
-          t.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-      });
-    });
-    window.addEventListener('resize', apply, { passive: true });
-    apply();
+    }, { threshold: 0.2 });
+    io.observe(grid);
+    setTimeout(activateAll, 6000);
   }
 
   /* ======================================================================
-     5. INITIALISATION
+     7. MOTION — E. generic reveal (opacity + 12px, 550ms)
+     ====================================================================== */
+  var REVEAL_SELECTOR = [
+    '.head', '.proof-item', '.problem-words', '.problem-list', '.thesis',
+    '.stack-head', '.layer', '.sprint',
+    '.uc-side', '.uc-foot', '.demo', '.proof-case',
+    '.lib-row', '.lib-foot',
+    '.lab-strip', '.lab-accept', '.measure-head', '.measure-track',
+    '.measure-table', '.measure-note', '.measure-close',
+    '.fit-panel', '.boundary', '.lead-head', '.lead-profile', '.lead-metrics',
+    '.price-left', '.faq-head', '.faq-list', '.rail-row'
+  ].join(',');
+
+  function initReveal() {
+    var items = [].slice.call(document.querySelectorAll(REVEAL_SELECTOR));
+    if (!items.length || REDUCED) return;
+    items.forEach(function (el) { el.classList.add('rv'); });
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('is-in'); });
+      return;
+    }
+    root.classList.add('motion');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
+    items.forEach(function (el) { io.observe(el); });
+    // Failsafe: never leave content hidden.
+    setTimeout(function () {
+      items.forEach(function (el) { el.classList.add('is-in'); });
+    }, 3500);
+  }
+
+  /* ======================================================================
+     8. INITIALISATION
      ====================================================================== */
   document.addEventListener('DOMContentLoaded', function () {
-    initHeroTabs();
-    initFaq();
+    initDemoTabs();
+    initDemoView();
     initConsultationForm();
-    initReveals();
-    initBuildSequence();
-    initStackLock();
-    initSprint();
-    initQAGates();
-    initUseCaseSwitch();
+    initBlueprint();
+    initBuild();
+    initLayerLock();
+    initGates();
+    initReveal();
 
     trackEvent('ai_builder_view', { page: '/ai-builder' });
 
