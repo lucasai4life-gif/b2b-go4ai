@@ -114,9 +114,9 @@ b{font-weight:400;color:var(--gold);padding:0 .25em}
 }
 .hero::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 140px rgba(0,0,0,.32)}
 
-.brandbar{position:relative;z-index:3;display:flex;align-items:center;gap:0;padding-top:26px;padding-bottom:24px;border-bottom:1px solid var(--rule-dark-soft)}
-.brand{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;padding:0 22px}
-.brand+.brand{border-left:1px solid var(--rule-dark-soft)}
+.brandbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:32px;padding-top:30px;padding-bottom:26px;border:none}
+.brand{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;padding:0 16px;border:none}
+.brand+.brand{border:none}
 .brand img{width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 2px 10px rgba(0,0,0,.25))}
 .brand--inst img{height:54px}
 .brand--hr img{height:30px}
@@ -467,11 +467,11 @@ html.has-motion .flow-node{transition-delay:calc(var(--d,0) * 90ms)}
   :root{--pad:20px;--sec-pad:78px}
   body{font-size:15px}
   .grain{opacity:.032}
-  .brandbar{display:grid;grid-template-columns:1fr 1fr;gap:0;padding-top:18px;padding-bottom:16px}
-  .brand{padding:10px 12px}
-  .brand+.brand{border-left:0}
-  .brand:nth-child(odd){border-right:1px solid var(--rule-dark-soft)}
-  .brand:nth-child(-n+2){border-bottom:1px solid var(--rule-dark-soft)}
+  .brandbar{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;padding-top:22px;padding-bottom:20px;border:none}
+  .brand{padding:8px 12px;border:none}
+  .brand+.brand{border:none}
+  .brand:nth-child(odd){border:none}
+  .brand:nth-child(-n+2){border:none}
   .brand--inst img{height:44px}
   .brand--hr img{height:24px}
   .brand--gw img{height:36px}
@@ -750,9 +750,9 @@ html.has-motion .er-line.reveal.is-visible{transition-delay:calc(var(--ln,0) * 1
   background:radial-gradient(ellipse 62% 52% at 50% 32%,rgba(201,179,126,.22),transparent 72%);
 }
 .er-plate{
-  position:absolute;left:5%;right:5%;top:9%;bottom:7%;
+  position:absolute;left:3.5%;right:3.5%;top:8%;bottom:6%;
   display:grid;
-  grid-template-columns:1.62fr .92fr .92fr .92fr;
+  grid-template-columns:1.36fr 1.06fr 1.02fr 1.0fr;
   align-items:end;
   background:transparent;
   isolation:isolate;
@@ -762,16 +762,16 @@ html.has-motion .er-line.reveal.is-visible{transition-delay:calc(var(--ln,0) * 1
 .er-figure{
   position:relative;margin:0;height:100%;overflow:hidden;
   background:#EFE7D3;
-  border-radius:30% 30% 0 0 / 7% 7% 0 0;
+  border-radius:28% 28% 0 0 / 7% 7% 0 0;
   border-top:1px solid var(--gold);
   border-left:1px solid rgba(138,109,50,.38);
-  box-shadow:-10px 0 26px rgba(7,20,33,.30);
+  box-shadow:-6px 0 20px rgba(7,20,33,.25);
 }
 .er-figure:first-of-type{border-left:0}
 .er-figure img{
   position:absolute;left:0;width:100%;
-  top:-14px;height:calc(100% + 28px);
-  object-fit:cover;object-position:center 12%;
+  top:0;height:100%;
+  object-fit:cover;
   mix-blend-mode:multiply;
   filter:saturate(.78) contrast(1.05) brightness(1.02);
   transform:translate3d(0,var(--py,0px),0);
@@ -779,17 +779,20 @@ html.has-motion .er-line.reveal.is-visible{transition-delay:calc(var(--ln,0) * 1
 }
 /* host PNG is already an alpha cutout — wider column + top bias keeps the
    whole head inside the crop; multiply tints it into the same champagne key */
-.er-figure--host img{object-position:center 2%;filter:saturate(.86) contrast(1.03)}
-.er-figure--host{height:100%;z-index:5}
-.er-figure--s1{height:84%;z-index:4;margin-left:-12px}
-.er-figure--s2{height:92%;z-index:3;margin-left:-12px}
-.er-figure--s3{height:80%;z-index:2;margin-left:-12px}
+.er-figure--host img{object-position:50% 2%;filter:saturate(.86) contrast(1.03)}
+.er-figure--host{height:100%;z-index:4}
+.er-figure--s1{height:88%;z-index:3;margin-left:-2px}
+.er-figure--s1 img{object-position:40% 6%}
+.er-figure--s2{height:93%;z-index:2;margin-left:-2px}
+.er-figure--s2 img{object-position:45% 5%}
+.er-figure--s3{height:84%;z-index:1;margin-left:-2px}
+.er-figure--s3 img{object-position:50% 5%}
 .er-figure figcaption{
   position:absolute;left:0;right:0;bottom:0;z-index:6;
-  padding:22px 6px 9px;text-align:center;
-  font-size:8.5px;letter-spacing:.10em;line-height:1.4;
+  padding:20px 4px 8px;text-align:center;
+  font-size:8px;letter-spacing:.08em;line-height:1.35;
   color:var(--ivory);
-  background:linear-gradient(180deg,rgba(7,20,33,.0),rgba(7,20,33,.90) 55%);
+  background:linear-gradient(180deg,transparent 0%,rgba(7,20,33,.88) 60%);
   white-space:normal;overflow:hidden;
 }
 .er-figure figcaption span{color:var(--gold);padding:0 .15em}
@@ -1067,7 +1070,7 @@ html.has-motion .proof-cell.reveal.is-visible{transition-delay:calc(var(--pn,0) 
   .er-stage{order:7;height:auto;border:1px solid var(--rule-dark);margin-top:24px}
   .er-plate{
     position:relative;left:auto;right:auto;top:auto;bottom:auto;
-    height:auto;aspect-ratio:1.25/1;min-height:250px;
+    height:auto;aspect-ratio:1.15/1;min-height:270px;
     grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
     align-items:stretch;
     box-shadow:0 18px 40px rgba(0,0,0,.42);
@@ -1083,11 +1086,23 @@ html.has-motion .proof-cell.reveal.is-visible{transition-delay:calc(var(--pn,0) 
   .er-figure--s3{grid-column:2;grid-row:2;z-index:2}
   .er-figure--host,.er-figure--s2{border-right:1px solid rgba(138,109,50,.32)}
   .er-figure--host,.er-figure--s1{border-bottom:1px solid rgba(138,109,50,.32)}
-  .er-figure img{object-position:center 8%}
+  .er-figure img{top:0;height:100%;object-fit:cover}
+  .er-figure--host img{object-position:50% 2%}
+  .er-figure--s1 img{object-position:40% 6%}
+  .er-figure--s2 img{object-position:45% 5%}
+  .er-figure--s3 img{object-position:50% 5%}
   .er-figure figcaption{
     font-size:7.5px;letter-spacing:.06em;padding:16px 4px 6px;
     white-space:normal;line-height:1.35;text-overflow:clip;
   }
+
+  /* Fix light streak on mobile */
+  .er-room-beam, .er-room-beam--a, .er-room-beam--b{display:none!important;opacity:0!important}
+  .er-room-arch, .er-room-floor{display:none!important;opacity:0!important}
+  .er-room-vignette{opacity:0!important}
+  .er-room{animation:none!important}
+  .hero-atmos{background:#050E1A!important}
+  .hero::after{box-shadow:none!important}
   .er-stage-fade{
     background:radial-gradient(ellipse 110% 90% at 50% 34%,transparent 52%,rgba(3,9,18,.45) 100%);
   }
