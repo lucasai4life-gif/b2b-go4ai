@@ -2518,3 +2518,342 @@ html.has-motion .reveal-line.is-visible{transform:scaleX(1)}
   .proto-demo-grid { grid-template-columns: 1fr; }
   .qr-dialog-grid { grid-template-columns: 1fr; }
 }
+
+
+/* ==========================================================================
+   AI BUILDER FINAL STRATEGIC ADJUSTMENTS (CAFÉ TALK & CONSULTATION ONLY)
+   ========================================================================== */
+
+/* Café Talk 14/11 Featured Section */
+.cafe-talk-hero {
+  background: var(--ivory);
+  padding: 80px 0;
+  border-top: 1px solid var(--rule-light);
+  border-bottom: 1px solid var(--rule-light);
+}
+.cafe-talk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  background: rgba(201, 179, 126, 0.12);
+  border: 1px solid var(--gold-deep);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+.cafe-talk-lead {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--on-light-muted);
+  max-width: 880px;
+  margin: 16px 0 32px;
+}
+.cafe-talk-lead strong {
+  color: var(--on-light);
+}
+
+.cafe-talk-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  background: var(--ivory-plate);
+  border: 1px solid var(--rule-light);
+  border-radius: 6px;
+  padding: 18px 24px;
+  margin-bottom: 40px;
+}
+.cafe-fact-item {
+  display: flex;
+  flex-direction: column;
+}
+.cafe-fact-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 4px;
+}
+.cafe-fact-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-light);
+}
+
+/* Speaker Grid (shared with SME 14-11) */
+.speaker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  margin: 36px 0;
+}
+.speaker {
+  min-width: 0;
+  border-top: 1px solid var(--rule-light);
+  padding-top: 20px;
+}
+.speaker-photo {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: var(--ivory-plate);
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+.speaker-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+.speaker:hover .speaker-photo img {
+  transform: scale(1.02);
+}
+.speaker-photo--cutout {
+  background: linear-gradient(170deg, #EDE7DA 0%, #E3DCCD 100%);
+}
+.speaker-photo--cutout img {
+  object-fit: contain;
+  object-position: bottom center;
+}
+.speaker-tag {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gold-deep);
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.speaker-name {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: var(--on-light);
+  margin-bottom: 6px;
+}
+.speaker-rule {
+  width: 32px;
+  height: 2px;
+  background: var(--gold-deep);
+  opacity: 0.7;
+  margin: 12px 0;
+}
+.speaker-role {
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 600;
+  color: var(--on-light);
+  margin-bottom: 8px;
+}
+.speaker-note {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--on-light-muted);
+}
+
+/* Offset Banner in Cafe Talk */
+.cafe-talk-offset-banner {
+  background: #071421;
+  color: var(--on-dark);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+}
+.offset-content h4 {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--gold-soft);
+  margin-bottom: 6px;
+}
+.offset-content p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--on-dark-muted);
+  margin: 0;
+  max-width: 680px;
+}
+
+@media (max-width: 992px) {
+  .speaker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 20px;
+  }
+}
+@media (max-width: 600px) {
+  .speaker-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .cafe-talk-offset-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Post-submission Confirmation Card */
+.consult-success-card {
+  display: none;
+  background: #0B1A29;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 36px 32px;
+  margin-top: 24px;
+  color: var(--on-dark);
+  animation: fadeIn 0.4s ease forwards;
+}
+.consult-success-card.is-visible {
+  display: block;
+}
+.success-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule-dark);
+}
+.success-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(120, 174, 147, 0.15);
+  border: 1px solid var(--emerald);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--emerald);
+  font-size: 20px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.success-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--gold-soft);
+  margin: 0;
+}
+.success-greeting {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--on-dark);
+  margin-bottom: 24px;
+}
+.success-steps-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.consult-step-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.consult-step-item {
+  display: flex;
+  gap: 16px;
+  background: rgba(7, 20, 33, 0.6);
+  border: 1px solid var(--rule-dark-soft);
+  border-radius: 6px;
+  padding: 16px;
+}
+.step-item-num {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--rule-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-item-text strong {
+  display: block;
+  font-size: 14px;
+  color: var(--on-dark);
+  margin-bottom: 4px;
+}
+.step-item-text p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--on-dark-muted);
+  margin: 0;
+}
+.success-offline-notice {
+  background: rgba(201, 179, 126, 0.08);
+  border-left: 3px solid var(--gold);
+  padding: 16px 20px;
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.success-offline-notice p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--on-dark-muted);
+  margin: 0;
+}
+.success-offline-notice strong {
+  color: var(--gold-soft);
+}
+
+/* Form Specific Styles */
+.form-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.checkbox-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--on-dark);
+  cursor: pointer;
+  background: rgba(7, 20, 33, 0.5);
+  border: 1px solid var(--rule-dark-soft);
+  border-radius: 6px;
+  padding: 10px 14px;
+  transition: border-color 0.2s;
+}
+.checkbox-option:hover {
+  border-color: var(--gold-soft);
+}
+.checkbox-option input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: var(--gold);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

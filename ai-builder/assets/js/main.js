@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AI BUILDER REDESIGN — 2026 OFFICIAL INTERACTIVE ENGINE
+   AI BUILDER — FINAL STRATEGIC JAVASCRIPT ENGINE
    Enterprise AI Lab · GO4AI
    ========================================================================== */
 (function () {
@@ -73,7 +73,6 @@
       });
     });
 
-    // Default to sales tab
     renderTab('sales');
   }
 
@@ -142,7 +141,6 @@
 
       trigger.addEventListener('click', function () {
         var isOpen = item.classList.contains('is-open');
-        // Close others for clean accordion
         faqItems.forEach(function (other) {
           other.classList.remove('is-open');
           var ot = other.querySelector('.faq-trigger');
@@ -157,73 +155,12 @@
     });
   }
 
-  // 5. REGISTRATION FORM, TICKET OFFSET & QR PAYMENT
-  function initEnrollmentForm() {
-    var form = document.getElementById('builder-form');
+  // 5. CONSULTATION FORM CONTROLLER
+  function initConsultationForm() {
+    var form = document.getElementById('consultation-form');
     var status = document.getElementById('form-status');
-    var ticketRadio = document.getElementById('pay-ticket');
-    var ticketBox = document.getElementById('ticket-box');
-    var ticketInput = document.getElementById('ticket-code');
-    var ticketFeedback = document.getElementById('ticket-feedback');
-    var verifyBtn = document.getElementById('btn-verify-ticket');
-    var qrDialog = document.getElementById('qr-payment-dialog');
-    var qrAmountEl = document.getElementById('qr-amount-val');
-    var qrMemoEl = document.getElementById('qr-memo-val');
-    var qrImgEl = document.getElementById('qr-image-tag');
-
-    var currentPrice = 16000000;
-    var ticketDiscount = 0;
-
-    // Payment method radio change
-    var paymentRadios = document.querySelectorAll('input[name="phuong_thuc_thanh_toan"]');
-    paymentRadios.forEach(function (r) {
-      r.addEventListener('change', function () {
-        if (ticketRadio && ticketRadio.checked) {
-          if (ticketBox) ticketBox.classList.add('is-active');
-        } else {
-          if (ticketBox) ticketBox.classList.remove('is-active');
-          ticketDiscount = 0;
-          updatePriceDisplay();
-        }
-      });
-    });
-
-    function updatePriceDisplay() {
-      var finalPrice = Math.max(0, currentPrice - ticketDiscount);
-      if (qrAmountEl) {
-        qrAmountEl.textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VNĐ';
-      }
-    }
-
-    // Verify ticket code
-    if (verifyBtn && ticketInput) {
-      verifyBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        var code = ticketInput.value.trim().toUpperCase();
-        if (!code) {
-          if (ticketFeedback) {
-            ticketFeedback.textContent = 'Vui lòng nhập mã vé tham dự ngày 14/11.';
-            ticketFeedback.style.color = '#E58282';
-          }
-          return;
-        }
-
-        // Mock verification: any code with at least 4 chars gets 100% ticket price deducted (500,000 VND)
-        if (code.length >= 4) {
-          ticketDiscount = 500000;
-          updatePriceDisplay();
-          if (ticketFeedback) {
-            ticketFeedback.textContent = '✓ Mã vé hợp lệ! Đã cấn trừ 100% giá vé (500.000 VNĐ). Số tiền học phí còn lại: 15.500.000 VNĐ.';
-            ticketFeedback.style.color = 'var(--emerald)';
-          }
-        } else {
-          if (ticketFeedback) {
-            ticketFeedback.textContent = 'Mã vé không tìm thấy trong hệ thống sự kiện 14/11. Vui lòng kiểm tra lại.';
-            ticketFeedback.style.color = '#E58282';
-          }
-        }
-      });
-    }
+    var successCard = document.getElementById('consult-success-card');
+    var greetingEl = document.getElementById('success-client-name');
 
     if (!form) return;
 
@@ -236,15 +173,21 @@
       var company = (form.elements.doanh_nghiep ? form.elements.doanh_nghiep.value : '').trim();
       var consent = form.elements.dong_y ? form.elements.dong_y.checked : false;
 
-      // Extract participation
-      var partEl = form.querySelector('input[name="hinh_thuc_tham_du"]:checked');
-      var participation = partEl ? partEl.value : 'Trực tiếp tham gia';
+      // Extract Role
+      var roleEl = form.querySelector('input[name="vai_tro"]:checked');
+      var role = roleEl ? roleEl.value : 'CEO / Chủ doanh nghiệp';
 
-      // Extract payment
-      var payEl = form.querySelector('input[name="phuong_thuc_thanh_toan"]:checked');
-      var paymentMethod = payEl ? payEl.value : 'Chuyển khoản QR';
+      // Extract Target Process
+      var processEl = form.querySelector('input[name="quy_trinh_muc_tieu"]:checked');
+      var targetProcess = processEl ? processEl.value : 'Chưa xác định';
 
-      var ticketCodeVal = ticketInput ? ticketInput.value.trim() : '';
+      // Extract Selected Needs
+      var needs = [];
+      form.querySelectorAll('input[name="nhu_cau"]:checked').forEach(function (cb) {
+        needs.push(cb.value);
+      });
+
+      var notesExtra = (form.elements.ghi_chu ? form.elements.ghi_chu.value : '').trim();
 
       if (!name || !phone || !email || !company || !consent) {
         if (status) {
@@ -254,68 +197,63 @@
         return;
       }
 
-      var finalPrice = Math.max(0, currentPrice - ticketDiscount);
-      var memo = 'AIBUILDER ' + phone.replace(/[^0-9]/g, '') + ' ' + name.replace(/[^a-zA-Z0-9]/g, '');
-
       var submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
 
       if (status) {
-        status.textContent = 'Đang gửi thông tin đăng ký...';
+        status.textContent = 'Đang gửi yêu cầu tư vấn...';
         status.className = 'form-status is-visible';
       }
 
+      var fullProblemSummary = 'Quy trình mục tiêu: ' + targetProcess + (notesExtra ? ' | Ghi chú: ' + notesExtra : '');
       var payload = {
         name: name,
         phone: phone,
         email: email,
         company: company,
-        leadType: 'ai_builder_registration',
+        role: role,
+        leadType: 'enterprise_consultation',
         program: 'AI Builder 21/11/2026',
         sourcePage: '/ai-builder',
-        participation: participation,
-        paymentMethod: paymentMethod,
-        ticketCode: ticketCodeVal,
-        finalPrice: finalPrice,
-        notes: 'Hình thức: ' + participation + ' | Thanh toán: ' + paymentMethod + (ticketCodeVal ? ' | Mã vé: ' + ticketCodeVal : '')
+        sourceCta: 'consultation_form',
+        problem: fullProblemSummary,
+        notes: 'Vai trò: ' + role + ' | Nhu cầu: ' + (needs.length ? needs.join('; ') : 'Tư vấn chung')
       };
 
-      // Call API
       fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       }).then(function (res) {
         return res.json().catch(function () { return { success: true }; });
-      }).then(function (data) {
+      }).then(function () {
         if (status) {
-          status.textContent = 'Chúc mừng ' + name + '! Bạn đã hoàn tất đăng ký khóa học AI Builder (21/11/2026).';
-          status.className = 'form-status is-visible';
+          status.textContent = '';
+          status.className = 'form-status';
         }
-
-        // Show QR payment view if QR transfer chosen
-        if (qrDialog) {
-          qrDialog.classList.add('is-visible');
-          if (qrAmountEl) qrAmountEl.textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VNĐ';
-          if (qrMemoEl) qrMemoEl.textContent = memo;
-
-          if (qrImgEl) {
-            var vietQrUrl = 'https://img.vietqr.io/image/970436-0071001258668-compact.png?amount=' +
-                            finalPrice + '&addInfo=' + encodeURIComponent(memo) + '&accountName=DANG%20CUONG%20THANG';
-            qrImgEl.src = vietQrUrl;
-          }
-
-          qrDialog.scrollIntoView({ behavior: 'smooth' });
+        // Personalize greeting
+        if (greetingEl) {
+          greetingEl.textContent = name + ' (' + company + ')';
         }
-      }).catch(function (err) {
+        // Hide form fields & show success confirmation card
+        form.style.display = 'none';
+        if (successCard) {
+          successCard.classList.add('is-visible');
+          successCard.scrollIntoView({ behavior: 'smooth' });
+        }
+      }).catch(function () {
         // Fallback for offline/preview
         if (status) {
-          status.textContent = 'Đã lưu thông tin đăng ký của ' + name + '. Ban tổ chức sẽ liên hệ hỗ trợ bạn.';
-          status.className = 'form-status is-visible';
+          status.textContent = '';
+          status.className = 'form-status';
         }
-        if (qrDialog) {
-          qrDialog.classList.add('is-visible');
-          qrDialog.scrollIntoView({ behavior: 'smooth' });
+        if (greetingEl) {
+          greetingEl.textContent = name + ' (' + company + ')';
+        }
+        form.style.display = 'none';
+        if (successCard) {
+          successCard.classList.add('is-visible');
+          successCard.scrollIntoView({ behavior: 'smooth' });
         }
       }).finally(function () {
         if (submitBtn) submitBtn.disabled = false;
@@ -328,7 +266,7 @@
     initHeroTabs();
     initDemoModal();
     initFaq();
-    initEnrollmentForm();
+    initConsultationForm();
   });
 
 })();
