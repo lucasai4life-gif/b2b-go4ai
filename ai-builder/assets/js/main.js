@@ -1,11 +1,26 @@
 /* ==========================================================================
-   AI BUILDER — MASTER PROMPT OFFICIAL JAVASCRIPT ENGINE
-   Enterprise AI Lab · GO4AI
+   GO4AI — AI BUILDER · LANDING PAGE 03
+   Behaviour layer. Content strings live in the DOM, not here, except the
+   three simulation scenarios which are product demo data.
+
+   Modules
+     01  Demo scenarios (hero sheet / live simulation)
+     02  Hero build sequence
+     03  Scroll reveal
+     04  Navigation
+     05  Build sprint state
+     06  FAQ accordion
+     07  Consultation form
+     08  Boot
    ========================================================================== */
 (function () {
   'use strict';
 
-  // 1. DATA FOR HERO WORKFLOW ENGINE VISUAL
+  var reduceMotion = window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
+
+  /* ── 01 · DEMO SCENARIOS ─────────────────────────────────────────────── */
   var DEMO_DATA = {
     sales: {
       input: 'Yêu cầu từ khách hàng (Email):\n"Chào GO4AI, công ty tôi cần báo giá hệ thống cửa nhôm Xingfa hệ 55 + kính hộp cường lực 19mm cho công trình tại Quận 2, diện tích ước tính 500m2, tiến độ giao hàng trong 3 tuần. Chiết khấu đại lý cấp 1 áp dụng mức nào?"',
@@ -27,99 +42,215 @@
     }
   };
 
-  // 2. HERO TABS CONTROLLER
-  function initHeroTabs() {
-    var tabBtns = document.querySelectorAll('.hw-tab-btn');
+  function initDemoTabs() {
+    var tabs = document.querySelectorAll('.demo-tab');
     var inputView = document.getElementById('hw-input-view');
     var engineView = document.getElementById('hw-engine-view');
     var outputView = document.getElementById('hw-output-view');
     var alertView = document.getElementById('hw-alert-view');
 
-    if (!tabBtns.length || !inputView || !outputView) return;
+    if (!tabs.length || !inputView || !outputView) return;
 
-    function renderTab(key) {
+    function render(key) {
       var d = DEMO_DATA[key];
       if (!d) return;
-
       inputView.textContent = d.input;
-      engineView.textContent = d.engine;
+      if (engineView) engineView.textContent = d.engine;
       outputView.textContent = d.output;
-      if (alertView) {
-        alertView.textContent = d.alert;
-      }
+      if (alertView) alertView.textContent = d.alert;
 
-      tabBtns.forEach(function (btn) {
-        if (btn.getAttribute('data-demo') === key) {
-          btn.classList.add('is-active');
-        } else {
-          btn.classList.remove('is-active');
-        }
+      tabs.forEach(function (btn) {
+        var on = btn.getAttribute('data-demo') === key;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
       });
     }
 
-    tabBtns.forEach(function (btn) {
+    tabs.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var key = btn.getAttribute('data-demo');
-        renderTab(key);
+        render(btn.getAttribute('data-demo'));
       });
     });
 
-    renderTab('sales');
+    render('sales');
   }
 
-  // 3. FAQ ACCORDION CONTROLLER
+  /* ── 02 · HERO BUILD SEQUENCE ────────────────────────────────────────── */
+  function initHeroSequence() {
+    var sheet = document.getElementById('sheet');
+    var state = document.getElementById('sheetState');
+    var stateTxt = document.getElementById('sheetStateTxt');
+    var result = document.getElementById('sheetResult');
+    if (!sheet) return;
+
+    var steps = sheet.querySelectorAll('.sheet-step');
+    var ran = false;
+
+    function finalState() {
+      sheet.classList.add('is-built');
+      steps.forEach(function (s) { s.classList.add('is-on'); });
+      if (state) { state.classList.remove('is-building', 'is-testing'); state.classList.add('is-running'); }
+      if (stateTxt) stateTxt.textContent = 'RUNNING';
+      if (result) result.classList.add('is-live');
+    }
+
+    function run() {
+      if (ran) return;
+      ran = true;
+
+      if (reduceMotion) { finalState(); return; }
+
+      if (state) state.classList.add('is-building');
+      if (stateTxt) stateTxt.textContent = 'BUILDING';
+
+      steps.forEach(function (s, i) {
+        window.setTimeout(function () {
+          s.classList.add('is-on');
+          if (i === 1) sheet.classList.add('is-built');
+        }, 260 + i * 290);
+      });
+
+      window.setTimeout(function () {
+        if (state) { state.classList.remove('is-building'); state.classList.add('is-testing'); }
+        if (stateTxt) stateTxt.textContent = 'TESTING';
+      }, 1120);
+
+      window.setTimeout(function () {
+        if (state) { state.classList.remove('is-testing'); state.classList.add('is-running'); }
+        if (stateTxt) stateTxt.textContent = 'RUNNING';
+        if (result) result.classList.add('is-live');
+      }, 1880);
+    }
+
+    if (!('IntersectionObserver' in window)) { finalState(); return; }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { run(); io.disconnect(); }
+      });
+    }, { threshold: 0.35 });
+
+    io.observe(sheet);
+  }
+
+  /* ── 03 · SCROLL REVEAL ──────────────────────────────────────────────── */
+  function initReveal() {
+    var items = document.querySelectorAll('.rv');
+    if (!items.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('is-in'); });
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+    items.forEach(function (el, i) {
+      el.style.setProperty('--d', Math.min(i % 4, 3) * 70 + 'ms');
+      io.observe(el);
+    });
+  }
+
+  /* ── 04 · NAVIGATION ─────────────────────────────────────────────────── */
+  function initNav() {
+    var nav = document.getElementById('topnav');
+    var toggle = document.querySelector('.topnav-toggle');
+    var menu = document.getElementById('topnav-menu');
+
+    if (nav) {
+      var onScroll = function () {
+        nav.classList.toggle('is-stuck', window.scrollY > 18);
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener('click', function () {
+      var open = menu.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Đóng menu' : 'Mở menu');
+    });
+
+    menu.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        menu.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  /* ── 05 · BUILD SPRINT STATE ─────────────────────────────────────────── */
+  function initSprint() {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.sprint-card'));
+    var navItems = Array.prototype.slice.call(document.querySelectorAll('.sprint-nav-item'));
+    if (!cards.length || !('IntersectionObserver' in window)) return;
+
+    function activate(index) {
+      cards.forEach(function (c, i) { c.classList.toggle('is-active', i === index); });
+      navItems.forEach(function (n, i) { n.classList.toggle('is-active', i === index); });
+    }
+
+    activate(0);
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          activate(cards.indexOf(e.target));
+        }
+      });
+    }, { rootMargin: '-42% 0px -42% 0px', threshold: 0 });
+
+    cards.forEach(function (c) { io.observe(c); });
+  }
+
+  /* ── 06 · FAQ ACCORDION ──────────────────────────────────────────────── */
   function initFaq() {
-    var faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(function (item) {
+    var items = document.querySelectorAll('.faq-item');
+
+    function close(other) {
+      other.classList.remove('is-open');
+      var t = other.querySelector('.faq-trigger');
+      var b = other.querySelector('.faq-body');
+      if (t) t.setAttribute('aria-expanded', 'false');
+      if (b) b.setAttribute('aria-hidden', 'true');
+    }
+
+    items.forEach(function (item) {
       var trigger = item.querySelector('.faq-trigger');
+      var body = item.querySelector('.faq-body');
       if (!trigger) return;
+
+      if (body) body.setAttribute('aria-hidden', 'true');
 
       trigger.addEventListener('click', function () {
         var isOpen = item.classList.contains('is-open');
-        faqItems.forEach(function (other) {
-          other.classList.remove('is-open');
-          var ot = other.querySelector('.faq-trigger');
-          if (ot) ot.setAttribute('aria-expanded', 'false');
-        });
+
+        items.forEach(close);
 
         if (!isOpen) {
           item.classList.add('is-open');
           trigger.setAttribute('aria-expanded', 'true');
-          // Tracking event
-          trackEvent('ai_builder_faq_expand', { question: trigger.innerText.trim() });
+          if (body) body.setAttribute('aria-hidden', 'false');
+          track('ai_builder_faq_expand', { question: trigger.innerText.trim() });
         }
       });
     });
   }
 
-  // 4. ATTRIBUTION & TRACKING HELPER
-  function trackEvent(eventName, params) {
-    try {
-      if (window.dataLayer && Array.isArray(window.dataLayer)) {
-        window.dataLayer.push(Object.assign({ event: eventName, timestamp: Date.now() }, params || {}));
-      }
-      var ev = new CustomEvent(eventName, { detail: params || {} });
-      window.dispatchEvent(ev);
-    } catch (e) {
-      // safe fallback
-    }
-  }
-
-  function getUrlParam(param) {
-    try {
-      var searchParams = new URLSearchParams(window.location.search);
-      return searchParams.get(param) || '';
-    } catch (e) {
-      return '';
-    }
-  }
-
-  // 5. CONSULTATION FORM CONTROLLER
-  function initConsultationForm() {
+  /* ── 07 · CONSULTATION FORM ──────────────────────────────────────────── */
+  function initForm() {
     var form = document.getElementById('consultation-form');
     var status = document.getElementById('form-status');
-    var successCard = document.getElementById('consult-success-card');
-    var greetingEl = document.getElementById('success-client-name');
+    var success = document.getElementById('consult-success-card');
+    var greeting = document.getElementById('success-client-name');
 
     if (!form) return;
 
@@ -150,7 +281,7 @@
         status.className = 'form-status is-visible';
       }
 
-      trackEvent('ai_builder_consult_cta_click', { cta: 'submit_consultation' });
+      track('ai_builder_consult_cta_click', { cta: 'submit_consultation' });
 
       var payload = {
         name: name,
@@ -163,9 +294,9 @@
         sourcePage: 'ai_builder',
         sourceCta: 'consultation_form',
         sourceCampaign: 'ai_builder_202611',
-        utm_source: getUrlParam('utm_source'),
-        utm_medium: getUrlParam('utm_medium'),
-        utm_campaign: getUrlParam('utm_campaign') || 'ai_builder_202611',
+        utm_source: urlParam('utm_source'),
+        utm_medium: urlParam('utm_medium'),
+        utm_campaign: urlParam('utm_campaign') || 'ai_builder_202611',
         problem: problem || 'Chưa mô tả chi tiết',
         notes: 'Vai trò: ' + role + (problem ? ' | Bài toán: ' + problem : '')
       };
@@ -175,29 +306,21 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       }).then(function (res) {
-        if (!res.ok) {
-          throw new Error('HTTP ' + res.status);
-        }
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json().catch(function () { return { success: true }; });
-      }).then(function (data) {
-        trackEvent('ai_builder_consult_submit_success', { company: company });
+      }).then(function () {
+        track('ai_builder_consult_submit_success', { company: company });
 
-        if (status) {
-          status.textContent = '';
-          status.className = 'form-status';
-        }
-
-        if (greetingEl) {
-          greetingEl.textContent = name + ' (' + company + ')';
-        }
+        if (status) { status.textContent = ''; status.className = 'form-status'; }
+        if (greeting) greeting.textContent = name + ' (' + company + ')';
 
         form.style.display = 'none';
-        if (successCard) {
-          successCard.classList.add('is-visible');
-          successCard.scrollIntoView({ behavior: 'smooth' });
+        if (success) {
+          success.classList.add('is-visible');
+          success.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
         }
-      }).catch(function (err) {
-        // If API fails: do NOT show fake success! Show error and let user retry.
+      }).catch(function () {
+        /* Never fake success on a failed request. */
         if (status) {
           status.textContent = 'Không thể gửi yêu cầu lúc này do gián đoạn kết nối. Vui lòng bấm gửi lại hoặc liên hệ Hotline/Zalo GO4AI.';
           status.className = 'form-status is-visible is-error';
@@ -208,27 +331,49 @@
     });
   }
 
-  // 6. INITIALIZATION & OUTBOUND TRACKING
-  document.addEventListener('DOMContentLoaded', function () {
-    initHeroTabs();
+  /* ── helpers ─────────────────────────────────────────────────────────── */
+  function track(eventName, params) {
+    try {
+      if (window.dataLayer && Array.isArray(window.dataLayer)) {
+        window.dataLayer.push(Object.assign({ event: eventName, timestamp: Date.now() }, params || {}));
+      }
+      window.dispatchEvent(new CustomEvent(eventName, { detail: params || {} }));
+    } catch (e) { /* no-op */ }
+  }
+
+  function urlParam(key) {
+    try { return new URLSearchParams(window.location.search).get(key) || ''; }
+    catch (e) { return ''; }
+  }
+
+  /* ── 08 · BOOT ───────────────────────────────────────────────────────── */
+  function boot() {
+    initDemoTabs();
+    initHeroSequence();
+    initReveal();
+    initNav();
+    initSprint();
     initFaq();
-    initConsultationForm();
+    initForm();
 
-    trackEvent('ai_builder_view', { page: '/ai-builder' });
+    track('ai_builder_view', { page: '/ai-builder' });
 
-    // Track library clicks
     document.querySelectorAll('a[href*="ung-dung-thuc-te"]').forEach(function (el) {
       el.addEventListener('click', function () {
-        trackEvent('ai_builder_library_click', { href: el.href });
+        track('ai_builder_library_click', { href: el.href });
       });
     });
 
-    // Track offline 14/11 clicks
     document.querySelectorAll('a[href*="sme-14-11"]').forEach(function (el) {
       el.addEventListener('click', function () {
-        trackEvent('ai_builder_offline_14_11_click', { href: el.href });
+        track('ai_builder_offline_14_11_click', { href: el.href });
       });
     });
-  });
+  }
 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();

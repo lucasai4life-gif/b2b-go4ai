@@ -13,954 +13,918 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23071421'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%23C9B37E' stroke-width='2'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='26' fill='%23C9B37E' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
 <link rel="preload" href="/ai-builder/assets/fonts/PlayfairDisplay-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/ai-builder/assets/fonts/BeVietnamPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/ai-builder/assets/fonts/BeVietnamPro-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/ai-builder/assets/css/fonts.css">
 <link rel="stylesheet" href="/ai-builder/assets/css/style.css">
-<script src="/ai-builder/assets/js/main.js" defer></script>
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Chuyển đến nội dung chính</a>
 <div class="grain" aria-hidden="true"></div>
 
-<!-- ==================================================================== -->
-<!-- TOP STICKY NAVIGATION                                                -->
-<!-- ==================================================================== -->
-<nav class="top-nav" aria-label="Điều hướng chính">
-  <div class="wrap top-nav-wrap">
-    <a class="top-nav-brand" href="/" aria-label="Về trang chủ GO4AI">
-      <img class="top-nav-logo" src="/ai-builder/assets/images/logo_go4ai.png" alt="GO4AI" width="927" height="354">
-      <span class="top-nav-tag">ENTERPRISE AI LAB</span>
+<!-- ═══════════════════════════════════════════════════════════════════
+     TOP NAVIGATION
+     ═══════════════════════════════════════════════════════════════════ -->
+<nav class="topnav" id="topnav" aria-label="Điều hướng chính">
+  <div class="wrap topnav-in">
+    <a class="topnav-brand" href="/" aria-label="Về trang chủ GO4AI">
+      <img src="/ai-builder/assets/images/logo_go4ai.png" alt="GO4AI" width="927" height="354">
+      <span class="topnav-tag">ENTERPRISE AI LAB</span>
     </a>
-    <ul class="top-nav-links">
-      <li><a href="#van-de">Vấn đề</a></li>
-      <li><a href="#thu-vien">Ứng dụng thực tế</a></li>
-      <li><a href="#lo-trinh">Lộ trình 5 buổi</a></li>
-      <li><a href="#dau-ra">Đầu ra</a></li>
-      <li><a href="#chuyen-gia">Chuyên gia</a></li>
-      <li><a href="#hoc-phi">Học phí</a></li>
-      <li><a href="#cafe-talk">Sự kiện 14/11</a></li>
-      <li><a href="#faq">FAQ</a></li>
-    </ul>
-    <a class="btn btn--gold top-nav-cta" href="#tu-van">ĐĂNG KÝ TƯ VẤN →</a>
+
+    <button class="topnav-toggle" type="button" aria-expanded="false" aria-controls="topnav-menu" aria-label="Mở menu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+
+    <div class="topnav-menu" id="topnav-menu">
+      <ul class="topnav-links">
+        <li><a href="#van-de">Vấn đề</a></li>
+        <li><a href="#thu-vien">Ứng dụng thực tế</a></li>
+        <li><a href="#lo-trinh">Lộ trình 5 buổi</a></li>
+        <li><a href="#dau-ra">Đầu ra</a></li>
+        <li><a href="#chuyen-gia">Chuyên gia</a></li>
+        <li><a href="#hoc-phi">Học phí</a></li>
+        <li><a href="#cafe-talk">Sự kiện 14/11</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a class="btn btn--gold topnav-cta" href="#tu-van">ĐĂNG KÝ TƯ VẤN <span aria-hidden="true">→</span></a>
+    </div>
   </div>
 </nav>
 
 <main id="main">
 
-  <!-- ==================================================================== -->
-  <!-- SECTION 01 — HERO                                                    -->
-  <!-- ==================================================================== -->
-  <section class="hero eng-hero" id="hero" aria-labelledby="hero-title">
-    <div class="hero-atmos" aria-hidden="true"></div>
-    <div class="eng-room" aria-hidden="true">
-      <span class="eng-room-beam eng-room-beam--a"></span>
-      <span class="eng-room-beam eng-room-beam--b"></span>
-      <span class="eng-room-grid"></span>
-      <span class="eng-room-vignette"></span>
-    </div>
+<!-- ═══════════════════════════════════════════════════════════════════
+     01 · HERO
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-title">
+  <div class="hero-bg" aria-hidden="true">
+    <span class="hero-bg-glow"></span>
+    <span class="hero-bg-vignette"></span>
+  </div>
 
-    <header class="brandbar wrap" aria-label="GO4AI November Campaign">
-      <div class="cap-brand">
-        <img src="/ai-builder/assets/images/logo_go4ai.png" alt="GO4AI" width="927" height="354">
-        <div class="cap-brand-txt">
-          <span class="cap-brand-corp">GO4AI</span>
-          <span class="cap-brand-sub">ENTERPRISE AI LAB</span>
-        </div>
-      </div>
-      <span class="eng-cap-label">AI BUILDER · 21.11.2026</span>
-    </header>
+  <div class="wrap hero-in">
 
-    <div class="eng-lead wrap">
-      <p class="eng-cap eng-cap--gold reveal">ENTERPRISE AI LAB · GO4AI</p>
-      <p class="eng-kicker reveal">CHƯƠNG TRÌNH THỰC HÀNH XÂY DỰNG CÔNG CỤ AI CHO DOANH NGHIỆP</p>
-      <h1 class="eng-title reveal" id="hero-title">
-        ĐỪNG CHỈ HỌC DÙNG AI.<br>
-        <em>HÃY TỰ XÂY MỘT CÔNG CỤ AI CHO DOANH NGHIỆP.</em>
+    <div class="hero-copy">
+      <p class="hero-eyebrow rv">
+        <span>ENTERPRISE AI LAB <span class="sep" aria-hidden="true">·</span> GO4AI</span>
+        <span class="hero-eyebrow-date">AI BUILDER <span class="sep" aria-hidden="true">·</span> 21.11.2026</span>
+      </p>
+
+      <p class="hero-kicker rv">CHƯƠNG TRÌNH THỰC HÀNH XÂY DỰNG CÔNG CỤ AI CHO DOANH NGHIỆP</p>
+
+      <h1 class="hero-title" id="hero-title">
+        <span class="ht-line rv">ĐỪNG CHỈ HỌC DÙNG AI.</span>
+        <em class="ht-line ht-line--em rv">HÃY TỰ XÂY MỘT CÔNG CỤ AI CHO DOANH NGHIỆP.</em>
       </h1>
 
-      <div class="eng-copy reveal">
-        <p>
-          AI BUILDER giúp CEO, quản lý và nhân sự nòng cốt biến một bài toán kinh doanh thành công cụ AI có thể chạy thử, kiểm tra và tiếp tục cải tiến.
-        </p>
-        <p>
-          Không cần trở thành lập trình viên. Cần hiểu công việc, biết cách thiết kế giải pháp và kiểm chứng kết quả.
-        </p>
+      <div class="hero-lead rv">
+        <p>AI BUILDER giúp CEO, quản lý và nhân sự nòng cốt biến một bài toán kinh doanh thành công cụ AI có thể chạy thử, kiểm tra và tiếp tục cải tiến.</p>
+        <p>Không cần trở thành lập trình viên. Cần hiểu công việc, biết cách thiết kế giải pháp và kiểm chứng kết quả.</p>
       </div>
 
-      <!-- Highlights Ribbon: 3 Info Items -->
-      <div class="hero-highlights reveal">
-        <span class="highlight-pill highlight-pill--emerald">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <ul class="hero-facts rv">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
           5 buổi thực hành (2 giờ/buổi)
-        </span>
-        <span class="highlight-pill">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Hỗ trợ chuyên gia 1:1
-        </span>
-        <span class="highlight-pill">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           01 sản phẩm AI mục tiêu
-        </span>
+        </li>
+      </ul>
+
+      <p class="hero-for rv"><strong>Dành cho:</strong> CEO, chủ doanh nghiệp, quản lý và nhân sự nòng cốt được giao nhiệm vụ ứng dụng AI.</p>
+
+      <dl class="hero-meta rv">
+        <div>
+          <dt>KHAI GIẢNG</dt>
+          <dd>Thứ Bảy, 21/11/2026</dd>
+        </div>
+        <div>
+          <dt>HÌNH THỨC</dt>
+          <dd>Online qua Enterprise Lab</dd>
+        </div>
+        <div>
+          <dt>HỌC PHÍ ƯU ĐÃI</dt>
+          <dd class="is-gold">16.000.000 VNĐ</dd>
+        </div>
+      </dl>
+
+      <div class="hero-cta rv">
+        <a class="btn btn--gold" href="#tu-van">ĐĂNG KÝ TƯ VẤN AI BUILDER <span aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="https://b2b.go4ai.org/sme-14-11">TRẢI NGHIỆM AI TRỰC TIẾP — 14/11</a>
       </div>
 
-      <p class="hero-target-lead reveal">
-        <strong>Dành cho:</strong> CEO, chủ doanh nghiệp, quản lý và nhân sự nòng cốt được giao nhiệm vụ ứng dụng AI.
-      </p>
-
-      <!-- Ticket Strip -->
-      <div class="eng-ticket reveal" aria-label="Thông tin khai giảng">
-        <div class="eng-ticket-cell">
-          <span class="eng-ticket-label">KHAI GIẢNG</span>
-          <strong class="eng-ticket-val">Thứ Bảy, 21/11/2026</strong>
-        </div>
-        <div class="eng-ticket-cell">
-          <span class="eng-ticket-label">HÌNH THỨC</span>
-          <strong class="eng-ticket-val">Online qua Enterprise Lab</strong>
-        </div>
-        <div class="eng-ticket-cell">
-          <span class="eng-ticket-label">HỌC PHÍ ƯU ĐÃI</span>
-          <strong class="eng-ticket-val" style="color:var(--gold)">16.000.000 VNĐ</strong>
-        </div>
-      </div>
-
-      <!-- Actions: 2 Conversion Pathways -->
-      <div class="eng-action reveal">
-        <a class="btn btn--gold eng-cta" href="#tu-van">
-          ĐĂNG KÝ TƯ VẤN AI BUILDER
-          <span aria-hidden="true">→</span>
-        </a>
-        <a class="btn btn--outline" href="https://b2b.go4ai.org/sme-14-11">
-          TRẢI NGHIỆM AI TRỰC TIẾP — 14/11
-        </a>
-      </div>
-
-      <p class="eng-micro reveal">
-        Ưu đãi học phí đăng ký sớm đến hết 15/11/2026. Một suất dành cho tối đa hai người thuộc cùng doanh nghiệp.
-      </p>
-
-      <!-- Interactive Hero Workflow Engine Visual -->
-      <div class="hero-workflow-card reveal" aria-label="Mô phỏng chuyển đổi từ quy trình thật sang công cụ AI">
-        <div class="hw-header">
-          <div class="hw-header-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-            MÔ PHỎNG CHUYỂN ĐỔI: TỪ QUY TRÌNH THẬT SANG CÔNG CỤ AI
-          </div>
-          <div class="hw-tabs" role="tablist" aria-label="Chọn bài toán mẫu">
-            <button type="button" class="hw-tab-btn is-active" data-demo="sales" role="tab" aria-selected="true">01 · Báo giá &amp; Đề xuất</button>
-            <button type="button" class="hw-tab-btn" data-demo="reporting" role="tab" aria-selected="false">02 · Báo cáo quản trị</button>
-            <button type="button" class="hw-tab-btn" data-demo="knowledge" role="tab" aria-selected="false">03 · Tra cứu tri thức</button>
-          </div>
-        </div>
-        <div class="hw-body">
-          <div class="hw-col">
-            <div class="hw-col-title hw-col-title--manual">
-              <span>BƯỚC 1: INPUT THỦ CÔNG</span>
-              <span class="hw-col-badge hw-col-badge--manual">HIỆN TẠI</span>
-            </div>
-            <div class="hw-col-content" id="hw-input-view">
-              Đang tải dữ liệu mô phỏng...
-            </div>
-            <span class="hw-item-tag">⏱ Mất 2–4 giờ xử lý thủ công</span>
-          </div>
-          <div class="hw-arrow-col" aria-hidden="true">➔</div>
-          <div class="hw-col">
-            <div class="hw-col-title hw-col-title--engine">
-              <span>BƯỚC 2: AI BUILDER LOGIC</span>
-              <span class="hw-col-badge hw-col-badge--engine">ENGINE</span>
-            </div>
-            <div class="hw-col-content" id="hw-engine-view">
-              Đang tải dữ liệu xử lý...
-            </div>
-            <span class="hw-item-tag">⚡ Prompt + Guardrails + Rules</span>
-          </div>
-          <div class="hw-arrow-col" aria-hidden="true">➔</div>
-          <div class="hw-col">
-            <div class="hw-col-title hw-col-title--product">
-              <span>BƯỚC 3: CÔNG CỤ AI CHẠY ĐƯỢC</span>
-              <span class="hw-col-badge hw-col-badge--product">ĐẦU RA</span>
-            </div>
-            <div class="hw-col-content" id="hw-output-view">
-              Đang tải kết quả đầu ra...
-            </div>
-            <div class="hw-alert-pill" id="hw-alert-view">
-              Cảnh báo tự động: Cần con người phê duyệt
-            </div>
-          </div>
-        </div>
-      </div>
+      <p class="hero-note rv">Ưu đãi học phí đăng ký sớm đến hết 15/11/2026. Một suất dành cho tối đa hai người thuộc cùng doanh nghiệp.</p>
     </div>
-  </section>
 
-  <!-- ==================================================================== -->
-  <!-- SECTION 02 — NỖI ĐAU DOANH NGHIỆP                                     -->
-  <!-- ==================================================================== -->
-  <section class="section section--ivory problem" id="van-de" aria-labelledby="van-de-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-index reveal">02</span>
-        <p class="sec-eyebrow reveal">THỰC TRẠNG HIỆN TẠI</p>
-        <h2 class="sec-title sec-title--serif reveal" id="van-de-title">
-          DOANH NGHIỆP KHÔNG THIẾU CÔNG CỤ AI.<br>
-          <em>ĐIỀU CÒN THIẾU LÀ NĂNG LỰC BIẾN AI THÀNH KẾT QUẢ.</em>
-        </h2>
-        <div class="rule rule--short reveal-line" aria-hidden="true"></div>
-      </div>
+    <!-- PROTOTYPE SHEET · warm ivory object on midnight navy -->
+    <div class="hero-visual rv" id="sheetWrap">
+      <div class="sheet" id="sheet" aria-label="Sơ đồ: từ quy trình thật đến công cụ AI chạy được">
+        <span class="sheet-grain" aria-hidden="true"></span>
 
-      <div class="diag-grid">
-        <!-- Problem 1 -->
-        <article class="diag-card reveal">
-          <span class="diag-num">01</span>
-          <h3>Có AI nhưng quy trình vẫn thủ công</h3>
-          <p>
-            Nhân viên đã sử dụng AI cho các tác vụ cá nhân, trong khi nhiều công việc như báo giá, tổng hợp dữ liệu và báo cáo vẫn chưa được cải thiện đáng kể.
-          </p>
-        </article>
+        <header class="sheet-head">
+          <span class="sheet-brand">GO4AI <i aria-hidden="true">/</i> AI BUILDER</span>
+          <span class="sheet-state" id="sheetState">
+            <i class="dot" aria-hidden="true"></i>
+            <b class="sheet-state-txt" id="sheetStateTxt">RUNNING</b>
+          </span>
+        </header>
 
-        <!-- Problem 2 -->
-        <article class="diag-card reveal">
-          <span class="diag-num">02</span>
-          <h3>Muốn tự động hóa nhưng phụ thuộc bên ngoài</h3>
-          <p>
-            Doanh nghiệp không chủ động được việc thiết kế, sửa đổi và duy trì các công cụ hỗ trợ nghiệp vụ.
-          </p>
-        </article>
-
-        <!-- Problem 3 -->
-        <article class="diag-card reveal">
-          <span class="diag-num">03</span>
-          <h3>Có dữ liệu nhưng chưa khai thác hiệu quả</h3>
-          <p>
-            SOP, biểu mẫu, tài liệu và dữ liệu nội bộ nằm phân tán, thiếu cấu trúc và quy tắc sử dụng phù hợp.
-          </p>
-        </article>
-      </div>
-
-      <!-- Closing statement -->
-      <div class="problem-footer-thesis reveal">
-        <p class="thesis-lead">
-          “Giá trị không nằm ở số lượng tài khoản AI, mà ở khả năng đưa AI vào những công việc có thể đo lường hiệu quả.”
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================== -->
-  <!-- SECTION 03 — THƯ VIỆN ỨNG DỤNG THỰC TẾ                               -->
-  <!-- ==================================================================== -->
-  <section class="section section--deep" id="thu-vien" aria-labelledby="thu-vien-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-index reveal">03</span>
-        <p class="sec-eyebrow reveal">MINH CHỨNG THỰC TẾ · WORKFLOW TO WORKING AI</p>
-        <h2 class="sec-title sec-title--serif reveal" id="thu-vien-title">
-          AI KHÔNG CHỈ ĐỂ HỎI ĐÁP.<br>
-          <em>AI CÓ THỂ THAM GIA VẬN HÀNH DOANH NGHIỆP.</em>
-        </h2>
-        <div class="rule rule--short reveal-line" aria-hidden="true"></div>
-      </div>
-
-      <div class="library-block reveal" style="background:#0B1A29;border:1px solid var(--rule-dark);">
-        <div class="library-content">
-          <h3 style="color:var(--gold-soft)">Từ một quy trình thủ công đến một giải pháp AI vận hành có kiểm soát</h3>
-          <p style="color:var(--on-dark-muted)">
-            Từ xử lý yêu cầu khách hàng, chuẩn bị báo giá, phân tích dữ liệu đến tổng hợp báo cáo và quản lý tri thức nội bộ — AI có thể trở thành một phần của quy trình làm việc khi được thiết kế đúng. Khám phá thư viện ứng dụng thực tế của GO4AI để tham khảo các bài toán, giải pháp và cách AI tạo ra giá trị trong công việc.
-          </p>
-          <a class="btn btn--gold library-cta-btn" href="https://b2b.go4ai.org/ung-dung-thuc-te">
-            KHÁM PHÁ THƯ VIỆN ỨNG DỤNG THỰC TẾ
-            <span aria-hidden="true">→</span>
-          </a>
+        <div class="sheet-flow">
+          <span class="sheet-spine" aria-hidden="true"><i id="sheetSpine"></i></span>
+          <ol class="sheet-steps">
+            <li class="sheet-step" data-step="1">
+              <span class="ss-idx">01</span>
+              <span class="ss-name">INPUT</span>
+            </li>
+            <li class="sheet-step" data-step="2">
+              <span class="ss-idx">02</span>
+              <span class="ss-name">BUSINESS RULE</span>
+            </li>
+            <li class="sheet-step" data-step="3">
+              <span class="ss-idx">03</span>
+              <span class="ss-name">AI PROCESS</span>
+            </li>
+            <li class="sheet-step sheet-step--human" data-step="4">
+              <span class="ss-idx">04</span>
+              <span class="ss-name">HUMAN REVIEW</span>
+            </li>
+            <li class="sheet-step" data-step="5">
+              <span class="ss-idx">05</span>
+              <span class="ss-name">OUTPUT</span>
+            </li>
+          </ol>
         </div>
 
-        <div class="library-badges-card" style="background:#071421;border:1px solid var(--rule-dark);">
-          <div class="library-badge-item" style="color:var(--on-dark);">
-            <span class="library-badge-icon" style="background:rgba(201,179,126,0.15);color:var(--gold)">✓</span>
-            <div>
-              <strong style="color:var(--gold-soft)">Trợ lý Báo giá &amp; Đề xuất B2B</strong>
-              <div style="font-size:12px;color:var(--on-dark-muted)">Đọc RFQ, tra cứu bảng giá, đối soát chiết khấu</div>
-            </div>
-          </div>
-          <div class="library-badge-item" style="color:var(--on-dark);">
-            <span class="library-badge-icon" style="background:rgba(201,179,126,0.15);color:var(--gold)">✓</span>
-            <div>
-              <strong style="color:var(--gold-soft)">Báo cáo Điều hành &amp; Phân tích Đa chi nhánh</strong>
-              <div style="font-size:12px;color:var(--on-dark-muted)">Hợp nhất dữ liệu thô, phát hiện điểm bất thường</div>
-            </div>
-          </div>
-          <div class="library-badge-item" style="color:var(--on-dark);">
-            <span class="library-badge-icon" style="background:rgba(201,179,126,0.15);color:var(--gold)">✓</span>
-            <div>
-              <strong style="color:var(--gold-soft)">Hệ thống Tri thức &amp; SOP Nghiệp vụ</strong>
-              <div style="font-size:12px;color:var(--on-dark-muted)">Tra cứu phân quyền, quy chế và chính sách nội bộ</div>
-            </div>
-          </div>
+        <div class="sheet-result" id="sheetResult">
+          <p class="sres-label">WORKING PROTOTYPE</p>
+          <p class="sres-status"><i aria-hidden="true"></i>READY FOR TEST</p>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ==================================================================== -->
-  <!-- SECTION 04 — PHƯƠNG PHÁP & LỘ TRÌNH                                  -->
-  <!-- ==================================================================== -->
-  <section class="section section--ivory" id="lo-trinh" aria-labelledby="lo-trinh-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-index reveal">04</span>
-        <p class="sec-eyebrow reveal">PHƯƠNG PHÁP &amp; LỘ TRÌNH THỰC CHIẾN</p>
-        <h2 class="sec-title sec-title--serif reveal" id="lo-trinh-title">
-          5 BUỔI THỰC HÀNH. 5 CỘT MỐC.<br>
-          <em>1 SẢN PHẨM MỤC TIÊU.</em>
-        </h2>
-        <div class="rule rule--short reveal-line" aria-hidden="true"></div>
-        <p class="sec-lead reveal" style="max-width:820px;margin-top:16px;">
-          Không bắt đầu bằng code. Bắt đầu bằng công việc cần giải quyết và biến thành công cụ AI chạy được.
-        </p>
-      </div>
-
-      <div class="roadmap-timeline">
-        <!-- Session 1 -->
-        <article class="roadmap-card reveal" style="background:var(--ivory-plate);border-color:var(--rule-light)">
-          <div class="roadmap-badge">
-            <span class="session-tag" style="color:var(--gold-deep)">BUỔI 1 · 2 GIỜ</span>
-            <h3 class="session-title" style="color:var(--on-light)">Chọn đúng bài toán</h3>
-          </div>
-          <p class="session-desc" style="color:var(--on-light-muted)">
-            Phân tích quy trình, xác định điểm nghẽn, thiết kế đầu vào/đầu ra.
-          </p>
-          <div class="roadmap-deliverable" style="background:var(--ivory);border-color:var(--rule-light);border-left-color:var(--gold-deep)">
-            <span class="deliverable-label" style="color:var(--gold-deep)">DELIVERABLE:</span>
-            <strong class="deliverable-text" style="color:var(--on-light);font-size:13.5px;font-weight:600;">Workflow Blueprint</strong>
-          </div>
-        </article>
-
-        <!-- Session 2 -->
-        <article class="roadmap-card reveal" style="background:var(--ivory-plate);border-color:var(--rule-light)">
-          <div class="roadmap-badge">
-            <span class="session-tag" style="color:var(--gold-deep)">BUỔI 2 · 2 GIỜ</span>
-            <h3 class="session-title" style="color:var(--on-light)">Xây bộ xử lý AI</h3>
-          </div>
-          <p class="session-desc" style="color:var(--on-light-muted)">
-            Thiết kế hướng dẫn, logic nghiệp vụ và cấu trúc kết quả.
-          </p>
-          <div class="roadmap-deliverable" style="background:var(--ivory);border-color:var(--rule-light);border-left-color:var(--gold-deep)">
-            <span class="deliverable-label" style="color:var(--gold-deep)">DELIVERABLE:</span>
-            <strong class="deliverable-text" style="color:var(--on-light);font-size:13.5px;font-weight:600;">AI Processing Prototype</strong>
-          </div>
-        </article>
-
-        <!-- Session 3 -->
-        <article class="roadmap-card reveal" style="background:var(--ivory-plate);border-color:var(--rule-light)">
-          <div class="roadmap-badge">
-            <span class="session-tag" style="color:var(--gold-deep)">BUỔI 3 · 2 GIỜ</span>
-            <h3 class="session-title" style="color:var(--on-light)">Xây thành công cụ</h3>
-          </div>
-          <p class="session-desc" style="color:var(--on-light-muted)">
-            Kết nối dữ liệu mẫu, giao diện và các bước xử lý.
-          </p>
-          <div class="roadmap-deliverable" style="background:var(--ivory);border-color:var(--rule-light);border-left-color:var(--gold-deep)">
-            <span class="deliverable-label" style="color:var(--gold-deep)">DELIVERABLE:</span>
-            <strong class="deliverable-text" style="color:var(--on-light);font-size:13.5px;font-weight:600;">Alpha Prototype</strong>
-          </div>
-        </article>
-
-        <!-- Session 4 -->
-        <article class="roadmap-card reveal" style="background:var(--ivory-plate);border-color:var(--rule-light)">
-          <div class="roadmap-badge">
-            <span class="session-tag" style="color:var(--gold-deep)">BUỔI 4 · 2 GIỜ</span>
-            <h3 class="session-title" style="color:var(--on-light)">Kiểm thử và cải tiến</h3>
-          </div>
-          <p class="session-desc" style="color:var(--on-light-muted)">
-            Kiểm tra chất lượng, các tình huống ngoại lệ, bước phê duyệt và xử lý lỗi.
-          </p>
-          <div class="roadmap-deliverable" style="background:var(--ivory);border-color:var(--rule-light);border-left-color:var(--gold-deep)">
-            <span class="deliverable-label" style="color:var(--gold-deep)">DELIVERABLE:</span>
-            <strong class="deliverable-text" style="color:var(--on-light);font-size:13.5px;font-weight:600;">Prototype cải tiến + Test Checklist</strong>
-          </div>
-        </article>
-
-        <!-- Session 5 -->
-        <article class="roadmap-card reveal" style="background:var(--ivory-plate);border-color:var(--rule-light)">
-          <div class="roadmap-badge">
-            <span class="session-tag" style="color:var(--gold-deep)">BUỔI 5 · 2 GIỜ</span>
-            <h3 class="session-title" style="color:var(--on-light)">Demo và kế hoạch vận hành</h3>
-          </div>
-          <p class="session-desc" style="color:var(--on-light-muted)">
-            Trình diễn, đánh giá kết quả, hoàn thiện hướng dẫn và định hướng phát triển.
-          </p>
-          <div class="roadmap-deliverable" style="background:var(--ivory);border-color:var(--rule-light);border-left-color:var(--gold-deep)">
-            <span class="deliverable-label" style="color:var(--gold-deep)">DELIVERABLE:</span>
-            <strong class="deliverable-text" style="color:var(--on-light);font-size:13.5px;font-weight:600;">Prototype + Evaluation + Roadmap 30–60–90 ngày</strong>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================== -->
-  <!-- SECTION 05 — ĐẦU RA                                                  -->
-  <!-- ==================================================================== -->
-  <section class="section section--ivory" id="dau-ra" aria-labelledby="dau-ra-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-index reveal">05</span>
-        <p class="sec-eyebrow reveal">DELIVERABLES / TÀI SẢN MANG VỀ</p>
-        <h2 class="sec-title sec-title--serif reveal" id="dau-ra-title">
-          KHÔNG CHỈ MANG VỀ KIẾN THỨC.<br>
-          <em>MANG VỀ MỘT TÀI SẢN AI CÓ THỂ TIẾP TỤC PHÁT TRIỂN.</em>
-        </h2>
-        <div class="rule rule--short reveal-line" aria-hidden="true"></div>
-      </div>
-
-      <div class="assets-grid">
-        <!-- Deliverable 1 -->
-        <article class="asset-card reveal">
-          <span class="asset-num">01</span>
-          <h3>Một AI Prototype chạy thử</h3>
-          <p>Xây dựng cho quy trình được lựa chọn, có khả năng chạy thử nghiệm trên dữ liệu và bài toán nghiệp vụ thực tế của doanh nghiệp.</p>
-        </article>
-
-        <!-- Deliverable 2 -->
-        <article class="asset-card reveal">
-          <span class="asset-num">02</span>
-          <h3>Workflow Blueprint &amp; Cấu trúc xử lý</h3>
-          <p>Bản vẽ kiến trúc quy trình, phân rã các bước thủ công thành từng luồng xử lý dữ liệu rõ ràng, chuẩn hóa và kiểm soát được.</p>
-        </article>
-
-        <!-- Deliverable 3 -->
-        <article class="asset-card reveal">
-          <span class="asset-num">03</span>
-          <h3>Bộ cấu hình &amp; Tài liệu thực hành</h3>
-          <p>Hệ thống hướng dẫn (Prompt engineering), bộ tham số cấu hình hệ thống và tài liệu hướng dẫn vận hành chi tiết bàn giao cho doanh nghiệp.</p>
-        </article>
-
-        <!-- Deliverable 4 -->
-        <article class="asset-card reveal">
-          <span class="asset-num">04</span>
-          <h3>Bộ kiểm thử &amp; Quy tắc kiểm soát</h3>
-          <p>Checklist kiểm tra chất lượng kết quả, phát hiện lỗi suy diễn (Hallucination) và cơ chế đánh dấu để con người phê duyệt (Human Review).</p>
-        </article>
-
-        <!-- Deliverable 5 -->
-        <article class="asset-card reveal">
-          <span class="asset-num">05</span>
-          <h3>Báo cáo kết quả &amp; Lộ trình 30–60–90 ngày</h3>
-          <p>Báo cáo đánh giá hiệu quả thử nghiệm và kế hoạch triển khai, tinh chỉnh và mở rộng cho đội ngũ nội bộ trong các giai đoạn tiếp theo.</p>
-        </article>
-      </div>
-
-      <!-- Scope Boundaries Disclaimer -->
-      <div class="scope-disclaimer-box reveal">
-        <h4 class="scope-disclaimer-title">RANH GIỚI PHẠM VI &amp; CAM KẾT MINH BẠCH</h4>
-        <ul class="scope-disclaimer-list">
-          <li><strong>Bản Prototype kiểm thử:</strong> Sản phẩm hoàn thành trong chương trình là phiên bản Prototype chạy được trên môi trường kiểm thử thực tế, không mặc nhiên là hệ thống phần mềm doanh nghiệp (Production Enterprise Application) chịu tải lớn.</li>
-          <li><strong>Giới hạn thời lượng:</strong> GO4AI không cam kết tự động hóa mọi quy trình phức tạp chỉ trong 10 giờ học. Mục tiêu là làm chủ phương pháp và hoàn thành xuất sắc 01 quy trình cốt lõi.</li>
-          <li><strong>Tích hợp hệ thống cốt lõi:</strong> Việc tích hợp sâu vào hệ thống ERP/CRM production hoặc xử lý dữ liệu bảo mật đặc biệt cần quy trình thẩm định an ninh và đội ngũ IT nội bộ của doanh nghiệp phối hợp riêng.</li>
-          <li><strong>Quyền sở hữu:</strong> Toàn bộ cấu hình, tài liệu và mã thực hành do học viên xây dựng được bàn giao đầy đủ theo các điều khoản bảo mật đã thống nhất giữa hai bên.</li>
+        <ul class="sheet-meta">
+          <li>01 PROCESS</li>
+          <li>01 PROTOTYPE</li>
+          <li>BEFORE / AFTER</li>
         </ul>
       </div>
     </div>
-  </section>
 
-  <!-- ==================================================================== -->
-  <!-- SECTION 06 — CHUYÊN GIA & NĂNG LỰC GO4AI                              -->
-  <!-- ==================================================================== -->
-  <section class="section section--deep" id="chuyen-gia" aria-labelledby="chuyen-gia-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-index reveal">06</span>
-        <p class="sec-eyebrow reveal">PROGRAM LEAD &amp; NĂNG LỰC TRIỂN KHAI</p>
-        <h2 class="sec-title sec-title--serif reveal" id="chuyen-gia-title">
-          CHUYÊN GIA TRỰC TIẾP HƯỚNG DẪN<br>
-          <em>AI BUILDER &amp; NĂNG LỰC GO4AI</em>
-        </h2>
-        <div class="rule rule--short reveal-line" aria-hidden="true"></div>
-        <p class="sec-lead reveal" style="max-width:820px;margin-top:16px;">
-          Chương trình AI BUILDER được thiết kế và kèm cặp trực tiếp bởi chuyên gia triển khai AI doanh nghiệp, tập trung giải quyết bài toán vận hành thật.
-        </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     02 · PROOF STRIP
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="proof" aria-label="Thông số chương trình">
+  <div class="wrap">
+    <ul class="proof-list">
+      <li class="rv">
+        <span class="proof-num">05</span>
+        <span class="proof-label">BUỔI THỰC HÀNH</span>
+      </li>
+      <li class="rv">
+        <span class="proof-num">10</span>
+        <span class="proof-label">GIỜ TƯƠNG TÁC TRỰC TIẾP</span>
+      </li>
+      <li class="rv">
+        <span class="proof-num">01</span>
+        <span class="proof-label">AI PROTOTYPE CHẠY THỬ</span>
+      </li>
+      <li class="rv">
+        <span class="proof-num">30–60–90</span>
+        <span class="proof-label">NGÀY LỘ TRÌNH PHÁT TRIỂN</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     03 · PROBLEM
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--ivory" id="van-de" aria-labelledby="van-de-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-num rv">02</span>
+      <p class="sec-eyebrow rv">THỰC TRẠNG HIỆN TẠI</p>
+      <h2 class="sec-title rv" id="van-de-title">
+        DOANH NGHIỆP KHÔNG THIẾU CÔNG CỤ AI.
+        <em>ĐIỀU CÒN THIẾU LÀ NĂNG LỰC BIẾN AI THÀNH KẾT QUẢ.</em>
+      </h2>
+    </header>
+
+    <div class="pain">
+      <article class="pain-item rv">
+        <span class="pain-num">01</span>
+        <div class="pain-body">
+          <h3>Có AI nhưng quy trình vẫn thủ công</h3>
+          <p>Nhân viên đã sử dụng AI cho các tác vụ cá nhân, trong khi nhiều công việc như báo giá, tổng hợp dữ liệu và báo cáo vẫn chưa được cải thiện đáng kể.</p>
+        </div>
+      </article>
+
+      <article class="pain-item rv">
+        <span class="pain-num">02</span>
+        <div class="pain-body">
+          <h3>Muốn tự động hóa nhưng phụ thuộc bên ngoài</h3>
+          <p>Doanh nghiệp không chủ động được việc thiết kế, sửa đổi và duy trì các công cụ hỗ trợ nghiệp vụ.</p>
+        </div>
+      </article>
+
+      <article class="pain-item rv">
+        <span class="pain-num">03</span>
+        <div class="pain-body">
+          <h3>Có dữ liệu nhưng chưa khai thác hiệu quả</h3>
+          <p>SOP, biểu mẫu, tài liệu và dữ liệu nội bộ nằm phân tán, thiếu cấu trúc và quy tắc sử dụng phù hợp.</p>
+        </div>
+      </article>
+    </div>
+
+    <blockquote class="thesis rv">
+      <p>“Giá trị không nằm ở số lượng tài khoản AI, mà ở khả năng đưa AI vào những công việc có thể đo lường hiệu quả.”</p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     04 · LIBRARY / LIVE DEMO
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--deep" id="thu-vien" aria-labelledby="thu-vien-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-num rv">03</span>
+      <p class="sec-eyebrow rv">MINH CHỨNG THỰC TẾ · WORKFLOW TO WORKING AI</p>
+      <h2 class="sec-title rv" id="thu-vien-title">
+        AI KHÔNG CHỈ ĐỂ HỎI ĐÁP.
+        <em>AI CÓ THỂ THAM GIA VẬN HÀNH DOANH NGHIỆP.</em>
+      </h2>
+    </header>
+
+    <div class="lib">
+      <div class="lib-intro rv">
+        <h3>Từ một quy trình thủ công đến một giải pháp AI vận hành có kiểm soát</h3>
+        <p>Từ xử lý yêu cầu khách hàng, chuẩn bị báo giá, phân tích dữ liệu đến tổng hợp báo cáo và quản lý tri thức nội bộ — AI có thể trở thành một phần của quy trình làm việc khi được thiết kế đúng. Khám phá thư viện ứng dụng thực tế của GO4AI để tham khảo các bài toán, giải pháp và cách AI tạo ra giá trị trong công việc.</p>
+        <a class="btn btn--gold" href="https://b2b.go4ai.org/ung-dung-thuc-te">KHÁM PHÁ THƯ VIỆN ỨNG DỤNG THỰC TẾ <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="cred-layout">
-        <!-- Lead Profile -->
-        <div class="cred-profile-card reveal">
-          <img class="cred-avatar" src="/ai-builder/assets/images/lucas-dang.jpg" alt="Đặng Cường Thắng (Lucas) - Founder GO4AI" width="400" height="500" loading="lazy">
-          <div class="cred-info">
-            <h3 style="font-size:22px;color:var(--gold-soft);margin-bottom:4px;">ĐẶNG CƯỜNG THẮNG (LUCAS)</h3>
-            <p class="cred-role" style="font-size:12px;letter-spacing:0.12em;color:var(--gold);margin-bottom:14px;">FOUNDER GO4AI · ENTERPRISE AI LEAD</p>
-            <p class="cred-bio" style="font-size:13.5px;line-height:1.65;margin-bottom:12px;">
-              Chuyên gia trực tiếp thiết kế phương pháp đào tạo và kèm cặp 1:1 cho học viên AI BUILDER.
-            </p>
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">
-              NĂNG LỰC CHUYÊN MÔN CỐT LÕI:
-            </div>
-            <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:1.65;color:var(--on-dark-muted);">
-              <li>• <strong>Enterprise AI Operating Model:</strong> Thiết lập mô hình vận hành và phân tầng ứng dụng AI.</li>
-              <li>• <strong>Workflow Transformation:</strong> Phân rã và tái cấu trúc quy trình nghiệp vụ sang luồng xử lý AI.</li>
-              <li>• <strong>AI Copilot &amp; Agent Architecture:</strong> Xây dựng các trợ lý AI thực thi tác vụ chuyên sâu.</li>
-              <li>• <strong>Governance &amp; Human Review:</strong> Cơ chế kiểm soát an toàn, giảm sai sót và con người phê duyệt.</li>
-              <li>• <strong>KPI &amp; Value Measurement:</strong> Đo lường hiệu quả chuyển đổi bằng chỉ số kinh doanh định lượng.</li>
-            </ul>
+      <ul class="lib-list rv">
+        <li>
+          <span class="lib-mark" aria-hidden="true">✓</span>
+          <div>
+            <strong>Trợ lý Báo giá &amp; Đề xuất B2B</strong>
+            <span>Đọc RFQ, tra cứu bảng giá, đối soát chiết khấu</span>
           </div>
+        </li>
+        <li>
+          <span class="lib-mark" aria-hidden="true">✓</span>
+          <div>
+            <strong>Báo cáo Điều hành &amp; Phân tích Đa chi nhánh</strong>
+            <span>Hợp nhất dữ liệu thô, phát hiện điểm bất thường</span>
+          </div>
+        </li>
+        <li>
+          <span class="lib-mark" aria-hidden="true">✓</span>
+          <div>
+            <strong>Hệ thống Tri thức &amp; SOP Nghiệp vụ</strong>
+            <span>Tra cứu phân quyền, quy chế và chính sách nội bộ</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- LIVE SIMULATION · moved from hero console into its own evidence stage -->
+    <div class="demo rv" aria-label="Mô phỏng chuyển đổi từ quy trình thật sang công cụ AI">
+      <header class="demo-head">
+        <p class="demo-title">MÔ PHỎNG CHUYỂN ĐỔI: TỪ QUY TRÌNH THẬT SANG CÔNG CỤ AI</p>
+        <div class="demo-tabs" role="tablist" aria-label="Chọn bài toán mẫu">
+          <button type="button" class="demo-tab is-active" data-demo="sales" role="tab" aria-selected="true" aria-controls="hw-input-view hw-engine-view hw-output-view">01 · Báo giá &amp; Đề xuất</button>
+          <button type="button" class="demo-tab" data-demo="reporting" role="tab" aria-selected="false" aria-controls="hw-input-view hw-engine-view hw-output-view">02 · Báo cáo quản trị</button>
+          <button type="button" class="demo-tab" data-demo="knowledge" role="tab" aria-selected="false" aria-controls="hw-input-view hw-engine-view hw-output-view">03 · Tra cứu tri thức</button>
+        </div>
+      </header>
+
+      <div class="demo-body">
+        <div class="demo-col">
+          <div class="demo-col-head">
+            <span class="demo-col-name">BƯỚC 1: INPUT THỦ CÔNG</span>
+            <span class="demo-badge">HIỆN TẠI</span>
+          </div>
+          <div class="demo-col-body" id="hw-input-view" role="tabpanel">Đang tải dữ liệu mô phỏng...</div>
+          <span class="demo-tag">⏱ Mất 2–4 giờ xử lý thủ công</span>
         </div>
 
-        <!-- Case Study Austdoor -->
-        <div class="cred-case-card reveal">
-          <span class="case-badge">CASE STUDY THAM KHẢO</span>
-          <h3 style="font-size:18px;color:var(--gold-soft);margin-bottom:8px;">ADG SALE AI — AUSTDOOR</h3>
-          <p class="cred-bio" style="margin-bottom:12px;font-size:13px;line-height:1.6;">
-            Ứng dụng Agentic AI hỗ trợ quy trình tư vấn và kinh doanh đại lý của Tập đoàn Austdoor: Tự động hóa bóc tách yêu cầu kỹ thuật và đối soát bảng giá đại lý phức tạp.
+        <div class="demo-col demo-col--engine">
+          <div class="demo-col-head">
+            <span class="demo-col-name">BƯỚC 2: AI BUILDER LOGIC</span>
+            <span class="demo-badge demo-badge--gold">ENGINE</span>
+          </div>
+          <div class="demo-col-body" id="hw-engine-view" role="tabpanel">Đang tải dữ liệu xử lý...</div>
+          <span class="demo-tag">⚡ Prompt + Guardrails + Rules</span>
+        </div>
+
+        <div class="demo-col demo-col--out">
+          <div class="demo-col-head">
+            <span class="demo-col-name">BƯỚC 3: CÔNG CỤ AI CHẠY ĐƯỢC</span>
+            <span class="demo-badge demo-badge--gold">ĐẦU RA</span>
+          </div>
+          <div class="demo-col-body" id="hw-output-view" role="tabpanel">Đang tải kết quả đầu ra...</div>
+        </div>
+      </div>
+
+      <p class="demo-alert" id="hw-alert-view">Cảnh báo tự động: Cần con người phê duyệt</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     05 · BUILD SPRINT — 5 SESSIONS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--ivory sprint" id="lo-trinh" aria-labelledby="lo-trinh-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-num rv">04</span>
+      <p class="sec-eyebrow rv">PHƯƠNG PHÁP &amp; LỘ TRÌNH THỰC CHIẾN</p>
+      <h2 class="sec-title rv" id="lo-trinh-title">
+        5 BUỔI THỰC HÀNH. 5 CỘT MỐC.
+        <em>1 SẢN PHẨM MỤC TIÊU.</em>
+      </h2>
+      <p class="sec-lead rv">Không bắt đầu bằng code. Bắt đầu bằng công việc cần giải quyết và biến thành công cụ AI chạy được.</p>
+    </header>
+
+    <div class="sprint-grid">
+      <aside class="sprint-nav" aria-hidden="true">
+        <ol>
+          <li class="sprint-nav-item is-active" data-nav="1"><span>01</span>DISCOVER</li>
+          <li class="sprint-nav-item" data-nav="2"><span>02</span>DESIGN</li>
+          <li class="sprint-nav-item" data-nav="3"><span>03</span>BUILD</li>
+          <li class="sprint-nav-item" data-nav="4"><span>04</span>TEST</li>
+          <li class="sprint-nav-item" data-nav="5"><span>05</span>MEASURE</li>
+        </ol>
+      </aside>
+
+      <div class="sprint-stack" id="sprintStack">
+
+        <article class="sprint-card" data-step="1">
+          <header class="sc-head">
+            <span class="sc-tag">BUỔI 1 · 2 GIỜ</span>
+            <h3 class="sc-title">Chọn đúng bài toán</h3>
+          </header>
+          <p class="sc-desc">Phân tích quy trình, xác định điểm nghẽn, thiết kế đầu vào/đầu ra.</p>
+          <div class="sc-out">
+            <span class="sc-out-label">DELIVERABLE:</span>
+            <strong>Workflow Blueprint</strong>
+          </div>
+        </article>
+
+        <article class="sprint-card" data-step="2">
+          <header class="sc-head">
+            <span class="sc-tag">BUỔI 2 · 2 GIỜ</span>
+            <h3 class="sc-title">Xây bộ xử lý AI</h3>
+          </header>
+          <p class="sc-desc">Thiết kế hướng dẫn, logic nghiệp vụ và cấu trúc kết quả.</p>
+          <div class="sc-out">
+            <span class="sc-out-label">DELIVERABLE:</span>
+            <strong>AI Processing Prototype</strong>
+          </div>
+        </article>
+
+        <article class="sprint-card" data-step="3">
+          <header class="sc-head">
+            <span class="sc-tag">BUỔI 3 · 2 GIỜ</span>
+            <h3 class="sc-title">Xây thành công cụ</h3>
+          </header>
+          <p class="sc-desc">Kết nối dữ liệu mẫu, giao diện và các bước xử lý.</p>
+          <div class="sc-out">
+            <span class="sc-out-label">DELIVERABLE:</span>
+            <strong>Alpha Prototype</strong>
+          </div>
+        </article>
+
+        <article class="sprint-card" data-step="4">
+          <header class="sc-head">
+            <span class="sc-tag">BUỔI 4 · 2 GIỜ</span>
+            <h3 class="sc-title">Kiểm thử và cải tiến</h3>
+          </header>
+          <p class="sc-desc">Kiểm tra chất lượng, các tình huống ngoại lệ, bước phê duyệt và xử lý lỗi.</p>
+          <div class="sc-out">
+            <span class="sc-out-label">DELIVERABLE:</span>
+            <strong>Prototype cải tiến + Test Checklist</strong>
+          </div>
+        </article>
+
+        <article class="sprint-card" data-step="5">
+          <header class="sc-head">
+            <span class="sc-tag">BUỔI 5 · 2 GIỜ</span>
+            <h3 class="sc-title">Demo và kế hoạch vận hành</h3>
+          </header>
+          <p class="sc-desc">Trình diễn, đánh giá kết quả, hoàn thiện hướng dẫn và định hướng phát triển.</p>
+          <div class="sc-out">
+            <span class="sc-out-label">DELIVERABLE:</span>
+            <strong>Prototype + Evaluation + Roadmap 30–60–90 ngày</strong>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     06 · DELIVERABLES — PRODUCT STACK
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--deep stack" id="dau-ra" aria-labelledby="dau-ra-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-num rv">05</span>
+      <p class="sec-eyebrow rv">DELIVERABLES / TÀI SẢN MANG VỀ</p>
+      <h2 class="sec-title rv" id="dau-ra-title">
+        KHÔNG CHỈ MANG VỀ KIẾN THỨC.
+        <em>MANG VỀ MỘT TÀI SẢN AI CÓ THỂ TIẾP TỤC PHÁT TRIỂN.</em>
+      </h2>
+    </header>
+
+    <div class="stack-list" id="stackList">
+      <article class="stack-layer stack-layer--focus rv">
+        <div class="stack-head">
+          <span class="stack-num">01</span>
+          <h3>Một AI Prototype chạy thử</h3>
+        </div>
+        <p>Xây dựng cho quy trình được lựa chọn, có khả năng chạy thử nghiệm trên dữ liệu và bài toán nghiệp vụ thực tế của doanh nghiệp.</p>
+      </article>
+
+      <article class="stack-layer rv">
+        <div class="stack-head">
+          <span class="stack-num">02</span>
+          <h3>Workflow Blueprint &amp; Cấu trúc xử lý</h3>
+        </div>
+        <p>Bản vẽ kiến trúc quy trình, phân rã các bước thủ công thành từng luồng xử lý dữ liệu rõ ràng, chuẩn hóa và kiểm soát được.</p>
+      </article>
+
+      <article class="stack-layer rv">
+        <div class="stack-head">
+          <span class="stack-num">03</span>
+          <h3>Bộ cấu hình &amp; Tài liệu thực hành</h3>
+        </div>
+        <p>Hệ thống hướng dẫn (Prompt engineering), bộ tham số cấu hình hệ thống và tài liệu hướng dẫn vận hành chi tiết bàn giao cho doanh nghiệp.</p>
+      </article>
+
+      <article class="stack-layer rv">
+        <div class="stack-head">
+          <span class="stack-num">04</span>
+          <h3>Bộ kiểm thử &amp; Quy tắc kiểm soát</h3>
+        </div>
+        <p>Checklist kiểm tra chất lượng kết quả, phát hiện lỗi suy diễn (Hallucination) và cơ chế đánh dấu để con người phê duyệt (Human Review).</p>
+      </article>
+
+      <article class="stack-layer rv">
+        <div class="stack-head">
+          <span class="stack-num">05</span>
+          <h3>Báo cáo kết quả &amp; Lộ trình 30–60–90 ngày</h3>
+        </div>
+        <p>Báo cáo đánh giá hiệu quả thử nghiệm và kế hoạch triển khai, tinh chỉnh và mở rộng cho đội ngũ nội bộ trong các giai đoạn tiếp theo.</p>
+      </article>
+    </div>
+
+    <div class="stack-close rv">
+      <p class="stack-close-label">AI BUILDER PROJECT</p>
+      <p class="stack-close-state"><i aria-hidden="true"></i>READY TO PILOT</p>
+    </div>
+
+    <div class="boundary rv">
+      <h4 class="boundary-title">RANH GIỚI PHẠM VI &amp; CAM KẾT MINH BẠCH</h4>
+      <ul class="boundary-list">
+        <li><strong>Bản Prototype kiểm thử:</strong> Sản phẩm hoàn thành trong chương trình là phiên bản Prototype chạy được trên môi trường kiểm thử thực tế, không mặc nhiên là hệ thống phần mềm doanh nghiệp (Production Enterprise Application) chịu tải lớn.</li>
+        <li><strong>Giới hạn thời lượng:</strong> GO4AI không cam kết tự động hóa mọi quy trình phức tạp chỉ trong 10 giờ học. Mục tiêu là làm chủ phương pháp và hoàn thành xuất sắc 01 quy trình cốt lõi.</li>
+        <li><strong>Tích hợp hệ thống cốt lõi:</strong> Việc tích hợp sâu vào hệ thống ERP/CRM production hoặc xử lý dữ liệu bảo mật đặc biệt cần quy trình thẩm định an ninh và đội ngũ IT nội bộ của doanh nghiệp phối hợp riêng.</li>
+        <li><strong>Quyền sở hữu:</strong> Toàn bộ cấu hình, tài liệu và mã thực hành do học viên xây dựng được bàn giao đầy đủ theo các điều khoản bảo mật đã thống nhất giữa hai bên.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     07 · EXPERT
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--ivory expert" id="chuyen-gia" aria-labelledby="chuyen-gia-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-num rv">06</span>
+      <p class="sec-eyebrow rv">PROGRAM LEAD &amp; NĂNG LỰC TRIỂN KHAI</p>
+      <h2 class="sec-title rv" id="chuyen-gia-title">
+        CHUYÊN GIA TRỰC TIẾP HƯỚNG DẪN
+        <em>AI BUILDER &amp; NĂNG LỰC GO4AI</em>
+      </h2>
+      <p class="sec-lead rv">Chương trình AI BUILDER được thiết kế và kèm cặp trực tiếp bởi chuyên gia triển khai AI doanh nghiệp, tập trung giải quyết bài toán vận hành thật.</p>
+    </header>
+
+    <div class="expert-grid">
+      <figure class="expert-portrait rv">
+        <img src="/ai-builder/assets/images/lucas-dang.jpg" alt="Đặng Cường Thắng (Lucas) - Founder GO4AI" width="400" height="500" loading="lazy">
+      </figure>
+
+      <div class="expert-body rv">
+        <h3 class="expert-name">ĐẶNG CƯỜNG THẮNG (LUCAS)</h3>
+        <p class="expert-role">FOUNDER GO4AI · ENTERPRISE AI LEAD</p>
+        <p class="expert-bio">Chuyên gia trực tiếp thiết kế phương pháp đào tạo và kèm cặp 1:1 cho học viên AI BUILDER.</p>
+
+        <p class="expert-list-title">NĂNG LỰC CHUYÊN MÔN CỐT LÕI:</p>
+        <ul class="expert-list">
+          <li><strong>Enterprise AI Operating Model:</strong> Thiết lập mô hình vận hành và phân tầng ứng dụng AI.</li>
+          <li><strong>Workflow Transformation:</strong> Phân rã và tái cấu trúc quy trình nghiệp vụ sang luồng xử lý AI.</li>
+          <li><strong>AI Copilot &amp; Agent Architecture:</strong> Xây dựng các trợ lý AI thực thi tác vụ chuyên sâu.</li>
+          <li><strong>Governance &amp; Human Review:</strong> Cơ chế kiểm soát an toàn, giảm sai sót và con người phê duyệt.</li>
+          <li><strong>KPI &amp; Value Measurement:</strong> Đo lường hiệu quả chuyển đổi bằng chỉ số kinh doanh định lượng.</li>
+        </ul>
+      </div>
+
+      <aside class="expert-case rv">
+        <span class="case-badge">CASE STUDY THAM KHẢO</span>
+        <h3>ADG SALE AI — AUSTDOOR</h3>
+        <p class="case-desc">Ứng dụng Agentic AI hỗ trợ quy trình tư vấn và kinh doanh đại lý của Tập đoàn Austdoor: Tự động hóa bóc tách yêu cầu kỹ thuật và đối soát bảng giá đại lý phức tạp.</p>
+        <p class="case-metric">
+          <span class="case-metric-num">~70%</span>
+          <span class="case-metric-label">Thời gian tư vấn giảm trong trường hợp triển khai cụ thể</span>
+        </p>
+        <p class="case-note">*Đây là kết quả của một trường hợp cụ thể, không phải mức cải thiện cam kết cho mọi doanh nghiệp hoặc học viên AI BUILDER.</p>
+      </aside>
+    </div>
+
+    <ul class="expert-metrics rv">
+      <li>
+        <span class="em-num">100+</span>
+        <span class="em-label">Lãnh đạo &amp; Quản lý đã đào tạo</span>
+      </li>
+      <li>
+        <span class="em-num">40+</span>
+        <span class="em-label">Doanh nghiệp SME &amp; Enterprise</span>
+      </li>
+      <li>
+        <span class="em-num">15+</span>
+        <span class="em-label">Quy trình AI đã triển khai thực tế</span>
+      </li>
+      <li>
+        <span class="em-num">1:1</span>
+        <span class="em-label">Kèm cặp &amp; Chuyển giao độc quyền</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     08 · PRICING
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--deep pricing" id="hoc-phi" aria-labelledby="hoc-phi-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-num rv">07</span>
+      <p class="sec-eyebrow rv">TUITION &amp; INVESTMENT</p>
+      <h2 class="sec-title rv" id="hoc-phi-title">
+        MỘT KHOẢN ĐẦU TƯ ĐỂ BẮT ĐẦU
+        <em>XÂY DỰNG NĂNG LỰC AI NỘI BỘ</em>
+      </h2>
+    </header>
+
+    <div class="price rv">
+      <div class="price-top">
+        <span class="price-tier">CHƯƠNG TRÌNH AI BUILDER · KHAI GIẢNG 21/11/2026</span>
+        <span class="price-early">ƯU ĐÃI ĐĂNG KÝ SỚM — EARLY BIRD</span>
+      </div>
+
+      <div class="price-grid">
+        <div class="price-num-col">
+          <p class="price-std-label">HỌC PHÍ TIÊU CHUẨN:</p>
+          <p class="price-big">20.000.000<span class="price-cur">VNĐ</span></p>
+          <p class="price-std-unit">/ DOANH NGHIỆP</p>
+
+          <div class="price-offer">
+            <span class="price-offer-label">HỌC PHÍ ƯU ĐÃI</span>
+            <span class="price-offer-val">16.000.000 VNĐ</span>
+          </div>
+
+          <p class="price-deadline">Áp dụng cho đăng ký hợp lệ hoàn tất trước 23:59 ngày 15/11/2026.</p>
+
+          <p class="price-save">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            TIẾT KIỆM 4.000.000 VNĐ
           </p>
-          <div class="case-metric">
-            <span class="case-metric-num" style="color:var(--gold)">~70%</span>
-            <span class="case-metric-label">Thời gian tư vấn giảm trong trường hợp triển khai cụ thể</span>
-          </div>
-          <p class="case-note" style="margin-top:14px;font-size:11.5px;color:var(--on-dark-faint);font-style:italic;">
-            *Đây là kết quả của một trường hợp cụ thể, không phải mức cải thiện cam kết cho mọi doanh nghiệp hoặc học viên AI BUILDER.
-          </p>
         </div>
 
-        <!-- GO4AI Metrics Strip -->
-        <div class="cred-metrics-strip reveal">
-          <div class="metric-item">
-            <div class="metric-item-num">100+</div>
-            <div class="metric-item-label">Lãnh đạo &amp; Quản lý đã đào tạo</div>
+        <div class="price-inc-col">
+          <p class="price-inc-title">MỘT SUẤT HỌC PHÍ BAO GỒM</p>
+          <ul class="price-inc-list">
+            <li>Tối đa 02 học viên thuộc cùng doanh nghiệp (Chính sách ghế đôi CEO + Quản lý/Tech lead).</li>
+            <li>05 buổi thực hành chính thức, tổng cộng 10 giờ tương tác trực tiếp.</li>
+            <li>Hướng dẫn xây dựng một AI prototype theo bài toán nghiệp vụ đã chọn.</li>
+            <li>Hỗ trợ chuyên gia 1:1 theo lịch và phạm vi được công bố.</li>
+            <li>Tài liệu, cấu hình mẫu, checklist và hướng dẫn thực hành độc quyền.</li>
+            <li>Đánh giá đầu ra và tư vấn lộ trình phát triển tiếp 30–60–90 ngày.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="price-policies">
+        <div class="policy">
+          <h4>CHI PHÍ CÔNG CỤ NỀN TẢNG MẪU</h4>
+          <p>Học viên tự chi trả chi phí tài khoản hoặc API nền tảng AI mẫu (khoảng $20/tháng, thanh toán trực tiếp cho bên thứ ba như Anthropic, OpenAI theo nhu cầu sử dụng thực tế). GO4AI không thu thêm phụ phí công cụ.</p>
+        </div>
+        <div class="policy">
+          <h4>ĐIỀU KIỆN THAM GIA</h4>
+          <p>Để bảo đảm chất lượng chuyển giao, mỗi doanh nghiệp chỉ gửi học viên có thẩm quyền ra quyết định hoặc trực tiếp phụ trách triển khai quy trình. Số lượng doanh nghiệp mỗi khóa được giới hạn nghiêm ngặt.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-cta rv">
+      <a class="btn btn--gold" href="#tu-van">TRAO ĐỔI VỀ CHƯƠNG TRÌNH AI BUILDER <span aria-hidden="true">→</span></a>
+      <p class="price-cta-note">Chuyên gia sẽ trao đổi về bài toán, sản phẩm có thể xây dựng và điều kiện tham gia trước khi bạn quyết định.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     09 · FEATURED OFFLINE EVENT
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--ivory event" id="cafe-talk" aria-labelledby="cafe-talk-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-num rv">08</span>
+      <p class="sec-eyebrow rv">SME EXECUTIVE CAFÉ TALK · 14/11/2026</p>
+      <h2 class="sec-title rv" id="cafe-talk-title">
+        DOANH NGHIỆP CÀNG LỚN, CHỦ CÀNG BẬN —
+        <em>LÀM SAO THOÁT VÒNG XOÁY?</em>
+      </h2>
+      <p class="sec-lead rv">Trước khi đầu tư vào AI, hãy gặp những người đã trực tiếp điều hành, tái cấu trúc và phát triển doanh nghiệp.</p>
+    </header>
+
+    <div class="event-card rv">
+      <header class="event-top">
+        <span class="event-eyebrow">SỰ KIỆN OFFLINE DÀNH RIÊNG CHO LÃNH ĐẠO DOANH NGHIỆP</span>
+        <span class="event-date">THỨ BẢY, 14/11/2026 · 09:00 – 11:30</span>
+      </header>
+
+      <div class="event-grid">
+        <div class="event-speaker">
+          <div class="event-portrait">
+            <img src="/ai-builder/assets/images/speakers/speaker_02_mr_tran_vu.jpg" alt="Chân dung ông Trần Vũ - Cựu Tổng Giám đốc Bệnh viện Mắt Quốc tế Hoàn Mỹ Sài Gòn" width="560" height="747" loading="lazy">
           </div>
-          <div class="metric-item">
-            <div class="metric-item-num">40+</div>
-            <div class="metric-item-label">Doanh nghiệp SME &amp; Enterprise</div>
+          <span class="event-role">FEATURED SPEAKER</span>
+          <h3 class="event-name">TRẦN VŨ</h3>
+          <p class="event-title">Cựu Tổng Giám đốc Bệnh viện Mắt Quốc tế Hoàn Mỹ Sài Gòn</p>
+          <p class="event-exp">25+ năm kinh nghiệm điều hành và tái cấu trúc doanh nghiệp</p>
+        </div>
+
+        <div class="event-info">
+          <h3 class="event-info-title">Trao đổi thực chiến cùng các nhà quản trị dày dặn kinh nghiệm</h3>
+          <p class="event-subhead">Một buổi sáng trò chuyện cởi mở cùng các chuyên gia điều hành, nhìn thẳng vào căn nguyên khiến lãnh đạo doanh nghiệp bị cuốn vào sự vụ và tìm kiếm giải pháp tháo gỡ bằng cấu trúc quản trị kết hợp công nghệ.</p>
+
+          <div class="event-question">
+            <strong>CÂU HỎI THU HÚT CEO:</strong>
+            <p>"Vì sao doanh nghiệp càng phát triển, CEO càng phải trực tiếp giải quyết nhiều việc — và làm thế nào để thay đổi?"</p>
           </div>
-          <div class="metric-item">
-            <div class="metric-item-num">15+</div>
-            <div class="metric-item-label">Quy trình AI đã triển khai thực tế</div>
+
+          <p class="event-list-title">KINH NGHIỆM ĐIỀU HÀNH &amp; TÁI CẤU TRÚC TIÊU BIỂU:</p>
+          <ul class="event-list">
+            <li>Tổng Giám đốc Bệnh viện Mắt Quốc tế Hoàn Mỹ Sài Gòn, 2020–2022</li>
+            <li>Tổng Giám đốc Công ty Cổ phần Y tế DHA, 2022–2023</li>
+            <li>Giám đốc Điều hành Bệnh viện Mắt Quốc tế Việt – Nga, 2018–2020</li>
+            <li>Phó Tổng Giám đốc Điều hành &amp; Trưởng ban Tái cấu trúc, Công ty CP Quốc tế Trung Dũng, 2009–2018</li>
+            <li>Các vị trí điều hành và tái cấu trúc tại Biti's, 1998–2005</li>
+            <li>Cố vấn cấp cao quản trị, chiến lược và vận hành, Phương Nam Group / Phương Nam Healthcare, 2024–2025</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="event-panel">
+        <p class="event-panel-title">CÙNG SỰ THAM GIA CỦA:</p>
+        <ul class="event-panel-list">
+          <li><strong>Nguyễn Anh Tuấn</strong> — Viện trưởng Viện Học tập Suốt đời, Host</li>
+          <li><strong>Võ Văn Cương</strong> — CEO HR1Vietnam Holdings</li>
+          <li><strong>Đặng Cường Thắng</strong> — Founder GO4AI, Enterprise AI Lead</li>
+        </ul>
+      </div>
+
+      <footer class="event-foot">
+        <div class="event-meta">
+          <p><strong>Địa điểm:</strong> Tòa nhà HR1Vietnam Holdings, 28–34 Pasteur, Quận 1, TP.HCM</p>
+          <p><strong>Thời gian:</strong> 09:00 – 11:30 · Thứ Bảy, 14/11/2026</p>
+        </div>
+        <div class="event-action">
+          <a class="btn btn--gold" href="https://b2b.go4ai.org/sme-14-11" target="_blank" rel="noopener">GẶP CHUYÊN GIA &amp; ĐĂNG KÝ OFFLINE 14/11 <span aria-hidden="true">→</span></a>
+          <p class="event-note">Trải nghiệm trực tiếp trước khi quyết định tham gia AI BUILDER. Không bắt buộc tham dự offline.</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     10 · FAQ + CONSULTATION FORM
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="sec sec--deep faq-sec" id="faq" aria-labelledby="faq-title">
+  <div class="wrap">
+    <header class="sec-head sec-head--center">
+      <span class="sec-num rv">09</span>
+      <p class="sec-eyebrow rv">TRAO ĐỔI VỀ BÀI TOÁN DOANH NGHIỆP</p>
+      <h2 class="sec-title rv" id="faq-title">
+        BẠN ĐANG CÂN NHẮC AI BUILDER?
+        <em>HÃY TRAO ĐỔI VỀ BÀI TOÁN CỦA DOANH NGHIỆP.</em>
+      </h2>
+      <p class="sec-lead rv">Đội ngũ chuyên gia GO4AI sẵn sàng trao đổi chi tiết về bài toán cụ thể và lộ trình phù hợp với doanh nghiệp của bạn trước khi bạn ra quyết định.</p>
+    </header>
+
+    <div class="faq-grid">
+      <div class="faq-col rv">
+        <h3 class="faq-col-title">CÂU HỎI THƯỜNG GẶP</h3>
+
+        <div class="faq">
+          <div class="faq-item">
+            <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-1">
+              <span>01. Không biết lập trình có tham gia được không?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-body" id="faq-panel-1">
+              <p><strong>Có.</strong> Chương trình được thiết kế đặc thù cho lãnh đạo và quản lý nghiệp vụ, tập trung vào tư duy phân rã quy trình, thiết kế logic và kết nối công cụ qua giao diện trực quan (No-code / Low-code), không yêu cầu viết mã nguồn phức tạp từ đầu.</p>
+            </div>
           </div>
-          <div class="metric-item">
-            <div class="metric-item-num">1:1</div>
-            <div class="metric-item-label">Kèm cặp &amp; Chuyển giao độc quyền</div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-2">
+              <span>02. CEO có thể cử nhân sự cùng học không?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-body" id="faq-panel-2">
+              <p><strong>Có.</strong> Chính sách học phí áp dụng cho 2 người từ cùng một doanh nghiệp (khuyến nghị 01 CEO/Lãnh đạo định hướng chiến lược + 01 Quản lý/Nhân sự nòng cốt thực thi) để bảo đảm sản phẩm AI có người trực tiếp duy trì và phát triển sau khóa học.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-3">
+              <span>03. Dữ liệu doanh nghiệp chưa chuẩn hóa thì sao?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-body" id="faq-panel-3">
+              <p><strong>Hoàn toàn bình thường.</strong> Trong Buổi 1 và Buổi 2, chuyên gia sẽ hướng dẫn cách trích xuất, làm sạch và đóng gói dữ liệu mẫu từ tài liệu thực tế của doanh nghiệp thành cấu trúc mà AI có thể hiểu và xử lý hiệu quả.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-4">
+              <span>04. Prototype có thể đưa vào vận hành thực tế không?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-body" id="faq-panel-4">
+              <p><strong>Có thể đưa vào kiểm thử nội bộ ngay.</strong> Tuy nhiên, prototype là công cụ kiểm chứng tính khả thi của quy trình; việc tích hợp sâu vào hệ thống ERP/CRM lõi quy mô lớn sẽ cần quy trình kiểm thử và thẩm định bảo mật IT riêng.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-5">
+              <span>05. Có phát sinh chi phí công cụ không?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-body" id="faq-panel-5">
+              <p>Học viên tự chi trả chi phí tài khoản nền tảng AI mẫu (khoảng $20/tháng, thanh toán trực tiếp cho bên thứ ba như Anthropic, OpenAI hoặc dịch vụ lưu trữ). GO4AI không thu thêm phụ phí công cụ nào khác.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-6">
+              <span>06. Có bắt buộc tham dự Café Talk 14/11 không?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-body" id="faq-panel-6">
+              <p><strong>Không bắt buộc.</strong> Café Talk là sự kiện offline mở rộng giúp bạn giao lưu trực tiếp với các chuyên gia điều hành và trải nghiệm demo trước khi khóa học khai giảng vào ngày 21/11.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-7">
+              <span>07. Gửi yêu cầu tư vấn có phải thanh toán không?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-body" id="faq-panel-7">
+              <p><strong>Hoàn toàn không.</strong> Biểu mẫu này nhằm tiếp nhận bài toán thực tế của doanh nghiệp và sắp xếp buổi trao đổi 1:1 miễn phí cùng chuyên gia trước khi bạn ra quyết định đăng ký chính thức.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-col rv" id="tu-van">
+        <div class="form-card">
+          <h3 class="form-card-title">ĐĂNG KÝ TƯ VẤN BÀI TOÁN AI</h3>
+          <p class="form-card-sub">Để lại thông tin để chuyên gia GO4AI liên hệ trao đổi về bài toán, đánh giá tính khả thi và tư vấn chương trình phù hợp.</p>
+
+          <form id="consultation-form" novalidate>
+            <div class="field">
+              <label for="ho_ten">Họ và tên *</label>
+              <input type="text" id="ho_ten" name="ho_ten" placeholder="Nguyễn Văn A" required>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="dien_thoai">Số điện thoại / Zalo *</label>
+                <input type="tel" id="dien_thoai" name="dien_thoai" placeholder="0901 234 567" required>
+              </div>
+              <div class="field">
+                <label for="email">Email công việc *</label>
+                <input type="email" id="email" name="email" placeholder="a.nguyen@company.vn" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="doanh_nghiep">Tên doanh nghiệp *</label>
+              <input type="text" id="doanh_nghiep" name="doanh_nghiep" placeholder="Công ty CP / TNHH..." required>
+            </div>
+
+            <div class="field">
+              <label for="vai_tro">Vai trò trong doanh nghiệp *</label>
+              <select id="vai_tro" name="vai_tro" required>
+                <option value="CEO / Chủ doanh nghiệp">CEO / Chủ doanh nghiệp</option>
+                <option value="Giám đốc khối / Quản lý cấp cao">Giám đốc khối / Quản lý cấp cao</option>
+                <option value="Trưởng phòng / Team Lead">Trưởng phòng / Team Lead</option>
+                <option value="Nhân sự nòng cốt phụ trách AI">Nhân sự nòng cốt phụ trách AI</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="bai_toan">Bài toán muốn ứng dụng AI (Không bắt buộc)</label>
+              <textarea id="bai_toan" name="bai_toan" rows="3" placeholder="Mô tả ngắn quy trình đang tốn nhiều thời gian hoặc bài toán bạn muốn xây dựng công cụ AI giải quyết..."></textarea>
+            </div>
+
+            <label class="consent">
+              <input type="checkbox" id="dong_y" name="dong_y" checked required>
+              <span>Tôi đồng ý nhận liên hệ tư vấn chuyên sâu về chương trình AI BUILDER từ GO4AI. Dữ liệu được bảo mật theo <a href="/privacy" target="_blank">Chính sách bảo mật</a>.</span>
+            </label>
+
+            <button type="submit" class="btn btn--gold btn--full">GỬI YÊU CẦU TƯ VẤN <span aria-hidden="true">→</span></button>
+
+            <div id="form-status" class="form-status" role="alert"></div>
+
+            <p class="form-note">🔒 Cam kết bảo mật thông tin nghiệp vụ · Không spam · Phản hồi trong 24 giờ làm việc.</p>
+          </form>
+
+          <div id="consult-success-card" class="success">
+            <div class="success-head">
+              <span class="success-icon" aria-hidden="true">✓</span>
+              <div>
+                <h4>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</h4>
+                <p>Đội ngũ GO4AI Enterprise Lab</p>
+              </div>
+            </div>
+            <p class="success-greet">Kính chào <strong id="success-client-name">Quý Khách hàng</strong>,</p>
+            <p class="success-text">GO4AI đã tiếp nhận yêu cầu tư vấn của Anh/Chị. Đội ngũ phụ trách sẽ liên hệ qua thông tin đã đăng ký trong vòng 24 giờ làm việc để trao đổi cụ thể về bài toán doanh nghiệp.</p>
+            <a class="btn btn--ghost btn--full" href="https://b2b.go4ai.org/ung-dung-thuc-te">Khám phá Thư viện Ứng dụng Thực tế <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- ==================================================================== -->
-  <!-- SECTION 07 — HỌC PHÍ & QUYỀN LỢI                                     -->
-  <!-- ==================================================================== -->
-  <section class="section section--deep pricing" id="hoc-phi" aria-labelledby="hoc-phi-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-index reveal">07</span>
-        <p class="sec-eyebrow reveal">TUITION &amp; INVESTMENT</p>
-        <h2 class="sec-title sec-title--serif reveal" id="hoc-phi-title">
-          MỘT KHOẢN ĐẦU TƯ ĐỂ BẮT ĐẦU<br>
-          <em>XÂY DỰNG NĂNG LỰC AI NỘI BỘ</em>
-        </h2>
-        <div class="rule rule--short reveal-line" aria-hidden="true"></div>
-      </div>
-
-      <div class="price-showcase reveal">
-        <div class="price-top-bar">
-          <span class="price-tier-tag">CHƯƠNG TRÌNH AI BUILDER · KHAI GIẢNG 21/11/2026</span>
-          <span class="early-bird-badge">ƯU ĐÃI ĐĂNG KÝ SỚM — EARLY BIRD</span>
-        </div>
-
-        <div class="price-main-grid">
-          <div class="price-numbers">
-            <div class="price-standard-row">
-              <span>HỌC PHÍ TIÊU CHUẨN:</span>
-              <span class="price-standard-val">20.000.000 VNĐ / DOANH NGHIỆP</span>
-            </div>
-            <div class="price-deal-row">
-              <span class="price-big-val">16.000.000</span>
-              <span class="price-currency">VNĐ</span>
-            </div>
-            <p class="price-deadline">
-              Áp dụng cho đăng ký hợp lệ hoàn tất trước 23:59 ngày 15/11/2026.
-            </p>
-            <div class="price-savings-pill">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              TIẾT KIỆM 4.000.000 VNĐ
-            </div>
-          </div>
-
-          <div class="price-includes-card">
-            <span class="price-includes-title">MỘT SUẤT HỌC PHÍ BAO GỒM</span>
-            <ul class="price-includes-list">
-              <li>Tối đa 02 học viên thuộc cùng doanh nghiệp (Chính sách ghế đôi CEO + Quản lý/Tech lead).</li>
-              <li>05 buổi thực hành chính thức, tổng cộng 10 giờ tương tác trực tiếp.</li>
-              <li>Hướng dẫn xây dựng một AI prototype theo bài toán nghiệp vụ đã chọn.</li>
-              <li>Hỗ trợ chuyên gia 1:1 theo lịch và phạm vi được công bố.</li>
-              <li>Tài liệu, cấu hình mẫu, checklist và hướng dẫn thực hành độc quyền.</li>
-              <li>Đánh giá đầu ra và tư vấn lộ trình phát triển tiếp 30–60–90 ngày.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Extra Policies: Tool fee note -->
-        <div class="price-extra-policies">
-          <div class="policy-item">
-            <h4>CHI PHÍ CÔNG CỤ NỀN TẢNG MẪU</h4>
-            <p>
-              Học viên tự chi trả chi phí tài khoản hoặc API nền tảng AI mẫu (khoảng $20/tháng, thanh toán trực tiếp cho bên thứ ba như Anthropic, OpenAI theo nhu cầu sử dụng thực tế). GO4AI không thu thêm phụ phí công cụ.
-            </p>
-          </div>
-          <div class="policy-item">
-            <h4>ĐIỀU KIỆN THAM GIA</h4>
-            <p>
-              Để bảo đảm chất lượng chuyển giao, mỗi doanh nghiệp chỉ gửi học viên có thẩm quyền ra quyết định hoặc trực tiếp phụ trách triển khai quy trình. Số lượng doanh nghiệp mỗi khóa được giới hạn nghiêm ngặt.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Single Consultation CTA - Strictly NO checkout / NO QR code -->
-      <div class="roadmap-cta-wrap reveal" style="margin-top:32px">
-        <a class="btn btn--gold" href="#tu-van">
-          TRAO ĐỔI VỀ CHƯƠNG TRÌNH AI BUILDER
-          <span aria-hidden="true">→</span>
-        </a>
-        <p class="eng-micro" style="margin-top:12px">
-          Chuyên gia sẽ trao đổi về bài toán, sản phẩm có thể xây dựng và điều kiện tham gia trước khi bạn quyết định.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================== -->
-  <!-- SECTION 08 — OFFLINE FEATURED EVENT                                  -->
-  <!-- ==================================================================== -->
-  <section class="section section--deep" id="cafe-talk" aria-labelledby="cafe-talk-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-index reveal">08</span>
-        <p class="sec-eyebrow reveal">SME EXECUTIVE CAFÉ TALK · 14/11/2026</p>
-        <h2 class="sec-title sec-title--serif reveal" id="cafe-talk-title">
-          DOANH NGHIỆP CÀNG LỚN, CHỦ CÀNG BẬN —<br>
-          <em>LÀM SAO THOÁT VÒNG XOÁY?</em>
-        </h2>
-        <div class="rule rule--short reveal-line" aria-hidden="true"></div>
-        <p class="sec-lead reveal" style="max-width:820px;margin-top:16px;">
-          Trước khi đầu tư vào AI, hãy gặp những người đã trực tiếp điều hành, tái cấu trúc và phát triển doanh nghiệp.
-        </p>
-      </div>
-
-      <div class="featured-offline-event reveal">
-        <div class="foe-header">
-          <span class="foe-eyebrow">SỰ KIỆN OFFLINE DÀNH RIÊNG CHO LÃNH ĐẠO DOANH NGHIỆP</span>
-          <span class="foe-date-tag">THỨ BẢY, 14/11/2026 · 09:00 – 11:30</span>
-        </div>
-
-        <div class="foe-main-grid">
-          <!-- Featured Speaker: Mr. Tran Vu -->
-          <div class="foe-speaker-col">
-            <div class="foe-portrait-box">
-              <img src="/ai-builder/assets/images/speakers/speaker_02_mr_tran_vu.jpg" alt="Chân dung ông Trần Vũ - Cựu Tổng Giám đốc Bệnh viện Mắt Quốc tế Hoàn Mỹ Sài Gòn" width="560" height="747" loading="lazy">
-            </div>
-            <div class="foe-speaker-tag">FEATURED SPEAKER</div>
-            <h3 class="foe-speaker-name">TRẦN VŨ</h3>
-            <div class="foe-speaker-main-title">Cựu Tổng Giám đốc Bệnh viện Mắt Quốc tế Hoàn Mỹ Sài Gòn</div>
-            <div class="foe-speaker-exp">25+ năm kinh nghiệm điều hành và tái cấu trúc doanh nghiệp</div>
-          </div>
-
-          <!-- Event Details & Hook Question -->
-          <div class="foe-info-col">
-            <h3>Trao đổi thực chiến cùng các nhà quản trị dày dặn kinh nghiệm</h3>
-            <p class="foe-subhead">
-              Một buổi sáng trò chuyện cởi mở cùng các chuyên gia điều hành, nhìn thẳng vào căn nguyên khiến lãnh đạo doanh nghiệp bị cuốn vào sự vụ và tìm kiếm giải pháp tháo gỡ bằng cấu trúc quản trị kết hợp công nghệ.
-            </p>
-
-            <div class="foe-question-box">
-              <strong>CÂU HỎI THU HÚT CEO:</strong>
-              <p>"Vì sao doanh nghiệp càng phát triển, CEO càng phải trực tiếp giải quyết nhiều việc — và làm thế nào để thay đổi?"</p>
-            </div>
-
-            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">
-              KINH NGHIỆM ĐIỀU HÀNH &amp; TÁI CẤU TRÚC TIÊU BIỂU:
-            </div>
-            <ul class="foe-roles-list">
-              <li>Tổng Giám đốc Bệnh viện Mắt Quốc tế Hoàn Mỹ Sài Gòn, 2020–2022</li>
-              <li>Tổng Giám đốc Công ty Cổ phần Y tế DHA, 2022–2023</li>
-              <li>Giám đốc Điều hành Bệnh viện Mắt Quốc tế Việt – Nga, 2018–2020</li>
-              <li>Phó Tổng Giám đốc Điều hành &amp; Trưởng ban Tái cấu trúc, Công ty CP Quốc tế Trung Dũng, 2009–2018</li>
-              <li>Các vị trí điều hành và tái cấu trúc tại Biti's, 1998–2005</li>
-              <li>Cố vấn cấp cao quản trị, chiến lược và vận hành, Phương Nam Group / Phương Nam Healthcare, 2024–2025</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Panel Speakers Row -->
-        <div class="foe-panel-row">
-          <div class="foe-panel-title">CÙNG SỰ THAM GIA CỦA:</div>
-          <div class="foe-panel-list">
-            <span><strong>Nguyễn Anh Tuấn</strong> — Viện trưởng Viện Học tập Suốt đời, Host</span>
-            <span><strong>Võ Văn Cương</strong> — CEO HR1Vietnam Holdings</span>
-            <span><strong>Đặng Cường Thắng</strong> — Founder GO4AI, Enterprise AI Lead</span>
-          </div>
-        </div>
-
-        <!-- Bottom Action Bar -->
-        <div class="foe-bottom-bar">
-          <div class="foe-bottom-meta">
-            <div><strong>Địa điểm:</strong> Tòa nhà HR1Vietnam Holdings, 28–34 Pasteur, Quận 1, TP.HCM</div>
-            <div><strong>Thời gian:</strong> 09:00 – 11:30 · Thứ Bảy, 14/11/2026</div>
-          </div>
-          <div class="foe-action-group">
-            <a class="btn btn--gold" href="https://b2b.go4ai.org/sme-14-11" target="_blank" rel="noopener">
-              GẶP CHUYÊN GIA &amp; ĐĂNG KÝ OFFLINE 14/11 →
-            </a>
-            <p class="foe-micro">
-              Trải nghiệm trực tiếp trước khi quyết định tham gia AI BUILDER. Không bắt buộc tham dự offline.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================== -->
-  <!-- SECTION 09 — FAQ + FORM TƯ VẤN                                       -->
-  <!-- ==================================================================== -->
-  <section class="section section--ivory" id="faq" aria-labelledby="faq-title">
-    <div class="wrap">
-      <div class="sec-head sec-head--center">
-        <span class="sec-index reveal">09</span>
-        <p class="sec-eyebrow reveal">TRAO ĐỔI VỀ BÀI TOÁN DOANH NGHIỆP</p>
-        <h2 class="sec-title sec-title--serif reveal" id="faq-title">
-          BẠN ĐANG CÂN NHẮC AI BUILDER?<br>
-          <em>HÃY TRAO ĐỔI VỀ BÀI TOÁN CỦA DOANH NGHIỆP.</em>
-        </h2>
-        <div class="rule rule--center reveal-line" aria-hidden="true"></div>
-        <p class="sec-lead reveal" style="max-width:760px;margin:16px auto 0;text-align:center;">
-          Đội ngũ chuyên gia GO4AI sẵn sàng trao đổi chi tiết về bài toán cụ thể và lộ trình phù hợp với doanh nghiệp của bạn trước khi bạn ra quyết định.
-        </p>
-      </div>
-
-      <div class="faq-form-grid reveal">
-        <!-- 7 FAQs Column -->
-        <div class="faq-col">
-          <h3 class="faq-col-title">CÂU HỎI THƯỜNG GẶP</h3>
-
-          <div class="faq-accordion" style="margin-top:0;">
-            <!-- FAQ 1 -->
-            <div class="faq-item">
-              <button type="button" class="faq-trigger" aria-expanded="false">
-                <span>01. Không biết lập trình có tham gia được không?</span>
-                <span class="faq-icon" aria-hidden="true">+</span>
-              </button>
-              <div class="faq-body">
-                <p>
-                  <strong>Có.</strong> Chương trình được thiết kế đặc thù cho lãnh đạo và quản lý nghiệp vụ, tập trung vào tư duy phân rã quy trình, thiết kế logic và kết nối công cụ qua giao diện trực quan (No-code / Low-code), không yêu cầu viết mã nguồn phức tạp từ đầu.
-                </p>
-              </div>
-            </div>
-
-            <!-- FAQ 2 -->
-            <div class="faq-item">
-              <button type="button" class="faq-trigger" aria-expanded="false">
-                <span>02. CEO có thể cử nhân sự cùng học không?</span>
-                <span class="faq-icon" aria-hidden="true">+</span>
-              </button>
-              <div class="faq-body">
-                <p>
-                  <strong>Có.</strong> Chính sách học phí áp dụng cho 2 người từ cùng một doanh nghiệp (khuyến nghị 01 CEO/Lãnh đạo định hướng chiến lược + 01 Quản lý/Nhân sự nòng cốt thực thi) để bảo đảm sản phẩm AI có người trực tiếp duy trì và phát triển sau khóa học.
-                </p>
-              </div>
-            </div>
-
-            <!-- FAQ 3 -->
-            <div class="faq-item">
-              <button type="button" class="faq-trigger" aria-expanded="false">
-                <span>03. Dữ liệu doanh nghiệp chưa chuẩn hóa thì sao?</span>
-                <span class="faq-icon" aria-hidden="true">+</span>
-              </button>
-              <div class="faq-body">
-                <p>
-                  <strong>Hoàn toàn bình thường.</strong> Trong Buổi 1 và Buổi 2, chuyên gia sẽ hướng dẫn cách trích xuất, làm sạch và đóng gói dữ liệu mẫu từ tài liệu thực tế của doanh nghiệp thành cấu trúc mà AI có thể hiểu và xử lý hiệu quả.
-                </p>
-              </div>
-            </div>
-
-            <!-- FAQ 4 -->
-            <div class="faq-item">
-              <button type="button" class="faq-trigger" aria-expanded="false">
-                <span>04. Prototype có thể đưa vào vận hành thực tế không?</span>
-                <span class="faq-icon" aria-hidden="true">+</span>
-              </button>
-              <div class="faq-body">
-                <p>
-                  <strong>Có thể đưa vào kiểm thử nội bộ ngay.</strong> Tuy nhiên, prototype là công cụ kiểm chứng tính khả thi của quy trình; việc tích hợp sâu vào hệ thống ERP/CRM lõi quy mô lớn sẽ cần quy trình kiểm thử và thẩm định bảo mật IT riêng.
-                </p>
-              </div>
-            </div>
-
-            <!-- FAQ 5 -->
-            <div class="faq-item">
-              <button type="button" class="faq-trigger" aria-expanded="false">
-                <span>05. Có phát sinh chi phí công cụ không?</span>
-                <span class="faq-icon" aria-hidden="true">+</span>
-              </button>
-              <div class="faq-body">
-                <p>
-                  Học viên tự chi trả chi phí tài khoản nền tảng AI mẫu (khoảng $20/tháng, thanh toán trực tiếp cho bên thứ ba như Anthropic, OpenAI hoặc dịch vụ lưu trữ). GO4AI không thu thêm phụ phí công cụ nào khác.
-                </p>
-              </div>
-            </div>
-
-            <!-- FAQ 6 -->
-            <div class="faq-item">
-              <button type="button" class="faq-trigger" aria-expanded="false">
-                <span>06. Có bắt buộc tham dự Café Talk 14/11 không?</span>
-                <span class="faq-icon" aria-hidden="true">+</span>
-              </button>
-              <div class="faq-body">
-                <p>
-                  <strong>Không bắt buộc.</strong> Café Talk là sự kiện offline mở rộng giúp bạn giao lưu trực tiếp với các chuyên gia điều hành và trải nghiệm demo trước khi khóa học khai giảng vào ngày 21/11.
-                </p>
-              </div>
-            </div>
-
-            <!-- FAQ 7 -->
-            <div class="faq-item">
-              <button type="button" class="faq-trigger" aria-expanded="false">
-                <span>07. Gửi yêu cầu tư vấn có phải thanh toán không?</span>
-                <span class="faq-icon" aria-hidden="true">+</span>
-              </button>
-              <div class="faq-body">
-                <p>
-                  <strong>Hoàn toàn không.</strong> Biểu mẫu này nhằm tiếp nhận bài toán thực tế của doanh nghiệp và sắp xếp buổi trao đổi 1:1 miễn phí cùng chuyên gia trước khi bạn ra quyết định đăng ký chính thức.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Consultation Form Column -->
-        <div class="form-col" id="tu-van">
-          <div class="form-box">
-            <h3 class="form-box-title">ĐĂNG KÝ TƯ VẤN BÀI TOÁN AI</h3>
-            <p class="form-box-sub">
-              Để lại thông tin để chuyên gia GO4AI liên hệ trao đổi về bài toán, đánh giá tính khả thi và tư vấn chương trình phù hợp.
-            </p>
-
-            <form id="consultation-form" novalidate>
-              <div class="form-group">
-                <label for="ho_ten" class="form-label">Họ và tên *</label>
-                <input type="text" id="ho_ten" name="ho_ten" class="form-field" placeholder="Nguyễn Văn A" required>
-              </div>
-
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label for="dien_thoai" class="form-label">Số điện thoại / Zalo *</label>
-                  <input type="tel" id="dien_thoai" name="dien_thoai" class="form-field" placeholder="0901 234 567" required>
-                </div>
-                <div class="form-group">
-                  <label for="email" class="form-label">Email công việc *</label>
-                  <input type="email" id="email" name="email" class="form-field" placeholder="a.nguyen@company.vn" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="doanh_nghiep" class="form-label">Tên doanh nghiệp *</label>
-                <input type="text" id="doanh_nghiep" name="doanh_nghiep" class="form-field" placeholder="Công ty CP / TNHH..." required>
-              </div>
-
-              <div class="form-group">
-                <label for="vai_tro" class="form-label">Vai trò trong doanh nghiệp *</label>
-                <select id="vai_tro" name="vai_tro" class="select-field" required>
-                  <option value="CEO / Chủ doanh nghiệp">CEO / Chủ doanh nghiệp</option>
-                  <option value="Giám đốc khối / Quản lý cấp cao">Giám đốc khối / Quản lý cấp cao</option>
-                  <option value="Trưởng phòng / Team Lead">Trưởng phòng / Team Lead</option>
-                  <option value="Nhân sự nòng cốt phụ trách AI">Nhân sự nòng cốt phụ trách AI</option>
-                  <option value="Khác">Khác</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="bai_toan" class="form-label">Bài toán muốn ứng dụng AI (Không bắt buộc)</label>
-                <textarea id="bai_toan" name="bai_toan" rows="3" class="form-field" placeholder="Mô tả ngắn quy trình đang tốn nhiều thời gian hoặc bài toán bạn muốn xây dựng công cụ AI giải quyết..."></textarea>
-              </div>
-
-              <div class="form-group">
-                <label class="consent-label">
-                  <input type="checkbox" id="dong_y" name="dong_y" checked required>
-                  <span>Tôi đồng ý nhận liên hệ tư vấn chuyên sâu về chương trình AI BUILDER từ GO4AI. Dữ liệu được bảo mật theo <a href="/privacy" target="_blank" style="color:var(--gold);text-decoration:underline;">Chính sách bảo mật</a>.</span>
-                </label>
-              </div>
-
-              <button type="submit" class="btn btn--gold btn--full">
-                GỬI YÊU CẦU TƯ VẤN →
-              </button>
-
-              <div id="form-status" class="form-status" role="alert"></div>
-
-              <p class="form-privacy-note">
-                🔒 Cam kết bảo mật thông tin nghiệp vụ · Không spam · Phản hồi trong 24 giờ làm việc.
-              </p>
-            </form>
-
-            <!-- Success Card -->
-            <div id="consult-success-card" class="consult-success-card">
-              <div class="success-head">
-                <div class="success-icon">✓</div>
-                <div>
-                  <h4 style="margin:0;font-size:16px;color:var(--gold);">TIẾP NHẬN YÊU CẦU THÀNH CÔNG</h4>
-                  <p style="margin:2px 0 0;font-size:12px;color:var(--on-dark-muted);">Đội ngũ GO4AI Enterprise Lab</p>
-                </div>
-              </div>
-              <p style="font-size:14px;line-height:1.6;margin-bottom:12px;">
-                Kính chào <strong id="success-client-name" style="color:var(--gold-soft);">Quý Khách hàng</strong>,
-              </p>
-              <p style="font-size:13.5px;line-height:1.6;color:var(--on-dark-muted);margin-bottom:20px;">
-                GO4AI đã tiếp nhận yêu cầu tư vấn của Anh/Chị. Đội ngũ phụ trách sẽ liên hệ qua thông tin đã đăng ký trong vòng 24 giờ làm việc để trao đổi cụ thể về bài toán doanh nghiệp.
-              </p>
-              <a class="btn btn--outline" href="https://b2b.go4ai.org/ung-dung-thuc-te" style="width:100%;text-align:center;">
-                Khám phá Thư viện Ứng dụng Thực tế →
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
 
 </main>
 
-<!-- ==================================================================== -->
-<!-- FOOTER                                                               -->
-<!-- ==================================================================== -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════════ -->
 <footer class="footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div class="footer-col-brand">
+      <div class="footer-brand">
         <a class="footer-logo" href="/">
           <img src="/ai-builder/assets/images/logo_go4ai.png" alt="GO4AI" width="927" height="354">
         </a>
-        <p class="footer-tagline">
-          ENTERPRISE AI LAB · GO4AI<br>
-          Đồng hành cùng doanh nghiệp Việt Nam xây dựng năng lực AI thực chiến và làm chủ công nghệ vận hành.
-        </p>
+        <p class="footer-tagline">ENTERPRISE AI LAB · GO4AI<br>Đồng hành cùng doanh nghiệp Việt Nam xây dựng năng lực AI thực chiến và làm chủ công nghệ vận hành.</p>
       </div>
 
-      <div class="footer-col-nav">
-        <div class="footer-heading">CHƯƠNG TRÌNH</div>
+      <nav class="footer-col" aria-label="Chương trình">
+        <p class="footer-heading">CHƯƠNG TRÌNH</p>
         <ul class="footer-links">
           <li><a href="/ai-builder">AI Builder (21/11)</a></li>
           <li><a href="/sme-14-11">SME Café Talk (14/11)</a></li>
           <li><a href="/ung-dung-thuc-te">Thư viện ứng dụng</a></li>
         </ul>
-      </div>
+      </nav>
 
-      <div class="footer-col-contact">
-        <div class="footer-heading">LIÊN HỆ &amp; TƯ VẤN</div>
-        <p class="footer-contact-item"><strong>Email:</strong> b2b@go4ai.org</p>
-        <p class="footer-contact-item"><strong>Website:</strong> b2b.go4ai.org</p>
-        <p class="footer-contact-item"><strong>Chính sách:</strong> <a href="/privacy" style="color:var(--gold-soft);">Bảo mật thông tin</a></p>
+      <div class="footer-col">
+        <p class="footer-heading">LIÊN HỆ &amp; TƯ VẤN</p>
+        <p class="footer-contact"><strong>Email:</strong> <a href="mailto:b2b@go4ai.org">b2b@go4ai.org</a></p>
+        <p class="footer-contact"><strong>Website:</strong> b2b.go4ai.org</p>
+        <p class="footer-contact"><strong>Chính sách:</strong> <a href="/privacy">Bảo mật thông tin</a></p>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <div>© 2026 GO4AI Enterprise AI Lab. All rights reserved.</div>
-      <div>Designed for Enterprise B2B Leadership &amp; Operations.</div>
+      <p>© 2026 GO4AI Enterprise AI Lab. All rights reserved.</p>
+      <p>Designed for Enterprise B2B Leadership &amp; Operations.</p>
     </div>
   </div>
 </footer>
 
+<script src="/ai-builder/assets/js/main.js" defer></script>
 </body>
 </html>
