@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GO4AI LEAD MANAGEMENT — Admin Dashboard</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08120f;
+    --card-bg: #0f1e19;
+    --card-border: #1d362d;
+    --surface: #142821;
+    --surface-hover: #1a332a;
+    --text: #e5efe9;
+    --text-muted: #8aa69b;
+    --primary: #22c55e;
+    --primary-hover: #16a34a;
+    --primary-dim: rgba(34, 197, 94, 0.14);
+    --blue: #38bdf8;
+    --blue-dim: rgba(56, 189, 248, 0.14);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245, 158, 11, 0.14);
+    --purple: #a855f7;
+    --purple-dim: rgba(168, 85, 247, 0.14);
+    --danger: #ef4444;
+    --danger-dim: rgba(239, 68, 68, 0.15);
+    --radius: 8px;
+    --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    font-family: var(--font);
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  a { color: var(--primary); text-decoration: none; }
+
+  /* ─── UNLOCK VIEW ────────────────────────────────────────────── */
+  #unlock-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .unlock-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .unlock-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary);
+    background: var(--primary-dim);
+    border: 1px solid rgba(34, 197, 94, 0.28);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .unlock-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .unlock-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #fff;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .form-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-dim);
+  }
+
+  .form-input::placeholder { color: #5c786e; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--card-border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: #2c5244;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #04130c;
+    border-color: var(--primary);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--card-border);
+    color: var(--text-muted);
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    color: var(--text);
+  }
+
+  .btn-block {
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px;
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .unlock-error {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: var(--danger-dim);
+    color: #fca5a5;
+    border-radius: var(--radius);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .unlock-error.is-on { display: block; }
+
+  .unlock-foot {
+    margin-top: 18px;
+    font-size: 11.5px;
+    color: #5c786e;
+    text-align: center;
+  }
+
+  /* ─── DASHBOARD SHELL ────────────────────────────────────────── */
+  #dashboard-view {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  #dashboard-view.is-on {
+    display: flex;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 24px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--card-border);
+    flex-wrap: wrap;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--primary-dim);
+    border: 1px solid rgba(34, 197, 94, 0.32);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary);
+    flex: none;
+  }
+
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--card-border);
+    background: var(--surface);
+    border-radius: 100px;
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  .pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+
+  /* ─── SUMMARY CARDS ──────────────────────────────────────────── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    padding: 16px 22px;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+    border: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  .stat-card:hover {
+    background: var(--surface);
+  }
+
+  .stat-card.is-active {
+    background: var(--surface);
+    box-shadow: inset 0 -2px 0 var(--primary);
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+  }
+
+  .stat-sub {
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  /* ─── FILTERS & CONTROLS ─────────────────────────────────────── */
+  .controls {
+    padding: 14px 24px;
+    background: rgba(15, 30, 25, 0.72);
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .controls-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .field > label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .field input,
+  .field select {
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: 8px 11px;
+    font-size: 13px;
+    font-family: var(--font);
+    outline: none;
+    min-height: 38px;
+    max-width: 100%;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    border-color: var(--primary);
+  }
+
+  .field--search {
+    flex: 1 1 240px;
+  }
+
+  .field--search input {
+    width: 100%;
+  }
+
+  .field--program select {
+    min-width: 220px;
+  }
+
+  .field--status select {
+    min-width: 150px;
+  }
+
+  .field--source select {
+    min-width: 200px;
+  }
+
+  .field--date input {
+    width: 145px;
+  }
+
+  .controls-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+
+  /* ─── TABLE ──────────────────────────────────────────────────── */
+  .table-wrap {
+    flex: 1;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1060px;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #0b1713;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--card-border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(29, 54, 45, 0.65);
+    vertical-align: middle;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  tbody tr:hover {
+    background: rgba(34, 197, 94, 0.06);
+  }
+
+  .cell-time {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .cell-name {
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .cell-phone {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #c8e6da;
+    white-space: nowrap;
+  }
+
+  .cell-email {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cell-company {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cell-title {
+    max-width: 150px;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cell-source {
+    max-width: 200px;
+  }
+
+  .cell-notes {
+    max-width: 200px;
+    color: var(--text-muted);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ─── BADGES ─────────────────────────────────────────────────── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+  }
+
+  .badge-status--NEW {
+    color: #38bdf8;
+    background: var(--blue-dim);
+    border-color: rgba(56, 189, 248, 0.3);
+  }
+
+  .badge-status--CONTACTED {
+    color: #fbbf24;
+    background: var(--amber-dim);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .badge-status--CONFIRMED {
+    color: #4ade80;
+    background: var(--primary-dim);
+    border-color: rgba(34, 197, 94, 0.35);
+  }
+
+  .badge-status--ATTENDED {
+    color: #c084fc;
+    background: var(--purple-dim);
+    border-color: rgba(168, 85, 247, 0.35);
+  }
+
+  .badge-status--NO_SHOW {
+    color: #f87171;
+    background: var(--danger-dim);
+    border-color: rgba(239, 68, 68, 0.32);
+  }
+
+  .badge-consent--yes {
+    color: #4ade80;
+    background: var(--primary-dim);
+    border-color: rgba(34, 197, 94, 0.25);
+  }
+
+  .badge-consent--no {
+    color: var(--text-muted);
+    background: rgba(138, 166, 155, 0.1);
+    border-color: rgba(138, 166, 155, 0.2);
+  }
+
+  /* ─── PAGINATION BAR ─────────────────────────────────────────── */
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 24px;
+    background: var(--card-bg);
+    border-top: 1px solid var(--card-border);
+    flex-wrap: wrap;
+  }
+
+  .pagination-info {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .empty-state {
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13.5px;
+  }
+
+  .empty-state strong {
+    display: block;
+    color: #fff;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  /* ─── LEAD DETAIL DRAWER ─────────────────────────────────────── */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 8, 6, 0.72);
+    backdrop-filter: blur(2px);
+    z-index: 50;
+    display: none;
+    justify-content: flex-end;
+  }
+
+  .drawer-backdrop.is-open {
+    display: flex;
+  }
+
+  .drawer {
+    width: 100%;
+    max-width: 560px;
+    background: var(--card-bg);
+    border-left: 1px solid var(--card-border);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -16px 0 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+
+  .drawer-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    background: #0b1713;
+  }
+
+  .drawer-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 4px;
+  }
+
+  .drawer-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .detail-section {
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .detail-section-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 16px;
+  }
+
+  .detail-item {
+    min-width: 0;
+  }
+
+  .detail-item--full {
+    grid-column: 1 / -1;
+  }
+
+  .detail-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .detail-val {
+    font-size: 13px;
+    color: #fff;
+    word-break: break-word;
+  }
+
+  .detail-val--mono {
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .manage-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .manage-field:last-child {
+    margin-bottom: 0;
+  }
+
+  .manage-field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .manage-field select,
+  .manage-field textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    color: #fff;
+    padding: 10px 12px;
+    font-family: var(--font);
+    font-size: 13.5px;
+    outline: none;
+  }
+
+  .manage-field select:focus,
+  .manage-field textarea:focus {
+    border-color: var(--primary);
+  }
+
+  .manage-field textarea {
+    min-height: 96px;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  .drawer-foot {
+    padding: 14px 24px;
+    border-top: 1px solid var(--card-border);
+    background: #0b1713;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .save-feedback {
+    font-size: 12.5px;
+    font-family: var(--mono);
+    color: var(--primary);
+    min-height: 18px;
+  }
+
+  .save-feedback.is-error {
+    color: #fca5a5;
+  }
+
+  /* ─── RESPONSIVE / MOBILE ────────────────────────────────────── */
+  @media (max-width: 960px) {
+    .stats-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .topbar,
+    .controls,
+    .pagination-bar {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-card {
+      padding: 12px 16px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+    }
+
+    .controls-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .field,
+    .field--search,
+    .field--program select,
+    .field--status select,
+    .field--source select,
+    .field--date input {
+      width: 100%;
+      min-width: 0;
+      flex: none;
+    }
+
+    .controls-actions {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    .controls-actions .btn {
+      flex: 1;
+    }
+
+    table {
+      min-width: 640px;
+    }
+
+    .col-hide-mobile {
+      display: none;
+    }
+
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .drawer-head,
+    .drawer-body,
+    .drawer-foot {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 1. UNLOCK VIEW (PRIVATE AUTH GATE)                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<main id="unlock-view">
+  <div class="unlock-card">
+    <span class="unlock-badge">PRIVATE ADMIN · GO4AI</span>
+    <h1 class="unlock-title">GO4AI LEAD MANAGEMENT</h1>
+    <p class="unlock-desc">Hệ thống quản lý đăng ký chương trình Cafe Talk, AI Foundation &amp; AI Builder. Vui lòng nhập khóa quản trị để tiếp tục.</p>
+    <form id="unlock-form" autocomplete="off">
+      <label class="form-label" for="admin-key-input">Khóa truy cập quản trị (ADMIN_ACCESS_KEY)</label>
+      <input
+        id="admin-key-input"
+        class="form-input"
+        type="password"
+        placeholder="Nhập khóa truy cập…"
+        required
+        autocomplete="current-password"
+      >
+      <button id="unlock-btn" class="btn btn-primary btn-block" type="submit">Xác thực &amp; Mở Dashboard</button>
+      <div id="unlock-error" class="unlock-error" role="alert"></div>
+    </form>
+    <p class="unlock-foot">Bảo vệ bởi xác thực máy chủ Cloudflare Pages Functions &amp; D1.</p>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 2. DASHBOARD VIEW (AUTHENTICATED ONLY)                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="dashboard-view" aria-hidden="true">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand-mark">G4</div>
+      <div>
+        <h1 class="brand-title">GO4AI LEAD MANAGEMENT</h1>
+        <p class="brand-sub" id="active-program-label">PROGRAM: CAFE_TALK_2026_11_14</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="pill"><span class="dot"></span><span id="sync-status">D1 CONNECTED</span></span>
+      <button type="button" class="btn btn-ghost" id="btn-refresh">Làm mới</button>
+      <button type="button" class="btn btn-primary" id="btn-export-csv">EXPORT CSV</button>
+      <button type="button" class="btn btn-ghost" id="btn-logout">Đăng xuất</button>
+    </div>
+  </header>
+
+  <!-- SUMMARY CARDS -->
+  <section class="stats-grid" aria-label="Tổng quan trạng thái Lead">
+    <button type="button" class="stat-card is-active" data-status-card="ALL">
+      <div class="stat-label"><span>TOTAL LEADS</span></div>
+      <div class="stat-value" id="stat-total">0</div>
+      <div class="stat-sub" id="stat-noshow-sub">NO_SHOW: 0</div>
+    </button>
+    <button type="button" class="stat-card" data-status-card="NEW">
+      <div class="stat-label"><span>NEW</span></div>
+      <div class="stat-value" id="stat-new">0</div>
+      <div class="stat-sub">Mới đăng ký</div>
+    </button>
+    <button type="button" class="stat-card" data-status-card="CONTACTED">
+      <div class="stat-label"><span>CONTACTED</span></div>
+      <div class="stat-value" id="stat-contacted">0</div>
+      <div class="stat-sub">Đã liên hệ</div>
+    </button>
+    <button type="button" class="stat-card" data-status-card="CONFIRMED">
+      <div class="stat-label"><span>CONFIRMED</span></div>
+      <div class="stat-value" id="stat-confirmed">0</div>
+      <div class="stat-sub">Đã xác nhận</div>
+    </button>
+    <button type="button" class="stat-card" data-status-card="ATTENDED">
+      <div class="stat-label"><span>ATTENDED</span></div>
+      <div class="stat-value" id="stat-attended">0</div>
+      <div class="stat-sub">Đã tham dự</div>
+    </button>
+  </section>
+
+  <!-- FILTER & SEARCH BAR -->
+  <section class="controls" aria-label="Bộ lọc và tìm kiếm">
+    <div class="controls-row">
+      <div class="field field--search">
+        <label for="filter-search">Tìm kiếm (Tên, SĐT, Email, Công ty)</label>
+        <input id="filter-search" type="search" placeholder="Nhập tên, số điện thoại, email hoặc doanh nghiệp…">
+      </div>
+
+      <div class="field field--program">
+        <label for="filter-program">Program</label>
+        <select id="filter-program">
+          <option value="CAFE_TALK_2026_11_14" selected>CAFE_TALK_2026_11_14 (Cafe Talk 14/11)</option>
+          <option value="AI_FOUNDATION_2026_11_18">AI_FOUNDATION_2026_11_18 (Foundation 18/11)</option>
+          <option value="AI_BUILDER_2026_11_21">AI_BUILDER_2026_11_21 (Builder 21/11)</option>
+          <option value="ALL">ALL (Tất cả chương trình)</option>
+        </select>
+      </div>
+
+      <div class="field field--status">
+        <label for="filter-status">Status</label>
+        <select id="filter-status">
+          <option value="ALL" selected>Tất cả Status</option>
+          <option value="NEW">NEW</option>
+          <option value="CONTACTED">CONTACTED</option>
+          <option value="CONFIRMED">CONFIRMED</option>
+          <option value="ATTENDED">ATTENDED</option>
+          <option value="NO_SHOW">NO_SHOW</option>
+        </select>
+      </div>
+
+      <div class="field field--source">
+        <label for="filter-source">Source</label>
+        <select id="filter-source">
+          <option value="ALL" selected>Tất cả nguồn</option>
+          <option value="GO4AI / Mr. Lucas">GO4AI / Mr. Lucas</option>
+          <option value="Golden Swings / Mr. Vũ">Golden Swings / Mr. Vũ</option>
+          <option value="HR1 / Mr. Cương">HR1 / Mr. Cương</option>
+          <option value="Viện Học tập Suốt đời / Mr. Tuấn">Viện Học tập Suốt đời / Mr. Tuấn</option>
+          <option value="Bạn bè, đối tác giới thiệu">Bạn bè, đối tác giới thiệu</option>
+          <option value="Nguồn khác">Nguồn khác</option>
+        </select>
+      </div>
+
+      <div class="field field--date">
+        <label for="filter-from">Từ ngày</label>
+        <input id="filter-from" type="date">
+      </div>
+
+      <div class="field field--date">
+        <label for="filter-to">Đến ngày</label>
+        <input id="filter-to" type="date">
+      </div>
+
+      <div class="controls-actions">
+        <button type="button" class="btn btn-ghost" id="btn-reset-filters">Xóa lọc</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEAD TABLE -->
+  <div class="table-wrap">
+    <table aria-label="Danh sách Lead">
+      <thead>
+        <tr>
+          <th>Created At</th>
+          <th>Full Name</th>
+          <th>Phone / Zalo</th>
+          <th class="col-hide-mobile">Email</th>
+          <th>Company</th>
+          <th class="col-hide-mobile">Job Title</th>
+          <th>Source</th>
+          <th class="col-hide-mobile">Marketing Consent</th>
+          <th>Status</th>
+          <th class="col-hide-mobile">Notes</th>
+        </tr>
+      </thead>
+      <tbody id="leads-tbody"></tbody>
+    </table>
+    <div id="empty-state" class="empty-state" style="display: none;">
+      <strong>Chưa có dữ liệu phù hợp</strong>
+      <span>Không tìm thấy lead nào khớp với bộ lọc hiện tại.</span>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <footer class="pagination-bar">
+    <div class="pagination-info" id="pagination-info">Hiển thị 0–0 / 0 leads</div>
+    <div class="pagination-controls">
+      <button type="button" class="btn btn-ghost" id="btn-prev-page" disabled>← Trước</button>
+      <span class="pill" id="page-indicator">Trang 1 / 1</span>
+      <button type="button" class="btn btn-ghost" id="btn-next-page" disabled>Sau →</button>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 3. LEAD DETAIL & UPDATE DRAWER                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="drawer-backdrop" id="detail-backdrop" role="dialog" aria-modal="true" aria-labelledby="drawer-lead-name">
+  <div class="drawer">
+    <header class="drawer-head">
+      <div>
+        <div class="drawer-sub" id="drawer-lead-meta">LEAD #—</div>
+        <h2 class="drawer-title" id="drawer-lead-name">—</h2>
+      </div>
+      <button type="button" class="btn btn-ghost" id="btn-close-drawer">Đóng ✕</button>
+    </header>
+
+    <div class="drawer-body">
+      <!-- STATUS & INTERNAL NOTES EDITOR -->
+      <section class="detail-section">
+        <h3 class="detail-section-title">Cập nhật trạng thái &amp; Ghi chú nội bộ</h3>
+        <div class="manage-field">
+          <label for="detail-status">Status</label>
+          <select id="detail-status">
+            <option value="NEW">NEW</option>
+            <option value="CONTACTED">CONTACTED</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+            <option value="ATTENDED">ATTENDED</option>
+            <option value="NO_SHOW">NO_SHOW</option>
+          </select>
+        </div>
+        <div class="manage-field">
+          <label for="detail-notes">Internal Notes (Chỉ hiển thị cho Admin)</label>
+          <textarea id="detail-notes" placeholder="Nhập ghi chú liên hệ, xác nhận tham dự hoặc yêu cầu đặc biệt…"></textarea>
+        </div>
+      </section>
+
+      <!-- CONTACT & COMPANY -->
+      <section class="detail-section">
+        <h3 class="detail-section-title">Thông tin liên hệ &amp; Doanh nghiệp</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Họ và tên</div>
+            <div class="detail-val" id="d-full-name">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Điện thoại / Zalo</div>
+            <div class="detail-val detail-val--mono" id="d-phone">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Email</div>
+            <div class="detail-val detail-val--mono" id="d-email">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Chức danh</div>
+            <div class="detail-val" id="d-job-title">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Doanh nghiệp</div>
+            <div class="detail-val" id="d-company">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Vấn đề quan tâm</div>
+            <div class="detail-val" id="d-interest">—</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SOURCE & TRACKING -->
+      <section class="detail-section">
+        <h3 class="detail-section-title">Nguồn đăng ký &amp; UTM Tracking</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Program</div>
+            <div class="detail-val detail-val--mono" id="d-program">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Landing Path</div>
+            <div class="detail-val detail-val--mono" id="d-landing-path">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Source</div>
+            <div class="detail-val" id="d-source">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Other Source (Nguồn khác)</div>
+            <div class="detail-val" id="d-other-source">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">UTM Source / Medium</div>
+            <div class="detail-val detail-val--mono" id="d-utm-sm">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">UTM Campaign</div>
+            <div class="detail-val detail-val--mono" id="d-utm-campaign">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">UTM Content / Term</div>
+            <div class="detail-val detail-val--mono" id="d-utm-ct">—</div>
+          </div>
+          <div class="detail-item detail-item--full">
+            <div class="detail-label">Referrer</div>
+            <div class="detail-val detail-val--mono" id="d-referrer">—</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONSENT & TIMESTAMPS -->
+      <section class="detail-section">
+        <h3 class="detail-section-title">Consent &amp; Dấu thời gian</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Privacy Consent</div>
+            <div class="detail-val detail-val--mono" id="d-privacy-consent">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Consent Timestamp</div>
+            <div class="detail-val detail-val--mono" id="d-consent-at">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Policy Version</div>
+            <div class="detail-val detail-val--mono" id="d-policy-version">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Marketing Consent</div>
+            <div class="detail-val detail-val--mono" id="d-marketing-consent">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Created Time</div>
+            <div class="detail-val detail-val--mono" id="d-created-at">—</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Updated Time</div>
+            <div class="detail-val detail-val--mono" id="d-updated-at">—</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="drawer-foot">
+      <div class="save-feedback" id="drawer-feedback" role="status" aria-live="polite"></div>
+      <button type="button" class="btn btn-primary" id="btn-save-lead">Lưu cập nhật</button>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'go4ai_admin_leads_key';
+  var PAGE_LIMIT = 25;
+
+  var state = {
+    adminKey: '',
+    program: 'CAFE_TALK_2026_11_14',
+    status: 'ALL',
+    source: 'ALL',
+    search: '',
+    from: '',
+    to: '',
+    offset: 0,
+    total: 0,
+    items: [],
+    selectedLead: null,
+    isSaving: false
+  };
+
+  // DOM Elements
+  var unlockView = document.getElementById('unlock-view');
+  var unlockForm = document.getElementById('unlock-form');
+  var adminKeyInput = document.getElementById('admin-key-input');
+  var unlockBtn = document.getElementById('unlock-btn');
+  var unlockError = document.getElementById('unlock-error');
+
+  var dashboardView = document.getElementById('dashboard-view');
+  var activeProgramLabel = document.getElementById('active-program-label');
+  var syncStatus = document.getElementById('sync-status');
+  var btnRefresh = document.getElementById('btn-refresh');
+  var btnExportCsv = document.getElementById('btn-export-csv');
+  var btnLogout = document.getElementById('btn-logout');
+
+  var statTotal = document.getElementById('stat-total');
+  var statNew = document.getElementById('stat-new');
+  var statContacted = document.getElementById('stat-contacted');
+  var statConfirmed = document.getElementById('stat-confirmed');
+  var statAttended = document.getElementById('stat-attended');
+  var statNoShowSub = document.getElementById('stat-noshow-sub');
+  var statusCards = document.querySelectorAll('[data-status-card]');
+
+  var filterSearch = document.getElementById('filter-search');
+  var filterProgram = document.getElementById('filter-program');
+  var filterStatus = document.getElementById('filter-status');
+  var filterSource = document.getElementById('filter-source');
+  var filterFrom = document.getElementById('filter-from');
+  var filterTo = document.getElementById('filter-to');
+  var btnResetFilters = document.getElementById('btn-reset-filters');
+
+  var leadsTbody = document.getElementById('leads-tbody');
+  var emptyState = document.getElementById('empty-state');
+  var paginationInfo = document.getElementById('pagination-info');
+  var pageIndicator = document.getElementById('page-indicator');
+  var btnPrevPage = document.getElementById('btn-prev-page');
+  var btnNextPage = document.getElementById('btn-next-page');
+
+  var detailBackdrop = document.getElementById('detail-backdrop');
+  var btnCloseDrawer = document.getElementById('btn-close-drawer');
+  var detailStatus = document.getElementById('detail-status');
+  var detailNotes = document.getElementById('detail-notes');
+  var btnSaveLead = document.getElementById('btn-save-lead');
+  var drawerFeedback = document.getElementById('drawer-feedback');
+
+  function formatDateTime(iso) {
+    if (!iso) return '—';
+    try {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return iso;
+      return d.toLocaleString('vi-VN', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return iso;
+    }
+  }
+
+  function showUnlockError(msg) {
+    if (!msg) {
+      unlockError.textContent = '';
+      unlockError.classList.remove('is-on');
+      return;
+    }
+    unlockError.textContent = msg;
+    unlockError.classList.add('is-on');
+  }
+
+  function buildQueryParams(extra) {
+    var params = new URLSearchParams();
+    params.set('program', state.program || 'CAFE_TALK_2026_11_14');
+    if (state.status && state.status !== 'ALL') params.set('status', state.status);
+    if (state.source && state.source !== 'ALL') params.set('source', state.source);
+    if (state.search) params.set('search', state.search);
+    if (state.from) params.set('from', state.from);
+    if (state.to) params.set('to', state.to);
+    params.set('limit', String(PAGE_LIMIT));
+    params.set('offset', String(state.offset));
+    if (extra) {
+      Object.keys(extra).forEach(function (k) {
+        params.set(k, extra[k]);
+      });
+    }
+    return params.toString();
+  }
+
+  function apiFetch(pathAndQuery, options) {
+    var opts = options || {};
+    var headers = Object.assign({
+      'Authorization': 'Bearer ' + state.adminKey
+    }, opts.headers || {});
+    return window.fetch(pathAndQuery, Object.assign({}, opts, { headers: headers }));
+  }
+
+  function loadLeads(isInitialAuth) {
+    syncStatus.textContent = 'ĐANG TẢI…';
+    var qs = buildQueryParams();
+
+    return apiFetch('/api/admin/leads?' + qs, { method: 'GET' })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (res.status === 401 || res.status === 403 || res.status === 429) {
+            throw { authError: true, message: data.error || 'Khóa truy cập không hợp lệ.' };
+          }
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || ('Lỗi tải dữ liệu (HTTP ' + res.status + ')'));
+          }
+          return data;
+        });
+      })
+      .then(function (data) {
+        if (isInitialAuth) {
+          try { sessionStorage.setItem(STORAGE_KEY, state.adminKey); } catch (e) {}
+          showUnlockError('');
+          unlockView.style.display = 'none';
+          dashboardView.classList.add('is-on');
+          dashboardView.setAttribute('aria-hidden', 'false');
+        }
+
+        state.total = Number(data.total || 0);
+        state.items = Array.isArray(data.items) ? data.items : [];
+        activeProgramLabel.textContent = 'PROGRAM: ' + (state.program || 'ALL');
+        syncStatus.textContent = 'D1 LIVE · ' + state.total + ' LEADS';
+
+        renderSummary(data.summary || {});
+        updateSourceOptions(data.sources || []);
+        renderTable();
+        renderPagination();
+      })
+      .catch(function (err) {
+        syncStatus.textContent = 'LỖI KẾT NỐI';
+        if (err && err.authError) {
+          try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+          dashboardView.classList.remove('is-on');
+          dashboardView.setAttribute('aria-hidden', 'true');
+          unlockView.style.display = 'flex';
+          showUnlockError(err.message);
+        } else if (isInitialAuth) {
+          showUnlockError((err && err.message) ? err.message : 'Không thể kết nối máy chủ.');
+        }
+      });
+  }
+
+  function renderSummary(summary) {
+    statTotal.textContent = String(summary.total || 0);
+    statNew.textContent = String(summary.NEW || 0);
+    statContacted.textContent = String(summary.CONTACTED || 0);
+    statConfirmed.textContent = String(summary.CONFIRMED || 0);
+    statAttended.textContent = String(summary.ATTENDED || 0);
+    statNoShowSub.textContent = 'NO_SHOW: ' + String(summary.NO_SHOW || 0);
+
+    statusCards.forEach(function (card) {
+      var cardStatus = card.getAttribute('data-status-card');
+      if (cardStatus === state.status) {
+        card.classList.add('is-active');
+      } else {
+        card.classList.remove('is-active');
+      }
+    });
+  }
+
+  function updateSourceOptions(dynamicSources) {
+    var presetSources = [
+      'GO4AI / Mr. Lucas',
+      'Golden Swings / Mr. Vũ',
+      'HR1 / Mr. Cương',
+      'Viện Học tập Suốt đời / Mr. Tuấn',
+      'Bạn bè, đối tác giới thiệu',
+      'Nguồn khác'
+    ];
+    var allSources = presetSources.slice();
+    dynamicSources.forEach(function (s) {
+      if (s && allSources.indexOf(s) === -1) {
+        allSources.push(s);
+      }
+    });
+
+    var currentVal = state.source || 'ALL';
+    filterSource.innerHTML = '';
+
+    var optAll = document.createElement('option');
+    optAll.value = 'ALL';
+    optAll.textContent = 'Tất cả nguồn';
+    filterSource.appendChild(optAll);
+
+    allSources.forEach(function (src) {
+      var opt = document.createElement('option');
+      opt.value = src;
+      opt.textContent = src;
+      filterSource.appendChild(opt);
+    });
+
+    filterSource.value = allSources.indexOf(currentVal) !== -1 ? currentVal : 'ALL';
+  }
+
+  function renderTable() {
+    leadsTbody.innerHTML = '';
+
+    if (!state.items.length) {
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    state.items.forEach(function (item) {
+      var tr = document.createElement('tr');
+      tr.setAttribute('data-lead-id', String(item.id));
+
+      // 1. Created At
+      var tdTime = document.createElement('td');
+      tdTime.className = 'cell-time';
+      tdTime.textContent = formatDateTime(item.created_at);
+      tr.appendChild(tdTime);
+
+      // 2. Full Name
+      var tdName = document.createElement('td');
+      tdName.className = 'cell-name';
+      tdName.textContent = item.full_name || '—';
+      tr.appendChild(tdName);
+
+      // 3. Phone / Zalo
+      var tdPhone = document.createElement('td');
+      tdPhone.className = 'cell-phone';
+      tdPhone.textContent = item.phone || '—';
+      tr.appendChild(tdPhone);
+
+      // 4. Email
+      var tdEmail = document.createElement('td');
+      tdEmail.className = 'cell-email col-hide-mobile';
+      tdEmail.textContent = item.email || '—';
+      tr.appendChild(tdEmail);
+
+      // 5. Company
+      var tdCompany = document.createElement('td');
+      tdCompany.className = 'cell-company';
+      tdCompany.textContent = item.company || '—';
+      tr.appendChild(tdCompany);
+
+      // 6. Job Title
+      var tdTitle = document.createElement('td');
+      tdTitle.className = 'cell-title col-hide-mobile';
+      tdTitle.textContent = item.job_title || '—';
+      tr.appendChild(tdTitle);
+
+      // 7. Source
+      var tdSource = document.createElement('td');
+      tdSource.className = 'cell-source';
+      var srcText = item.source || '—';
+      if (item.source === 'Nguồn khác' && item.other_source) {
+        srcText = 'Nguồn khác: ' + item.other_source;
+      }
+      tdSource.textContent = srcText;
+      tr.appendChild(tdSource);
+
+      // 8. Marketing Consent
+      var tdMkt = document.createElement('td');
+      tdMkt.className = 'col-hide-mobile';
+      var mktBadge = document.createElement('span');
+      mktBadge.className = 'badge ' + (item.marketing_consent ? 'badge-consent--yes' : 'badge-consent--no');
+      mktBadge.textContent = item.marketing_consent ? 'YES' : 'NO';
+      tdMkt.appendChild(mktBadge);
+      tr.appendChild(tdMkt);
+
+      // 9. Status
+      var tdStatus = document.createElement('td');
+      var statusBadge = document.createElement('span');
+      var st = item.status || 'NEW';
+      statusBadge.className = 'badge badge-status--' + st;
+      statusBadge.textContent = st;
+      tdStatus.appendChild(statusBadge);
+      tr.appendChild(tdStatus);
+
+      // 10. Notes
+      var tdNotes = document.createElement('td');
+      tdNotes.className = 'cell-notes col-hide-mobile';
+      tdNotes.textContent = item.notes || '—';
+      tr.appendChild(tdNotes);
+
+      tr.addEventListener('click', function () {
+        openLeadDrawer(item);
+      });
+
+      leadsTbody.appendChild(tr);
+    });
+  }
+
+  function renderPagination() {
+    var total = state.total;
+    var start = total === 0 ? 0 : state.offset + 1;
+    var end = Math.min(total, state.offset + state.items.length);
+    paginationInfo.textContent = 'Hiển thị ' + start + '–' + end + ' / ' + total + ' leads';
+
+    var currentPage = Math.floor(state.offset / PAGE_LIMIT) + 1;
+    var totalPages = Math.max(1, Math.ceil(total / PAGE_LIMIT));
+    pageIndicator.textContent = 'Trang ' + currentPage + ' / ' + totalPages;
+
+    btnPrevPage.disabled = state.offset <= 0;
+    btnNextPage.disabled = state.offset + PAGE_LIMIT >= total;
+  }
+
+  function openLeadDrawer(lead) {
+    state.selectedLead = lead;
+    drawerFeedback.textContent = '';
+    drawerFeedback.classList.remove('is-error');
+
+    document.getElementById('drawer-lead-meta').textContent = 'LEAD #' + lead.id + ' · ' + (lead.program || '');
+    document.getElementById('drawer-lead-name').textContent = lead.full_name || 'Không tên';
+
+    detailStatus.value = lead.status || 'NEW';
+    detailNotes.value = lead.notes || '';
+
+    document.getElementById('d-full-name').textContent = lead.full_name || '—';
+    document.getElementById('d-phone').textContent = lead.phone || '—';
+    document.getElementById('d-email').textContent = lead.email || '—';
+    document.getElementById('d-job-title').textContent = lead.job_title || '—';
+    document.getElementById('d-company').textContent = lead.company || '—';
+    document.getElementById('d-interest').textContent = lead.interest || '—';
+
+    document.getElementById('d-program').textContent = lead.program || '—';
+    document.getElementById('d-landing-path').textContent = lead.landing_path || '—';
+    document.getElementById('d-source').textContent = lead.source || '—';
+    document.getElementById('d-other-source').textContent = lead.other_source || '—';
+
+    var utmSm = [lead.utm_source, lead.utm_medium].filter(Boolean).join(' / ');
+    document.getElementById('d-utm-sm').textContent = utmSm || '—';
+    document.getElementById('d-utm-campaign').textContent = lead.utm_campaign || '—';
+    var utmCt = [lead.utm_content, lead.utm_term].filter(Boolean).join(' / ');
+    document.getElementById('d-utm-ct').textContent = utmCt || '—';
+    document.getElementById('d-referrer').textContent = lead.referrer || '—';
+
+    document.getElementById('d-privacy-consent').textContent = lead.privacy_consent ? 'TRUE (Đã đồng ý)' : 'FALSE';
+    document.getElementById('d-consent-at').textContent = formatDateTime(lead.privacy_consent_at);
+    document.getElementById('d-policy-version').textContent = lead.privacy_policy_version || '—';
+    document.getElementById('d-marketing-consent').textContent = lead.marketing_consent ? 'TRUE' : 'FALSE';
+    document.getElementById('d-created-at').textContent = formatDateTime(lead.created_at);
+    document.getElementById('d-updated-at').textContent = formatDateTime(lead.updated_at);
+
+    detailBackdrop.classList.add('is-open');
+  }
+
+  function closeLeadDrawer() {
+    detailBackdrop.classList.remove('is-open');
+    state.selectedLead = null;
+  }
+
+  function saveSelectedLead() {
+    if (!state.selectedLead || state.isSaving) return;
+
+    state.isSaving = true;
+    btnSaveLead.disabled = true;
+    drawerFeedback.classList.remove('is-error');
+    drawerFeedback.textContent = 'Đang lưu…';
+
+    var payload = {
+      id: state.selectedLead.id,
+      status: detailStatus.value,
+      notes: detailNotes.value
+    };
+
+    apiFetch('/api/admin/leads', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || ('Lỗi cập nhật (HTTP ' + res.status + ')'));
+          }
+          return data;
+        });
+      })
+      .then(function (data) {
+        drawerFeedback.textContent = 'Đã lưu cập nhật thành công.';
+        if (data.item) {
+          state.selectedLead = data.item;
+          document.getElementById('d-updated-at').textContent = formatDateTime(data.item.updated_at);
+        }
+        return loadLeads(false);
+      })
+      .catch(function (err) {
+        drawerFeedback.classList.add('is-error');
+        drawerFeedback.textContent = (err && err.message) ? err.message : 'Không thể lưu cập nhật.';
+      })
+      .then(function () {
+        state.isSaving = false;
+        btnSaveLead.disabled = false;
+      });
+  }
+
+  function exportCsv() {
+    btnExportCsv.disabled = true;
+    var qs = buildQueryParams({ export: 'csv' });
+
+    apiFetch('/api/admin/leads?' + qs, { method: 'GET' })
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error('Không thể xuất CSV (HTTP ' + res.status + ')');
+        }
+        return res.blob();
+      })
+      .then(function (blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        var dateStr = new Date().toISOString().slice(0, 10);
+        var progStr = (state.program || 'all').toLowerCase();
+        a.href = url;
+        a.download = 'go4ai-leads-' + progStr + '-' + dateStr + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      })
+      .catch(function (err) {
+        window.alert((err && err.message) ? err.message : 'Lỗi xuất file CSV.');
+      })
+      .then(function () {
+        btnExportCsv.disabled = false;
+      });
+  }
+
+  // Event Listeners
+  unlockForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var key = adminKeyInput.value.trim();
+    if (!key) {
+      showUnlockError('Vui lòng nhập khóa truy cập quản trị.');
+      return;
+    }
+    state.adminKey = key;
+    unlockBtn.disabled = true;
+    loadLeads(true).then(function () {
+      unlockBtn.disabled = false;
+    });
+  });
+
+  btnLogout.addEventListener('click', function () {
+    state.adminKey = '';
+    adminKeyInput.value = '';
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    closeLeadDrawer();
+    dashboardView.classList.remove('is-on');
+    dashboardView.setAttribute('aria-hidden', 'true');
+    unlockView.style.display = 'flex';
+  });
+
+  btnRefresh.addEventListener('click', function () {
+    loadLeads(false);
+  });
+
+  btnExportCsv.addEventListener('click', exportCsv);
+
+  var searchTimer = null;
+  filterSearch.addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function () {
+      state.search = filterSearch.value.trim();
+      state.offset = 0;
+      loadLeads(false);
+    }, 250);
+  });
+
+  filterProgram.addEventListener('change', function () {
+    state.program = filterProgram.value;
+    state.offset = 0;
+    loadLeads(false);
+  });
+
+  filterStatus.addEventListener('change', function () {
+    state.status = filterStatus.value;
+    state.offset = 0;
+    loadLeads(false);
+  });
+
+  filterSource.addEventListener('change', function () {
+    state.source = filterSource.value;
+    state.offset = 0;
+    loadLeads(false);
+  });
+
+  filterFrom.addEventListener('change', function () {
+    state.from = filterFrom.value;
+    state.offset = 0;
+    loadLeads(false);
+  });
+
+  filterTo.addEventListener('change', function () {
+    state.to = filterTo.value;
+    state.offset = 0;
+    loadLeads(false);
+  });
+
+  btnResetFilters.addEventListener('click', function () {
+    filterSearch.value = '';
+    filterProgram.value = 'CAFE_TALK_2026_11_14';
+    filterStatus.value = 'ALL';
+    filterSource.value = 'ALL';
+    filterFrom.value = '';
+    filterTo.value = '';
+
+    state.search = '';
+    state.program = 'CAFE_TALK_2026_11_14';
+    state.status = 'ALL';
+    state.source = 'ALL';
+    state.from = '';
+    state.to = '';
+    state.offset = 0;
+    loadLeads(false);
+  });
+
+  statusCards.forEach(function (card) {
+    card.addEventListener('click', function () {
+      var st = card.getAttribute('data-status-card') || 'ALL';
+      state.status = st;
+      filterStatus.value = st;
+      state.offset = 0;
+      loadLeads(false);
+    });
+  });
+
+  btnPrevPage.addEventListener('click', function () {
+    if (state.offset >= PAGE_LIMIT) {
+      state.offset -= PAGE_LIMIT;
+      loadLeads(false);
+    }
+  });
+
+  btnNextPage.addEventListener('click', function () {
+    if (state.offset + PAGE_LIMIT < state.total) {
+      state.offset += PAGE_LIMIT;
+      loadLeads(false);
+    }
+  });
+
+  btnCloseDrawer.addEventListener('click', closeLeadDrawer);
+  detailBackdrop.addEventListener('click', function (e) {
+    if (e.target === detailBackdrop) {
+      closeLeadDrawer();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && detailBackdrop.classList.contains('is-open')) {
+      closeLeadDrawer();
+    }
+  });
+
+  btnSaveLead.addEventListener('click', saveSelectedLead);
+
+  // Auto-unlock if session key exists in current browser tab
+  try {
+    var savedKey = sessionStorage.getItem(STORAGE_KEY);
+    if (savedKey) {
+      state.adminKey = savedKey;
+      loadLeads(true);
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

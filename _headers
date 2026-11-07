@@ -4,6 +4,7 @@
 /admin/*
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
+  X-Robots-Tag: noindex, nofollow, noarchive
 
 /foundingtalent-survey
   X-Frame-Options: SAMEORIGIN

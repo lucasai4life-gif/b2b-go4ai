@@ -116,22 +116,34 @@
       });
     });
 
+    var isSubmitting = false;
+
     form.addEventListener('submit', function (event) {
       event.preventDefault();
+      if (isSubmitting) {
+        return;
+      }
+
       var name = form.elements.ho_ten ? form.elements.ho_ten.value.trim() : '';
       var phone = form.elements.dien_thoai ? form.elements.dien_thoai.value.trim() : '';
+      var email = form.elements.email ? form.elements.email.value.trim() : '';
+      var jobTitle = form.elements.chuc_danh ? form.elements.chuc_danh.value.trim() : '';
+      var company = form.elements.doanh_nghiep ? form.elements.doanh_nghiep.value.trim() : '';
+      var interest = form.elements.van_de_quan_tam ? form.elements.van_de_quan_tam.value : '';
       var source = form.elements.nguon_biet_den ? form.elements.nguon_biet_den.value.trim() : '';
       var otherSource = form.elements.nguon_khac ? form.elements.nguon_khac.value.trim() : '';
-      var requiredConsent = form.elements.dong_y ? form.elements.dong_y.checked : false;
+      var requiredConsent = form.elements.dong_y ? Boolean(form.elements.dong_y.checked) : false;
+      var marketingConsent = form.elements.dong_y_marketing ? Boolean(form.elements.dong_y_marketing.checked) : false;
 
-      if (!name) {
-        showStatus('Vui lòng điền Họ tên.', true);
+      if (!name || name.length < 2) {
+        showStatus('Vui lòng điền Họ tên (tối thiểu 2 ký tự).', true);
         if (form.elements.ho_ten) { form.elements.ho_ten.focus(); }
         return;
       }
 
-      if (!phone) {
-        showStatus('Vui lòng điền Điện thoại/Zalo.', true);
+      var phoneDigits = phone.replace(/[^\d+]/g, '');
+      if (!phone || !/^\+?\d{8,15}$/.test(phoneDigits)) {
+        showStatus('Vui lòng điền số Điện thoại/Zalo hợp lệ (8–15 chữ số).', true);
         if (form.elements.dien_thoai) { form.elements.dien_thoai.focus(); }
         return;
       }
@@ -142,8 +154,8 @@
         return;
       }
 
-      if (source === 'Nguồn khác' && !otherSource) {
-        showStatus('Vui lòng cho biết nguồn bạn biết đến chương trình.', true);
+      if (source === 'Nguồn khác' && (!otherSource || otherSource.length < 2)) {
+        showStatus('Vui lòng cho biết cụ thể nguồn bạn biết đến chương trình.', true);
         if (form.elements.nguon_khac) { form.elements.nguon_khac.focus(); }
         return;
       }
@@ -154,46 +166,85 @@
         return;
       }
 
+      var searchParams;
+      try {
+        searchParams = new URLSearchParams(window.location.search || '');
+      } catch (e) {
+        searchParams = null;
+      }
+      var getParam = function (k) {
+        return searchParams ? (searchParams.get(k) || '') : '';
+      };
+
       var consentTimestamp = new Date().toISOString();
-      var endpoint = form.getAttribute('data-endpoint') || '';
+      var endpoint = form.getAttribute('data-endpoint') || '/api/leads';
       var payload = {
+        leadType: 'cafe_talk_registration',
+        program: 'CAFE_TALK_2026_11_14',
+        full_name: name,
+        phone: phone,
+        email: email,
+        job_title: jobTitle,
+        company: company,
+        interest: interest,
+        source: source,
+        other_source: source === 'Nguồn khác' ? otherSource : '',
+        privacy_consent: requiredConsent,
+        marketing_consent: marketingConsent,
+        utm_source: getParam('utm_source'),
+        utm_medium: getParam('utm_medium'),
+        utm_campaign: getParam('utm_campaign'),
+        utm_content: getParam('utm_content'),
+        utm_term: getParam('utm_term'),
+        referrer: document.referrer || '',
+        landing_path: window.location.pathname || '/cafe-talk',
         ho_ten: name,
         dien_thoai: phone,
-        chuc_danh: form.elements.chuc_danh ? form.elements.chuc_danh.value.trim() : '',
-        doanh_nghiep: form.elements.doanh_nghiep ? form.elements.doanh_nghiep.value.trim() : '',
-        van_de_quan_tam: form.elements.van_de_quan_tam ? form.elements.van_de_quan_tam.value : '',
-        nguon_biet_den: source === 'Nguồn khác' && otherSource ? ('Nguồn khác: ' + otherSource) : source,
+        chuc_danh: jobTitle,
+        doanh_nghiep: company,
+        van_de_quan_tam: interest,
+        nguon_biet_den: source,
         nguon_chi_tiet: source === 'Nguồn khác' ? otherSource : '',
         nguon_khac: source === 'Nguồn khác' ? otherSource : '',
         dong_y: requiredConsent,
-        privacy_consent: requiredConsent,
         consent_timestamp: consentTimestamp,
         su_kien: 'SME_EXECUTIVE_14_11_2026'
       };
 
       window.__lastFormPayload = payload;
 
-      if (!endpoint) {
-        showStatus('Chế độ xem trước giao diện — biểu mẫu chưa kết nối hệ thống tiếp nhận đăng ký. Thông tin chưa được gửi.');
-        return;
-      }
-
       var button = form.querySelector('button[type="submit"]');
-      button.disabled = true;
+      isSubmitting = true;
+      if (button) {
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+      }
       showStatus('Đang gửi đăng ký…');
+
       window.fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       }).then(function (res) {
-        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (!res.ok || (data && data.success === false)) {
+            var errMsg = (data && data.error) ? data.error : ('Không thể gửi đăng ký lúc này (HTTP ' + res.status + '). Vui lòng thử lại.');
+            throw new Error(errMsg);
+          }
+          return data;
+        });
+      }).then(function () {
         showStatus('Cảm ơn ' + name + '. Ban tổ chức sẽ liên hệ xác nhận tham dự sự kiện 14/11/2026.');
         form.reset();
         updateOtherSourceVisibility();
-      }).catch(function () {
-        showStatus('Không thể gửi đăng ký lúc này. Vui lòng thử lại hoặc liên hệ Ban tổ chức.', true);
+      }).catch(function (err) {
+        showStatus((err && err.message) ? err.message : 'Không thể gửi đăng ký lúc này. Vui lòng thử lại hoặc liên hệ Ban tổ chức.', true);
       }).then(function () {
-        button.disabled = false;
+        isSubmitting = false;
+        if (button) {
+          button.disabled = false;
+          button.removeAttribute('aria-busy');
+        }
       });
     });
   }

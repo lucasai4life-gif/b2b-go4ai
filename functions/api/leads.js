@@ -102,6 +102,20 @@ export async function onRequestPost(context) {
       return await handleFoundingTalentLead({ context, body, clientIp, headers });
     }
 
+    // ─── 3.2 PROGRAM LEAD DISPATCH (/cafe-talk, /ai-foundation, /ai-builder) ──
+    const isProgramLead =
+      body.leadType === 'cafe_talk_registration' ||
+      body.leadType === 'program_lead' ||
+      (typeof body.program === 'string' && SUPPORTED_PROGRAMS.includes(body.program.trim().toUpperCase())) ||
+      body.su_kien === 'SME_EXECUTIVE_14_11_2026' ||
+      body.ho_ten !== undefined ||
+      body.dien_thoai !== undefined ||
+      body.nguon_biet_den !== undefined;
+
+    if (isProgramLead) {
+      return await handleProgramLead({ context, body, clientIp, headers });
+    }
+
     // ─── 4. EXTRACT & SANITIZE FIELDS ─────────────────────────────────
     const contact    = (body.contact && typeof body.contact === 'object') ? body.contact : {};
     const name       = sanitizeField(body.name || body.full_name || contact.name, 100);
@@ -1142,4 +1156,416 @@ async function handleFoundingTalentLead({ context, body, clientIp, headers }) {
     }
   );
 }
+
+// ─── PROGRAM LEAD HANDLER (/cafe-talk, /ai-foundation, /ai-builder) ──────
+const SUPPORTED_PROGRAMS = [
+  'CAFE_TALK_2026_11_14',
+  'AI_FOUNDATION_2026_11_18',
+  'AI_BUILDER_2026_11_21',
+];
+
+const PRIVACY_POLICY_VERSION = '2026-11';
+
+function normalizeProgramPhone(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+  let cleaned = raw.trim().replace(/[^\d+]/g, '');
+  if (cleaned.startsWith('+84') && cleaned.length >= 11) {
+    cleaned = '0' + cleaned.slice(3);
+  } else if (cleaned.startsWith('84') && cleaned.length === 11) {
+    cleaned = '0' + cleaned.slice(2);
+  }
+  return cleaned;
+}
+
+function resolveServerProgram(body, landingPath) {
+  const path = String(landingPath || '').toLowerCase();
+  if (path.startsWith('/ai-foundation')) return 'AI_FOUNDATION_2026_11_18';
+  if (path.startsWith('/ai-builder')) return 'AI_BUILDER_2026_11_21';
+  if (path.startsWith('/cafe-talk')) return 'CAFE_TALK_2026_11_14';
+
+  const requested = typeof body.program === 'string' ? body.program.trim().toUpperCase() : '';
+  if (SUPPORTED_PROGRAMS.includes(requested)) return requested;
+  return 'CAFE_TALK_2026_11_14';
+}
+
+function formatProgramTelegramMessage(lead) {
+  const dt = new Date(lead.createdAt).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+  const srcDisplay = lead.source === 'Nguồn khác' && lead.otherSource
+    ? `Nguồn khác: ${lead.otherSource}`
+    : lead.source;
+
+  return [
+    '☕ <b>[LEAD] ĐĂNG KÝ CHƯƠNG TRÌNH GO4AI</b>',
+    `\nChương trình: <code>${esc(lead.program)}</code>`,
+    lead.landingPath ? `\nTrang: <code>${esc(lead.landingPath)}</code>` : '',
+    '\n──────────────',
+    line('Họ tên', lead.fullName),
+    line('Điện thoại / Zalo', lead.phone),
+    lead.email ? line('Email', lead.email) : '',
+    lead.jobTitle ? line('Chức danh', lead.jobTitle) : '',
+    lead.company ? line('Doanh nghiệp', lead.company) : '',
+    lead.interest ? line('Vấn đề quan tâm', lead.interest) : '',
+    line('Nguồn biết đến', srcDisplay),
+    `\n<b>Marketing Consent:</b> ${lead.marketingConsent ? '✅ Có' : '❌ Không'}`,
+    `\n──────────────`,
+    `\n<i>${dt}</i>`,
+  ].filter(Boolean).join('');
+}
+
+async function handleProgramLead({ context, body, clientIp, headers }) {
+  const { request, env } = context;
+
+  // Honeypot check: if a hidden bot trap field is filled, return silent success without writing
+  if (body?.website_url || body?.honeypot) {
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Đăng ký của bạn đã được ghi nhận.',
+    }), { status: 200, headers });
+  }
+
+  const landingPath = sanitizeField(
+    body.landing_path || body.sourcePage || '/cafe-talk',
+    255
+  );
+  // Server-enforced program & status (never trust client status or admin notes)
+  const program = resolveServerProgram(body, landingPath);
+  const status = 'NEW';
+  const notes = '';
+
+  const fullName = sanitizeField(body.full_name || body.ho_ten || body.name || '', 100);
+  const rawPhone = sanitizeField(body.phone || body.dien_thoai || '', 30);
+  const phone = normalizeProgramPhone(rawPhone);
+  const email = sanitizeField(body.email || '', 254).toLowerCase();
+  const jobTitle = sanitizeField(body.job_title || body.chuc_danh || body.role || '', 120);
+  const company = sanitizeField(body.company || body.doanh_nghiep || '', 150);
+  const interest = sanitizeField(body.interest || body.van_de_quan_tam || '', 150);
+
+  let rawSource = sanitizeField(body.source || body.nguon_biet_den || '', 120);
+  let otherSource = sanitizeField(body.other_source || body.nguon_khac || body.nguon_chi_tiet || '', 200);
+
+  if (rawSource.startsWith('Nguồn khác:') && !otherSource) {
+    otherSource = sanitizeField(rawSource.slice('Nguồn khác:'.length).trim(), 200);
+    rawSource = 'Nguồn khác';
+  }
+
+  // Tracking fields
+  const utmSource = sanitizeField(body.utm_source || '', 100);
+  const utmMedium = sanitizeField(body.utm_medium || '', 100);
+  const utmCampaign = sanitizeField(body.utm_campaign || '', 100);
+  const utmContent = sanitizeField(body.utm_content || '', 100);
+  const utmTerm = sanitizeField(body.utm_term || '', 100);
+  const referrer = sanitizeField(body.referrer || request.headers.get('referer') || '', 300);
+
+  // Consent fields
+  const privacyConsent =
+    body.privacy_consent === true ||
+    body.dong_y === true ||
+    body.privacyConsent === true;
+  const marketingConsent = Boolean(
+    body.marketing_consent === true ||
+    body.dong_y_marketing === true ||
+    body.marketingConsent === true
+  );
+
+  // ─── 1. SERVER-SIDE VALIDATION ───────────────────────────────────────
+  if (!fullName || fullName.length < 2) {
+    recordIpFailure(clientIp);
+    return new Response(JSON.stringify({
+      success: false,
+      field: 'full_name',
+      error: 'Vui lòng nhập họ và tên hợp lệ (tối thiểu 2 ký tự).',
+    }), { status: 422, headers });
+  }
+
+  if (!phone || !validatePhone(phone)) {
+    recordIpFailure(clientIp);
+    return new Response(JSON.stringify({
+      success: false,
+      field: 'phone',
+      error: 'Số điện thoại / Zalo không hợp lệ (cần 8–15 chữ số).',
+    }), { status: 422, headers });
+  }
+
+  if (email && !validateEmail(email)) {
+    recordIpFailure(clientIp);
+    return new Response(JSON.stringify({
+      success: false,
+      field: 'email',
+      error: 'Địa chỉ email không hợp lệ.',
+    }), { status: 422, headers });
+  }
+
+  if (!rawSource) {
+    recordIpFailure(clientIp);
+    return new Response(JSON.stringify({
+      success: false,
+      field: 'source',
+      error: 'Vui lòng chọn nguồn biết đến chương trình.',
+    }), { status: 422, headers });
+  }
+
+  if (rawSource === 'Nguồn khác') {
+    if (!otherSource || otherSource.length < 2) {
+      recordIpFailure(clientIp);
+      return new Response(JSON.stringify({
+        success: false,
+        field: 'other_source',
+        error: 'Vui lòng nhập cụ thể nguồn bạn biết đến chương trình.',
+      }), { status: 422, headers });
+    }
+  } else {
+    otherSource = '';
+  }
+
+  if (!privacyConsent) {
+    recordIpFailure(clientIp);
+    return new Response(JSON.stringify({
+      success: false,
+      field: 'privacy_consent',
+      error: 'Vui lòng đồng ý Chính sách bảo mật và xử lý dữ liệu cá nhân để hoàn tất đăng ký.',
+    }), { status: 422, headers });
+  }
+
+  // ─── 2. SPAM & MALICIOUS CONTENT CHECK ───────────────────────────────
+  const spamEval = evaluateSpam({
+    payload: {
+      name: fullName,
+      email,
+      phone,
+      company,
+      role: jobTitle,
+      interest,
+      source: rawSource,
+      otherSource,
+    },
+    turnstileResult: { success: true },
+  });
+
+  if (spamEval.isBlocked) {
+    recordIpFailure(clientIp);
+    logSecurityEvent({
+      action: 'spam_blocked',
+      clientIp,
+      leadType: program,
+      score: spamEval.score,
+      reasons: spamEval.reasons,
+      status: 400,
+    });
+    return new Response(JSON.stringify({
+      success: false,
+      code: 'SPAM_CONTENT_REJECTED',
+      error: 'Nội dung gửi lên không hợp lệ hoặc chứa liên kết không được phép.',
+    }), { status: 400, headers });
+  }
+
+  if (!env.DB) {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Cơ sở dữ liệu chưa sẵn sàng. Vui lòng thử lại sau.',
+    }), { status: 503, headers });
+  }
+
+  // ─── 3. DUPLICATE & RAPID DOUBLE-SUBMIT PROTECTION ───────────────────
+  const payloadHash = await computePayloadHash({
+    leadType: program,
+    email,
+    phone,
+    name: fullName,
+    company,
+    problem: `${interest}|${rawSource}|${otherSource}|${marketingConsent ? '1' : '0'}`,
+    message: jobTitle,
+  });
+
+  try {
+    const dupCheck = await env.DB.prepare(`
+      SELECT id, created_at FROM leads
+      WHERE (
+        payload_hash = ?
+        OR (program = ? AND phone = ? AND lower(full_name) = lower(?) AND julianday(created_at) > julianday('now', '-2 minutes'))
+      )
+      AND julianday(created_at) > julianday('now', '-10 minutes')
+      ORDER BY id DESC
+      LIMIT 1
+    `).bind(payloadHash, program, phone, fullName).first();
+
+    if (dupCheck) {
+      logSecurityEvent({
+        action: 'duplicate_replay_detected_db',
+        clientIp,
+        leadType: program,
+        reasons: ['db_program_lead_dedup'],
+      });
+      return new Response(JSON.stringify({
+        success: true,
+        duplicate: true,
+        leadId: dupCheck.id,
+        program,
+        status: 'NEW',
+        message: 'Đăng ký của bạn đã được ghi nhận.',
+      }), { status: 200, headers });
+    }
+
+    const phoneRateCheck = await env.DB.prepare(`
+      SELECT COUNT(*) as count FROM leads
+      WHERE phone = ? AND julianday(created_at) > julianday('now', '-10 minutes')
+    `).bind(phone).first();
+
+    if (phoneRateCheck && phoneRateCheck.count >= 5) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Số điện thoại này đã gửi quá nhiều yêu cầu trong thời gian ngắn. Vui lòng thử lại sau ít phút.',
+      }), { status: 429, headers });
+    }
+  } catch (dupErr) {
+    console.warn('[leads] Program lead duplicate check warning:', dupErr.message);
+  }
+
+  // ─── 4. INSERT INTO D1 DATABASE ──────────────────────────────────────
+  const createdAt = new Date().toISOString();
+  const initialTelegramStatus = spamEval.isSuspicious
+    ? 'quarantined'
+    : (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID ? 'pending' : 'not_configured');
+
+  const payloadSnapshot = {
+    program,
+    full_name: fullName,
+    phone,
+    email,
+    job_title: jobTitle,
+    company,
+    interest,
+    source: rawSource,
+    other_source: otherSource,
+    privacy_consent: true,
+    privacy_consent_at: createdAt,
+    privacy_policy_version: PRIVACY_POLICY_VERSION,
+    marketing_consent: marketingConsent,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_content: utmContent,
+    utm_term: utmTerm,
+    referrer,
+    landing_path: landingPath,
+  };
+
+  let leadId;
+  try {
+    const insertRes = await env.DB.prepare(`
+      INSERT INTO leads (
+        lead_type, program,
+        source, other_source, source_page, source_cta,
+        name, full_name, email, phone, company, role, job_title, interest,
+        privacy_consent, privacy_consent_at, privacy_policy_version, marketing_consent,
+        status, notes,
+        payload_json,
+        utm_source, utm_medium, utm_campaign, utm_content, utm_term,
+        referrer, landing_path,
+        telegram_status, created_at, updated_at,
+        client_ip, spam_score, spam_reasons, payload_hash
+      ) VALUES (
+        'cafe_talk_registration', ?,
+        ?, ?, ?, 'rsvp_form',
+        ?, ?, ?, ?, ?, ?, ?, ?,
+        1, ?, ?, ?,
+        ?, ?,
+        ?,
+        ?, ?, ?, ?, ?,
+        ?, ?,
+        ?, ?, ?,
+        ?, ?, ?, ?
+      )
+    `).bind(
+      program,
+      rawSource, otherSource, landingPath,
+      fullName, fullName, email || '', phone, company, jobTitle, jobTitle, interest,
+      createdAt, PRIVACY_POLICY_VERSION, marketingConsent ? 1 : 0,
+      status, notes,
+      JSON.stringify(payloadSnapshot),
+      utmSource || '', utmMedium || '', utmCampaign || '', utmContent || '', utmTerm || '',
+      referrer || '', landingPath,
+      initialTelegramStatus, createdAt, createdAt,
+      clientIp, spamEval.score, spamEval.reasons.join(','), payloadHash
+    ).run();
+
+    if (insertRes.success === false) {
+      throw new Error('D1 INSERT returned success=false');
+    }
+    leadId = insertRes.meta?.last_row_id;
+  } catch (dbErr) {
+    console.error('[leads] Program lead D1 write error:', dbErr.message);
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Không thể lưu thông tin đăng ký lúc này. Vui lòng thử lại.',
+    }), { status: 500, headers });
+  }
+
+  // ─── 5. TELEGRAM NOTIFICATION (Non-blocking / Clean Leads Only) ──────
+  let telegramStatus = initialTelegramStatus;
+  if (spamEval.isClean && env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    try {
+      const tgText = formatProgramTelegramMessage({
+        program,
+        landingPath,
+        fullName,
+        phone,
+        email,
+        jobTitle,
+        company,
+        interest,
+        source: rawSource,
+        otherSource,
+        marketingConsent,
+        createdAt,
+      });
+      const tgRes = await fetch(
+        `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: env.TELEGRAM_CHAT_ID,
+            text: tgText,
+            parse_mode: 'HTML',
+            disable_web_page_preview: true,
+          }),
+          signal: controller.signal,
+        }
+      );
+      const tgData = await tgRes.json().catch(() => ({}));
+      telegramStatus = tgRes.ok && tgData.ok ? 'sent' : 'failed';
+    } catch {
+      telegramStatus = 'error';
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    try {
+      await env.DB.prepare('UPDATE leads SET telegram_status = ? WHERE id = ?')
+        .bind(telegramStatus, leadId).run();
+    } catch {
+      // ignore non-critical status update error
+    }
+  }
+
+  logSecurityEvent({
+    action: spamEval.isSuspicious ? 'lead_quarantined' : 'lead_accepted',
+    clientIp,
+    leadType: program,
+    score: spamEval.score,
+    reasons: spamEval.reasons,
+    status: 201,
+  });
+
+  return new Response(JSON.stringify({
+    success: true,
+    leadId,
+    program,
+    status: 'NEW',
+    message: 'Đăng ký tham dự đã được ghi nhận thành công.',
+  }), { status: 201, headers });
+}
+
 
