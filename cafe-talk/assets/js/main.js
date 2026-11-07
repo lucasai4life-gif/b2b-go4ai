@@ -123,7 +123,6 @@
       var source = form.elements.nguon_biet_den ? form.elements.nguon_biet_den.value.trim() : '';
       var otherSource = form.elements.nguon_khac ? form.elements.nguon_khac.value.trim() : '';
       var requiredConsent = form.elements.dong_y ? form.elements.dong_y.checked : false;
-      var marketingConsent = form.elements.dong_y_marketing ? form.elements.dong_y_marketing.checked : false;
 
       if (!name) {
         showStatus('Vui lòng điền Họ tên.', true);
@@ -167,9 +166,7 @@
         nguon_chi_tiet: source === 'Nguồn khác' ? otherSource : '',
         nguon_khac: source === 'Nguồn khác' ? otherSource : '',
         dong_y: requiredConsent,
-        dong_y_marketing: marketingConsent,
         privacy_consent: requiredConsent,
-        marketing_consent: marketingConsent,
         consent_timestamp: consentTimestamp,
         su_kien: 'SME_EXECUTIVE_14_11_2026'
       };
