@@ -721,6 +721,7 @@ textarea.input{min-height:96px;resize:vertical}
   color:var(--on-light-2);cursor:pointer}
 .consent input{width:17px;height:17px;margin-top:2px;flex:0 0 auto;accent-color:var(--gold-deep)}
 .consent a{color:var(--gold-deep);text-decoration:underline}
+.turnstile-wrap{min-height:64px;margin:2px 0 8px;display:flex;justify-content:center}
 .form-status{display:none;margin-top:12px;padding:11px 13px;border-left:2px solid var(--gold-deep);
   background:rgba(138,109,50,.10);font-size:12.5px;line-height:1.6;color:var(--on-light)}
 .form-status.is-visible{display:block}

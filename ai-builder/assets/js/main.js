@@ -96,7 +96,58 @@
   }
 
   /* ======================================================================
-     2. CONSULTATION FORM — endpoint, payload and validation unchanged
+     2. TURNSTILE — /api/leads fails closed without a token
+     One widget, one identity: the token is always read through our widgetId.
+     ====================================================================== */
+  var TS_SITEKEY = '0x4AAAAAAFEKUSpRYiMMOJsg';
+  var tsWidgetId = null;
+  var tsToken = '';
+
+  function tsRender() {
+    var host = document.getElementById('ai-builder-turnstile');
+    if (!host || !window.turnstile || tsWidgetId !== null) return;
+    try {
+      tsWidgetId = window.turnstile.render(host, {
+        sitekey: TS_SITEKEY,
+        theme: 'light',
+        callback: function (t) { tsToken = t || ''; },
+        'expired-callback': function () { tsToken = ''; },
+        'timeout-callback': function () { tsToken = ''; },
+        'error-callback': function () { tsToken = ''; }
+      });
+    } catch (e) { tsWidgetId = null; }
+  }
+
+  function tsBoot(tries) {
+    if (window.turnstile) { tsRender(); return; }
+    if (tries > 120) return;
+    setTimeout(function () { tsBoot(tries + 1); }, 150);
+  }
+
+  function tsRead() {
+    if (window.turnstile && tsWidgetId !== null) {
+      try {
+        var r = window.turnstile.getResponse(tsWidgetId);
+        if (r) return r;
+      } catch (e) { /* fall through to cached token */ }
+    }
+    return tsToken || '';
+  }
+
+  function tsReset() {
+    tsToken = '';
+    if (!window.turnstile) return;
+    if (tsWidgetId === null) { tsRender(); return; }
+    try { window.turnstile.reset(tsWidgetId); }
+    catch (e) {
+      try { window.turnstile.remove(tsWidgetId); } catch (e2) { /* ignore */ }
+      tsWidgetId = null;
+      tsRender();
+    }
+  }
+
+  /* ======================================================================
+     3. CONSULTATION FORM — endpoint, payload and validation unchanged
      ====================================================================== */
   function initConsultationForm() {
     var form = document.getElementById('consultation-form');
@@ -145,7 +196,8 @@
         utm_medium: getUrlParam('utm_medium'),
         utm_campaign: getUrlParam('utm_campaign') || 'ai_builder_202611',
         problem: problem || 'Chưa mô tả chi tiết',
-        notes: 'Vai trò: ' + role + (problem ? ' | Bài toán: ' + problem : '')
+        notes: 'Vai trò: ' + role + (problem ? ' | Bài toán: ' + problem : ''),
+        turnstileToken: tsRead()
       };
 
       fetch('/api/leads', {
@@ -153,23 +205,33 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       }).then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json().catch(function () { return { success: true }; });
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (!res.ok) {
+            var e = new Error('HTTP ' + res.status);
+            if (data && data.error) e.serverMessage = data.error;
+            throw e;
+          }
+          return data;
+        });
       }).then(function () {
         trackEvent('ai_builder_consult_submit_success', { company: company });
         if (status) { status.textContent = ''; status.className = 'form-status'; }
         if (greetingEl) greetingEl.textContent = name + ' (' + company + ')';
         form.style.display = 'none';
+        tsReset();
         if (successCard) {
           successCard.classList.add('is-visible');
           successCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }).catch(function () {
+      }).catch(function (err) {
         // No fake success on failure — surface the error and allow retry.
+        var msg = (err && err.serverMessage) ||
+          'Không thể gửi yêu cầu lúc này do gián đoạn kết nối. Vui lòng bấm gửi lại hoặc liên hệ Hotline/Zalo GO4AI.';
         if (status) {
-          status.textContent = 'Không thể gửi yêu cầu lúc này do gián đoạn kết nối. Vui lòng bấm gửi lại hoặc liên hệ Hotline/Zalo GO4AI.';
+          status.textContent = msg;
           status.className = 'form-status is-visible is-error';
         }
+        tsReset();
       }).finally(function () {
         if (submitBtn) submitBtn.disabled = false;
       });
@@ -382,6 +444,7 @@
     initDemoTabs();
     initDemoView();
     initConsultationForm();
+    tsBoot(0);
     initBlueprint();
     initBuild();
     initLayerLock();
