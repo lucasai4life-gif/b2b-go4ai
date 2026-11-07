@@ -93,7 +93,8 @@ button{cursor:pointer}
 .top-nav-cta{flex:0 0 auto;min-height:52px;padding:9px 18px;font-size:11px}
 
 /* --------------------------------------------------------------- sections */
-.section{position:relative;padding:var(--sec-pad) 0;overflow:hidden;scroll-margin-top:var(--nav-h)}
+/* overflow:clip (not hidden) so position:sticky descendants keep working */
+.section{position:relative;padding:var(--sec-pad) 0;overflow:hidden;overflow:clip;scroll-margin-top:var(--nav-h)}
 .section--navy{background:var(--midnight);color:var(--on-dark)}
 .section--deep{background:var(--deep);color:var(--on-dark)}
 .section--ivory{background:var(--ivory);color:var(--on-light)}
