@@ -1,10 +1,14 @@
 /* ==========================================================================
-   GO4AI — AI FOUNDATION 18.11.2026 (LANDING PAGE 02)
-   Motion + Enrollment form.
+   GO4AI — AI FOUNDATION 18.11.2026 (LANDING PAGE 02 / REDESIGN 02)
+
+   Concept: BUILD YOUR AI CAPABILITY PORTFOLIO
+   Motion: portfolio assembly · artifact fan-out · counter 03→14 ·
+           session activation · Google ribbon progress · evidence folder.
 
    FAILSAFE FIRST: every piece of content is visible in HTML/CSS by default.
    This file only ADDS motion. If JS fails, is blocked, or IntersectionObserver
-   is missing, the page still reads end-to-end. Reduced-motion is respected.
+   is missing, the page still reads end-to-end and shows the finished state.
+   Reduced motion is respected.
    ========================================================================== */
 (function () {
   'use strict';
@@ -13,106 +17,184 @@
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var canObserve = 'IntersectionObserver' in window;
 
-  /* ------------------------------------------------------------ 1 · reveal */
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  /* ------------------------------------------------------- 1 · reveal + IO */
+  var deck = $('#deck');
+  var deckNum = $('#deck-num');
+  var deckDen = $('#deck-den');
+  var deckStatus = $('#deck-status');
+  var folder = $('#folder');
+  var ribbon = $('#ribbon');
+  var deckDone = false;
+
+  function deckFinal() {
+    if (!deckNum) { return; }
+    deckNum.textContent = '14';
+    deckDen.textContent = ' OUTPUTS';
+    deckStatus.textContent = 'PORTFOLIO READY';
+    deckDone = true;
+  }
+
+  function deckRun() {
+    if (!deckNum || deckDone) { return; }
+    if (reduceMotion) { deckFinal(); return; }
+    var seq = [3, 7, 11, 14];
+    var i = 0;
+    deckNum.textContent = '03';
+    deckDen.textContent = ' / 14';
+    deckStatus.textContent = 'ASSEMBLING PORTFOLIO';
+    var timer = window.setInterval(function () {
+      i += 1;
+      if (i >= seq.length) {
+        window.clearInterval(timer);
+        deckFinal();
+        return;
+      }
+      deckNum.textContent = pad(seq[i]);
+      /* Last step: land on "14 OUTPUTS / PORTFOLIO READY" immediately,
+         never show 14 while still saying "assembling". */
+      if (i === seq.length - 1) {
+        window.clearInterval(timer);
+        window.setTimeout(deckFinal, 260);
+      }
+    }, 720);
+  }
+
+  function sealFolder() {
+    if (!folder) { return; }
+    if (reduceMotion) { folder.classList.add('is-lit', 'is-sealed'); return; }
+    window.setTimeout(function () { folder.classList.add('is-sealed'); }, 1700);
+  }
+
   if (canObserve && !reduceMotion) {
     doc.classList.add('has-motion');
 
-    var reveals = document.querySelectorAll('.reveal, .reveal-line, .portrait-fade');
-    var observer = new IntersectionObserver(function (entries) {
+    var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) { return; }
         entry.target.classList.add('is-visible');
 
-        /* Light up the two system visuals when they enter the viewport. */
-        if (entry.target.id === 'jp-plate') { entry.target.classList.add('is-lit'); }
-        if (entry.target.id === 'wow-system') { entry.target.classList.add('is-lit'); }
+        if (entry.target.id === 'deck') {
+          entry.target.classList.add('is-lit');
+          window.setTimeout(deckRun, 1350);
+        }
+        if (entry.target.id === 'folder') {
+          entry.target.classList.add('is-lit');
+          sealFolder();
+        }
+        if (entry.target.id === 'ribbon') { entry.target.classList.add('is-lit'); }
 
-        observer.unobserve(entry.target);
+        io.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
 
-    reveals.forEach(function (el) { observer.observe(el); });
-
-    /* Stagger the six evidence nodes — no animation library dependency. */
-    document.querySelectorAll('.ev-step').forEach(function (node, i) {
-      node.style.transitionDelay = (i * 80) + 'ms';
-    });
-
-    /* Infinite signal flows run ONLY while their system is on screen.
-       .is-lit is a one-shot reveal (also applied by the 4s failsafe, even if
-       the user never scrolled there); .is-onscreen is toggled both ways so
-       off-screen sections never burn animation frames. */
-    var visibilityObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) { entry.target.classList.add('is-onscreen'); }
-        else { entry.target.classList.remove('is-onscreen'); }
-      });
-    }, { threshold: 0 });
-
-    document.querySelectorAll('#jp-plate, #wow-system, .ev-flow').forEach(function (el) {
-      visibilityObserver.observe(el);
-    });
-
-    /* Hard failsafe: never leave content invisible, whatever happens. */
-    window.setTimeout(function () {
-      document.querySelectorAll('.reveal, .reveal-line, .portrait-fade').forEach(function (el) {
-        el.classList.add('is-visible');
-      });
-      var plate = document.getElementById('jp-plate');
-      var system = document.getElementById('wow-system');
-      if (plate) { plate.classList.add('is-lit'); }
-      if (system) { system.classList.add('is-lit'); }
-    }, 4000);
+    $$('.reveal').forEach(function (el) { io.observe(el); });
+    if (deck) { io.observe(deck); }
+    if (folder) { io.observe(folder); }
+    if (ribbon) { io.observe(ribbon); }
+  } else {
+    /* No observer or reduced motion: show the finished portfolio at once. */
+    deckFinal();
+    if (folder) { folder.classList.add('is-lit', 'is-sealed'); }
+    if (ribbon) { ribbon.classList.add('is-lit'); }
   }
 
-  /* --------------------------------------------- 2 · 5-session activation */
-  var sj = document.getElementById('sj');
-  if (sj && !reduceMotion) {
-    var items = Array.prototype.slice.call(sj.querySelectorAll('.sj-item'));
-    var ticking = false;
+  /* Hard failsafe: never leave content invisible, whatever happens. */
+  window.setTimeout(function () {
+    $$('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+    if (deck) { deck.classList.add('is-lit'); }
+    if (folder) { folder.classList.add('is-lit', 'is-sealed'); }
+    if (ribbon) { ribbon.classList.add('is-lit'); }
+    if (!deckDone) { deckFinal(); }
+  }, 4000);
 
-    var updateJourney = function () {
-      var rect = sj.getBoundingClientRect();
-      var vh = window.innerHeight || document.documentElement.clientHeight;
-      var start = vh * 0.86;
-      var distance = rect.height + start - vh * 0.28;
-      var travelled = start - rect.top;
-      var pct = distance > 0 ? travelled / distance : 1;
-      pct = Math.max(0, Math.min(1, pct));
+  /* ------------------------------------- 2 · artifact fan-out (touch tap) */
+  if (deck && window.matchMedia && window.matchMedia('(hover: none)').matches) {
+    deck.addEventListener('click', function () { deck.classList.toggle('is-fanned'); });
+  }
 
-      sj.style.setProperty('--sj-progress', (pct * 100).toFixed(2) + '%');
+  /* ------------------------------------ 3 · portfolio build journey (03→14) */
+  var buildList = $('#build-list');
+  var buildNum = $('#build-num');
+  var buildBar = $('#build-bar');
+  var slots = $$('#tray .slot');
+  var sessions = $$('.sess');
+  var buildCurrent = 14;
 
-      /* Five stations sit at 0 / .25 / .50 / .75 / 1.00 of the rail.
-         Light one after another as the signal passes it. */
-      items.forEach(function (item, i) {
-        var threshold = items.length > 1 ? (i / (items.length - 1)) : 0;
-        if (pct >= threshold - 0.02) { item.classList.add('is-active'); }
-        else { item.classList.remove('is-active'); }
-      });
+  function setBuild(n) {
+    if (n === buildCurrent) { return; }
+    buildCurrent = n;
+    if (buildNum) { buildNum.textContent = pad(n); }
+    if (buildBar) { buildBar.style.setProperty('--p', (n / 14 * 100).toFixed(2) + '%'); }
+    slots.forEach(function (slot, i) { slot.classList.toggle('is-filled', i < n); });
+  }
 
+  function updateBuild() {
+    if (!buildList || !sessions.length) { return; }
+    var vh = window.innerHeight || doc.clientHeight;
+    var active = -1;
+    sessions.forEach(function (sess, i) {
+      var rect = sess.getBoundingClientRect();
+      if (rect.top < vh * 0.62) { active = i; }
+    });
+    sessions.forEach(function (sess, i) { sess.classList.toggle('is-active', i === active); });
+    setBuild(active < 0 ? 0 : parseInt(sessions[active].getAttribute('data-count'), 10) || 0);
+  }
+
+  /* ------------------------------------------- 4 · Google ribbon progress */
+  var googleSec = $('#google-track');
+
+  function updateRibbon() {
+    if (!googleSec) { return; }
+    var rect = googleSec.getBoundingClientRect();
+    var vh = window.innerHeight || doc.clientHeight;
+    var p = (vh * 0.86 - rect.top) / (rect.height * 0.92);
+    p = Math.max(0, Math.min(1, p));
+    googleSec.style.setProperty('--g', (p * 100).toFixed(1) + '%');
+    $$('.mod', googleSec).forEach(function (mod, i) {
+      mod.classList.toggle('is-on', p >= (i + 1) / 5 - 0.06);
+    });
+  }
+
+  /* --------------------------------------- 5 · scroll loop (one rAF frame) */
+  var ticking = false;
+  function onScroll() {
+    if (ticking) { return; }
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      updateBuild();
+      updateRibbon();
       ticking = false;
-    };
+    });
+  }
 
-    var onScroll = function () {
-      if (ticking) { return; }
-      ticking = true;
-      window.requestAnimationFrame(updateJourney);
-    };
-
+  if (!reduceMotion) {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
-    updateJourney();
-
-    /* If the scroll machinery ever breaks, keep every session legible. */
-    window.setTimeout(function () {
-      if (!sj.style.getPropertyValue('--sj-progress')) {
-        sj.style.setProperty('--sj-progress', '100%');
-        items.forEach(function (item) { item.classList.add('is-active'); });
-      }
-    }, 4000);
+    onScroll();
+  } else {
+    setBuild(14);
+    sessions.forEach(function (sess) { sess.classList.add('is-active'); });
+    if (googleSec) { googleSec.style.setProperty('--g', '100%'); }
   }
 
-  /* ------------------------------------------------------- 3 · enrollment */
+  /* -------------------------------------------- 6 · mobile accordion sync */
+  var mobileMQ = window.matchMedia('(max-width: 760px)');
+
+  function syncDisclosure() {
+    var mobile = mobileMQ.matches;
+    sessions.forEach(function (sess, i) { sess.open = mobile ? i === 0 : true; });
+    $$('.artifact').forEach(function (art) { art.open = !mobile; });
+  }
+
+  syncDisclosure();
+  if (mobileMQ.addEventListener) { mobileMQ.addEventListener('change', syncDisclosure); }
+  else if (mobileMQ.addListener) { mobileMQ.addListener(syncDisclosure); }
+
+  /* ------------------------------------------------------- 7 · enrollment */
   /*
     INTEGRATION HOOK — no network call is made out of the box.
     Set data-endpoint on #rsvp-form to the lead-capture endpoint, e.g.
