@@ -991,7 +991,9 @@ html.has-motion .proof-cell.reveal.is-visible{transition-delay:calc(var(--pn,0) 
   background-repeat:no-repeat;background-position:right 4px center;
   padding-right:26px;cursor:pointer;
 }
+.rsvp-card .field select:invalid{color:#777A79}
 .rsvp-card .field select option{background:#F4F0E7;color:#071421}
+.rsvp-card .field select option[disabled]{color:#777A79}
 .rsvp-card .consent{margin:30px 0 26px;gap:12px}
 .rsvp-card .consent input{border-color:#4C5052;background:transparent}
 .rsvp-card .consent input:checked{background:#071421;border-color:#071421}

@@ -83,16 +83,68 @@
       status.className = 'form-status is-visible' + (isError ? ' is-error' : '');
     };
 
+    var sourceSelect = document.getElementById('f-source');
+    var otherFieldWrap = document.getElementById('field-other-source');
+    var otherInput = document.getElementById('f-other-source');
+
+    var updateOtherSourceVisibility = function () {
+      if (!sourceSelect || !otherFieldWrap || !otherInput) return;
+      if (sourceSelect.value === 'Nguồn khác') {
+        otherFieldWrap.style.display = 'block';
+        otherInput.required = true;
+        otherInput.setAttribute('aria-required', 'true');
+      } else {
+        otherFieldWrap.style.display = 'none';
+        otherInput.required = false;
+        otherInput.removeAttribute('aria-required');
+        otherInput.value = '';
+      }
+    };
+
+    if (sourceSelect) {
+      sourceSelect.addEventListener('change', updateOtherSourceVisibility);
+      updateOtherSourceVisibility();
+    }
+
+    form.addEventListener('reset', function () {
+      setTimeout(updateOtherSourceVisibility, 0);
+    });
+
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      var name = form.elements.ho_ten.value.trim();
-      var phone = form.elements.dien_thoai.value.trim();
-      var consent = form.elements.dong_y.checked;
+      var name = form.elements.ho_ten ? form.elements.ho_ten.value.trim() : '';
+      var phone = form.elements.dien_thoai ? form.elements.dien_thoai.value.trim() : '';
+      var source = form.elements.nguon_biet_den ? form.elements.nguon_biet_den.value.trim() : '';
+      var otherSource = form.elements.nguon_khac ? form.elements.nguon_khac.value.trim() : '';
+      var consent = form.elements.dong_y ? form.elements.dong_y.checked : false;
 
-      if (!name || !phone || !consent) {
-        showStatus('Vui lòng điền Họ tên, Điện thoại/Zalo và xác nhận đồng ý trước khi gửi đăng ký.', true);
-        if (!name) { form.elements.ho_ten.focus(); }
-        else if (!phone) { form.elements.dien_thoai.focus(); }
+      if (!name) {
+        showStatus('Vui lòng điền Họ tên.', true);
+        if (form.elements.ho_ten) { form.elements.ho_ten.focus(); }
+        return;
+      }
+
+      if (!phone) {
+        showStatus('Vui lòng điền Điện thoại/Zalo.', true);
+        if (form.elements.dien_thoai) { form.elements.dien_thoai.focus(); }
+        return;
+      }
+
+      if (!source) {
+        showStatus('Vui lòng chọn: Bạn biết đến chương trình qua đâu?', true);
+        if (form.elements.nguon_biet_den) { form.elements.nguon_biet_den.focus(); }
+        return;
+      }
+
+      if (source === 'Nguồn khác' && !otherSource) {
+        showStatus('Vui lòng cho biết nguồn bạn biết đến chương trình.', true);
+        if (form.elements.nguon_khac) { form.elements.nguon_khac.focus(); }
+        return;
+      }
+
+      if (!consent) {
+        showStatus('Vui lòng xác nhận đồng ý trước khi gửi đăng ký.', true);
+        if (form.elements.dong_y) { form.elements.dong_y.focus(); }
         return;
       }
 
@@ -100,9 +152,12 @@
       var payload = {
         ho_ten: name,
         dien_thoai: phone,
-        chuc_danh: form.elements.chuc_danh.value.trim(),
-        doanh_nghiep: form.elements.doanh_nghiep.value.trim(),
-        van_de_quan_tam: form.elements.van_de_quan_tam.value,
+        chuc_danh: form.elements.chuc_danh ? form.elements.chuc_danh.value.trim() : '',
+        doanh_nghiep: form.elements.doanh_nghiep ? form.elements.doanh_nghiep.value.trim() : '',
+        van_de_quan_tam: form.elements.van_de_quan_tam ? form.elements.van_de_quan_tam.value : '',
+        nguon_biet_den: source === 'Nguồn khác' && otherSource ? ('Nguồn khác: ' + otherSource) : source,
+        nguon_chi_tiet: source === 'Nguồn khác' ? otherSource : '',
+        nguon_khac: source === 'Nguồn khác' ? otherSource : '',
         dong_y: consent,
         su_kien: 'SME_EXECUTIVE_14_11_2026'
       };
@@ -123,6 +178,7 @@
         if (!res.ok) { throw new Error('HTTP ' + res.status); }
         showStatus('Cảm ơn ' + name + '. Ban tổ chức sẽ liên hệ xác nhận tham dự sự kiện 14/11/2026.');
         form.reset();
+        updateOtherSourceVisibility();
       }).catch(function () {
         showStatus('Không thể gửi đăng ký lúc này. Vui lòng thử lại hoặc liên hệ Ban tổ chức.', true);
       }).then(function () {
