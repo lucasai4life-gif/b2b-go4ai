@@ -436,7 +436,7 @@
     document.querySelectorAll('a[href*="ung-dung-thuc-te"]').forEach(function (el) {
       el.addEventListener('click', function () { trackEvent('ai_builder_library_click', { href: el.href }); });
     });
-    document.querySelectorAll('a[href*="sme-14-11"]').forEach(function (el) {
+    document.querySelectorAll('a[href*="cafe-talk"], a[href*="sme-14-11"]').forEach(function (el) {
       el.addEventListener('click', function () { trackEvent('ai_builder_offline_14_11_click', { href: el.href }); });
     });
   });
