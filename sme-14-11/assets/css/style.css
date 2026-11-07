@@ -463,12 +463,12 @@ html.has-motion .flow-node{transition-delay:calc(var(--d,0) * 90ms)}
   .reservation-seal{right:28px;bottom:24px}
 }
 
-@media (max-width:760px){
+@media (max-width:767px){
   :root{--pad:20px;--sec-pad:78px}
   body{font-size:15px}
   .grain{opacity:.032}
-  .brandbar{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;padding-top:22px;padding-bottom:20px;border:none}
-  .brand{padding:8px 12px;border:none}
+  .brandbar{display:grid;grid-template-columns:1fr 1fr;gap:22px 32px;padding-top:28px;padding-bottom:24px;border:none}
+  .brand{padding:10px 16px;border:none}
   .brand+.brand{border:none}
   .brand:nth-child(odd){border:none}
   .brand:nth-child(-n+2){border:none}
@@ -1048,11 +1048,31 @@ html.has-motion .proof-cell.reveal.is-visible{transition-delay:calc(var(--pn,0) 
 
 /* ---------------------------------------------- MOBILE · <=767px -------- */
 @media (max-width:767px){
-  .er-hero.hero{min-height:0;display:block;padding-bottom:0}
+  /* Clean Midnight Navy background, zero light streak/beam/pillar */
+  .er-hero.hero{
+    min-height:0;display:block;padding-bottom:0;
+    background:#050E1A!important;background-image:none!important;
+  }
   .er-hero .hero-grid{flex:none}
-  .er-room-beam,.er-room-floor,.er-room-plate{display:none}
-  .er-room-arch{opacity:.16;right:-8%}
-  .er-room-vignette{background:radial-gradient(ellipse 120% 70% at 50% 20%,transparent 40%,rgba(3,9,18,.5) 100%)}
+  .hero-atmos{display:none!important;opacity:0!important;background:none!important}
+  .hero::after{display:none!important;box-shadow:none!important}
+  .er-room, .er-room *{display:none!important;opacity:0!important;visibility:hidden!important}
+
+  /* 4 Logos: Clean 2x2 grid, zero dividers/borders/pseudo lines, luxury whitespace */
+  .brandbar, .brandbar *{border:none!important;outline:none!important;box-shadow:none!important}
+  .brandbar{
+    display:grid!important;grid-template-columns:1fr 1fr!important;
+    gap:22px 32px!important;padding-top:28px!important;padding-bottom:24px!important;
+    border:none!important;background:transparent!important;
+  }
+  .brandbar::before, .brandbar::after{display:none!important;content:none!important;border:none!important}
+  .brand{padding:10px 16px!important;border:none!important;background:transparent!important}
+  .brand::before, .brand::after{display:none!important;content:none!important;border:none!important}
+  .brand+.brand,.brand:nth-child(odd),.brand:nth-child(even),.brand:nth-child(-n+2),.brand:nth-child(n+3){border:none!important}
+  .brand--inst img{height:44px!important}
+  .brand--hr img{height:24px!important}
+  .brand--gw img{height:36px!important}
+  .brand--go img{height:31px!important}
 
   .er-grid.er-grid{
     display:flex;flex-direction:column;align-items:stretch;gap:0;
@@ -1096,13 +1116,6 @@ html.has-motion .proof-cell.reveal.is-visible{transition-delay:calc(var(--pn,0) 
     white-space:normal;line-height:1.35;text-overflow:clip;
   }
 
-  /* Fix light streak on mobile */
-  .er-room-beam, .er-room-beam--a, .er-room-beam--b{display:none!important;opacity:0!important}
-  .er-room-arch, .er-room-floor{display:none!important;opacity:0!important}
-  .er-room-vignette{opacity:0!important}
-  .er-room{animation:none!important}
-  .hero-atmos{background:#050E1A!important}
-  .hero::after{box-shadow:none!important}
   .er-stage-fade{
     background:radial-gradient(ellipse 110% 90% at 50% 34%,transparent 52%,rgba(3,9,18,.45) 100%);
   }
