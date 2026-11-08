@@ -1,8 +1,12 @@
-# A landing page whose markup and stylesheet deploy together must never be
-# half-stale: revalidate everything under /ai-builder. Matches the depth-1
-# wildcard form Pages honours on this project (/admin/*).
-/ai-builder/*
-  Cache-Control: public, max-age=0, must-revalidate
+# NOTE — /ai-builder asset caching
+# A Cache-Control rule for /ai-builder/* is accepted here but NOT applied:
+# production keeps serving the stylesheet with `max-age=14400` whatever the
+# pattern depth (wildcard or exact path, all verified). Cache-Control for that
+# route is pinned upstream of this file.
+#
+# The page therefore busts its own cache: index.html links fonts.css, style.css
+# and main.js as ?v=<md5 of those three files>. Bump that hash whenever any of
+# them changes — that, not this file, is what keeps markup and CSS in step.
 
 /assets/js/consultation-modal.js
   Cache-Control: public, max-age=0, must-revalidate
