@@ -1,10 +1,7 @@
-/ai-builder/assets/css/style.css
-  Cache-Control: public, max-age=0, must-revalidate
-
-/ai-builder/assets/css/fonts.css
-  Cache-Control: public, max-age=0, must-revalidate
-
-/ai-builder/assets/js/main.js
+# A landing page whose markup and stylesheet deploy together must never be
+# half-stale: revalidate everything under /ai-builder. Matches the depth-1
+# wildcard form Pages honours on this project (/admin/*).
+/ai-builder/*
   Cache-Control: public, max-age=0, must-revalidate
 
 /assets/js/consultation-modal.js
