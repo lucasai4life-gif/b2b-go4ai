@@ -4,6 +4,11 @@ import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { onRequestPost } from '../functions/api/leads.js';
 import { onRequestPost as onOpportunityPost } from '../functions/api/lead-opportunity.js';
+import { onRequestPost as onFoundationLeadPost } from '../functions/api/foundation-leads.js';
+import {
+  onRequestGet as onAdminFoundationGet,
+  onRequestPatch as onAdminFoundationPatch,
+} from '../functions/api/admin/foundation-leads.js';
 
 let nextIp = 10;
 
@@ -12,25 +17,30 @@ function createDb() {
   sqlite.exec(readFileSync(new URL('../migrations/0001_create_leads.sql', import.meta.url), 'utf8'));
   sqlite.exec(readFileSync(new URL('../migrations/0002_security_hardening.sql', import.meta.url), 'utf8'));
   sqlite.exec(readFileSync(new URL('../migrations/0003_founding_talent_leads.sql', import.meta.url), 'utf8'));
+  sqlite.exec(readFileSync(new URL('../migrations/0007_extend_leads_for_program_management.sql', import.meta.url), 'utf8'));
+  sqlite.exec(readFileSync(new URL('../migrations/0008_create_foundation_leads.sql', import.meta.url), 'utf8'));
   let failNextInsert = false;
   return {
     sqlite,
     clientIp: `203.0.113.${nextIp++}`,
     failNextInsert() { failNextInsert = true; },
     prepare(sql) {
+      const execWithValues = (...values) => ({
+        async first() { return sqlite.prepare(sql).get(...values) || null; },
+        async all() { return { results: sqlite.prepare(sql).all(...values) || [] }; },
+        async run() {
+          if (failNextInsert && /INSERT INTO (leads|foundation_leads)/i.test(sql)) {
+            failNextInsert = false;
+            throw new Error('simulated D1 outage');
+          }
+          const result = sqlite.prepare(sql).run(...values);
+          return { success: true, meta: { last_row_id: Number(result.lastInsertRowid), changes: result.changes } };
+        },
+      });
       return {
+        ...execWithValues(),
         bind(...values) {
-          return {
-            async first() { return sqlite.prepare(sql).get(...values) || null; },
-            async run() {
-              if (failNextInsert && /INSERT INTO leads/i.test(sql)) {
-                failNextInsert = false;
-                throw new Error('simulated D1 outage');
-              }
-              const result = sqlite.prepare(sql).run(...values);
-              return { success: true, meta: { last_row_id: Number(result.lastInsertRowid), changes: result.changes } };
-            },
-          };
+          return execWithValues(...values);
         },
       };
     },
@@ -345,6 +355,192 @@ test('founding talent lead captures all 10 fields, assigns FTC26 code, enforces 
     assert.equal(botRow, undefined);
   } finally {
     globalThis.fetch = oldFetch;
+    db.sqlite.close();
+  }
+});
+
+test('AI Foundation lead capture + admin dashboard API: 6 QA cases, isolation from Cafe Talk, status/notes update & CSV export', async () => {
+  const db = createDb();
+  const env = { DB: db, ADMIN_ACCESS_KEY: 'foundation-admin-secret-2026' };
+
+  const postFoundation = async (payload, ip = db.clientIp) => {
+    const req = new Request('https://b2b.go4ai.org/api/foundation-leads', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'cf-connecting-ip': ip },
+      body: JSON.stringify(payload),
+    });
+    const res = await onFoundationLeadPost({ request: req, env });
+    return { status: res.status, body: await res.json() };
+  };
+
+  try {
+    // Case 2: Missing privacy consent -> blocked (422)
+    const noConsent = await postFoundation({
+      full_name: 'Nguyễn Văn A',
+      phone: '0901112223',
+      job_title: 'Trưởng phòng vận hành',
+      ai_goal: 'Tự động hóa báo cáo tuần',
+      ai_experience: 'Đã dùng ChatGPT cơ bản',
+      privacy_consent: false,
+      marketing_consent: false,
+    });
+    assert.equal(noConsent.status, 422);
+    assert.equal(noConsent.body.field, 'privacy_consent');
+    assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS count FROM foundation_leads').get().count, 0);
+
+    // Case 1 & Case 3: Valid form + privacy_consent = true + marketing_consent = false + client tries to spoof status/notes
+    const validFalseMkt = await postFoundation({
+      full_name: 'Nguyễn Văn A',
+      phone: '+84 901 112 223',
+      email: 'NguyenVanA@Example.com',
+      job_title: 'Trưởng phòng vận hành',
+      company: 'Công ty TNHH Alpha',
+      ai_goal: 'Tự động hóa báo cáo tuần và Excel',
+      ai_experience: 'Đã dùng ChatGPT cơ bản',
+      privacy_consent: true,
+      marketing_consent: false,
+      status: 'ENROLLED',
+      notes: 'Hacked note',
+      utm_source: 'facebook',
+      utm_medium: 'cpc',
+      utm_campaign: 'ai_foundation_nov',
+      landing_path: '/ai-foundation',
+    });
+    assert.equal(validFalseMkt.status, 201);
+    assert.equal(validFalseMkt.body.success, true);
+    assert.equal(validFalseMkt.body.status, 'NEW');
+
+    // Verify D1 record in foundation_leads and zero records in Cafe Talk `leads`
+    assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS count FROM leads').get().count, 0);
+    const row1 = db.sqlite.prepare('SELECT * FROM foundation_leads WHERE id = ?').get(validFalseMkt.body.leadId);
+    assert.ok(row1);
+    assert.equal(row1.phone, '0901112223');
+    assert.equal(row1.email, 'nguyenvana@example.com');
+    assert.equal(row1.privacy_consent, 1);
+    assert.ok(row1.privacy_consent_at);
+    assert.equal(row1.marketing_consent, 0);
+    assert.equal(row1.status, 'NEW');
+    assert.equal(row1.notes, '');
+
+    // Case 5: Double-click / duplicate submission -> returns 200 duplicate without inserting second row
+    const doubleClick = await postFoundation({
+      full_name: 'Nguyễn Văn A',
+      phone: '0901112223',
+      email: 'nguyenvana@example.com',
+      job_title: 'Trưởng phòng vận hành',
+      company: 'Công ty TNHH Alpha',
+      ai_goal: 'Tự động hóa báo cáo tuần và Excel',
+      ai_experience: 'Đã dùng ChatGPT cơ bản',
+      privacy_consent: true,
+      marketing_consent: false,
+    });
+    assert.equal(doubleClick.status, 200);
+    assert.equal(doubleClick.body.duplicate, true);
+    assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS count FROM foundation_leads').get().count, 1);
+
+    // Case 4: Marketing consent = true
+    const validTrueMkt = await postFoundation({
+      full_name: 'Trần Thị B',
+      phone: '0902223334',
+      job_title: 'HR Manager',
+      ai_goal: 'Xây dựng quy trình tuyển dụng bằng AI',
+      ai_experience: 'Chưa dùng nhiều',
+      privacy_consent: true,
+      marketing_consent: true,
+    }, '203.0.113.99');
+    assert.equal(validTrueMkt.status, 201);
+    const row2 = db.sqlite.prepare('SELECT * FROM foundation_leads WHERE id = ?').get(validTrueMkt.body.leadId);
+    assert.equal(row2.marketing_consent, 1);
+
+    // Case 6: Source = "Nguồn khác" requires other_source
+    const missingOtherSource = await postFoundation({
+      full_name: 'Lê Văn C',
+      phone: '0903334445',
+      source: 'Nguồn khác',
+      other_source: '',
+      privacy_consent: true,
+    }, '203.0.113.100');
+    assert.equal(missingOtherSource.status, 422);
+    assert.equal(missingOtherSource.body.field, 'other_source');
+
+    const validOtherSource = await postFoundation({
+      full_name: 'Lê Văn C',
+      phone: '0903334445',
+      source: 'Nguồn khác',
+      other_source: 'Cộng đồng AI Việt Nam',
+      privacy_consent: true,
+      marketing_consent: true,
+    }, '203.0.113.100');
+    assert.equal(validOtherSource.status, 201);
+
+    // Admin API Auth check: unauthenticated request rejected with 401
+    const unauthRes = await onAdminFoundationGet({
+      request: new Request('https://b2b.go4ai.org/api/admin/foundation-leads', {
+        headers: { 'cf-connecting-ip': '203.0.113.101' },
+      }),
+      env,
+    });
+    assert.equal(unauthRes.status, 401);
+
+    // Admin API: list + summary
+    const listRes = await onAdminFoundationGet({
+      request: new Request('https://b2b.go4ai.org/api/admin/foundation-leads?search=Alpha', {
+        headers: {
+          authorization: 'Bearer foundation-admin-secret-2026',
+          'cf-connecting-ip': '203.0.113.102',
+        },
+      }),
+      env,
+    });
+    assert.equal(listRes.status, 200);
+    const listData = await listRes.json();
+    assert.equal(listData.summary.total, 3);
+    assert.equal(listData.summary.NEW, 3);
+    assert.equal(listData.total, 1);
+    assert.equal(listData.items[0].full_name, 'Nguyễn Văn A');
+
+    // Admin API: update status to ENROLLED + internal notes
+    const patchRes = await onAdminFoundationPatch({
+      request: new Request('https://b2b.go4ai.org/api/admin/foundation-leads', {
+        method: 'PATCH',
+        headers: {
+          'content-type': 'application/json',
+          authorization: 'Bearer foundation-admin-secret-2026',
+          'cf-connecting-ip': '203.0.113.102',
+        },
+        body: JSON.stringify({
+          id: validFalseMkt.body.leadId,
+          status: 'ENROLLED',
+          notes: 'Đã đóng học phí và xác nhận lịch khai giảng 18/11',
+        }),
+      }),
+      env,
+    });
+    assert.equal(patchRes.status, 200);
+    const patchData = await patchRes.json();
+    assert.equal(patchData.item.status, 'ENROLLED');
+    assert.equal(patchData.item.notes, 'Đã đóng học phí và xác nhận lịch khai giảng 18/11');
+
+    // Admin API: CSV export
+    const csvRes = await onAdminFoundationGet({
+      request: new Request('https://b2b.go4ai.org/api/admin/foundation-leads?status=ENROLLED&export=csv', {
+        headers: {
+          authorization: 'Bearer foundation-admin-secret-2026',
+          'cf-connecting-ip': '203.0.113.102',
+        },
+      }),
+      env,
+    });
+    assert.equal(csvRes.status, 200);
+    const csvBytes = new Uint8Array(await csvRes.clone().arrayBuffer());
+    assert.equal(csvBytes[0], 0xef);
+    assert.equal(csvBytes[1], 0xbb);
+    assert.equal(csvBytes[2], 0xbf);
+    const csvText = await csvRes.text();
+    assert.match(csvText, /Nguyễn Văn A/);
+    assert.match(csvText, /ENROLLED/);
+    assert.doesNotMatch(csvText, /client_ip/);
+  } finally {
     db.sqlite.close();
   }
 });

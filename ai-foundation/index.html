@@ -10,7 +10,7 @@
 <link rel="preload" href="/ai-foundation/assets/fonts/PlayfairDisplay-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/ai-foundation/assets/fonts/BeVietnamPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/ai-foundation/assets/css/fonts.css">
-<link rel="stylesheet" href="/ai-foundation/assets/css/style.css">
+<link rel="stylesheet" href="/ai-foundation/assets/css/style.css?v=20261108-01">
 </head>
 <body>
 <a class="skip-link" href="#main">Chuyển đến nội dung chính</a>
@@ -676,7 +676,7 @@
       <div class="rsvp-card-rule" aria-hidden="true"></div>
 
       <div class="rsvp-card-body">
-        <form class="rsvp-form" id="rsvp-form" data-endpoint="" novalidate>
+        <form class="rsvp-form" id="rsvp-form" data-endpoint="/api/foundation-leads" novalidate>
           <p class="form-heading">THÔNG TIN ĐĂNG KÝ</p>
 
           <div class="field"><label for="f-name">Họ tên <span aria-hidden="true">*</span></label><input id="f-name" name="ho_ten" type="text" autocomplete="name" placeholder="Họ và tên" required></div>
@@ -685,7 +685,16 @@
           <div class="field"><label for="f-goal">Mục tiêu ứng dụng AI</label><textarea id="f-goal" name="muc_tieu" rows="2" placeholder="Công việc bạn muốn ứng dụng AI"></textarea></div>
           <div class="field"><label for="f-level">Mức độ từng dùng AI</label><input id="f-level" name="muc_do" type="text" placeholder="Mức độ đã sử dụng AI của bạn"></div>
 
-          <label class="consent"><input id="f-consent" name="dong_y" type="checkbox" required><span>Tôi đồng ý để Ban tổ chức liên hệ xác nhận đăng ký khóa học AI Foundation 18/11/2026.</span></label>
+          <div class="consent-group">
+            <label class="consent" for="f-consent">
+              <input id="f-consent" name="dong_y" type="checkbox" required aria-required="true">
+              <span>Tôi đã đọc và đồng ý để GO4AI xử lý dữ liệu cá nhân của tôi nhằm tiếp nhận đăng ký, xác nhận và tổ chức chương trình theo <a href="/privacy-policy" target="_blank" rel="noopener" class="consent-link">Chính sách bảo vệ dữ liệu cá nhân</a>. <span class="req" aria-hidden="true">*</span></span>
+            </label>
+            <label class="consent consent--optional" for="f-consent-marketing">
+              <input id="f-consent-marketing" name="dong_y_marketing" type="checkbox">
+              <span>Tôi đồng ý nhận thông tin về các chương trình, sự kiện, khóa học và nội dung liên quan từ GO4AI.</span>
+            </label>
+          </div>
           <button class="btn btn--form" type="submit">ĐĂNG KÝ KHÓA HỌC <span aria-hidden="true">→</span></button>
           <p class="form-micro">Lưu ý về dữ liệu: Chỉ thu thông tin cần thiết và xin đồng ý rõ ràng trước khi liên hệ về khóa học hoặc dịch vụ khác.</p>
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
@@ -743,6 +752,6 @@
   </div>
 </footer>
 
-<script src="/ai-foundation/assets/js/main.js" defer></script>
+<script src="/ai-foundation/assets/js/main.js?v=20261108-01" defer></script>
 </body>
 </html>

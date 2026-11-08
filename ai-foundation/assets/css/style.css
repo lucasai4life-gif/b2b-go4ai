@@ -667,15 +667,21 @@ html.has-motion .deck.is-complete .deck-seal{opacity:1;transform:none}
 .field textarea{resize:vertical;min-height:76px}
 .field input::placeholder,.field textarea::placeholder{color:#5A5D5B;opacity:1;font-size:15px}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;background:rgba(201,179,126,.07);border-bottom-color:var(--gold-deep);box-shadow:0 2px 0 0 var(--gold)}
+.consent-group{margin:32px 0 28px;display:flex;flex-direction:column;gap:16px}
 .consent{display:flex;align-items:flex-start;gap:14px;cursor:pointer;margin:32px 0 28px}
+.consent-group .consent{margin:0}
 .consent input{appearance:none;-webkit-appearance:none;flex:0 0 20px;width:20px;height:20px;margin:3px 0 0;border:1px solid var(--fg-muted);background:transparent;cursor:pointer;position:relative;transition:background-color .3s ease}
 .consent input:checked{background:var(--fg);border-color:var(--fg)}
 .consent input:checked::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid var(--paper);border-width:0 2px 2px 0;transform:rotate(42deg)}
 .consent input:focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px}
 .consent>span{font-size:14px;line-height:1.7;color:var(--fg-muted)}
+.consent .req{color:#8C3A28;font-weight:600}
+.consent-link{color:var(--accent);text-decoration:underline;text-underline-offset:2px;font-weight:500;transition:color .2s ease}
+.consent-link:hover{color:var(--fg)}
 .btn--form{width:100%;min-width:0;min-height:60px;background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:600;letter-spacing:.20em}
 .btn--form:hover,.btn--form:focus-visible{background:var(--gold-soft);border-color:var(--gold-soft)}
 .btn--form:focus-visible{outline-color:var(--gold-deep)}
+.btn--form:disabled{opacity:.65;cursor:not-allowed}
 .form-micro{margin-top:20px;font-size:13px;line-height:1.75;color:var(--fg-muted)}
 .form-status{display:none;margin-top:20px;padding:16px 18px;border:1px solid var(--gold-deep);font-size:14px;line-height:1.7;color:var(--fg);background:rgba(201,179,126,.14)}
 .form-status.is-visible{display:block}

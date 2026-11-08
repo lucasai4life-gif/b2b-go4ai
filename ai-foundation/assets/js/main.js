@@ -314,15 +314,6 @@
   else if (mobileMQ.addListener) { mobileMQ.addListener(syncDisclosure); }
 
   /* --------------------------------------------------------- 10 · ENROLLMENT */
-  /*
-    INTEGRATION HOOK — no network call is made out of the box.
-    Set data-endpoint on #rsvp-form to the lead-capture endpoint, e.g.
-      <form ... data-endpoint="/api/leads">
-    Payload (JSON): ho_ten, dien_thoai, nghe_nghiep, muc_tieu, muc_do,
-                    dong_y, su_kien ("AI_FOUNDATION_18_11_2026").
-    Nothing is sent until the endpoint is explicitly configured — this avoids
-    posting test data into the production D1 / Telegram channel.
-  */
   var form = document.getElementById('rsvp-form');
   var status = document.getElementById('form-status');
 
@@ -332,51 +323,175 @@
       status.className = 'form-status is-visible' + (isError ? ' is-error' : '');
     };
 
+    var sourceSelect = document.getElementById('f-source');
+    var otherFieldWrap = document.getElementById('field-other-source');
+    var otherInput = document.getElementById('f-other-source');
+
+    var updateOtherSourceVisibility = function () {
+      if (!sourceSelect || !otherFieldWrap || !otherInput) return;
+      if (sourceSelect.value === 'Nguồn khác') {
+        otherFieldWrap.style.display = 'block';
+        otherInput.required = true;
+        otherInput.setAttribute('aria-required', 'true');
+      } else {
+        otherFieldWrap.style.display = 'none';
+        otherInput.required = false;
+        otherInput.removeAttribute('aria-required');
+        otherInput.value = '';
+      }
+    };
+
+    if (sourceSelect) {
+      sourceSelect.addEventListener('change', updateOtherSourceVisibility);
+      updateOtherSourceVisibility();
+    }
+
+    form.addEventListener('reset', function () {
+      setTimeout(updateOtherSourceVisibility, 0);
+    });
+
+    document.querySelectorAll('.consent-link').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+    });
+
+    var isSubmitting = false;
+
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      var name = form.elements.ho_ten.value.trim();
-      var phone = form.elements.dien_thoai.value.trim();
-      var consent = form.elements.dong_y.checked;
-
-      if (!name || !phone || !consent) {
-        showStatus('Vui lòng điền Họ tên, Số điện thoại/Zalo và xác nhận đồng ý trước khi gửi đăng ký.', true);
-        if (!name) { form.elements.ho_ten.focus(); }
-        else if (!phone) { form.elements.dien_thoai.focus(); }
-        else { form.elements.dong_y.focus(); }
+      if (isSubmitting) {
         return;
       }
 
-      var endpoint = form.getAttribute('data-endpoint') || '';
+      var name = form.elements.ho_ten ? form.elements.ho_ten.value.trim() : '';
+      var phone = form.elements.dien_thoai ? form.elements.dien_thoai.value.trim() : '';
+      var email = form.elements.email ? form.elements.email.value.trim() : '';
+      var jobTitle = form.elements.nghe_nghiep ? form.elements.nghe_nghiep.value.trim() : '';
+      var company = form.elements.doanh_nghiep ? form.elements.doanh_nghiep.value.trim() : '';
+      var aiGoal = form.elements.muc_tieu ? form.elements.muc_tieu.value.trim() : '';
+      var aiExperience = form.elements.muc_do ? form.elements.muc_do.value.trim() : '';
+      var source = form.elements.nguon_biet_den ? form.elements.nguon_biet_den.value.trim() : '';
+      var otherSource = form.elements.nguon_khac ? form.elements.nguon_khac.value.trim() : '';
+      var requiredConsent = form.elements.dong_y ? Boolean(form.elements.dong_y.checked) : false;
+      var marketingConsent = form.elements.dong_y_marketing ? Boolean(form.elements.dong_y_marketing.checked) : false;
+
+      if (!name || name.length < 2) {
+        showStatus('Vui lòng điền Họ tên (tối thiểu 2 ký tự).', true);
+        if (form.elements.ho_ten) { form.elements.ho_ten.focus(); }
+        return;
+      }
+
+      var phoneDigits = phone.replace(/[^\d+]/g, '');
+      if (!phone || !/^\+?\d{8,15}$/.test(phoneDigits)) {
+        showStatus('Vui lòng điền Số điện thoại / Zalo hợp lệ (8–15 chữ số).', true);
+        if (form.elements.dien_thoai) { form.elements.dien_thoai.focus(); }
+        return;
+      }
+
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        showStatus('Vui lòng điền địa chỉ Email hợp lệ hoặc để trống.', true);
+        if (form.elements.email) { form.elements.email.focus(); }
+        return;
+      }
+
+      if (form.elements.nguon_biet_den && form.elements.nguon_biet_den.required && !source) {
+        showStatus('Vui lòng chọn: Bạn biết đến chương trình qua đâu?', true);
+        form.elements.nguon_biet_den.focus();
+        return;
+      }
+
+      if (source === 'Nguồn khác' && (!otherSource || otherSource.length < 2)) {
+        showStatus('Vui lòng cho biết cụ thể nguồn bạn biết đến chương trình.', true);
+        if (form.elements.nguon_khac) { form.elements.nguon_khac.focus(); }
+        return;
+      }
+
+      if (!requiredConsent) {
+        showStatus('Vui lòng đồng ý với Chính sách bảo vệ dữ liệu cá nhân trước khi gửi đăng ký.', true);
+        if (form.elements.dong_y) { form.elements.dong_y.focus(); }
+        return;
+      }
+
+      var searchParams;
+      try {
+        searchParams = new URLSearchParams(window.location.search || '');
+      } catch (e) {
+        searchParams = null;
+      }
+      var getParam = function (k) {
+        return searchParams ? (searchParams.get(k) || '') : '';
+      };
+
+      var endpoint = form.getAttribute('data-endpoint') || '/api/foundation-leads';
       var payload = {
+        full_name: name,
+        phone: phone,
+        email: email,
+        job_title: jobTitle,
+        company: company,
+        ai_goal: aiGoal,
+        ai_experience: aiExperience,
+        source: source,
+        other_source: source === 'Nguồn khác' ? otherSource : '',
+        privacy_consent: requiredConsent,
+        marketing_consent: marketingConsent,
+        utm_source: getParam('utm_source'),
+        utm_medium: getParam('utm_medium'),
+        utm_campaign: getParam('utm_campaign'),
+        utm_content: getParam('utm_content'),
+        utm_term: getParam('utm_term'),
+        referrer: document.referrer || '',
+        landing_path: window.location.pathname || '/ai-foundation',
         ho_ten: name,
         dien_thoai: phone,
-        nghe_nghiep: form.elements.nghe_nghiep.value.trim(),
-        muc_tieu: form.elements.muc_tieu.value.trim(),
-        muc_do: form.elements.muc_do.value.trim(),
-        dong_y: consent,
+        nghe_nghiep: jobTitle,
+        doanh_nghiep: company,
+        muc_tieu: aiGoal,
+        muc_do: aiExperience,
+        nguon_biet_den: source,
+        nguon_khac: source === 'Nguồn khác' ? otherSource : '',
+        dong_y: requiredConsent,
+        dong_y_marketing: marketingConsent,
         su_kien: 'AI_FOUNDATION_18_11_2026'
       };
 
-      if (!endpoint) {
-        showStatus('Chế độ xem trước giao diện — biểu mẫu chưa kết nối hệ thống tiếp nhận đăng ký. Thông tin chưa được gửi.');
-        return;
-      }
+      window.__lastFoundationPayload = payload;
 
       var button = form.querySelector('button[type="submit"]');
-      button.disabled = true;
+      isSubmitting = true;
+      if (button) {
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+      }
       showStatus('Đang gửi đăng ký…');
+
       window.fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       }).then(function (res) {
-        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (!res.ok || (data && data.success === false)) {
+            var errMsg = (data && data.error)
+              ? data.error
+              : ('Không thể gửi đăng ký lúc này (HTTP ' + res.status + '). Vui lòng thử lại.');
+            throw new Error(errMsg);
+          }
+          return data;
+        });
+      }).then(function () {
         showStatus('Cảm ơn ' + name + '. Ban tổ chức sẽ liên hệ xác nhận đăng ký khóa học AI Foundation 18/11/2026.');
         form.reset();
-      }).catch(function () {
-        showStatus('Không thể gửi đăng ký lúc này. Vui lòng thử lại hoặc liên hệ Ban tổ chức.', true);
+        updateOtherSourceVisibility();
+      }).catch(function (err) {
+        showStatus((err && err.message) ? err.message : 'Không thể gửi đăng ký lúc này. Vui lòng thử lại hoặc liên hệ Ban tổ chức.', true);
       }).then(function () {
-        button.disabled = false;
+        isSubmitting = false;
+        if (button) {
+          button.disabled = false;
+          button.removeAttribute('aria-busy');
+        }
       });
     });
   }
