@@ -1,7 +1,10 @@
-/ai-builder/assets/css/*
+/ai-builder/assets/css/style.css
   Cache-Control: public, max-age=0, must-revalidate
 
-/ai-builder/assets/js/*
+/ai-builder/assets/css/fonts.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+/ai-builder/assets/js/main.js
   Cache-Control: public, max-age=0, must-revalidate
 
 /assets/js/consultation-modal.js
