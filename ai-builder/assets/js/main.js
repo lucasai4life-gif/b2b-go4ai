@@ -432,7 +432,7 @@
     '.lib-row', '.lib-foot',
     '.lab-strip', '.lab-accept', '.measure-head', '.measure-track',
     '.measure-table', '.measure-note', '.measure-close',
-    '.fit-panel', '.boundary', '.lead-head', '.lead-profile', '.lead-metrics',
+    '.fit-panel', '.boundary', '.expert-builder-main', '.expert-builder-proof',
     '.price-left', '.faq-head', '.faq-list', '.rail-row'
   ].join(',');
 
