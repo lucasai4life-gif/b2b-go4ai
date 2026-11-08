@@ -1,3 +1,9 @@
+/ai-builder/assets/css/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/ai-builder/assets/js/*
+  Cache-Control: public, max-age=0, must-revalidate
+
 /assets/js/consultation-modal.js
   Cache-Control: public, max-age=0, must-revalidate
 

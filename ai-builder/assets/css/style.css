@@ -834,20 +834,21 @@ textarea.input{min-height:96px;resize:vertical}
 .offline14-rail-note{margin-top:6px;font-size:11.5px;line-height:1.55;color:var(--on-light-3)}
 .offline14-people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(12px,2vw,28px)}
-.offline14-people li{padding-left:clamp(12px,1.6vw,20px);border-left:1px solid var(--line-l-2)}
+.offline14-people li{display:flex;flex-direction:column;gap:4px;
+  padding-left:clamp(12px,1.6vw,20px);border-left:1px solid var(--line-l-2)}
 .offline14-people li:first-child{padding-left:0;border-left:0}
 .offline14-people strong{display:block;font-size:13px;font-weight:600;color:var(--on-light)}
-.offline14-people span{display:block;margin-top:3px;font-size:11.5px;line-height:1.5;
+.offline14-people span{display:block;font-size:11.5px;line-height:1.5;
   color:var(--on-light-3)}
 
 .offline14-foot{margin-top:clamp(22px,2.6vw,32px);padding-top:clamp(16px,2vw,24px);
   border-top:1px solid var(--line-l);display:grid;
   grid-template-columns:minmax(0,1fr) auto;gap:clamp(18px,3vw,44px);align-items:end}
-.offline14-where p{display:flex;gap:12px;align-items:baseline;font-size:13px;line-height:1.55;
+.offline14-where p{display:flex;gap:16px;align-items:baseline;font-size:13px;line-height:1.55;
   color:var(--on-light-2)}
 .offline14-where p+p{margin-top:7px}
-.offline14-where-k{flex:0 0 auto;font-size:9.5px;font-weight:700;letter-spacing:.16em;
-  color:var(--gold-deep);min-width:76px}
+.offline14-where-k{flex:0 0 88px;font-size:9.5px;font-weight:700;letter-spacing:.16em;
+  color:var(--gold-deep);padding-top:2px}
 .offline14-cta{display:flex;flex-direction:column;align-items:flex-end;gap:9px;text-align:right}
 .offline14-cta .btn{max-width:100%}
 .offline14-note{font-size:11px;line-height:1.55;color:var(--on-light-3);max-width:340px}
@@ -1117,8 +1118,8 @@ html.motion .rv.is-in{opacity:1;transform:none}
   .offline14-p{font-size:14px}
   .offline14-q-t{font-size:16px}
   .offline14-list li{font-size:12.5px}
-  .offline14-where p{font-size:12.5px;gap:10px}
-  .offline14-where-k{min-width:64px}
+  .offline14-where p{display:flex;flex-direction:column;gap:3px;font-size:13px}
+  .offline14-where-k{flex:none;padding-top:0}
   .offline14-cta .btn{width:100%}
   .register-line{font-size:10px}
   .price-policies{grid-template-columns:1fr;gap:18px}
