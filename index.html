@@ -2576,14 +2576,400 @@ html.motion-impact .impact-section {
   .track-vis-trace,
   .track-vis-arrow,
   .case-flow__pill,
-  .case-timeline__dot {
+  .case-timeline__dot,
+  .course-path-card,
+  .course-path-card__cta,
+  .course-path-card__cta-arrow {
     animation: none !important;
     transition: none !important;
   }
 }
+
+/* ── COURSE PATHS SECTION (AI FOUNDATION & AI BUILDER) ────────────────── */
+.course-paths {
+  background: linear-gradient(180deg, #edf6f1 0%, #f4f9f6 100%);
+  border-top: 1px solid rgba(8, 144, 108, 0.14);
+  border-bottom: 1px solid rgba(8, 144, 108, 0.14);
+  padding-top: clamp(3.5rem, 6vw, 5.5rem);
+  padding-bottom: clamp(3.5rem, 6vw, 5.5rem);
+  position: relative;
+}
+
+.course-paths__head {
+  max-width: 760px;
+  margin: 0 auto clamp(2rem, 3.8vw, 3rem);
+  text-align: center;
+}
+
+.course-paths__title {
+  margin: 0 0 14px;
+  font-family: Archivo, Arial, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.65rem);
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+  color: #061f18;
+  text-transform: uppercase;
+}
+
+.course-paths__sub {
+  margin: 0 auto;
+  max-width: 640px;
+  font-family: Archivo, Arial, sans-serif;
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.6;
+  color: #2f5246;
+}
+
+.course-paths__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 2.5vw, 32px);
+  align-items: stretch;
+}
+
+.course-path-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 22px;
+  padding: clamp(26px, 3.4vw, 40px);
+  overflow: hidden;
+  transition:
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.course-path-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  transition: height 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Card 01: AI FOUNDATION — Learn / Capability / Practical Output */
+.course-path-card--foundation {
+  background: #ffffff;
+  color: #061f18;
+  border: 1px solid rgba(8, 144, 108, 0.22);
+  box-shadow: 0 16px 40px rgba(6, 31, 24, 0.06);
+}
+
+.course-path-card--foundation::before {
+  background: linear-gradient(90deg, #08906c 0%, #34d399 100%);
+}
+
+/* Card 02: AI BUILDER — Build / Workflow / Prototype */
+.course-path-card--builder {
+  background:
+    radial-gradient(ellipse 85% 65% at 90% 10%, rgba(52, 211, 153, 0.14) 0%, transparent 65%),
+    #08221b;
+  color: #f3faf7;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  box-shadow: 0 20px 46px rgba(6, 25, 20, 0.18);
+}
+
+.course-path-card--builder::before {
+  background: linear-gradient(90deg, #34d399 0%, #d9f28a 100%);
+}
+
+.course-path-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.course-path-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.course-path-card__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.course-path-card--foundation .course-path-card__eyebrow {
+  background: rgba(8, 144, 108, 0.1);
+  color: #06694f;
+  border: 1px solid rgba(8, 144, 108, 0.22);
+}
+
+.course-path-card--builder .course-path-card__eyebrow {
+  background: rgba(52, 211, 153, 0.12);
+  color: #a7f3d0;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+}
+
+.course-path-card__index {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.course-path-card--foundation .course-path-card__index {
+  color: #4f7769;
+}
+
+.course-path-card--builder .course-path-card__index {
+  color: #84b8a4;
+}
+
+/* Micro schematic diagram */
+.course-path-card__diagram {
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.course-path-card--foundation .course-path-card__diagram {
+  background: #f3f9f6;
+  border: 1px solid rgba(8, 144, 108, 0.14);
+  color: #06694f;
+}
+
+.course-path-card--builder .course-path-card__diagram {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(52, 211, 153, 0.18);
+  color: #a7f3d0;
+}
+
+.course-path-card__diagram-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.course-path-card__diagram-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.course-path-card__diagram-sep {
+  opacity: 0.45;
+  font-size: 0.75rem;
+}
+
+.course-path-card__headline {
+  margin: 0 0 14px;
+  font-family: Archivo, Arial, sans-serif;
+  font-size: clamp(1.38rem, 2.05vw, 1.82rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.course-path-card--foundation .course-path-card__headline {
+  color: #061f18;
+}
+
+.course-path-card--builder .course-path-card__headline {
+  color: #ffffff;
+}
+
+.course-path-card__desc {
+  margin: 0 0 24px;
+  font-family: Archivo, Arial, sans-serif;
+  font-size: clamp(0.98rem, 1.15vw, 1.06rem);
+  line-height: 1.6;
+}
+
+.course-path-card--foundation .course-path-card__desc {
+  color: #35584c;
+}
+
+.course-path-card--builder .course-path-card__desc {
+  color: #cbe3da;
+}
+
+.course-path-card__specs {
+  list-style: none;
+  padding: 0;
+  margin: auto 0 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.course-path-card__spec {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  line-height: 1.35;
+}
+
+.course-path-card--foundation .course-path-card__spec {
+  background: #eaf6f0;
+  color: #065540;
+  border: 1px solid rgba(8, 144, 108, 0.18);
+}
+
+.course-path-card--builder .course-path-card__spec {
+  background: rgba(52, 211, 153, 0.1);
+  color: #d9f9ea;
+  border: 1px solid rgba(52, 211, 153, 0.24);
+}
+
+.course-path-card__spec-check {
+  color: #08906c;
+  font-weight: 700;
+}
+
+.course-path-card--builder .course-path-card__spec-check {
+  color: #d9f28a;
+}
+
+.course-path-card__foot {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(8, 144, 108, 0.12);
+  display: flex;
+  align-items: center;
+}
+
+.course-path-card--builder .course-path-card__foot {
+  border-top-color: rgba(52, 211, 153, 0.16);
+}
+
+.course-path-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-family: Archivo, Arial, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.course-path-card--foundation .course-path-card__cta {
+  background: #08906c;
+  color: #ffffff;
+  border: 1px solid #08906c;
+}
+
+.course-path-card--builder .course-path-card__cta {
+  background: #d9f28a;
+  color: #0b261d;
+  border: 1px solid #d9f28a;
+}
+
+.course-path-card__cta:focus-visible {
+  outline: 3px solid #34d399;
+  outline-offset: 3px;
+}
+
+.course-path-card__cta-arrow {
+  display: inline-block;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .course-path-card:hover {
+    transform: translateY(-5px);
+  }
+  .course-path-card--foundation:hover {
+    border-color: rgba(8, 144, 108, 0.48);
+    box-shadow: 0 22px 48px rgba(6, 31, 24, 0.11);
+  }
+  .course-path-card--builder:hover {
+    border-color: rgba(217, 242, 138, 0.55);
+    box-shadow: 0 24px 52px rgba(6, 25, 20, 0.28);
+  }
+  .course-path-card--foundation .course-path-card__cta:hover {
+    background: #06694f;
+    border-color: #06694f;
+  }
+  .course-path-card--builder .course-path-card__cta:hover {
+    background: #ecffb5;
+    border-color: #ecffb5;
+  }
+  .course-path-card:hover .course-path-card__cta-arrow,
+  .course-path-card__cta:hover .course-path-card__cta-arrow,
+  .course-path-card__cta:focus-visible .course-path-card__cta-arrow {
+    transform: translateX(5px);
+  }
+}
+
+@media (max-width: 960px) {
+  .course-path-card__diagram {
+    font-size: 0.65rem;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .course-paths__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .course-path-card {
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+  .course-path-card__diagram {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .course-path-card__specs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .course-path-card__spec {
+    width: 100%;
+  }
+  .course-path-card__cta {
+    width: 100%;
+  }
+}
 </style>
-<script src="/assets/js/claude-promo.js"></script>
-<link rel="stylesheet" href="/assets/css/claude-promo.css">
 </head>
 
 <body>
@@ -2934,23 +3320,84 @@ html.motion-impact .impact-section {
   </section>
 
 
-  <section class="claude-promo claude-promo-card" aria-labelledby="claude-promo-title">
-    <div class="claude-promo-card__inner">
-      <div class="claude-promo-card__content">
-        <p class="claude-promo-card__eyebrow">Sự kiện sắp diễn ra · Miễn phí</p>
-        <h2 class="claude-promo-card__title" id="claude-promo-title">Claude không chỉ để hỏi: 90 phút ứng dụng AI vào công việc</h2>
-        <p class="claude-promo-card__desc">Cùng Lucas Đặng khám phá 6 cấp độ ứng dụng Claude, từ hỏi đáp đến quy trình AI cho doanh nghiệp. Xem cách đưa AI vào việc thật và chọn bước phù hợp với bạn.</p>
-        <div class="claude-promo-card__facts">
-          <span>20:00–21:30 · 30/10/2026</span>
-          <span>Trực tuyến · Có bản ghi</span>
+  <!-- ================= 1B. CHỌN LỘ TRÌNH AI PHÙ HỢP VỚI BẠN ================= -->
+  <section class="section course-paths" id="lo-trinh-ai" aria-labelledby="course-paths-title">
+    <div class="padding-global">
+      <div class="container">
+        <div class="course-paths__head">
+          <h2 class="course-paths__title" id="course-paths-title">CHỌN LỘ TRÌNH AI PHÙ HỢP VỚI BẠN</h2>
+          <p class="course-paths__sub">Bắt đầu từ nền tảng sử dụng AI bài bản hoặc đi thẳng vào một quy trình thực tế cần xây dựng và cải tiến.</p>
         </div>
-        <div class="claude-promo-card__actions">
-          <a class="claude-promo-card__button" href="/claude/?utm_source=b2b_site&amp;utm_medium=internal&amp;utm_campaign=claude_90m_20261030&amp;utm_content=home_card#tham-gia">Đăng ký miễn phí</a>
-          <a class="claude-promo-card__secondary" href="/claude/?utm_source=b2b_site&amp;utm_medium=internal&amp;utm_campaign=claude_90m_20261030&amp;utm_content=home_card_info">Xem nội dung hội thảo →</a>
+
+        <div class="course-paths__grid">
+          <!-- CARD 01 — AI FOUNDATION -->
+          <article class="course-path-card course-path-card--foundation" aria-labelledby="card-foundation-title">
+            <div class="course-path-card__body">
+              <div class="course-path-card__top">
+                <p class="course-path-card__eyebrow">AI FOUNDATION</p>
+                <span class="course-path-card__index">01 · LEARN &amp; CAPABILITY</span>
+              </div>
+
+              <div class="course-path-card__diagram" aria-hidden="true">
+                <span class="course-path-card__diagram-step"><span class="course-path-card__diagram-dot"></span>PHƯƠNG PHÁP</span>
+                <span class="course-path-card__diagram-sep">→</span>
+                <span class="course-path-card__diagram-step">14 ĐẦU RA</span>
+                <span class="course-path-card__diagram-sep">→</span>
+                <span class="course-path-card__diagram-step">PASSPORT L1</span>
+              </div>
+
+              <h3 class="course-path-card__headline" id="card-foundation-title">XÂY NỀN TẢNG AI BÀI BẢN CHO CÔNG VIỆC</h3>
+              <p class="course-path-card__desc">Dành cho người muốn sử dụng AI có phương pháp, tạo đầu ra thực tế và xây nền tảng năng lực AI vững chắc.</p>
+
+              <ul class="course-path-card__specs" aria-label="Thông tin khóa học AI Foundation">
+                <li class="course-path-card__spec"><span class="course-path-card__spec-check" aria-hidden="true">✓</span><span>5 BUỔI × 2 GIỜ</span></li>
+                <li class="course-path-card__spec"><span class="course-path-card__spec-check" aria-hidden="true">✓</span><span>14 ĐẦU RA THỰC HÀNH</span></li>
+                <li class="course-path-card__spec"><span class="course-path-card__spec-check" aria-hidden="true">✓</span><span>AI PASSPORT LEVEL 1 THEO THẨM ĐỊNH</span></li>
+              </ul>
+            </div>
+
+            <div class="course-path-card__foot">
+              <a class="course-path-card__cta" href="/ai-foundation">
+                <span>KHÁM PHÁ AI FOUNDATION</span>
+                <span class="course-path-card__cta-arrow" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- CARD 02 — AI BUILDER -->
+          <article class="course-path-card course-path-card--builder" aria-labelledby="card-builder-title">
+            <div class="course-path-card__body">
+              <div class="course-path-card__top">
+                <p class="course-path-card__eyebrow">AI BUILDER</p>
+                <span class="course-path-card__index">02 · BUILD &amp; PROTOTYPE</span>
+              </div>
+
+              <div class="course-path-card__diagram" aria-hidden="true">
+                <span class="course-path-card__diagram-step"><span class="course-path-card__diagram-dot"></span>QUY TRÌNH THẬT</span>
+                <span class="course-path-card__diagram-sep">→</span>
+                <span class="course-path-card__diagram-step">PROTOTYPE AI</span>
+                <span class="course-path-card__diagram-sep">→</span>
+                <span class="course-path-card__diagram-step">ĐO LƯỜNG</span>
+              </div>
+
+              <h3 class="course-path-card__headline" id="card-builder-title">BIẾN MỘT QUY TRÌNH THẬT THÀNH CÔNG CỤ AI CHẠY THỬ</h3>
+              <p class="course-path-card__desc">Dành cho người có một bài toán hoặc quy trình thực tế cần cải tiến bằng AI, từ thiết kế đến prototype và đo lường hiệu quả.</p>
+
+              <ul class="course-path-card__specs" aria-label="Thông tin khóa học AI Builder">
+                <li class="course-path-card__spec"><span class="course-path-card__spec-check" aria-hidden="true">✓</span><span>5 BUỔI × 3 GIỜ</span></li>
+                <li class="course-path-card__spec"><span class="course-path-card__spec-check" aria-hidden="true">✓</span><span>KÈM HƯỚNG DẪN 1:1</span></li>
+                <li class="course-path-card__spec"><span class="course-path-card__spec-check" aria-hidden="true">✓</span><span>1 QUY TRÌNH → 1 CÔNG CỤ AI CHẠY THỬ</span></li>
+              </ul>
+            </div>
+
+            <div class="course-path-card__foot">
+              <a class="course-path-card__cta" href="/ai-builder">
+                <span>KHÁM PHÁ AI BUILDER</span>
+                <span class="course-path-card__cta-arrow" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
         </div>
-      </div>
-      <div class="claude-promo-card__photo">
-        <img src="/assets/images/lucas-dang.jpg" alt="Lucas Đặng, diễn giả hội thảo Claude" width="850" height="1024" loading="lazy" decoding="async">
       </div>
     </div>
   </section>
